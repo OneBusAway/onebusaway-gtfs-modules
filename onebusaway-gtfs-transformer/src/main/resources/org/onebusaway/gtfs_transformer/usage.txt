@@ -1,0 +1,17 @@
+usage: [args] gtfs_input_dir gtfs_output_dir
+
+args:
+ -calendarModifications path     apply calendar modifications from the specified path
+ -stopNames path                 apply stop name modifications from the specified path
+ -modifications path             apply general modifications from the specified path
+ -agencyId ID                    override the default agency id for imported data
+
+King County Metro specific options:
+ -interlinedRoutes               fix interlined routes
+ -localVsExpress                 update local vs express labels
+ -kcmetroDefaults                equivalent to the following:
+   -calendarModifications http://onebusaway.googlecode.com/svn/wiki/MetroKCTripExceptionCodes.wiki
+   -stopNames http://onebusaway.googlecode.com/svn/wiki/MetroKCStopNames.wiki
+   -modifications http://onebusaway.googlecode.com/svn/wiki/MetroKCModifications.wiki
+   -interlinedRoutes
+   -localVsExpress

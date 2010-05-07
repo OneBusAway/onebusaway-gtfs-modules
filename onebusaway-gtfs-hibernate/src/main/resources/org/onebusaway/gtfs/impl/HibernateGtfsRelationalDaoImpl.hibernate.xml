@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="agencyIdsReferencingServiceId" read-only="true">
+        SELECT trip.id.agencyId FROM Trip trip WHERE trip.serviceId = :serviceId GROUP BY trip.id.agencyId
+    </query>
+    <query name="routesForAgency" read-only="true">
+        FROM Route route WHERE route.agency = :agency
+    </query>
+    <query name="tripsByRoute" read-only="true">
+        FROM Trip trip WHERE trip.route = :route
+    </query>
+    <query name="tripsByBlockId" read-only="true">SELECT trip FROM Trip trip WHERE trip.id.agencyId = :agencyId AND
+        trip.blockId = :blockId
+    </query>
+    <query name="stopTimesByTrip" read-only="true">
+        SELECT st FROM StopTime st WHERE st.trip = :trip ORDER BY st.stopSequence
+    </query>
+    <query name="stopTimesByStop" read-only="true">
+        SELECT st FROM StopTime st WHERE st.stop = :stop
+    </query>
+    <query name="shapePointsForShapeId" read-only="true">
+        FROM ShapePoint point WHERE point.id.shapeId = :shapeId
+    </query>
+    <query name="frequenciesForTrip" read-only="true">
+        FROM Frequency f WHERE f.trip = :trip
+    </query>
+    <query name="calendarDatesForServiceId" read-only="true">
+        FROM ServiceCalendarDate d WHERE d.serviceId = :serviceId
+    </query>
+    <query name="calendarsForServiceId" read-only="true">
+        FROM ServiceCalendar d WHERE d.serviceId = :serviceId
+    </query>
+</hibernate-mapping>

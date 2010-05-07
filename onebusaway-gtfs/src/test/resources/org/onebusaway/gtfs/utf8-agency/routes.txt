@@ -1,0 +1,3 @@
+route_id,route_short_name,route_long_name,route_type
+A,,Enguera-Alcúdia de Crespins-Xàtiva,3
+B,,Tuéjar-Casinos,3

@@ -48,7 +48,7 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
   private Map<AgencyAndId, List<ShapePoint>> _shapePointsByShapeId = new HashMap<AgencyAndId, List<ShapePoint>>();
 
   private Set<AgencyAndId> _updateShapePointIds = new HashSet<AgencyAndId>();
-  
+
   private Set<Pair<String>> _routeTransitionsToWatch = new HashSet<Pair<String>>();
 
   private int _maxShapePointIndex = 0;
@@ -59,7 +59,7 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
 
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-    
+
     MetroKCDao metrokcDao = context.getMetroKCDao();
 
     reset();
@@ -73,10 +73,11 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
     addShapePointsToCache();
 
     Map<String, List<Trip>> tripsByBlockId = TripsByBlockInSortedOrder.getTripsByBlockInSortedOrder(dao);
-    
+
     Set<String> patternPairsWeExpected = new TreeSet<String>();
-    Map<Pair<String>,List<String>> examples = new FactoryMap<Pair<String>, List<String>>(new ArrayList<String>());
-    
+    Map<Pair<String>, List<String>> examples = new FactoryMap<Pair<String>, List<String>>(
+        new ArrayList<String>());
+
     for (List<Trip> trips : tripsByBlockId.values()) {
       Trip prev = null;
       boolean prevModified = false;
@@ -85,15 +86,16 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
         if (prev != null) {
           modified = checkTripPair(prev, trip);
 
-          Pair<String> routePair = Tuples.pair(prev.getRoute().getShortName(),trip.getRoute().getShortName());
-          if( ! modified && _routeTransitionsToWatch.contains(routePair )) {
+          Pair<String> routePair = Tuples.pair(prev.getRoute().getShortName(),
+              trip.getRoute().getShortName());
+          if (!modified && _routeTransitionsToWatch.contains(routePair)) {
             String rp = routePair.getFirst() + " " + routePair.getSecond();
             String pp = prev.getShapeId() + " " + trip.getShapeId();
             String key = rp + " " + pp;
-            if( patternPairsWeExpected.add(key))
+            if (patternPairsWeExpected.add(key))
               examples.get(key).add(prev.getId() + " " + trip.getId());
           }
-          
+
           // Multiple modifications mess up our assumptions for shifting
           // shapepoints
           if (modified && prevModified)
@@ -105,7 +107,7 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
       }
     }
 
-    for( String key : patternPairsWeExpected ) {
+    for (String key : patternPairsWeExpected) {
       _log.warn("expected: " + key + " " + examples.get(key));
     }
     reset();
@@ -172,13 +174,14 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
 
       Pair<Integer> pair = Tuples.pair(patternPair.getPatternFrom(),
           patternPair.getPatternTo());
-      if( putStopIdForPatternPair(pair, Integer.toString(patternPair.getStopId())) ) {
+      if (putStopIdForPatternPair(pair,
+          Integer.toString(patternPair.getStopId()))) {
         _log.warn("duplicate pattern pair: " + patternPair);
       }
-      
+
       String fromRoute = Integer.toString(patternPair.getRouteFrom());
       String toRoute = Integer.toString(patternPair.getRouteTo());
-      Pair<String> routePair = Tuples.pair(fromRoute,toRoute);
+      Pair<String> routePair = Tuples.pair(fromRoute, toRoute);
       _routeTransitionsToWatch.add(routePair);
     }
   }
@@ -228,6 +231,16 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
 
     List<StopTime> stopTimesPrev = getStopTimesForTrip(prev);
     List<StopTime> stopTimesNext = getStopTimesForTrip(next);
+
+    if (stopTimesPrev.isEmpty()) {
+      _log.warn("no StopTimes for prev trip: " + prev.getId());
+      return false;
+    }
+
+    if (stopTimesNext.isEmpty()) {
+      _log.warn("no StopTimes for next trip: " + next.getId());
+      return false;
+    }
 
     pruneSameOverlappingPrevAndNextStops(stopTimesPrev, stopTimesNext);
 
@@ -410,8 +423,8 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
 
     for (ShapePoint shapePoint : shapePoints) {
 
-      double distance = distance(shapePoint.getLat(),
-          shapePoint.getLon(), stop.getLat(), stop.getLon());
+      double distance = distance(shapePoint.getLat(), shapePoint.getLon(),
+          stop.getLat(), stop.getLon());
 
       if (distance < minDistance) {
         minDistance = distance;
@@ -429,10 +442,10 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
     for (ShapePoint shapePoint : shapePoints)
       shapePoint.setSequence(sequence++);
   }
-  
+
   private static final double distance(double lat1, double lon1, double lat2,
       double lon2) {
-    
+
     // Radius of the earth in M
     double radius = 6371.01 * 1000;
 
@@ -450,8 +463,8 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
 
     return radius * atan2(y, x);
   }
-  
+
   private static final double p2(double v) {
-    return v*v;
+    return v * v;
   }
 }

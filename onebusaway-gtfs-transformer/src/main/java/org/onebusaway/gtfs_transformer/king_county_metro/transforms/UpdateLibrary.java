@@ -37,15 +37,15 @@ public class UpdateLibrary {
       AgencyAndId aid = trip.getId();
       String id = aid.getId();
 
-      int index = id.indexOf('_');
-
-      if (index == -1) {
+      if (!isVersionedTripId(id)) {
         changeDatesByTrip.put(trip, allChangeDates);
       } else {
+        int index = id.indexOf('_');
         String changeDateId = id.substring(0, index);
         MetroKCChangeDate changeDate = metrokcDao.getChangeDateForId(changeDateId);
         if (changeDate == null)
-          throw new IllegalStateException("unknown change date: " + changeDate);
+          throw new IllegalStateException("unknown change date: "
+              + changeDateId);
         changeDatesByTrip.put(trip, Arrays.asList(changeDate));
       }
     }
@@ -68,13 +68,14 @@ public class UpdateLibrary {
       AgencyAndId aid = trip.getId();
       String id = aid.getId();
 
-      int index = id.indexOf('_');
-
       MetroKCTrip metroKCTrip = null;
-      if (index == -1) {
+
+      if (!isVersionedTripId(id)) {
         metroKCTrip = getMetroKCTripByUnversionedTripId(metrokcDao,
             changeDates, id);
       } else {
+        int index = id.indexOf('_');
+
         String changeDate = id.substring(0, index);
         String tripId = id.substring(index + 1);
         VersionedId versionedId = new VersionedId(changeDate,
@@ -107,6 +108,10 @@ public class UpdateLibrary {
       MetroKCDao metrokcDao, List<MetroKCChangeDate> changeDates,
       String numericTripId) {
 
+    int index = numericTripId.indexOf('_');
+    if( index != -1)
+      numericTripId = numericTripId.substring(0,index);
+
     int tripId = Integer.parseInt(numericTripId);
 
     for (MetroKCChangeDate changeDate : changeDates) {
@@ -117,5 +122,9 @@ public class UpdateLibrary {
     }
 
     return null;
+  }
+
+  private static boolean isVersionedTripId(String id) {
+    return id.contains("_") && ! id.contains("merged");
   }
 }

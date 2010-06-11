@@ -83,7 +83,7 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
       boolean prevModified = false;
       for (Trip trip : trips) {
         boolean modified = false;
-        if (prev != null) {
+        if (prev != null && ! prevModified) {
           modified = checkTripPair(prev, trip);
 
           Pair<String> routePair = Tuples.pair(prev.getRoute().getShortName(),
@@ -95,12 +95,6 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
             if (patternPairsWeExpected.add(key))
               examples.get(key).add(prev.getId() + " " + trip.getId());
           }
-
-          // Multiple modifications mess up our assumptions for shifting
-          // shapepoints
-          if (modified && prevModified)
-            throw new IllegalStateException(
-                "trip was involved in multiple modifications: " + prev.getId());
         }
         prev = trip;
         prevModified = modified;
@@ -336,12 +330,13 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
     AgencyAndId modShapeIdNext = new AgencyAndId(shapeIdNext.getAgencyId(),
         shapeIdNext.getId() + "-" + key);
 
+    boolean a = hasUpdatedShapePointsForId(modShapeIdPrev);
+    boolean b = hasUpdatedShapePointsForId(modShapeIdNext);
+    
+
     // Update the trip shape ids
     prev.setShapeId(modShapeIdPrev);
     next.setShapeId(modShapeIdNext);
-
-    boolean a = hasUpdatedShapePointsForId(modShapeIdPrev);
-    boolean b = hasUpdatedShapePointsForId(modShapeIdNext);
 
     if (a && b)
       return;
@@ -352,7 +347,8 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
     List<ShapePoint> shapePointsPrev = getShapePointsForShapeId(shapeIdPrev);
     List<ShapePoint> shapePointsNext = getShapePointsForShapeId(shapeIdNext);
 
-    if (shapePointsPrev.isEmpty() || shapePointsNext.isEmpty())
+    if (shapePointsPrev == null || shapePointsPrev.isEmpty()
+        || shapePointsNext == null || shapePointsNext.isEmpty())
       throw new IllegalStateException("no shape points for shapeIds? prev="
           + shapeIdPrev + " next=" + shapeIdNext);
 

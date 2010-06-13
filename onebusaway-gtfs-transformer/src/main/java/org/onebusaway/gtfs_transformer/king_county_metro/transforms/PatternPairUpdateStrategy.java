@@ -25,6 +25,7 @@ import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_transformer.king_county_metro.MetroKCDao;
 import org.onebusaway.gtfs_transformer.king_county_metro.model.MetroKCPatternPair;
 import org.onebusaway.gtfs_transformer.king_county_metro.model.MetroKCTrip;
@@ -83,12 +84,13 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
       boolean prevModified = false;
       for (Trip trip : trips) {
         boolean modified = false;
-        if (prev != null && ! prevModified) {
+        if (prev != null && !prevModified) {
           modified = checkTripPair(prev, trip);
 
           Pair<String> routePair = Tuples.pair(prev.getRoute().getShortName(),
               trip.getRoute().getShortName());
-          if (!modified && _routeTransitionsToWatch.contains(routePair)) {
+          if (!modified && _routeTransitionsToWatch.contains(routePair)
+              && getStopTimeSeparation(dao, prev, trip) < 5 * 60) {
             String rp = routePair.getFirst() + " " + routePair.getSecond();
             String pp = prev.getShapeId() + " " + trip.getShapeId();
             String key = rp + " " + pp;
@@ -102,7 +104,14 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
     }
 
     for (String key : patternPairsWeExpected) {
-      _log.warn("expected: " + key + " " + examples.get(key));
+      String[] t = key.split("\\s+");
+      System.out.println("# Example: " + examples.get(key));
+      System.out.println("{\"op\":\"add\",\"objType\":\"kcmetro\",\"obj\":{\"class\":\"MetroKCPatternPair\",\"routeFrom\":"
+          + t[0]
+          + ",\"routeTo\":"
+          + t[1]
+          + ",\"stopId\":XXXX,\"patternFrom\":"
+          + t[3] + ",\"patternTo\":" + t[5] + "}}");
     }
     reset();
     UpdateLibrary.clearDaoCache(dao);
@@ -332,7 +341,6 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
 
     boolean a = hasUpdatedShapePointsForId(modShapeIdPrev);
     boolean b = hasUpdatedShapePointsForId(modShapeIdNext);
-    
 
     // Update the trip shape ids
     prev.setShapeId(modShapeIdPrev);
@@ -437,6 +445,16 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
     int sequence = 0;
     for (ShapePoint shapePoint : shapePoints)
       shapePoint.setSequence(sequence++);
+  }
+
+  private int getStopTimeSeparation(GtfsRelationalDao dao, Trip a, Trip b) {
+    List<StopTime> stopTimesA = dao.getStopTimesForTrip(a);
+    List<StopTime> stopTimesB = dao.getStopTimesForTrip(b);
+    if (stopTimesA.isEmpty() || stopTimesB.isEmpty())
+      return Integer.MAX_VALUE;
+    StopTime last = stopTimesA.get(stopTimesA.size() - 1);
+    StopTime first = stopTimesB.get(0);
+    return first.getArrivalTime() - last.getDepartureTime();
   }
 
   private static final double distance(double lat1, double lon1, double lat2,

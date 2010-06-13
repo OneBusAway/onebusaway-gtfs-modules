@@ -39,7 +39,13 @@ public class DefaultAgencyIdFieldMappingFactory implements FieldMappingFactory {
 
     @Override
     public void translateFromObjectToCSV(CsvEntityContext context, BeanWrapper object, Map<String, Object> csvValues) {
+      if( isMissingAndOptional(object))
+        return;
       AgencyAndId id = (AgencyAndId) object.getPropertyValue(_objFieldName);
+      if( id == null) {
+        isMissingAndOptional(object);
+        throw new IllegalArgumentException("id field \"" + _objFieldName + "\" must not be null for object: " + object.getWrappedInstance(Object.class));
+      }
       csvValues.put(_csvFieldName, id.getId());
     }
 

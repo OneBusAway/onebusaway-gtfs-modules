@@ -26,6 +26,7 @@ import org.onebusaway.gtfs_transformer.king_county_metro.transforms.DeduplicateR
 import org.onebusaway.gtfs_transformer.king_county_metro.transforms.DeduplicateStopsStrategy;
 import org.onebusaway.gtfs_transformer.king_county_metro.transforms.DeprecatedFieldsUpdaterStrategy;
 import org.onebusaway.gtfs_transformer.king_county_metro.transforms.PatternPairUpdateStrategy;
+import org.onebusaway.gtfs_transformer.king_county_metro.transforms.RemoveMergedTripsStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.updates.DeduplicateTripsStrategy;
 import org.onebusaway.gtfs_transformer.updates.EnsureStopTimesIncreaseUpdateStrategy;
@@ -281,6 +282,8 @@ public class GtfsTransformerMain {
 
     updater.setAgencyId("KCM");
 
+    updater.addTransform(new RemoveMergedTripsStrategy());
+    
     configureDeduplicateStops(updater);
     configureDeduplicateRoutes(updater);
     configureRemoveRepeatedStopTimes(updater);

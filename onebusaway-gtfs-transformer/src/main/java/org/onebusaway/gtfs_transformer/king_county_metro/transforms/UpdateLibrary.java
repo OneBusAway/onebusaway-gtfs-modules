@@ -38,7 +38,13 @@ public class UpdateLibrary {
       String id = aid.getId();
 
       if (!isVersionedTripId(id)) {
-        changeDatesByTrip.put(trip, allChangeDates);
+        List<MetroKCTrip> trips = getMetroKCTripByUnversionedTripId(metrokcDao,
+            allChangeDates, id);
+        List<MetroKCChangeDate> changeDates = new ArrayList<MetroKCChangeDate>();
+        for (MetroKCTrip mkcTrip : trips) {
+          changeDates.add(metrokcDao.getChangeDateForId(mkcTrip.getServicePattern().getChangeDate()));
+        }
+        changeDatesByTrip.put(trip, changeDates);
       } else {
         int index = id.indexOf('_');
         String changeDateId = id.substring(0, index);
@@ -71,8 +77,10 @@ public class UpdateLibrary {
       MetroKCTrip metroKCTrip = null;
 
       if (!isVersionedTripId(id)) {
-        metroKCTrip = getMetroKCTripByUnversionedTripId(metrokcDao,
-            changeDates, id);
+        List<MetroKCTrip> metroKCTrips = getMetroKCTripByUnversionedTripId(
+            metrokcDao, changeDates, id);
+        if (!metroKCTrips.isEmpty())
+          metroKCTrip = metroKCTrips.get(0);
       } else {
         int index = id.indexOf('_');
 
@@ -104,27 +112,29 @@ public class UpdateLibrary {
     }
   }
 
-  private static MetroKCTrip getMetroKCTripByUnversionedTripId(
+  private static List<MetroKCTrip> getMetroKCTripByUnversionedTripId(
       MetroKCDao metrokcDao, List<MetroKCChangeDate> changeDates,
       String numericTripId) {
 
     int index = numericTripId.indexOf('_');
-    if( index != -1)
-      numericTripId = numericTripId.substring(0,index);
+    if (index != -1)
+      numericTripId = numericTripId.substring(0, index);
 
     int tripId = Integer.parseInt(numericTripId);
+
+    List<MetroKCTrip> trips = new ArrayList<MetroKCTrip>();
 
     for (MetroKCChangeDate changeDate : changeDates) {
       VersionedId id = new VersionedId(changeDate.getId(), tripId);
       MetroKCTrip metroKCTrip = metrokcDao.getTripForId(id);
       if (metroKCTrip != null)
-        return metroKCTrip;
+        trips.add(metroKCTrip);
     }
 
-    return null;
+    return trips;
   }
 
   private static boolean isVersionedTripId(String id) {
-    return id.contains("_") && ! id.contains("merged");
+    return id.contains("_") && !id.contains("merged");
   }
 }

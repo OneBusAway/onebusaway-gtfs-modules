@@ -40,6 +40,8 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
 
   private Map<Trip, List<StopTime>> _stopTimesByTrip = null;
 
+  private Map<Stop, List<StopTime>> _stopTimesByStop = null;
+
   private Map<Route, List<Trip>> _tripsByRoute = null;
 
   private Map<AgencyAndId, List<Trip>> _tripsByBlockId = null;
@@ -47,8 +49,6 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   private Map<AgencyAndId, List<ShapePoint>> _shapePointsByShapeId = null;
 
   private Map<Trip, List<Frequency>> _frequenciesByTrip = null;
-
-  private Map<Stop, List<StopTime>> _stopTimesByStop = null;
 
   private Map<AgencyAndId, List<ServiceCalendarDate>> _calendarDatesByServiceId = null;
 
@@ -60,7 +60,11 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
     _stopTimesByTrip = clearMap(_stopTimesByTrip);
     _stopTimesByStop = clearMap(_stopTimesByStop);
     _tripsByRoute = clearMap(_tripsByRoute);
+    _tripsByBlockId = clearMap(_tripsByBlockId);
     _shapePointsByShapeId = clearMap(_shapePointsByShapeId);
+    _frequenciesByTrip = clearMap(_frequenciesByTrip);
+    _calendarDatesByServiceId = clearMap(_calendarDatesByServiceId);
+    _calendarsByServiceId = clearMap(_calendarsByServiceId);
   }
 
   @Override

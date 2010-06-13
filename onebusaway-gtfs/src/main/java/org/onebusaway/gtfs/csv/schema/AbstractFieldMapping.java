@@ -58,6 +58,10 @@ public abstract class AbstractFieldMapping implements FieldMapping {
             + _isSetMethod + " on object=" + instance);
       }
     }
+    else {
+      Object obj = object.getPropertyValue(_objFieldName);
+      return obj == null;
+    }
     return false;
   }
 

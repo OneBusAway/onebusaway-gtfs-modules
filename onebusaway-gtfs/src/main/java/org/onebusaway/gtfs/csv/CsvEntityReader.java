@@ -95,7 +95,8 @@ public class CsvEntityReader {
   }
 
   public void close() throws IOException {
-    _source.close();
+    if( _source != null)
+      _source.close();
   }
 
   private class EntityHandlerImpl implements EntityHandler {

@@ -13,30 +13,37 @@ import org.onebusaway.gtfs.serialization.GtfsReaderContext;
 
 import java.util.Map;
 
+/**
+ * {@link FieldMappingFactory} that produces a {@link FieldMapping} instance
+ * capable of mapping a CSV string entity id to an entity instance, and vice
+ * versa. Assumes field entity type subclasses {@link IdentityBean} and the
+ * target entity can be found with
+ * {@link GtfsReaderContext#getEntity(Class, java.io.Serializable)}.
+ * 
+ * @author bdferris
+ * @see IdentityBean
+ * @see GtfsReaderContext#getEntity(Class, java.io.Serializable)
+ */
 public class EntityFieldMappingFactory implements FieldMappingFactory {
 
   public EntityFieldMappingFactory() {
 
   }
 
-  public EntityFieldMappingFactory(String csvFieldName) {
-
-  }
-
   public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
-      String csvFieldName, String objFieldName, Class<?> objFieldType,
-      boolean required) {
-    return new FieldMappingImpl(csvFieldName, objFieldName, objFieldType,
-        required);
+      Class<?> entityType, String csvFieldName, String objFieldName,
+      Class<?> objFieldType, boolean required) {
+    return new FieldMappingImpl(entityType, csvFieldName, objFieldName,
+        objFieldType, required);
   }
 
   public static class FieldMappingImpl extends AbstractFieldMapping {
 
     private Class<?> _objFieldType;
 
-    public FieldMappingImpl(String csvFieldName, String objFieldName,
-        Class<?> objFieldType, boolean required) {
-      super(csvFieldName, objFieldName, required);
+    public FieldMappingImpl(Class<?> entityType, String csvFieldName,
+        String objFieldName, Class<?> objFieldType, boolean required) {
+      super(entityType, csvFieldName, objFieldName, required);
       _objFieldType = objFieldType;
     }
 
@@ -46,18 +53,12 @@ public class EntityFieldMappingFactory implements FieldMappingFactory {
       if (isMissingAndOptional(csvValues))
         return;
 
-      try {
-        GtfsReaderContext ctx = (GtfsReaderContext) context.get(GtfsReader.KEY_CONTEXT);
-        String entityId = (String) csvValues.get(_csvFieldName);
-        String agencyId = ctx.getAgencyForEntity(_objFieldType, entityId);
-        AgencyAndId id = new AgencyAndId(agencyId, entityId);
-        Object entity = ctx.getEntity(_objFieldType, id);
-        object.setPropertyValue(_objFieldName, entity);
-      } catch (Exception ex) {
-        throw new IllegalStateException("error setting entity: csvField="
-            + _csvFieldName + " objField=" + _objFieldName + " objType="
-            + _objFieldType, ex);
-      }
+      GtfsReaderContext ctx = (GtfsReaderContext) context.get(GtfsReader.KEY_CONTEXT);
+      String entityId = (String) csvValues.get(_csvFieldName);
+      String agencyId = ctx.getAgencyForEntity(_objFieldType, entityId);
+      AgencyAndId id = new AgencyAndId(agencyId, entityId);
+      Object entity = ctx.getEntity(_objFieldType, id);
+      object.setPropertyValue(_objFieldName, entity);
     }
 
     @SuppressWarnings("unchecked")

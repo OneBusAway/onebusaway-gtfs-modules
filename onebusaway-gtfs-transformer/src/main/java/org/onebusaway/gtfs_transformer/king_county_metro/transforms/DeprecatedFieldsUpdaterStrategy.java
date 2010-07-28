@@ -100,7 +100,7 @@ public class DeprecatedFieldsUpdaterStrategy implements GtfsTransformStrategy,
   private class StopFieldMapping extends AbstractFieldMapping {
 
     public StopFieldMapping() {
-      super("stop_direction", "stopDirection", false);
+      super(Stop.class, "stop_direction", "stopDirection", false);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class DeprecatedFieldsUpdaterStrategy implements GtfsTransformStrategy,
   private class BlockSequenceIdFieldMapping extends AbstractFieldMapping {
 
     public BlockSequenceIdFieldMapping() {
-      super("block_sequence_id", "blockSequenceId", false);
+      super(Trip.class, "block_sequence_id", "blockSequenceId", false);
     }
 
     @Override

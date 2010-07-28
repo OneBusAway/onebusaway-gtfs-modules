@@ -1,5 +1,6 @@
 package org.onebusaway.gtfs.csv.schema;
 
+import org.onebusaway.gtfs.csv.exceptions.NoSuchPropertyException;
 import org.onebusaway.gtfs.csv.schema.beans.CsvEntityMappingBean;
 import org.onebusaway.gtfs.csv.schema.beans.CsvFieldMappingBean;
 
@@ -38,8 +39,8 @@ public class EntitySchemaFactoryHelper {
       CsvFieldMappingBean fieldBean = new CsvFieldMappingBean(field);
       entityBean.addField(fieldBean);
       return fieldBean;
-    } catch (Exception e) {
-      throw new IllegalStateException(e);
+    } catch (Exception ex) {
+      throw new NoSuchPropertyException(entityClass, fieldName,ex);
     }
   }
   

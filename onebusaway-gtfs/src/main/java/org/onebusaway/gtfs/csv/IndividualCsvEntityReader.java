@@ -3,6 +3,7 @@
  */
 package org.onebusaway.gtfs.csv;
 
+import org.onebusaway.gtfs.csv.exceptions.EntityInstantiationException;
 import org.onebusaway.gtfs.csv.schema.BeanWrapper;
 import org.onebusaway.gtfs.csv.schema.BeanWrapperFactory;
 import org.onebusaway.gtfs.csv.schema.EntitySchema;
@@ -64,8 +65,8 @@ public class IndividualCsvEntityReader implements CSVListener {
   }
 
   public void handleLine(List<String> line) throws Exception {
-    
-    if( line.size() == 0)
+
+    if (line.size() == 0)
       return;
 
     if (_trimValues) {
@@ -123,8 +124,7 @@ public class IndividualCsvEntityReader implements CSVListener {
     try {
       return entityClass.newInstance();
     } catch (Exception ex) {
-      throw new IllegalStateException("could not instantiate entity class "
-          + entityClass, ex);
+      throw new EntityInstantiationException(entityClass, ex);
     }
   }
 }

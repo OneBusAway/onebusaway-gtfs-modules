@@ -3,6 +3,7 @@ package org.onebusaway.gtfs_transformer.impl;
 import java.util.Map;
 
 import org.onebusaway.gtfs.csv.schema.BeanWrapper;
+import org.onebusaway.gtfs.csv.schema.BeanWrapperFactory;
 import org.onebusaway.gtfs_transformer.services.ModificationStrategy;
 
 public abstract class AbstractEntityModificationStrategy implements
@@ -19,7 +20,15 @@ public abstract class AbstractEntityModificationStrategy implements
     for (Map.Entry<String, Object> entry : _propertyMatches.entrySet()) {
       String property = entry.getKey();
       Object expected = entry.getValue();
-      Object actual = wrapped.getPropertyValue(property);
+      String[] props = property.split("\\.");
+
+      Object actual = null;
+      BeanWrapper w = wrapped;
+      
+      for (String prop : props) {
+        actual = w.getPropertyValue(prop);
+        w = BeanWrapperFactory.wrap(actual);
+      }
 
       if ((expected == null && actual != null) || !expected.equals(actual))
         return false;

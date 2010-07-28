@@ -6,6 +6,10 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.onebusaway.gtfs.csv.exceptions.IntrospectionException;
+import org.onebusaway.gtfs.csv.exceptions.MethodInvocationException;
+import org.onebusaway.gtfs.csv.exceptions.NoSuchPropertyException;
+
 public class BeanWrapperFactory {
 
   private static Map<Class<?>, BeanClassWrapperImpl> _classWrappers = new HashMap<Class<?>, BeanClassWrapperImpl>();
@@ -19,7 +23,7 @@ public class BeanWrapperFactory {
         classWrapper = new BeanClassWrapperImpl(beanInfo);
         _classWrappers.put(c, classWrapper);
       } catch (Exception ex) {
-        throw new IllegalStateException("introspection error for type " + c, ex);
+        throw new IntrospectionException(c);
       }
     }
 
@@ -40,26 +44,22 @@ public class BeanWrapperFactory {
         _writeMethods.put(name, property.getWriteMethod());
       }
     }
-    
 
     public Class<?> getPropertyType(Object object, String propertyName) {
       Method method = _readMethods.get(propertyName);
       if (method == null)
-        throw new IllegalArgumentException("no such property \"" + propertyName
-            + "\" for type " + object.getClass());
+        throw new NoSuchPropertyException(object.getClass(), propertyName);
       return method.getReturnType();
     }
 
     public Object getPropertyValue(Object object, String propertyName) {
       Method method = _readMethods.get(propertyName);
       if (method == null)
-        throw new IllegalArgumentException("no such property \"" + propertyName
-            + "\" for type " + object.getClass());
+        throw new NoSuchPropertyException(object.getClass(), propertyName);
       try {
         return method.invoke(object);
       } catch (Exception ex) {
-        throw new IllegalStateException("error invoking getter for property \""
-            + propertyName + "\" for type " + object.getClass(), ex);
+        throw new MethodInvocationException(object.getClass(), method, ex);
       }
     }
 
@@ -67,17 +67,13 @@ public class BeanWrapperFactory {
         Object value) {
       Method method = _writeMethods.get(propertyName);
       if (method == null)
-        throw new IllegalArgumentException("no such property \"" + propertyName
-            + "\" for type " + object.getClass());
+        throw new NoSuchPropertyException(object.getClass(), propertyName);
       try {
         method.invoke(object, value);
       } catch (Exception ex) {
-        throw new IllegalStateException("error invoking setter for property \""
-            + propertyName + "\" for type " + object.getClass(), ex);
+        throw new MethodInvocationException(object.getClass(), method, ex);
       }
     }
-
-
   }
 
   private static class BeanWrapperImpl implements BeanWrapper {
@@ -91,7 +87,7 @@ public class BeanWrapperFactory {
       _classWrapper = classWrapper;
       _wrappedInstance = wrappedInstance;
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T getWrappedInstance(Class<T> type) {
       return (T) _wrappedInstance;

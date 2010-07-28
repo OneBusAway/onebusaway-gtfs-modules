@@ -13,15 +13,15 @@ import org.onebusaway.gtfs.model.calendar.ServiceDate;
 public class DateFieldMappingFactory implements FieldMappingFactory {
 
   public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
-      String csvFieldName, String objFieldName, Class<?> objFieldType,
-      boolean required) {
-    return new FieldMappingImpl(csvFieldName, objFieldName);
+      Class<?> entityType, String csvFieldName, String objFieldName,
+      Class<?> objFieldType, boolean required) {
+    return new FieldMappingImpl(entityType, csvFieldName, objFieldName);
   }
 
   private static class FieldMappingImpl extends AbstractFieldMapping {
 
-    public FieldMappingImpl(String csvFieldName, String objFieldName) {
-      super(csvFieldName, objFieldName, true);
+    public FieldMappingImpl(Class<?> entityType, String csvFieldName, String objFieldName) {
+      super(entityType, csvFieldName, objFieldName, true);
     }
 
     public void translateFromCSVToObject(CsvEntityContext context,

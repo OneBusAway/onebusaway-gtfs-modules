@@ -1,5 +1,6 @@
 package org.onebusaway.gtfs.csv.schema;
 
+import org.onebusaway.gtfs.csv.exceptions.NoCsvFieldsAnnotationException;
 import org.onebusaway.gtfs.csv.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.csv.schema.beans.CsvEntityMappingBean;
 import org.onebusaway.gtfs.csv.schema.beans.CsvFieldMappingBean;
@@ -97,7 +98,7 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
     CsvFields csvFields = entityClass.getAnnotation(CsvFields.class);
 
     if (csvFields == null)
-      throw new IllegalStateException("no csv fields info for entity class: " + entityClass);
+      throw new NoCsvFieldsAnnotationException(entityClass);
 
     CsvEntityMappingBean bean = new CsvEntityMappingBean(entityClass);
     applyCsvFieldsAnnotationToBean(entityClass, bean);

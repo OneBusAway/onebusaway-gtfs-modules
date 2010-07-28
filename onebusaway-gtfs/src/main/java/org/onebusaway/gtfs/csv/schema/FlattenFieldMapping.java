@@ -4,6 +4,7 @@
 package org.onebusaway.gtfs.csv.schema;
 
 import org.onebusaway.gtfs.csv.CsvEntityContext;
+import org.onebusaway.gtfs.csv.exceptions.EntityInstantiationException;
 
 import java.util.Collection;
 import java.util.Map;
@@ -14,9 +15,10 @@ class FlattenFieldMapping extends AbstractFieldMapping {
 
   private EntitySchema _schema;
 
-  public FlattenFieldMapping(String csvFieldName, String objFieldName,
-      Class<?> objFieldType, boolean required, EntitySchema schema) {
-    super(csvFieldName, objFieldName, required);
+  public FlattenFieldMapping(Class<?> entityType, String csvFieldName,
+      String objFieldName, Class<?> objFieldType, boolean required,
+      EntitySchema schema) {
+    super(entityType, csvFieldName, objFieldName, required);
     _objFieldType = objFieldType;
     _schema = schema;
   }
@@ -48,8 +50,7 @@ class FlattenFieldMapping extends AbstractFieldMapping {
     try {
       return type.newInstance();
     } catch (Exception ex) {
-      throw new IllegalStateException("error instantiating embedded id class "
-          + type, ex);
+      throw new EntityInstantiationException(type, ex);
     }
   }
 }

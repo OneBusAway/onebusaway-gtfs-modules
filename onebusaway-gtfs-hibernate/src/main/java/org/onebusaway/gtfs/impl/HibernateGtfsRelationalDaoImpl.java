@@ -255,8 +255,7 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
         return calendars.get(0);
     }
 
-    throw new IllegalStateException("multiple calendars found for serviceId="
-        + serviceId);
+    throw new MultipleCalendarsForServiceIdException(serviceId);
   }
 
   /****

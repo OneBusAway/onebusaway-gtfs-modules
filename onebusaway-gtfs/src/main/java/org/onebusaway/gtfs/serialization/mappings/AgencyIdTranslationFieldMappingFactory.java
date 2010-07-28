@@ -13,16 +13,16 @@ import java.util.Map;
 
 public class AgencyIdTranslationFieldMappingFactory implements FieldMappingFactory {
 
-  public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory, String csvFieldName, String objFieldName,
-      Class<?> objFieldType, boolean required) {
+  public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory, Class<?> entityType, String csvFieldName,
+      String objFieldName, Class<?> objFieldType, boolean required) {
 
-    return new FieldMappingImpl(csvFieldName, objFieldName, String.class, required);
+    return new FieldMappingImpl(entityType, csvFieldName, objFieldName, String.class, required);
   }
 
   private class FieldMappingImpl extends AbstractFieldMapping {
 
-    public FieldMappingImpl(String csvFieldName, String objFieldName, Class<?> objFieldType, boolean required) {
-      super(csvFieldName, objFieldName, required);
+    public FieldMappingImpl(Class<?> entityType, String csvFieldName, String objFieldName, Class<?> objFieldType, boolean required) {
+      super(entityType, csvFieldName, objFieldName, required);
     }
 
     public void translateFromObjectToCSV(CsvEntityContext context, BeanWrapper object, Map<String, Object> csvValues) {

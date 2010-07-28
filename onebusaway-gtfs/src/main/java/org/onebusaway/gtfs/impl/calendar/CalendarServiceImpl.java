@@ -84,7 +84,7 @@ public class CalendarServiceImpl implements CalendarService {
       String agencyId, AgencyAndId serviceId) {
     TimeZone timeZone = getTimeZoneForAgencyId(agencyId);
     if (timeZone == null)
-      throw new IllegalStateException("unknown agencyId: " + agencyId);
+      return null;
     return new LocalizedServiceId(serviceId, timeZone);
   }
 

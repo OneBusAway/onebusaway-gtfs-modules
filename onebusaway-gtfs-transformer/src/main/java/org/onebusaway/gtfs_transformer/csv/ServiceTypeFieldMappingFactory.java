@@ -12,17 +12,17 @@ import java.util.Map;
 public class ServiceTypeFieldMappingFactory implements FieldMappingFactory {
 
   public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
-      String csvFieldName, String objFieldName, Class<?> objFieldType,
-      boolean required) {
+      Class<?> entityType, String csvFieldName, String objFieldName,
+      Class<?> objFieldType, boolean required) {
 
-    return new FieldMappingImpl(csvFieldName, objFieldName, required);
+    return new FieldMappingImpl(entityType, csvFieldName, objFieldName, required);
   }
 
   private static class FieldMappingImpl extends AbstractFieldMapping {
 
-    public FieldMappingImpl(String csvFieldName, String objFieldName,
+    public FieldMappingImpl(Class<?> entityType, String csvFieldName, String objFieldName,
         boolean required) {
-      super(csvFieldName, objFieldName, required);
+      super(entityType, csvFieldName, objFieldName, required);
     }
 
     public void translateFromCSVToObject(CsvEntityContext context,

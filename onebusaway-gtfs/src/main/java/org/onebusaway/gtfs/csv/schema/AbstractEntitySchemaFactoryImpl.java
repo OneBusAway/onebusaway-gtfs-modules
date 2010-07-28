@@ -1,10 +1,5 @@
 package org.onebusaway.gtfs.csv.schema;
 
-import org.onebusaway.gtfs.csv.schema.annotations.CsvField;
-import org.onebusaway.gtfs.csv.schema.annotations.CsvFields;
-import org.onebusaway.gtfs.csv.schema.beans.CsvEntityMappingBean;
-import org.onebusaway.gtfs.csv.schema.beans.CsvFieldMappingBean;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -15,6 +10,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.onebusaway.gtfs.csv.exceptions.EntityInstantiationException;
+import org.onebusaway.gtfs.csv.schema.annotations.CsvField;
+import org.onebusaway.gtfs.csv.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.csv.schema.beans.CsvEntityMappingBean;
+import org.onebusaway.gtfs.csv.schema.beans.CsvFieldMappingBean;
 
 public abstract class AbstractEntitySchemaFactoryImpl implements
     EntitySchemaFactory, ListableCsvMappingFactory {
@@ -108,9 +109,7 @@ public abstract class AbstractEntitySchemaFactoryImpl implements
           FieldMappingFactory factory = mapping.newInstance();
           fieldBean.setMapping(factory);
         } catch (Exception ex) {
-          throw new IllegalStateException(
-              "error creating field mapping factory of type "
-                  + mapping.getName(), ex);
+          throw new EntityInstantiationException(mapping, ex);
         }
       }
     }
@@ -271,13 +270,13 @@ public abstract class AbstractEntitySchemaFactoryImpl implements
 
     if (fieldMappingBean.isMappingSet()) {
       FieldMappingFactory factory = fieldMappingBean.getMapping();
-      mapping = factory.createFieldMapping(this, csvFieldName, objFieldName,
-          objFieldType, required);
+      mapping = factory.createFieldMapping(this, entityClass, csvFieldName,
+          objFieldName, objFieldType, required);
     }
 
     if (mapping == null) {
-      DefaultFieldMapping m = new DefaultFieldMapping(csvFieldName,
-          objFieldName, objFieldType, required);
+      DefaultFieldMapping m = new DefaultFieldMapping(entityClass,
+          csvFieldName, objFieldName, objFieldType, required);
 
       try {
         String name = field.getName();

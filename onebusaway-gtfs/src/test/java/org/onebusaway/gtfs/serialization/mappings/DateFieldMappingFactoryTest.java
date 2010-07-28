@@ -22,8 +22,8 @@ public class DateFieldMappingFactoryTest {
     DateFieldMappingFactory factory = new DateFieldMappingFactory();
     DefaultEntitySchemaFactory schemaFactory = new DefaultEntitySchemaFactory();
     String propName = "date";
-    FieldMapping mapping = factory.createFieldMapping(schemaFactory, propName,
-        propName, ServiceDate.class, true);
+    FieldMapping mapping = factory.createFieldMapping(schemaFactory, Dummy.class,
+        propName, propName, ServiceDate.class, true);
 
     CsvEntityContext context = new CsvEntityContextImpl();
 

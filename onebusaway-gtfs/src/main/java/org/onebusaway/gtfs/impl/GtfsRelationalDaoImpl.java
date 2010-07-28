@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.onebusaway.gtfs.csv.exceptions.EntityInstantiationException;
 import org.onebusaway.gtfs.csv.schema.BeanWrapper;
 import org.onebusaway.gtfs.csv.schema.BeanWrapperFactory;
 import org.onebusaway.gtfs.model.Agency;
@@ -198,8 +199,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
       case 1:
         return calendars.get(0);
     }
-    throw new IllegalStateException("multiple calendars found for serviceId="
-        + serviceId);
+    throw new MultipleCalendarsForServiceIdException(serviceId);
   }
 
   /****
@@ -236,8 +236,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
         try {
           valuesForKey = collectionType.newInstance();
         } catch (Exception ex) {
-          throw new IllegalStateException(
-              "error instantiating collection type: " + collectionType, ex);
+          throw new EntityInstantiationException(collectionType, ex);
         }
 
         byKey.put(key, valuesForKey);

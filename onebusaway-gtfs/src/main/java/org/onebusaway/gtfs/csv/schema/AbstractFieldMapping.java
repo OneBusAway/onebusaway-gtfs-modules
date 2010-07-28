@@ -4,20 +4,26 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
 
+import org.onebusaway.gtfs.csv.exceptions.MethodInvocationException;
+import org.onebusaway.gtfs.csv.exceptions.MissingRequiredFieldException;
+
 public abstract class AbstractFieldMapping implements FieldMapping {
 
-  protected String _csvFieldName;
+  protected final Class<?> _entityType;
 
-  protected String _objFieldName;
+  protected final String _csvFieldName;
 
-  protected boolean _required;
+  protected final String _objFieldName;
+
+  protected final boolean _required;
 
   protected int _order = 0;
 
   protected Method _isSetMethod = null;
 
-  public AbstractFieldMapping(String csvFieldName, String objFieldName,
-      boolean required) {
+  public AbstractFieldMapping(Class<?> entityType, String csvFieldName,
+      String objFieldName, boolean required) {
+    _entityType = entityType;
     _csvFieldName = csvFieldName;
     _objFieldName = objFieldName;
     _required = required;
@@ -51,14 +57,12 @@ public abstract class AbstractFieldMapping implements FieldMapping {
         Object r = _isSetMethod.invoke(instance);
         if (r != null && r instanceof Boolean) {
           Boolean b = (Boolean) r;
-          return ! b.booleanValue();
+          return !b.booleanValue();
         }
       } catch (Exception ex) {
-        throw new IllegalStateException("error calling isSetMethod="
-            + _isSetMethod + " on object=" + instance);
+        throw new MethodInvocationException(_entityType, _isSetMethod, ex);
       }
-    }
-    else {
+    } else {
       Object obj = object.getPropertyValue(_objFieldName);
       return obj == null;
     }
@@ -70,8 +74,7 @@ public abstract class AbstractFieldMapping implements FieldMapping {
     boolean missing = isMissing(csvValues);
 
     if (_required && missing)
-      throw new IllegalStateException("missing required field: "
-          + _csvFieldName);
+      throw new MissingRequiredFieldException(_entityType, _csvFieldName);
 
     return missing;
   }
@@ -80,8 +83,7 @@ public abstract class AbstractFieldMapping implements FieldMapping {
     boolean missing = isMissing(object);
 
     if (_required && missing)
-      throw new IllegalStateException("missing required field: "
-          + _objFieldName);
+      throw new MissingRequiredFieldException(_entityType, _objFieldName);
 
     return missing;
   }

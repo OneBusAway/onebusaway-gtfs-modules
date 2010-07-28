@@ -2,6 +2,7 @@ package org.onebusaway.gtfs.serialization;
 
 import org.onebusaway.gtfs.csv.CsvEntityContext;
 import org.onebusaway.gtfs.csv.CsvEntityReader;
+import org.onebusaway.gtfs.csv.CsvInputSource;
 import org.onebusaway.gtfs.csv.EntityHandler;
 import org.onebusaway.gtfs.csv.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.impl.GtfsDaoImpl;
@@ -110,8 +111,16 @@ public class GtfsReader extends CsvEntityReader {
   public List<Class<?>> getEntityClasses() {
     return _entityClasses;
   }
+  
+  public void setEntityClasses(List<Class<?>> entityClasses) {
+    _entityClasses = entityClasses;
+  }
 
   public void run() throws IOException {
+    run(getInputSource());
+  }
+  
+  public void run(CsvInputSource source) throws IOException {
 
     List<Class<?>> classes = getEntityClasses();
 
@@ -119,7 +128,8 @@ public class GtfsReader extends CsvEntityReader {
 
     for (Class<?> entityClass : classes) {
       _log.info("reading entities: " + entityClass.getName());
-      readEntities(entityClass);
+      
+      readEntities(entityClass,source);
       _entityStore.flush();
     }
 
@@ -147,7 +157,7 @@ public class GtfsReader extends CsvEntityReader {
       return _defaultAgencyId;
     if (_agencies.size() > 0)
       return _agencies.get(0).getId();
-    throw new IllegalStateException("no default agency has been specified");
+    throw new NoDefaultAgencyIdException();
   }
 
   protected String getTranslatedAgencyId(String agencyId) {
@@ -167,8 +177,7 @@ public class GtfsReader extends CsvEntityReader {
         return id;
     }
 
-    throw new IllegalStateException("no agency id for entity: type="
-        + entityType.getName() + " id=" + entityId);
+    throw new NoAgencyIdForEntityException(entityType, entityId);
   }
 
   /****
@@ -226,9 +235,8 @@ public class GtfsReader extends CsvEntityReader {
       }
 
       if (agencyIdsByEntityId.containsKey(id.getId()))
-        throw new IllegalStateException("duplicate entity id: type="
-            + entityType.getName() + " agencyId=" + id.getAgencyId() + " id="
-            + id.getId());
+        throw new DuplicateEntityException(entityType, id);
+
       agencyIdsByEntityId.put(id.getId(), id.getAgencyId());
     }
   }

@@ -120,8 +120,8 @@ public class CalendarServiceDataFactoryImpl implements
     for (Agency agency : _dao.getAllAgencies()) {
       TimeZone timeZone = TimeZone.getTimeZone(agency.getTimezone());
       if (timeZone == null)
-        throw new IllegalStateException("unknown timezone=" + timeZone
-            + " for agency " + agency.getName());
+        throw new UnknownAgencyTimezoneException(agency.getName(),
+            agency.getTimezone());
       data.putTimeZoneForAgencyId(agency.getId(), timeZone);
     }
   }

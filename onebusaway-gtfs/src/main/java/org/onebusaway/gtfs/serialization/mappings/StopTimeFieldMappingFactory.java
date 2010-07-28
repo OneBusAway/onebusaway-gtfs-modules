@@ -18,35 +18,49 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
 
   private static Pattern _pattern = Pattern.compile("^(\\d{1,2}):(\\d{2}):(\\d{2})$");
 
-  public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory, String csvFieldName, String objFieldName,
+  public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
+      Class<?> entityType, String csvFieldName, String objFieldName,
       Class<?> objFieldType, boolean required) {
-    return new StopTimeFieldMapping(csvFieldName, objFieldName, required);
+    return new StopTimeFieldMapping(entityType, csvFieldName, objFieldName,
+        required);
   }
 
   private static class StopTimeFieldMapping extends AbstractFieldMapping {
 
-    public StopTimeFieldMapping(String csvFieldName, String objFieldName, boolean required) {
-      super(csvFieldName, objFieldName, required);
+    public StopTimeFieldMapping(Class<?> entityType, String csvFieldName,
+        String objFieldName, boolean required) {
+      super(entityType, csvFieldName, objFieldName, required);
     }
 
-    public void translateFromCSVToObject(CsvEntityContext context, Map<String, Object> csvValues, BeanWrapper object) {
+    public void translateFromCSVToObject(CsvEntityContext context,
+        Map<String, Object> csvValues, BeanWrapper object) {
 
       if (isMissingAndOptional(csvValues))
         return;
 
       Object value = csvValues.get(_csvFieldName);
-      Matcher m = _pattern.matcher(value.toString());
+      String stringValue = value.toString();
+
+      Matcher m = _pattern.matcher(stringValue);
       if (!m.matches())
-        throw new IllegalArgumentException("invalid stop_time: " + value);
+        throw new InvalidStopTimeException(stringValue);
 
-      int hours = Integer.parseInt(m.group(1));
-      int minutes = Integer.parseInt(m.group(2));
-      int seconds = Integer.parseInt(m.group(3));
+      try {
+        int hours = Integer.parseInt(m.group(1));
+        int minutes = Integer.parseInt(m.group(2));
+        int seconds = Integer.parseInt(m.group(3));
 
-      object.setPropertyValue(_objFieldName, seconds + 60 * (minutes + 60 * hours));
+        object.setPropertyValue(_objFieldName, seconds + 60
+            * (minutes + 60 * hours));
+
+      } catch (NumberFormatException ex) {
+        throw new InvalidStopTimeException(stringValue);
+      }
+
     }
 
-    public void translateFromObjectToCSV(CsvEntityContext context, BeanWrapper object, Map<String, Object> csvValues) {
+    public void translateFromObjectToCSV(CsvEntityContext context,
+        BeanWrapper object, Map<String, Object> csvValues) {
 
       int t = (Integer) object.getPropertyValue(_objFieldName);
 
@@ -61,7 +75,8 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
       t = t - minutes * 60;
       int seconds = t;
 
-      String value = _format.format(hours) + ":" + _format.format(minutes) + ":" + _format.format(seconds);
+      String value = _format.format(hours) + ":" + _format.format(minutes)
+          + ":" + _format.format(seconds);
       csvValues.put(_csvFieldName, value);
     }
   }

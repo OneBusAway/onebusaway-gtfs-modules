@@ -19,16 +19,17 @@ public class MetroKCDateFieldMappingFactory implements FieldMappingFactory {
       "dd-MMM-yyyy HH:mm:ss");
 
   public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
-      String csvFieldName, String objFieldName, Class<?> objFieldType,
-      boolean required) {
-    return new FieldMappingImpl(csvFieldName, objFieldName, required);
+      Class<?> entityType, String csvFieldName, String objFieldName,
+      Class<?> objFieldType, boolean required) {
+    return new FieldMappingImpl(entityType, csvFieldName, objFieldName,
+        required);
   }
 
   private class FieldMappingImpl extends AbstractFieldMapping {
 
-    public FieldMappingImpl(String csvFieldName, String objFieldName,
-        boolean required) {
-      super(csvFieldName, objFieldName, required);
+    public FieldMappingImpl(Class<?> entityType, String csvFieldName,
+        String objFieldName, boolean required) {
+      super(entityType, csvFieldName, objFieldName, required);
     }
 
     public void translateFromCSVToObject(CsvEntityContext context,

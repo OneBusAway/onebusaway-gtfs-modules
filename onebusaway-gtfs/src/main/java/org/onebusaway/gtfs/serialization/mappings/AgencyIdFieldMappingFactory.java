@@ -14,18 +14,18 @@ import java.util.Map;
 public class AgencyIdFieldMappingFactory implements FieldMappingFactory {
 
   public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
-      String csvFieldName, String objFieldName, Class<?> objFieldType,
-      boolean required) {
+      Class<?> entityType, String csvFieldName, String objFieldName,
+      Class<?> objFieldType, boolean required) {
 
-    return new FieldMappingImpl(csvFieldName, objFieldName, String.class,
-        required);
+    return new FieldMappingImpl(entityType, csvFieldName, objFieldName,
+        String.class, required);
   }
 
   private class FieldMappingImpl extends DefaultFieldMapping {
 
-    public FieldMappingImpl(String csvFieldName, String objFieldName,
-        Class<?> objFieldType, boolean required) {
-      super(csvFieldName, objFieldName, objFieldType, required);
+    public FieldMappingImpl(Class<?> entityType, String csvFieldName,
+        String objFieldName, Class<?> objFieldType, boolean required) {
+      super(entityType, csvFieldName, objFieldName, objFieldType, required);
     }
 
     @Override

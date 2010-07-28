@@ -24,6 +24,11 @@ public class CalendarServiceData implements Serializable {
 
   private Map<ServiceDate, Set<AgencyAndId>> _serviceIdsByDate = new HashMap<ServiceDate, Set<AgencyAndId>>();
 
+  /**
+   * @param agencyId
+   * @return the time zone for the specified agencyId, or null if the agency was
+   *         not found
+   */
   public TimeZone getTimeZoneForAgencyId(String agencyId) {
     return _timeZonesByAgencyId.get(agencyId);
   }

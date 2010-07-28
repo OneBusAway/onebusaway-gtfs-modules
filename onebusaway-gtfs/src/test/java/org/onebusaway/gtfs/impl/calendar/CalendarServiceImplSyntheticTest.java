@@ -1,8 +1,8 @@
 package org.onebusaway.gtfs.impl.calendar;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.onebusaway.gtfs.DateSupport.date;
 import static org.onebusaway.gtfs.DateSupport.hourToSec;
 
@@ -71,13 +71,7 @@ public class CalendarServiceImplSyntheticTest {
     assertEquals(lsid1, service.getLocalizedServiceIdForAgencyAndServiceId("A",
         sid1));
 
-    try {
-      assertEquals(lsid1, service.getLocalizedServiceIdForAgencyAndServiceId(
-          "B", sid1));
-      fail();
-    } catch (IllegalStateException ex) {
-
-    }
+    assertNull(service.getLocalizedServiceIdForAgencyAndServiceId("B", sid1));
   }
 
   @Test

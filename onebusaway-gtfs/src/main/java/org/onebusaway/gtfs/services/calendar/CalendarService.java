@@ -78,6 +78,13 @@ public interface CalendarService {
    */
   public Set<AgencyAndId> getServiceIdsOnDate(ServiceDate date);
 
+  /**
+   * Returns the instantiated {@link TimeZone} for the specified agency id
+   * 
+   * @param agencyId {@link Agency#getId()}
+   * @return the time zone for the specified agency, or null if the agency was
+   *         not found
+   */
   public TimeZone getTimeZoneForAgencyId(String agencyId);
 
   /**
@@ -95,7 +102,8 @@ public interface CalendarService {
    * 
    * @param agencyId the id of the Agency whose timezone info we will use
    * @param serviceId the service id to use
-   * @return a localized service id with timezone info attached
+   * @return a localized service id with timezone info attached, or nul if the
+   *         specified agency could not be found
    */
   public LocalizedServiceId getLocalizedServiceIdForAgencyAndServiceId(
       String agencyId, AgencyAndId serviceId);

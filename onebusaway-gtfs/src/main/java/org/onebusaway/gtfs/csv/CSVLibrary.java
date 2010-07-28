@@ -112,10 +112,17 @@ public class CSVLibrary {
   public static void parse(BufferedReader r, CSVListener handler)
       throws IOException, Exception {
     String line = null;
+    int lineNumber = 1;
 
     while ((line = r.readLine()) != null) {
       List<String> values = parse(line);
-      handler.handleLine(values);
+      try {
+        handler.handleLine(values);
+      } catch (Exception ex) {
+        throw new Exception("error handling csv record for lineNumber="
+            + lineNumber, ex);
+      }
+      lineNumber++;
     }
 
     r.close();
@@ -136,7 +143,7 @@ public class CSVLibrary {
         case DATA:
           switch (c) {
             case '"':
-              if( token.length() == 0)
+              if (token.length() == 0)
                 state = EParseState.DATA_IN_QUOTES;
               else
                 token.append(c);

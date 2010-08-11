@@ -293,11 +293,11 @@ public class GtfsTransformerMain {
     configureEnsureStopTimesInOrder(updater);
 
     configureCalendarUpdates(updater,
-        "http://onebusaway.googlecode.com/svn/wiki/MetroKCTripExceptionCodes.wiki");
+        "http://onebusaway.googlecode.com/svn/wiki/KingCountyMetroCalendarModifications.wiki");
     configureStopNameUpdates(updater,
-        "http://onebusaway.googlecode.com/svn/wiki/MetroKCStopNames.wiki");
+        "http://onebusaway.googlecode.com/svn/wiki/KingCountyMetroStopNameModifications.wiki");
     configureModifications(updater,
-        "http://onebusaway.googlecode.com/svn/wiki/MetroKCModifications.wiki");
+        "http://onebusaway.googlecode.com/svn/wiki/KingCountyMetroModifications.wiki");
 
     configureInterlinedRoutesUpdates(updater);
     configureLocalVsExpressUpdates(updater);

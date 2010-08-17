@@ -159,8 +159,8 @@
             <column name="stop_id" />
         </many-to-one>
         <many-to-one name="trip" not-null="true">
-            <column name="trip_agencyId" length="50" />
-            <column name="trip_id" />
+            <column name="trip_agencyId" length="50" index="stop_time_trip_agency_id_idx" />
+            <column name="trip_id" index="stop_time_trip_id_idx" />
         </many-to-one>
 
         <property name="stopSequence" />

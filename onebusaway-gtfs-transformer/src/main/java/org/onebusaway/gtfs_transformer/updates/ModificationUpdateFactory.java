@@ -19,6 +19,7 @@ import org.onebusaway.gtfs_transformer.GtfsTransformer;
 import org.onebusaway.gtfs_transformer.impl.MatchingEntityModificationStrategyWrapper;
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
 import org.onebusaway.gtfs_transformer.impl.SimpleModificationStrategy;
+import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.ModificationStrategy;
 
 public class ModificationUpdateFactory {
@@ -72,8 +73,11 @@ public class ModificationUpdateFactory {
           handleUpdateOperation(line, json);
         } else if (opType.equals("remove") || opType.equals("delete")) {
           handleRemoveOperation(line, json);
-        } else if (opType.equals("retain"))
+        } else if (opType.equals("retain")) {
           handleRetainOperation(line, json);
+        } else if (opType.equals("transform")) {
+          handleTransformOperation(line, json);
+        }
 
       } catch (JSONException ex) {
         throw new IllegalStateException("error parsing json for line=" + line,
@@ -128,7 +132,8 @@ public class ModificationUpdateFactory {
               "factory object is not an instance of ModificationStrategy: "
                   + clazz.getName());
 
-        _strategy.addModification(match.getType(),
+        _strategy.addModification(
+            match.getType(),
             new MatchingEntityModificationStrategyWrapper(
                 match.getPropertyMatches(), (ModificationStrategy) factoryObj));
 
@@ -162,9 +167,42 @@ public class ModificationUpdateFactory {
     _strategy.addRemoval(match.getType(), mod);
   }
 
-  private void handleRetainOperation(String line, JSONObject json) throws JSONException {
+  private void handleRetainOperation(String line, JSONObject json)
+      throws JSONException {
     EntityMatch match = getMatch(line, json);
     _strategy.addRetention(match);
+  }
+
+  private void handleTransformOperation(String line, JSONObject json)
+      throws JSONException {
+
+    if (!json.has("class"))
+      throw new IllegalArgumentException("transform does not specify a class: "
+          + line);
+
+    String value = json.getString("class");
+
+    try {
+      
+      Class<?> clazz = Class.forName(value);
+      Object factoryObj = clazz.newInstance();
+      if (!(factoryObj instanceof GtfsTransformStrategy))
+        throw new IllegalArgumentException(
+            "factory object is not an instance of GtfsTransformStrategy: "
+                + clazz.getName());
+      BeanWrapper wrapped = BeanWrapperFactory.wrap(factoryObj);
+      for( Iterator<?> it = json.keys(); it.hasNext(); ) {
+        String key = (String) it.next();
+        if( key.equals("op") || key.equals("class"))
+          continue;
+        Object v = json.get(key);
+        wrapped.setPropertyValue(key, v);
+      }
+      
+      _strategy.addTransform((GtfsTransformStrategy) factoryObj);
+    } catch (Exception ex) {
+      throw new IllegalStateException("error instantiating class: " + value, ex);
+    }
   }
 
   private Class<?> getEntityTypeForName(String name) {

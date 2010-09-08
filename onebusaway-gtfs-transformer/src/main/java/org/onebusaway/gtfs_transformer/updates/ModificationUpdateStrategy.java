@@ -30,6 +30,8 @@ public class ModificationUpdateStrategy implements GtfsTransformStrategy {
   private Map<Class<?>, List<ModificationStrategy>> _removalsByType = new HashMap<Class<?>, List<ModificationStrategy>>();
 
   private Map<Class<?>, List<EntityMatch>> _retentionMatchesByType = new HashMap<Class<?>, List<EntityMatch>>();
+  
+  private List<GtfsTransformStrategy> _transforms = new ArrayList<GtfsTransformStrategy>();
 
   public void addEntity(EType type, Object object) {
     List<Object> objects = _objectsToAddByType.get(type);
@@ -74,6 +76,10 @@ public class ModificationUpdateStrategy implements GtfsTransformStrategy {
     // Removals
     applyModifications(context, dao, _removalsByType);
 
+    // Generic Transforms
+    for( GtfsTransformStrategy transform : _transforms )
+      transform.run(context, dao);
+    
     // Retention Computation
     applyRetentions(dao);
   }
@@ -165,5 +171,9 @@ public class ModificationUpdateStrategy implements GtfsTransformStrategy {
       m.put(type, modifications);
     }
     return modifications;
+  }
+
+  public void addTransform(GtfsTransformStrategy strategy) {
+    _transforms.add(strategy);
   }
 }

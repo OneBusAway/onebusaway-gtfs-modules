@@ -108,6 +108,9 @@ public interface CalendarService {
   public LocalizedServiceId getLocalizedServiceIdForAgencyAndServiceId(
       String agencyId, AgencyAndId serviceId);
 
+  public boolean isLocalizedServiceIdActiveOnDate(
+      LocalizedServiceId localizedServiceId, Date serviceDate);
+
   /**
    * Given the specified localized service id, which has a corresponding set of
    * localized service dates, determine the sublist of service dates that, when

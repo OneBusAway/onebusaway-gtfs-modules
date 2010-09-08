@@ -1,6 +1,7 @@
 package org.onebusaway.gtfs.impl.calendar;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.onebusaway.gtfs.DateSupport.date;
@@ -68,8 +69,8 @@ public class CalendarServiceImplSyntheticTest {
   @Test
   public void testGetLocalizedServiceIdForAgency() {
 
-    assertEquals(lsid1, service.getLocalizedServiceIdForAgencyAndServiceId("A",
-        sid1));
+    assertEquals(lsid1,
+        service.getLocalizedServiceIdForAgencyAndServiceId("A", sid1));
 
     assertNull(service.getLocalizedServiceIdForAgencyAndServiceId("B", sid1));
   }
@@ -95,6 +96,26 @@ public class CalendarServiceImplSyntheticTest {
     serviceDates = service.getServiceDatesForServiceId(new AgencyAndId("dne",
         "dne"));
     assertEquals(0, serviceDates.size());
+  }
+
+  @Test
+  public void test() {
+    
+    Date date1 = d1.getAsDate(tz);
+    Date date2 = d2.getAsDate(tz);
+    Date date3 = d3.getAsDate(tz);
+
+    assertTrue(service.isLocalizedServiceIdActiveOnDate(lsid1, date1));
+    assertTrue(service.isLocalizedServiceIdActiveOnDate(lsid1, date2));
+    assertFalse(service.isLocalizedServiceIdActiveOnDate(lsid1, date3));
+
+    assertFalse(service.isLocalizedServiceIdActiveOnDate(lsid2, date1));
+    assertTrue(service.isLocalizedServiceIdActiveOnDate(lsid2, date2));
+    assertTrue(service.isLocalizedServiceIdActiveOnDate(lsid2, date3));
+
+    assertTrue(service.isLocalizedServiceIdActiveOnDate(lsid3, date1));
+    assertFalse(service.isLocalizedServiceIdActiveOnDate(lsid3, date2));
+    assertTrue(service.isLocalizedServiceIdActiveOnDate(lsid3, date3));
   }
 
   @Test
@@ -337,8 +358,8 @@ public class CalendarServiceImplSyntheticTest {
   public void testGetNextDepartureServiceDates06() {
 
     List<Date> dates = service.getNextDepartureServiceDates(lsid2,
-        intervals.getIntervalForServiceId(lsid2), date(
-            "2010-02-04 03:30 Pacific Standard Time").getTime());
+        intervals.getIntervalForServiceId(lsid2),
+        date("2010-02-04 03:30 Pacific Standard Time").getTime());
 
     assertEquals(1, dates.size());
     assertTrue(dates.contains(d3.getAsDate(tz)));
@@ -404,8 +425,8 @@ public class CalendarServiceImplSyntheticTest {
   public void testGetPreviousArrivalServiceDates05() {
 
     List<Date> dates = service.getPreviousArrivalServiceDates(lsid1,
-        intervals.getIntervalForServiceId(lsid1), date(
-            "2010-02-01 06:30 Pacific Standard Time").getTime());
+        intervals.getIntervalForServiceId(lsid1),
+        date("2010-02-01 06:30 Pacific Standard Time").getTime());
 
     assertEquals(1, dates.size());
     assertTrue(dates.contains(d1.getAsDate(tz)));

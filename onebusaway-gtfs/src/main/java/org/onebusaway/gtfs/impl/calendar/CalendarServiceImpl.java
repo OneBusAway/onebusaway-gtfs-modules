@@ -1,6 +1,7 @@
 package org.onebusaway.gtfs.impl.calendar;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -86,6 +87,15 @@ public class CalendarServiceImpl implements CalendarService {
     if (timeZone == null)
       return null;
     return new LocalizedServiceId(serviceId, timeZone);
+  }
+
+  @Override
+  public boolean isLocalizedServiceIdActiveOnDate(
+      LocalizedServiceId localizedServiceId, Date serviceDate) {
+
+    // TODO : Make this more efficient?
+    List<Date> dates = _data.getDatesForLocalizedServiceId(localizedServiceId);
+    return Collections.binarySearch(dates, serviceDate) >= 0;
   }
 
   @Override
@@ -259,5 +269,4 @@ public class CalendarServiceImpl implements CalendarService {
     else
       return search(serviceDates, op, index + 1, indexTo, key);
   }
-
 }

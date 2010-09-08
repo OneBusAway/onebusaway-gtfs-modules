@@ -5,7 +5,7 @@ public final class ShapePoint extends IdentityBean<Integer> implements
 
   private static final long serialVersionUID = 1L;
   
-  private static final double MISSING_VALUE = -999;
+  public static final double MISSING_VALUE = -999;
 
   private int id;
 

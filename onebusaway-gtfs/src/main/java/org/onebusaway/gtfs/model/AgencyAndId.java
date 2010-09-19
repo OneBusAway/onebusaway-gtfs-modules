@@ -88,6 +88,6 @@ public class AgencyAndId implements Serializable, Comparable<AgencyAndId> {
 
   @Override
   public String toString() {
-    return agencyId + " " + id;
+    return agencyId + "_" + id;
   }
 }

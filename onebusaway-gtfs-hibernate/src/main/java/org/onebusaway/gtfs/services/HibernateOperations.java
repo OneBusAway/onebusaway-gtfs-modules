@@ -3,7 +3,11 @@ package org.onebusaway.gtfs.services;
 import java.io.Serializable;
 import java.util.List;
 
+import org.hibernate.SessionFactory;
+
 public interface HibernateOperations {
+
+  public SessionFactory getSessionFactory();
   
   public <T> T get(Class<T> entityType, Serializable id);
 
@@ -23,17 +27,23 @@ public interface HibernateOperations {
   public <T> List<T> findByNamedQueryAndNamedParams(final String namedQuery,
       String[] paramNames, Object[] values);
 
+  public void update(Object entity);
+
   public void save(Object entity);
+
+  public void saveOrUpdate(Object entity);
 
   public <T> void clearAllEntitiesForType(final Class<T> type);
 
   public <T> void removeEntity(final T entity);
 
   public Object execute(HibernateOperation callback);
-  
+
   public void open();
-  
+
   public void close();
 
   public void flush();
+
+
 }

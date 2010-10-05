@@ -111,7 +111,7 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
           + ",\"routeTo\":"
           + t[1]
           + ",\"stopId\":XXXX,\"patternFrom\":"
-          + t[3] + ",\"patternTo\":" + t[5] + "}}");
+          + t[2] + ",\"patternTo\":" + t[3] + "}}");
     }
     reset();
     UpdateLibrary.clearDaoCache(dao);

@@ -91,6 +91,26 @@ public class GenericDaoImpl implements GenericMutableDao {
   }
 
   @Override
+  public void updateEntity(Object entity) {
+    // No-op required, since entity already resides in memory
+  }
+
+  @Override
+  public void saveOrUpdateEntity(Object entity) {
+
+    @SuppressWarnings("unchecked")
+    IdentityBean<Serializable> bean = ((IdentityBean<Serializable>) entity);
+
+    Object existing = getEntityForId(entity.getClass(), bean.getId());
+
+    // If the entity has already been inserted into storage, then we don't need
+    // to save it
+    if (existing == entity)
+      return;
+    saveEntity(entity);
+  }
+
+  @Override
   public <T> void clearAllEntitiesForType(Class<T> type) {
     _entitiesByClassAndId.remove(type);
   }
@@ -172,6 +192,5 @@ public class GenericDaoImpl implements GenericMutableDao {
       _maxId = Math.max(_maxId, value.intValue());
     }
   }
-
 
 }

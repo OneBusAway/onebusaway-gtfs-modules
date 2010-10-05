@@ -107,6 +107,8 @@ public interface CalendarService {
    */
   public LocalizedServiceId getLocalizedServiceIdForAgencyAndServiceId(
       String agencyId, AgencyAndId serviceId);
+  
+  public List<Date> getDatesForLocalizedServiceId(LocalizedServiceId localizedServiceId);
 
   public boolean isLocalizedServiceIdActiveOnDate(
       LocalizedServiceId localizedServiceId, Date serviceDate);

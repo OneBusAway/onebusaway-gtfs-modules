@@ -14,13 +14,13 @@ import org.onebusaway.gtfs.services.HibernateOperation;
 import org.onebusaway.gtfs.services.HibernateOperations;
 
 public class HibernateOperationsImpl implements HibernateOperations {
-  
+
   private static final int BUFFER_SIZE = 1000;
 
   private SessionFactory _sessionFactory;
 
   private Session _session;
-  
+
   private int _count = 0;
 
   public HibernateOperationsImpl() {
@@ -29,6 +29,11 @@ public class HibernateOperationsImpl implements HibernateOperations {
 
   public HibernateOperationsImpl(SessionFactory sessionFactory) {
     setSessionFactory(sessionFactory);
+  }
+  
+  @Override
+  public SessionFactory getSessionFactory() {
+    return _sessionFactory;
   }
 
   public void setSessionFactory(SessionFactory sessionFactory) {
@@ -63,8 +68,7 @@ public class HibernateOperationsImpl implements HibernateOperations {
       } catch (Exception ex) {
         tx.rollback();
         throw new IllegalStateException(ex);
-      }
-      finally {
+      } finally {
         session.close();
       }
     } else {
@@ -141,23 +145,57 @@ public class HibernateOperationsImpl implements HibernateOperations {
   }
 
   @Override
+  public void update(final Object entity) {
+    execute(new HibernateOperation() {
+      @Override
+      public Object doInHibernate(Session session) throws HibernateException,
+          SQLException {
+        session.update(entity);
+        return null;
+      }
+    });
+  }
+
+  @Override
   public void save(final Object entity) {
     execute(new HibernateOperation() {
       @Override
       public Object doInHibernate(Session session) throws HibernateException,
           SQLException {
-        
+
         Object obj = session.save(entity);
-        
+
         _count++;
-        
-        if( _count >= BUFFER_SIZE) {
+
+        if (_count >= BUFFER_SIZE) {
           session.flush();
           session.clear();
           _count = 0;
         }
-        
+
         return obj;
+      }
+    });
+  }
+
+  @Override
+  public void saveOrUpdate(final Object entity) {
+    execute(new HibernateOperation() {
+      @Override
+      public Object doInHibernate(Session session) throws HibernateException,
+          SQLException {
+
+        session.saveOrUpdate(entity);
+
+        _count++;
+
+        if (_count >= BUFFER_SIZE) {
+          session.flush();
+          session.clear();
+          _count = 0;
+        }
+
+        return null;
       }
     });
   }
@@ -208,5 +246,4 @@ public class HibernateOperationsImpl implements HibernateOperations {
       queryObject.setParameter(paramName, value);
     }
   }
-
 }

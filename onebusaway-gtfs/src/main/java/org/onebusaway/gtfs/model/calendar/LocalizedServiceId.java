@@ -16,7 +16,8 @@ import org.onebusaway.gtfs.services.calendar.CalendarService;
  * @see ServiceDate
  * @see CalendarService
  */
-public class LocalizedServiceId implements Serializable {
+public class LocalizedServiceId implements Serializable,
+    Comparable<LocalizedServiceId> {
 
   private static final long serialVersionUID = 1L;
 
@@ -75,5 +76,13 @@ public class LocalizedServiceId implements Serializable {
     } else if (!timeZone.equals(other.timeZone))
       return false;
     return true;
+  }
+
+  @Override
+  public int compareTo(LocalizedServiceId o) {
+    int rc = this.id.compareTo(o.id);
+    if (rc == 0)
+      rc = this.timeZone.getID().compareTo(o.getTimeZone().getID());
+    return rc;
   }
 }

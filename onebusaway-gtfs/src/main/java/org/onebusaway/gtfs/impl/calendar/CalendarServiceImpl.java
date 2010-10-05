@@ -89,6 +89,11 @@ public class CalendarServiceImpl implements CalendarService {
     return new LocalizedServiceId(serviceId, timeZone);
   }
 
+  public List<Date> getDatesForLocalizedServiceId(
+      LocalizedServiceId localizedServiceId) {
+    return _data.getDatesForLocalizedServiceId(localizedServiceId);
+  }
+
   @Override
   public boolean isLocalizedServiceIdActiveOnDate(
       LocalizedServiceId localizedServiceId, Date serviceDate) {

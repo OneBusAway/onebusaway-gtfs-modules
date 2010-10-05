@@ -36,6 +36,11 @@ public class ShapeTransformStrategy implements GtfsTransformStrategy {
 
     List<ShapePoint> shapePoints = dao.getShapePointsForShapeId(shapeId);
 
+    if (shapePoints.isEmpty()) {
+      _log.warn("no points found for shape: " + shapeId);
+      return;
+    }
+
     // Duplicate the list into something we can modify
     shapePoints = new ArrayList<ShapePoint>(shapePoints);
 

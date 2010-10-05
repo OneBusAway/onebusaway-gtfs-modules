@@ -94,6 +94,14 @@ public final class ServiceInterval implements Serializable {
         maxArrivalTime, maxDepartureTime);
   }
 
+  public static ServiceInterval extend(ServiceInterval serviceInterval,
+      int arrivalTime, int departureTime) {
+    if (serviceInterval == null)
+      return new ServiceInterval(arrivalTime, departureTime);
+    else
+      return serviceInterval.extend(arrivalTime, departureTime);
+  }
+
   @Override
   public String toString() {
     return "Interval(min=" + minArrival + "," + minDeparture + " max="

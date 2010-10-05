@@ -86,7 +86,7 @@ public class GtfsTransformerMain {
   private static CommandLineParser _parser = new GnuParser();
 
   private Options _options = new Options();
-  
+
   private ModificationUpdateFactory _modificationFactory = new ModificationUpdateFactory();
 
   public static void main(String[] args) throws IOException {
@@ -283,7 +283,7 @@ public class GtfsTransformerMain {
     updater.setAgencyId("KCM");
 
     updater.addTransform(new RemoveMergedTripsStrategy());
-    
+
     configureDeduplicateStops(updater);
     configureDeduplicateRoutes(updater);
     configureRemoveRepeatedStopTimes(updater);
@@ -292,9 +292,11 @@ public class GtfsTransformerMain {
     // configureTripBlockIds(updater);
     configureEnsureStopTimesInOrder(updater);
 
-    configureCalendarUpdates(updater,
+    configureCalendarUpdates(
+        updater,
         "http://onebusaway.googlecode.com/svn/wiki/KingCountyMetroCalendarModifications.wiki");
-    configureStopNameUpdates(updater,
+    configureStopNameUpdates(
+        updater,
         "http://onebusaway.googlecode.com/svn/wiki/KingCountyMetroStopNameModifications.wiki");
     configureModifications(updater,
         "http://onebusaway.googlecode.com/svn/wiki/KingCountyMetroModifications.wiki");
@@ -376,10 +378,11 @@ public class GtfsTransformerMain {
     if (path == null)
       return;
 
-    
-
     if (path.startsWith("http")) {
       _modificationFactory.addModificationsFromUrl(updater, new URL(path));
+    } else if (path.startsWith("json:")) {
+      _modificationFactory.addModificationsFromString(updater,
+          path.substring("json:".length()));
     } else {
       _modificationFactory.addModificationsFromFile(updater, new File(path));
     }

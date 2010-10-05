@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,6 +31,10 @@ public class ModificationUpdateFactory {
       throws IOException {
     BufferedReader reader = new BufferedReader(new FileReader(path));
     addModificationsFromReader(updater, reader);
+  }
+  
+  public void addModificationsFromString(GtfsTransformer updater, String value) throws IOException {
+    addModificationsFromReader(updater, new BufferedReader(new StringReader(value)));
   }
 
   public void addModificationsFromUrl(GtfsTransformer updater, URL url)

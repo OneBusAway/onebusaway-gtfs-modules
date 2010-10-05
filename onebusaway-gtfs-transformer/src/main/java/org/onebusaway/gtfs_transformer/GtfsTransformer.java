@@ -95,6 +95,7 @@ public class GtfsTransformer {
       System.out.println("KCM Data Input Directory=" + _dataInputDirectory);
     System.out.println("Output Directory=" + _outputDirectory);
 
+   
     readData();
     readGtfs();
     udateGtfs();

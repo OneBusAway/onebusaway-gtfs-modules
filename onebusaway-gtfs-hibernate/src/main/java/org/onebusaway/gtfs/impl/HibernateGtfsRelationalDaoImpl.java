@@ -40,6 +40,12 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   public void setSessionFactory(SessionFactory sessionFactory) {
     _ops = new HibernateOperationsImpl(sessionFactory);
   }
+  
+  public SessionFactory getSessionFactory() {
+    if( _ops == null)
+      return null;
+    return _ops.getSessionFactory();
+  }
 
   public Object execute(HibernateOperation callback) {
     return _ops.execute(callback);
@@ -205,7 +211,7 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   public List<Trip> getTripsForRoute(Route route) {
     return _ops.findByNamedQueryAndNamedParam("tripsByRoute", "route", route);
   }
-  
+
   @Override
   public List<Trip> getTripsForBlockId(AgencyAndId blockId) {
     String[] names = {"agencyId", "blockId"};
@@ -284,8 +290,18 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
+  public void updateEntity(Object entity) {
+    _ops.update(entity);
+  }
+
+  @Override
   public void saveEntity(Object entity) {
     _ops.save(entity);
+  }
+
+  @Override
+  public void saveOrUpdateEntity(Object entity) {
+    _ops.saveOrUpdate(entity);
   }
 
   @Override

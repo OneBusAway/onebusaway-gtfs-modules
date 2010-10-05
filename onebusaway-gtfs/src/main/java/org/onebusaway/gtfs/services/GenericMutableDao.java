@@ -9,6 +9,10 @@ public interface GenericMutableDao extends GenericDao {
   public void open();
 
   public void saveEntity(Object entity);
+  
+  public void updateEntity(Object entity);
+  
+  public void saveOrUpdateEntity(Object entity);
 
   public <K extends Serializable, T extends IdentityBean<K>> void removeEntity(
       T entity);

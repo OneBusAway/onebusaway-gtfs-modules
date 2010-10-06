@@ -12,18 +12,13 @@ import org.onebusaway.gtfs.csv.schema.BeanWrapperFactory;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.king_county_metro.MetroKCDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.ModificationStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class ModificationUpdateStrategy implements GtfsTransformStrategy {
 
-  public enum EType {
-    GTFS, KCMETRO
-  }
-
-  private Map<EType, List<Object>> _objectsToAddByType = new HashMap<EType, List<Object>>();
+  private List<Object> _objectsToAdd = new ArrayList<Object>();
 
   private Map<Class<?>, List<ModificationStrategy>> _modificationsByType = new HashMap<Class<?>, List<ModificationStrategy>>();
 
@@ -33,13 +28,8 @@ public class ModificationUpdateStrategy implements GtfsTransformStrategy {
   
   private List<GtfsTransformStrategy> _transforms = new ArrayList<GtfsTransformStrategy>();
 
-  public void addEntity(EType type, Object object) {
-    List<Object> objects = _objectsToAddByType.get(type);
-    if (objects == null) {
-      objects = new ArrayList<Object>();
-      _objectsToAddByType.put(type, objects);
-    }
-    objects.add(object);
+  public void addEntity(Object object) {
+    _objectsToAdd.add(object);
   }
 
   public void addModification(Class<?> type, ModificationStrategy modification) {
@@ -67,8 +57,8 @@ public class ModificationUpdateStrategy implements GtfsTransformStrategy {
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     // Additions
-    for (Map.Entry<EType, List<Object>> entry : _objectsToAddByType.entrySet())
-      addEntitiesInternal(context, dao, entry.getKey(), entry.getValue());
+    for (Object entity : _objectsToAdd)
+      dao.saveEntity(entity);
 
     // Modifications
     applyModifications(context, dao, _modificationsByType);
@@ -87,25 +77,6 @@ public class ModificationUpdateStrategy implements GtfsTransformStrategy {
   /****
    * Private Methods
    ****/
-
-  private void addEntitiesInternal(TransformContext context,
-      GtfsMutableRelationalDao dao, EType type, List<Object> entities) {
-
-    switch (type) {
-      case GTFS:
-        for (Object entity : entities)
-          dao.saveEntity(entity);
-        break;
-      case KCMETRO: {
-        MetroKCDao metrokcDao = context.getMetroKCDao();
-        for (Object entity : entities)
-          metrokcDao.saveEntity(entity);
-        break;
-      }
-      default:
-        throw new IllegalStateException("unknown type:" + type);
-    }
-  }
 
   private void applyModifications(TransformContext context,
       GtfsMutableRelationalDao dao,

@@ -21,6 +21,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.UnrecognizedOptionException;
+import org.onebusaway.gtfs.serialization.GtfsReader;
+import org.onebusaway.gtfs_transformer.king_county_metro.model.PatternPair;
 import org.onebusaway.gtfs_transformer.king_county_metro.transforms.CalendarUpdateStrategy;
 import org.onebusaway.gtfs_transformer.king_county_metro.transforms.DeduplicateRoutesStrategy;
 import org.onebusaway.gtfs_transformer.king_county_metro.transforms.DeduplicateStopsStrategy;
@@ -389,6 +391,8 @@ public class GtfsTransformerMain {
   }
 
   private void configureInterlinedRoutesUpdates(GtfsTransformer updater) {
+    GtfsReader reader = updater.getReader();
+    reader.getEntityClasses().add(PatternPair.class);
     updater.addTransform(new PatternPairUpdateStrategy());
   }
 

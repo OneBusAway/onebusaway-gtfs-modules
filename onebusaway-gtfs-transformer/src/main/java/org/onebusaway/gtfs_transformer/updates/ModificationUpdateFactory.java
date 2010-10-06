@@ -94,21 +94,6 @@ public class ModificationUpdateFactory {
   private void handleAddOperation(String line, JSONObject json)
       throws JSONException {
 
-    String objTypeValue = json.getString("objType");
-    if (objTypeValue == null)
-      throw new IllegalArgumentException(
-          "add op must have an \"objType\" property: line=" + line);
-
-    ModificationUpdateStrategy.EType objType = null;
-    if (objTypeValue.equals("gtfs"))
-      objType = ModificationUpdateStrategy.EType.GTFS;
-    else if (objTypeValue.equals("kcmetro"))
-      objType = ModificationUpdateStrategy.EType.KCMETRO;
-    else
-      throw new IllegalArgumentException(
-          "unknown \"objType\" for add op: objType=" + objTypeValue + " line="
-              + line);
-
     JSONObject properties = json.getJSONObject("obj");
     Map<String, Object> here = getEntityPropertiesAndValuesFromJsonObject(properties);
 
@@ -119,7 +104,7 @@ public class ModificationUpdateFactory {
     for (Map.Entry<String, Object> entry : here.entrySet())
       wrapper.setPropertyValue(entry.getKey(), entry.getValue());
 
-    _strategy.addEntity(objType, instance);
+    _strategy.addEntity(instance);
   }
 
   private void handleUpdateOperation(String line, JSONObject json)

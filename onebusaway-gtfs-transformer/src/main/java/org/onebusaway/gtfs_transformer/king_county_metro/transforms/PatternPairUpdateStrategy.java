@@ -26,10 +26,7 @@ import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
-import org.onebusaway.gtfs_transformer.king_county_metro.MetroKCDao;
-import org.onebusaway.gtfs_transformer.king_county_metro.model.MetroKCPatternPair;
-import org.onebusaway.gtfs_transformer.king_county_metro.model.MetroKCTrip;
-import org.onebusaway.gtfs_transformer.model.VersionedId;
+import org.onebusaway.gtfs_transformer.king_county_metro.model.PatternPair;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.onebusaway.gtfs_transformer.updates.TripsByBlockInSortedOrder;
@@ -40,11 +37,13 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
 
   private static Logger _log = LoggerFactory.getLogger(PatternPairUpdateStrategy.class);
 
-  private Map<Trip, MetroKCTrip> _tripMapping = new HashMap<Trip, MetroKCTrip>();
+  private enum EPatternUpdateResult {
+    UNMODIFIED, MODIFIED, UP_TO_DATE
+  }
 
   private Map<Trip, List<StopTime>> _stopTimesByTrip = new HashMap<Trip, List<StopTime>>();
 
-  private Map<Pair<Integer>, String> _stopIdsByPatternPair = new HashMap<Pair<Integer>, String>();
+  private Map<Pair<String>, String> _stopIdsByPatternPair = new HashMap<Pair<String>, String>();
 
   private Map<AgencyAndId, List<ShapePoint>> _shapePointsByShapeId = new HashMap<AgencyAndId, List<ShapePoint>>();
 
@@ -56,19 +55,13 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
 
   private GtfsMutableRelationalDao _dao;
 
-  private MetroKCDao _metrokcDao;
-
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-
-    MetroKCDao metrokcDao = context.getMetroKCDao();
 
     reset();
 
     _dao = dao;
-    _metrokcDao = metrokcDao;
 
-    addMetroKCTripsToCache();
     addPatterPairsToCache();
     addStopTimesToCache();
     addShapePointsToCache();
@@ -80,16 +73,24 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
         new ArrayList<String>());
 
     for (List<Trip> trips : tripsByBlockId.values()) {
+
       Trip prev = null;
       boolean prevModified = false;
+
       for (Trip trip : trips) {
+
         boolean modified = false;
+
         if (prev != null && !prevModified) {
-          modified = checkTripPair(prev, trip);
+
+          EPatternUpdateResult result = checkTripPair(prev, trip);
+          modified = result == EPatternUpdateResult.MODIFIED;
 
           Pair<String> routePair = Tuples.pair(prev.getRoute().getShortName(),
               trip.getRoute().getShortName());
-          if (!modified && _routeTransitionsToWatch.contains(routePair)
+
+          if (result == EPatternUpdateResult.UNMODIFIED
+              && _routeTransitionsToWatch.contains(routePair)
               && getStopTimeSeparation(dao, prev, trip) < 5 * 60) {
             String rp = routePair.getFirst() + " " + routePair.getSecond();
             String pp = prev.getShapeId() + " " + trip.getShapeId();
@@ -106,7 +107,7 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
     for (String key : patternPairsWeExpected) {
       String[] t = key.split("\\s+");
       System.out.println("# Example: " + examples.get(key));
-      System.out.println("{\"op\":\"add\",\"objType\":\"kcmetro\",\"obj\":{\"class\":\"MetroKCPatternPair\",\"routeFrom\":"
+      System.out.println("{\"op\":\"add\",\"objType\":\"kcmetro\",\"obj\":{\"class\":\"PatternPair\",\"routeFrom\":"
           + t[0]
           + ",\"routeTo\":"
           + t[1]
@@ -124,7 +125,6 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
   private void reset() {
     _stopIdsByPatternPair.clear();
     _stopTimesByTrip.clear();
-    _tripMapping.clear();
   }
 
   private List<ShapePoint> getShapePointsForShapeId(AgencyAndId shapeId) {
@@ -139,10 +139,6 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
     _updateShapePointIds.add(shapeId);
   }
 
-  private MetroKCTrip getMetroKCTripForTrip(Trip trip) {
-    return _tripMapping.get(trip);
-  }
-
   private void setStopTimesForTrip(Trip trip, List<StopTime> stopTimes) {
     _stopTimesByTrip.put(trip, stopTimes);
   }
@@ -151,41 +147,38 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
     return _stopTimesByTrip.get(trip);
   }
 
-  private boolean putStopIdForPatternPair(Pair<Integer> pair, String stopId) {
+  private boolean putStopIdForPatternPair(Pair<String> pair, String stopId) {
     return _stopIdsByPatternPair.put(pair, stopId) != null;
   }
 
-  private String getStopIdForPatternPair(Pair<Integer> pair) {
+  private String getStopIdForPatternPair(Pair<String> pair) {
     return _stopIdsByPatternPair.get(pair);
-  }
-
-  private void addMetroKCTripsToCache() {
-    UpdateLibrary.getMetroKCTripsByGtfsTrip(_dao, _metrokcDao, _tripMapping);
   }
 
   private void addPatterPairsToCache() {
 
-    Collection<MetroKCPatternPair> patternPairs = _metrokcDao.getAllPatternPairs();
+    Collection<PatternPair> patternPairs = _dao.getAllEntitiesForType(PatternPair.class);
 
-    for (MetroKCPatternPair patternPair : patternPairs) {
+    for (PatternPair patternPair : patternPairs) {
 
       // We don't care about transitions between the same route, or if the stop
       // is missing
-      if (patternPair.getRouteFrom() == patternPair.getRouteTo()
-          || patternPair.getStopId() == -1)
+      if (patternPair.getRouteFrom() == patternPair.getRouteTo())
         continue;
 
-      Pair<Integer> pair = Tuples.pair(patternPair.getPatternFrom(),
-          patternPair.getPatternTo());
-      if (putStopIdForPatternPair(pair,
-          Integer.toString(patternPair.getStopId()))) {
-        _log.warn("duplicate pattern pair: " + patternPair);
-      }
-
-      String fromRoute = Integer.toString(patternPair.getRouteFrom());
-      String toRoute = Integer.toString(patternPair.getRouteTo());
+      String fromRoute = patternPair.getRouteFrom();
+      String toRoute = patternPair.getRouteTo();
       Pair<String> routePair = Tuples.pair(fromRoute, toRoute);
       _routeTransitionsToWatch.add(routePair);
+
+      if( patternPair.getStopId() == null)
+        continue;
+        
+      Pair<String> pair = Tuples.pair(patternPair.getPatternFrom(),
+          patternPair.getPatternTo());
+      if (putStopIdForPatternPair(pair, patternPair.getStopId())) {
+        _log.warn("duplicate pattern pair: " + patternPair);
+      }
     }
   }
 
@@ -215,34 +208,31 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
       Collections.sort(points);
   }
 
-  private boolean checkTripPair(Trip prev, Trip next) {
+  private EPatternUpdateResult checkTripPair(Trip prev, Trip next) {
 
-    MetroKCTrip mkcPrev = getMetroKCTripForTrip(prev);
-    MetroKCTrip mkcNext = getMetroKCTripForTrip(next);
+    if (prev.getShapeId() == null || next.getShapeId() == null)
+      return EPatternUpdateResult.UNMODIFIED;
 
-    if (mkcPrev == null || mkcNext == null)
-      return false;
+    String patternA = prev.getShapeId().getId();
+    String patternB = next.getShapeId().getId();
 
-    VersionedId patternPrev = mkcPrev.getServicePattern();
-    VersionedId patternNext = mkcNext.getServicePattern();
-
-    Pair<Integer> pair = Tuples.pair(patternPrev.getId(), patternNext.getId());
+    Pair<String> pair = Tuples.pair(patternA, patternB);
     String stopId = getStopIdForPatternPair(pair);
 
     if (stopId == null)
-      return false;
+      return EPatternUpdateResult.UP_TO_DATE;
 
     List<StopTime> stopTimesPrev = getStopTimesForTrip(prev);
     List<StopTime> stopTimesNext = getStopTimesForTrip(next);
 
     if (stopTimesPrev.isEmpty()) {
       _log.warn("no StopTimes for prev trip: " + prev.getId());
-      return false;
+      return EPatternUpdateResult.UNMODIFIED;
     }
 
     if (stopTimesNext.isEmpty()) {
       _log.warn("no StopTimes for next trip: " + next.getId());
-      return false;
+      return EPatternUpdateResult.UNMODIFIED;
     }
 
     pruneSameOverlappingPrevAndNextStops(stopTimesPrev, stopTimesNext);
@@ -250,8 +240,7 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
     int indexPrev = indexOfTail(stopTimesPrev, stopId);
     int indexNext = indexOf(stopTimesNext, stopId);
 
-    String key = patternPrev.getChangeDate() + "_" + patternPrev.getId() + "-"
-        + patternNext.getChangeDate() + "_" + patternNext.getId();
+    String key = patternA + "-" + patternB;
 
     if (indexPrev == -1 && indexNext == -1) {
       _log.warn("neither trip contained stop in pattern pair: prev="
@@ -268,15 +257,19 @@ public class PatternPairUpdateStrategy implements GtfsTransformStrategy {
           key);
       shiftShapePointsFromPrevToNext(prev, next, transitionStop, key);
 
-      return true;
+      return EPatternUpdateResult.MODIFIED;
+
+    } else if (indexNext == 0) {
+      // We only bother shifting if it's not the first stop
+      return EPatternUpdateResult.UP_TO_DATE;
 
     } else if (indexNext > 0) {
-      // We only bother shifting if it's not the first stop
+
       shiftFromNextToPrev(prev, stopTimesPrev, next, stopTimesNext, indexNext);
-      return true;
+      return EPatternUpdateResult.MODIFIED;
     }
 
-    return false;
+    return EPatternUpdateResult.UNMODIFIED;
   }
 
   private void pruneSameOverlappingPrevAndNextStops(

@@ -54,6 +54,8 @@ public class GtfsTransformer {
   private List<GtfsTransformStrategy> _transformStrategies = new ArrayList<GtfsTransformStrategy>();
 
   private List<SchemaUpdateStrategy> _outputSchemaUpdates = new ArrayList<SchemaUpdateStrategy>();
+  
+  private GtfsReader _reader = new GtfsReader();
 
   private GtfsMutableRelationalDao _dao = new GtfsRelationalDaoImpl();
 
@@ -84,6 +86,10 @@ public class GtfsTransformer {
   public void setAgencyId(String agencyId) {
     _agencyId = agencyId;
   }
+  
+  public GtfsReader getReader() {
+    return _reader;
+  }
 
   public void run() throws Exception {
 
@@ -104,14 +110,14 @@ public class GtfsTransformer {
 
   private void readGtfs() throws IOException {
 
-    GtfsReader reader = new GtfsReader();
-    reader.setInputLocation(_gtfsInputDirectory);
-    reader.setEntityStore(_dao);
+    
+    _reader.setInputLocation(_gtfsInputDirectory);
+    _reader.setEntityStore(_dao);
 
     if (_agencyId != null)
-      reader.setDefaultAgencyId(_agencyId);
+      _reader.setDefaultAgencyId(_agencyId);
 
-    reader.run();
+    _reader.run();
   }
 
   private void readData() throws IOException {

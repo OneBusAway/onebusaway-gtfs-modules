@@ -21,10 +21,10 @@ public class PatternPair extends IdentityBean<Integer> {
   @CsvField(optional = true, name = "Stop_ID")
   private String stopId;
 
-  @CsvField(name = "Pattern_ID_1")
+  @CsvField(optional = true, name = "Pattern_ID_1")
   private String patternFrom;
 
-  @CsvField(name = "Pattern_ID_2")
+  @CsvField(optional = true, name = "Pattern_ID_2")
   private String patternTo;
 
   @Override

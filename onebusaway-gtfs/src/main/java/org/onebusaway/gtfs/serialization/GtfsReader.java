@@ -1,5 +1,12 @@
 package org.onebusaway.gtfs.serialization;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.onebusaway.gtfs.csv.CsvEntityContext;
 import org.onebusaway.gtfs.csv.CsvEntityReader;
 import org.onebusaway.gtfs.csv.CsvInputSource;
@@ -22,16 +29,8 @@ import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Transfer;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GenericMutableDao;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class GtfsReader extends CsvEntityReader {
 
@@ -111,7 +110,7 @@ public class GtfsReader extends CsvEntityReader {
   public List<Class<?>> getEntityClasses() {
     return _entityClasses;
   }
-  
+
   public void setEntityClasses(List<Class<?>> entityClasses) {
     _entityClasses = entityClasses;
   }
@@ -119,7 +118,7 @@ public class GtfsReader extends CsvEntityReader {
   public void run() throws IOException {
     run(getInputSource());
   }
-  
+
   public void run(CsvInputSource source) throws IOException {
 
     List<Class<?>> classes = getEntityClasses();
@@ -128,8 +127,8 @@ public class GtfsReader extends CsvEntityReader {
 
     for (Class<?> entityClass : classes) {
       _log.info("reading entities: " + entityClass.getName());
-      
-      readEntities(entityClass,source);
+
+      readEntities(entityClass, source);
       _entityStore.flush();
     }
 
@@ -177,7 +176,7 @@ public class GtfsReader extends CsvEntityReader {
         return id;
     }
 
-    throw new NoAgencyIdForEntityException(entityType, entityId);
+    throw new EntityReferenceNotFoundException(entityType, entityId);
   }
 
   /****

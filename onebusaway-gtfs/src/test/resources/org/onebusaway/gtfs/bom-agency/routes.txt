@@ -1,0 +1,68 @@
+﻿route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color
+01-88,1,1,CHENE-GERMAIN /ST JACQUES,,3,,97bf0d,ffffff
+02-88,1,2,La Poterie - Haut Sancé / Grand Quartier,,3,,008bcf,ffffff
+03-88,1,3,Alma / St Laurent,,3,,008436,ffffff
+04-88,1,4,Beauregard / Beaulieu Atalante,,3,,6d1f80,ffffff
+05-88,1,5,Lycée Bréquigny / Patton,,3,,ee7f01,ffffff
+06-88,1,6,Rennes (République) / Cesson Sévigné (b  loisirs),,3,,62c3d5,ffffff
+07-88,1,7,Rennes (République) / Chantepie,,3,,d49f46,ffffff
+08-88,1,8,SAINT GREGOIRE - POTERIE,,3,,b966a2,ffffff
+09-88,1,9,Cleunay / Saint Laurent,,3,,00519e,ffffff
+100-89,1,100,Rennes / ZI de la Haie des Cognets,,3,,e2007a,ffffff
+11-88,1,11,Saint Saëns - ZI Sud Est / Stade Rennais ZI Ouest,,3,,dd84b1,ffffff
+150-88,1,150,150 express,,3,,ffffff,a85f20
+151-89,1,151,express Betton-Rennes,,3,,ffffff,e0b100
+152-89,1,152,Clayes - Rennes express,,3,,ffffff,da8e03
+153-88,1,153,express l'hermiage /rennes,,3,,ffffff,009dd1
+154-89,1,154,Le Rheu / Rennes  express,,3,,ffffff,e2001a
+155-89,1,155,Mordelles / Rennes express,,3,,ffffff,93117e
+156-89,1,156,express Chavagne / Rennes,,3,,ffffff,10678e
+157-88,1,157,Bruz /République,,3,,ffffff,004494
+158-88,1,KL,Ker Lan / Rennes (République),,3,,,
+159-89,1,159,Bruz centre - Fréville,,3,,ffffff,eb6b4b
+161-89,1,161,Bourgbarré / Rennes,,3,,ffffff,0094d8
+164-88,1,164,Rennes (République) / Acigné direct,,3,,ffffff,f29400
+172-89,1,172,express Pont Péan / Fréville,,3,,ffffff,c795be
+173-89,1,173,Express Corps Nuds/  Poterie,,3,,ffffff,7ab51d
+30-88,1,30,Rigourdière - Stade Rennais,,3,,fff164,e2001a
+31-88,1,31,BEAULIEU /CHURCHILL,,3,,fff164,e2001a
+32-88,1,32,Triangle/Beaulieu/Clos courtel,,3,,fff164,e2001a
+33-88,1,33,St Jacques -Bréquigny - Poterie/,,3,,fff164,e2001a
+34-88,1,34,ZI Sud Est Cesson / ZI Sud Est La Poterie,,3,,fff164,e2001a
+40-88,1,40ex,Beaulieu / République,,3,,,
+41-88,1,41,Gares / Beaulieu Atalante,,3,,ffffff,0081c6
+42-88,1,42,Rennes - Cesson Sévigné (Charmilles),,3,,ffffff,009036
+43-88,1,43,Gares / Joliot Curie,,3,,ffffff,f8b320
+44-88,1,44,République - joliot curie,,3,,ffffff,e6208b
+45ex-89,1,45,Ile de France / Villejean Université,,3,,ffffff,cc007b
+50-88,1,50,Thorigné Fouillard / Rennes,,3,,8da6d2,ffffff
+51-89,1,51,Betton / Rennes,,3,,93117e,ffffff
+52-89,1,52,La Chapelle des Ftz / Montgermont / Renn/Stgilles,,3,,007c77,ffffff
+53-88,1,53,Rennes (République) / Vezin l'Hermitage Ch Thour,,3,,d20132,ffffff
+54-89,1,54,Cintré / Le Rheu / Rennes,,3,,d20132,ffffff
+55-89,1,55,Le Verger / Mordelles / Rennes,,3,,cd93bd,ffffff
+56-89,1,56,Chavagne / Moigné / Rennes,,3,,f7a800,ffffff
+57-88,1,57,Rennes Bruz,,3,,007f3c,ffffff
+59-89,1,59,Bruz / Rennes / Vern,,3,,f19fc1,ffffff
+61-89,1,61,St Erblon / Noyal Châtillon / Rennes,,3,,e6396c,ffffff
+64-88,1,64,Rennes (République) / Acigné,,3,,0094d8,ffffff
+65-89,1,65,Pacé / Rennes,,3,,e36da3,ffffff
+67-89,1,67,Rennes (République) / Noyal s/Vilaine - Brécé,,3,,e2003b,ffffff
+68-89,1,68,Gévezé / Rennes,,3,,ddc500,ffffff
+70-89,1,70,St Sulpice la Forêt / Rennes,,3,,ec748d,ffffff
+71-89,1,71,Chevaigné / Betton / Rennes,,3,,a9701e,ffffff
+72-89,1,72,Chartres de Bretagne / Rennes,,3,,004293,ffffff
+73-89,1,73,Corps Nuds / St Armel / Rennes,,3,,c186b6,ffffff
+74-89,1,74,Bourgbarré / Orgères / Rennes,,3,,fcc100,ffffff
+75-89,1,75,Nouvoitou / Vern / Rennes,,3,,f2963e,ffffff
+76-89,1,76,Mordelles-Le Rheu-Vezin-Villejean,,3,,ffffff,009036
+77-89,1,77,Pacé Mondenin / Rennes,,3,,fcc000,ffffff
+78-89,1,78,Betton - villejean,,3,,e3006a,ffffff
+91-89,1,91,Noyal Châtillon / Chartres de Bretagne / Bruz,,3,,95c154,e2001a
+92-89,1,92,Thorigné Fouillard / Cesson - Sévigné,,3,,95c154,e2001a
+93-89,1,93,Cintré- Gare de l'hermitage,,3,,95c154,e2001a
+94-89,1,94,St Sulpice - Chevaigné- Betton Centre,,3,,95c154,e2001a
+JU11-88,1,1167,Jumelées 11 67,,3,,,
+SNT1-88,1,STN1,STAR de nuit 1,,3,,,
+SNT2-88,1,SNT2,STAR de Nuit 2,,3,,,
+TTZ-89,1,TTZ,Touche Tizon,,3,,,

@@ -91,6 +91,16 @@ public class CsvEntityReader {
 
     BufferedReader lineReader = new BufferedReader(reader);
 
+    /**
+     * Skip the initial UTF BOM, if present
+     */
+    lineReader.mark(1);
+    int c = lineReader.read();
+
+    if (c != 0xFEFF) {
+      lineReader.reset();
+    }
+
     String line = null;
     int lineNumber = 1;
 
@@ -101,7 +111,8 @@ public class CsvEntityReader {
         lineNumber++;
       }
     } catch (Exception ex) {
-      throw new CsvEntityIOException(entityClass, reader.toString(), lineNumber, ex);
+      throw new CsvEntityIOException(entityClass, reader.toString(),
+          lineNumber, ex);
     } finally {
       try {
         lineReader.close();

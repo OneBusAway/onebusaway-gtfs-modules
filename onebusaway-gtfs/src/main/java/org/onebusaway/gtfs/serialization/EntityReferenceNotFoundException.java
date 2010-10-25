@@ -10,12 +10,12 @@ import org.onebusaway.gtfs.csv.exceptions.CsvEntityException;
  * @author bdferris
  * 
  */
-public class NoAgencyIdForEntityException extends CsvEntityException {
+public class EntityReferenceNotFoundException extends CsvEntityException {
 
   private static final long serialVersionUID = 1L;
 
-  public NoAgencyIdForEntityException(Class<?> entityType, String entityId) {
-    super(entityType, "no agency id for entity: type=" + entityType.getName()
-        + " id=" + entityId);
+  public EntityReferenceNotFoundException(Class<?> entityType, String entityId) {
+    super(entityType, "entity reference not found: type="
+        + entityType.getName() + " id=" + entityId);
   }
 }

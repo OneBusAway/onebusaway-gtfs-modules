@@ -379,6 +379,18 @@ public class GtfsReaderTest {
     route = dao.getRouteForId(new AgencyAndId(agencyId,"B"));
     assertEquals("Tuéjar-Casinos",route.getLongName());
   }
+  
+  @Test
+  public void testBom() throws IOException, ParseException, InterruptedException {
+
+    GtfsDao dao = processFeed(new File("src/test/resources/org/onebusaway/gtfs/bom-agency"), "1");
+
+    Route route = dao.getRouteForId(new AgencyAndId("1","02-88"));
+    assertEquals("La Poterie - Haut Sancé / Grand Quartier",route.getLongName());
+    
+    route = dao.getRouteForId(new AgencyAndId("1","11-88"));
+    assertEquals("Saint Saëns - ZI Sud Est / Stade Rennais ZI Ouest",route.getLongName());
+  }
 
   private GtfsRelationalDao processFeed(File resourcePath, String agencyId)
       throws IOException {

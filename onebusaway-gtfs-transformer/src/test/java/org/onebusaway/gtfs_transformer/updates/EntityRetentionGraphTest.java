@@ -15,6 +15,7 @@ import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.serialization.GtfsReader;
+import org.onebusaway.gtfs_transformer.factory.EntityRetentionGraph;
 
 public class EntityRetentionGraphTest {
 

@@ -14,12 +14,12 @@ import org.onebusaway.gtfs.csv.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.csv.schema.FieldMapping;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 
-public class DateFieldMappingFactoryTest {
+public class ServiceDateFieldMappingFactoryTest {
 
   @Test
   public void test() {
 
-    DateFieldMappingFactory factory = new DateFieldMappingFactory();
+    ServiceDateFieldMappingFactory factory = new ServiceDateFieldMappingFactory();
     DefaultEntitySchemaFactory schemaFactory = new DefaultEntitySchemaFactory();
     String propName = "date";
     FieldMapping mapping = factory.createFieldMapping(schemaFactory, Dummy.class,

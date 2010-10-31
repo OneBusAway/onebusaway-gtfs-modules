@@ -1,4 +1,4 @@
-package org.onebusaway.gtfs_transformer.updates;
+package org.onebusaway.gtfs_transformer.factory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,16 +13,16 @@ import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
-import org.onebusaway.gtfs_transformer.services.ModificationStrategy;
+import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class ModificationUpdateStrategy implements GtfsTransformStrategy {
 
   private List<Object> _objectsToAdd = new ArrayList<Object>();
 
-  private Map<Class<?>, List<ModificationStrategy>> _modificationsByType = new HashMap<Class<?>, List<ModificationStrategy>>();
+  private Map<Class<?>, List<EntityTransformStrategy>> _modificationsByType = new HashMap<Class<?>, List<EntityTransformStrategy>>();
 
-  private Map<Class<?>, List<ModificationStrategy>> _removalsByType = new HashMap<Class<?>, List<ModificationStrategy>>();
+  private Map<Class<?>, List<EntityTransformStrategy>> _removalsByType = new HashMap<Class<?>, List<EntityTransformStrategy>>();
 
   private Map<Class<?>, List<EntityMatch>> _retentionMatchesByType = new HashMap<Class<?>, List<EntityMatch>>();
   
@@ -32,14 +32,14 @@ public class ModificationUpdateStrategy implements GtfsTransformStrategy {
     _objectsToAdd.add(object);
   }
 
-  public void addModification(Class<?> type, ModificationStrategy modification) {
-    List<ModificationStrategy> modifications = getModificationsForType(type,
+  public void addModification(Class<?> type, EntityTransformStrategy modification) {
+    List<EntityTransformStrategy> modifications = getModificationsForType(type,
         _modificationsByType);
     modifications.add(modification);
   }
 
-  public void addRemoval(Class<?> type, ModificationStrategy modification) {
-    List<ModificationStrategy> modifications = getModificationsForType(type,
+  public void addRemoval(Class<?> type, EntityTransformStrategy modification) {
+    List<EntityTransformStrategy> modifications = getModificationsForType(type,
         _removalsByType);
     modifications.add(modification);
   }
@@ -80,20 +80,20 @@ public class ModificationUpdateStrategy implements GtfsTransformStrategy {
 
   private void applyModifications(TransformContext context,
       GtfsMutableRelationalDao dao,
-      Map<Class<?>, List<ModificationStrategy>> modificationsByType) {
+      Map<Class<?>, List<EntityTransformStrategy>> modificationsByType) {
 
-    for (Map.Entry<Class<?>, List<ModificationStrategy>> entry : _modificationsByType.entrySet()) {
+    for (Map.Entry<Class<?>, List<EntityTransformStrategy>> entry : _modificationsByType.entrySet()) {
 
       Class<?> entityType = entry.getKey();
-      List<ModificationStrategy> modifications = entry.getValue();
+      List<EntityTransformStrategy> modifications = entry.getValue();
 
       Collection<Object> entities = new ArrayList<Object>(
           dao.getAllEntitiesForType(entityType));
 
       for (Object object : entities) {
         BeanWrapper wrapper = BeanWrapperFactory.wrap(object);
-        for (ModificationStrategy modification : modifications)
-          modification.applyModification(context, wrapper, dao);
+        for (EntityTransformStrategy modification : modifications)
+          modification.run(context, dao, wrapper);
       }
     }
   }
@@ -134,11 +134,11 @@ public class ModificationUpdateStrategy implements GtfsTransformStrategy {
     }
   }
 
-  private List<ModificationStrategy> getModificationsForType(Class<?> type,
-      Map<Class<?>, List<ModificationStrategy>> m) {
-    List<ModificationStrategy> modifications = m.get(type);
+  private List<EntityTransformStrategy> getModificationsForType(Class<?> type,
+      Map<Class<?>, List<EntityTransformStrategy>> m) {
+    List<EntityTransformStrategy> modifications = m.get(type);
     if (modifications == null) {
-      modifications = new ArrayList<ModificationStrategy>();
+      modifications = new ArrayList<EntityTransformStrategy>();
       m.put(type, modifications);
     }
     return modifications;

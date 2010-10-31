@@ -19,19 +19,19 @@ public class SimpleModificationStrategy extends
     _propertyUpdates = propertyUpdates;
   }
 
-  public void applyModification(TransformContext context, BeanWrapper wrapped,
-      GtfsMutableRelationalDao dao) {
+  public void run(TransformContext context, GtfsMutableRelationalDao dao,
+      BeanWrapper entity) {
 
-    if (!isModificationApplicable(wrapped))
+    if (!isModificationApplicable(entity))
       return;
 
     for (Map.Entry<String, Object> entry : _propertyUpdates.entrySet()) {
       String property = entry.getKey();
       Object value = entry.getValue();
-      Class<?> propertyType = wrapped.getPropertyType(property);
+      Class<?> propertyType = entity.getPropertyType(property);
       if (IdentityBean.class.isAssignableFrom(propertyType))
         value = dao.getEntityForId(propertyType, (Serializable) value);
-      wrapped.setPropertyValue(property, value);
+      entity.setPropertyValue(property, value);
     }
   }
 }

@@ -4,17 +4,17 @@ import org.onebusaway.gtfs.csv.schema.BeanWrapper;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.services.ModificationStrategy;
+import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class PierceTransitTripHeadsignCleanupModStrategy implements
-    ModificationStrategy {
+    EntityTransformStrategy {
 
   @Override
-  public void applyModification(TransformContext context, BeanWrapper wrapped,
-      GtfsMutableRelationalDao dao) {
+  public void run(TransformContext context, GtfsMutableRelationalDao dao,
+      BeanWrapper entity) {
 
-    Object obj = wrapped.getWrappedInstance(Object.class);
+    Object obj = entity.getWrappedInstance(Object.class);
 
     if (!(obj instanceof Trip))
       return;

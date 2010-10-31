@@ -4,10 +4,10 @@ import java.util.Map;
 
 import org.onebusaway.gtfs.csv.schema.BeanWrapper;
 import org.onebusaway.gtfs.csv.schema.BeanWrapperFactory;
-import org.onebusaway.gtfs_transformer.services.ModificationStrategy;
+import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 
 public abstract class AbstractEntityModificationStrategy implements
-    ModificationStrategy {
+    EntityTransformStrategy {
 
   private Map<String, Object> _propertyMatches;
 

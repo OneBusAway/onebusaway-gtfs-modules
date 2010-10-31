@@ -14,14 +14,15 @@ import java.util.List;
 import org.apache.commons.cli.AlreadySelectedException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.MissingArgumentException;
 import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
 import org.apache.commons.cli.UnrecognizedOptionException;
 import org.onebusaway.gtfs.serialization.GtfsReader;
+import org.onebusaway.gtfs_transformer.factory.TransformFactory;
 import org.onebusaway.gtfs_transformer.king_county_metro.model.PatternPair;
 import org.onebusaway.gtfs_transformer.king_county_metro.transforms.CalendarUpdateStrategy;
 import org.onebusaway.gtfs_transformer.king_county_metro.transforms.DeduplicateRoutesStrategy;
@@ -33,7 +34,6 @@ import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.updates.DeduplicateTripsStrategy;
 import org.onebusaway.gtfs_transformer.updates.EnsureStopTimesIncreaseUpdateStrategy;
 import org.onebusaway.gtfs_transformer.updates.LocalVsExpressUpdateStrategy;
-import org.onebusaway.gtfs_transformer.updates.ModificationUpdateFactory;
 import org.onebusaway.gtfs_transformer.updates.RemoveDuplicateTripsStrategy;
 import org.onebusaway.gtfs_transformer.updates.RemoveEmptyBlockTripsStrategy;
 import org.onebusaway.gtfs_transformer.updates.RemoveRepeatedStopTimesStrategy;
@@ -50,6 +50,8 @@ public class GtfsTransformerMain {
   private static final String ARG_AGENCY_ID = "agencyId";
 
   private static final String ARG_MODIFICATIONS = "modifications";
+
+  private static final String ARG_TRANSFORM = "transform";
 
   private static final String ARG_STOP_NAMES = "stopNames";
 
@@ -85,11 +87,11 @@ public class GtfsTransformerMain {
 
   private static final String ARG_KCMETRO_DEFAULTS = "kcmetroDefaults";
 
-  private static CommandLineParser _parser = new GnuParser();
+  private static CommandLineParser _parser = new PosixParser();
 
   private Options _options = new Options();
 
-  private ModificationUpdateFactory _modificationFactory = new ModificationUpdateFactory();
+  private TransformFactory _modificationFactory = new TransformFactory();
 
   public static void main(String[] args) throws IOException {
     GtfsTransformerMain m = new GtfsTransformerMain();
@@ -113,7 +115,7 @@ public class GtfsTransformerMain {
     }
 
     try {
-      CommandLine cli = _parser.parse(_options, args);
+      CommandLine cli = _parser.parse(_options, args, true);
       runApplication(cli, args);
     } catch (MissingOptionException ex) {
       System.err.println("Missing argument: " + ex.getMessage());
@@ -144,7 +146,10 @@ public class GtfsTransformerMain {
     options.addOption(ARG_AGENCY_ID, true, "agency id");
     options.addOption(ARG_CALENDAR_MOD, true, "calendar modifications");
     options.addOption(ARG_STOP_NAMES, true, "stop-name overrides");
+
     options.addOption(ARG_MODIFICATIONS, true, "data modifications");
+    options.addOption(ARG_TRANSFORM, true, "data transformation");
+
     options.addOption(ARG_INTERLINED_ROUTES, false, "fix interlined routes");
     options.addOption(ARG_LOCAL_VS_EXPRESS, false,
         "add additional local vs express fields");
@@ -233,8 +238,8 @@ public class GtfsTransformerMain {
       if (name.equals(ARG_STOP_NAMES))
         configureStopNameUpdates(updater, cli.getOptionValue(ARG_STOP_NAMES));
 
-      if (name.equals(ARG_MODIFICATIONS))
-        configureModifications(updater, cli.getOptionValue(ARG_MODIFICATIONS));
+      if (name.equals(ARG_MODIFICATIONS) || name.equals(ARG_TRANSFORM))
+        configureTransformation(updater, option.getValue());
 
       if (name.equals(ARG_INTERLINED_ROUTES))
         configureInterlinedRoutesUpdates(updater);
@@ -300,7 +305,7 @@ public class GtfsTransformerMain {
     configureStopNameUpdates(
         updater,
         "http://onebusaway.googlecode.com/svn/wiki/KingCountyMetroStopNameModifications.wiki");
-    configureModifications(updater,
+    configureTransformation(updater,
         "http://onebusaway.googlecode.com/svn/wiki/KingCountyMetroModifications.wiki");
 
     configureInterlinedRoutesUpdates(updater);
@@ -374,7 +379,7 @@ public class GtfsTransformerMain {
     }
   }
 
-  private void configureModifications(GtfsTransformer updater, String path)
+  private void configureTransformation(GtfsTransformer updater, String path)
       throws IOException {
 
     if (path == null)

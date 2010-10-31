@@ -1,4 +1,4 @@
-package org.onebusaway.gtfs_transformer.updates;
+package org.onebusaway.gtfs_transformer.factory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,20 +21,20 @@ import org.onebusaway.gtfs_transformer.impl.MatchingEntityModificationStrategyWr
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
 import org.onebusaway.gtfs_transformer.impl.SimpleModificationStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
-import org.onebusaway.gtfs_transformer.services.ModificationStrategy;
+import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 
-public class ModificationUpdateFactory {
-
-  private ModificationUpdateStrategy _strategy = null;
+public class TransformFactory {
 
   public void addModificationsFromFile(GtfsTransformer updater, File path)
       throws IOException {
     BufferedReader reader = new BufferedReader(new FileReader(path));
     addModificationsFromReader(updater, reader);
   }
-  
-  public void addModificationsFromString(GtfsTransformer updater, String value) throws IOException {
-    addModificationsFromReader(updater, new BufferedReader(new StringReader(value)));
+
+  public void addModificationsFromString(GtfsTransformer updater, String value)
+      throws IOException {
+    addModificationsFromReader(updater, new BufferedReader(new StringReader(
+        value)));
   }
 
   public void addModificationsFromUrl(GtfsTransformer updater, URL url)
@@ -44,13 +44,8 @@ public class ModificationUpdateFactory {
     addModificationsFromReader(updater, reader);
   }
 
-  public void addModificationsFromReader(GtfsTransformer updater,
+  public void addModificationsFromReader(GtfsTransformer transformer,
       BufferedReader reader) throws IOException {
-
-    if (_strategy == null) {
-      _strategy = new ModificationUpdateStrategy();
-      updater.addTransform(_strategy);
-    }
 
     String line = null;
 
@@ -72,16 +67,16 @@ public class ModificationUpdateFactory {
               "must specify an \"op\" argument: line=" + line);
 
         if (opType.equals("add")) {
-          handleAddOperation(line, json);
+          handleAddOperation(transformer, line, json);
         } else if (opType.equals("update") || opType.equals("change")
             || opType.equals("modify")) {
-          handleUpdateOperation(line, json);
+          handleUpdateOperation(transformer, line, json);
         } else if (opType.equals("remove") || opType.equals("delete")) {
-          handleRemoveOperation(line, json);
+          handleRemoveOperation(transformer, line, json);
         } else if (opType.equals("retain")) {
-          handleRetainOperation(line, json);
+          handleRetainOperation(transformer, line, json);
         } else if (opType.equals("transform")) {
-          handleTransformOperation(line, json);
+          handleTransformOperation(transformer, line, json);
         }
 
       } catch (JSONException ex) {
@@ -91,8 +86,12 @@ public class ModificationUpdateFactory {
     }
   }
 
-  private void handleAddOperation(String line, JSONObject json)
-      throws JSONException {
+  /****
+   * Private Method
+   ****/
+
+  private void handleAddOperation(GtfsTransformer transformer, String line,
+      JSONObject json) throws JSONException {
 
     JSONObject properties = json.getJSONObject("obj");
     Map<String, Object> here = getEntityPropertiesAndValuesFromJsonObject(properties);
@@ -104,11 +103,16 @@ public class ModificationUpdateFactory {
     for (Map.Entry<String, Object> entry : here.entrySet())
       wrapper.setPropertyValue(entry.getKey(), entry.getValue());
 
-    _strategy.addEntity(instance);
+    AddEntitiesTransformStrategy strategy = getStrategy(transformer,
+        AddEntitiesTransformStrategy.class);
+    strategy.addEntity(instance);
   }
 
-  private void handleUpdateOperation(String line, JSONObject json)
-      throws JSONException {
+  private void handleUpdateOperation(GtfsTransformer transformer, String line,
+      JSONObject json) throws JSONException {
+
+    ModifyEntitiesTransformStrategy strategy = getStrategy(transformer,
+        ModifyEntitiesTransformStrategy.class);
 
     EntityMatch match = getMatch(line, json);
 
@@ -117,15 +121,16 @@ public class ModificationUpdateFactory {
       try {
         Class<?> clazz = Class.forName(value);
         Object factoryObj = clazz.newInstance();
-        if (!(factoryObj instanceof ModificationStrategy))
+        if (!(factoryObj instanceof EntityTransformStrategy))
           throw new IllegalArgumentException(
-              "factory object is not an instance of ModificationStrategy: "
+              "factory object is not an instance of EntityTransformStrategy: "
                   + clazz.getName());
 
-        _strategy.addModification(
+        strategy.addModification(
             match.getType(),
             new MatchingEntityModificationStrategyWrapper(
-                match.getPropertyMatches(), (ModificationStrategy) factoryObj));
+                match.getPropertyMatches(),
+                (EntityTransformStrategy) factoryObj));
 
       } catch (Throwable ex) {
         throw new IllegalStateException(
@@ -144,27 +149,35 @@ public class ModificationUpdateFactory {
     SimpleModificationStrategy mod = new SimpleModificationStrategy(
         match.getPropertyMatches(), propertyUpdates);
 
-    _strategy.addModification(match.getType(), mod);
+    strategy.addModification(match.getType(), mod);
   }
 
-  private void handleRemoveOperation(String line, JSONObject json)
-      throws JSONException {
+  private void handleRemoveOperation(GtfsTransformer transformer, String line,
+      JSONObject json) throws JSONException {
+
+    ModifyEntitiesTransformStrategy strategy = getStrategy(transformer,
+        ModifyEntitiesTransformStrategy.class);
 
     EntityMatch match = getMatch(line, json);
     RemoveEntityUpdateStrategy mod = new RemoveEntityUpdateStrategy(
         match.getPropertyMatches());
 
-    _strategy.addRemoval(match.getType(), mod);
+    strategy.addModification(match.getType(), mod);
   }
 
-  private void handleRetainOperation(String line, JSONObject json)
-      throws JSONException {
+  private void handleRetainOperation(GtfsTransformer transformer, String line,
+      JSONObject json) throws JSONException {
+
+    RetainEntitiesTransformStrategy strategy = getStrategy(transformer,
+        RetainEntitiesTransformStrategy.class);
+
     EntityMatch match = getMatch(line, json);
-    _strategy.addRetention(match);
+
+    strategy.addRetention(match);
   }
 
-  private void handleTransformOperation(String line, JSONObject json)
-      throws JSONException {
+  private void handleTransformOperation(GtfsTransformer transformer,
+      String line, JSONObject json) throws JSONException {
 
     if (!json.has("class"))
       throw new IllegalArgumentException("transform does not specify a class: "
@@ -173,7 +186,7 @@ public class ModificationUpdateFactory {
     String value = json.getString("class");
 
     try {
-      
+
       Class<?> clazz = Class.forName(value);
       Object factoryObj = clazz.newInstance();
       if (!(factoryObj instanceof GtfsTransformStrategy))
@@ -181,15 +194,15 @@ public class ModificationUpdateFactory {
             "factory object is not an instance of GtfsTransformStrategy: "
                 + clazz.getName());
       BeanWrapper wrapped = BeanWrapperFactory.wrap(factoryObj);
-      for( Iterator<?> it = json.keys(); it.hasNext(); ) {
+      for (Iterator<?> it = json.keys(); it.hasNext();) {
         String key = (String) it.next();
-        if( key.equals("op") || key.equals("class"))
+        if (key.equals("op") || key.equals("class"))
           continue;
         Object v = json.get(key);
         wrapped.setPropertyValue(key, v);
       }
-      
-      _strategy.addTransform((GtfsTransformStrategy) factoryObj);
+
+      transformer.addTransform((GtfsTransformStrategy) factoryObj);
     } catch (Exception ex) {
       throw new IllegalStateException("error instantiating class: " + value, ex);
     }
@@ -253,6 +266,21 @@ public class ModificationUpdateFactory {
     }
 
     return map;
+  }
+
+  @SuppressWarnings("unchecked")
+  private <T extends GtfsTransformStrategy> T getStrategy(
+      GtfsTransformer transformer, Class<T> transformerType) {
+
+    GtfsTransformStrategy lastTransform = transformer.getLastTransform();
+
+    if (lastTransform != null
+        && transformerType.isAssignableFrom(lastTransform.getClass()))
+      return (T) lastTransform;
+
+    T strategy = (T) instantiate(transformerType);
+    transformer.addTransform(strategy);
+    return strategy;
   }
 
   private Object instantiate(Class<?> entityClass) {

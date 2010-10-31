@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.onebusaway.gtfs_transformer.updates;
+package org.onebusaway.gtfs_transformer.factory;
 
 import java.util.Map;
 

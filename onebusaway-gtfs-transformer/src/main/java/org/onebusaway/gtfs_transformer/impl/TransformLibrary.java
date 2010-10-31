@@ -1,8 +1,5 @@
 package org.onebusaway.gtfs_transformer.impl;
 
-import java.util.Map;
-
-import org.onebusaway.gtfs.csv.schema.BeanWrapper;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Route;
@@ -10,23 +7,10 @@ import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.services.TransformContext;
 
-public class RemoveEntityUpdateStrategy extends
-    AbstractEntityModificationStrategy {
+public class TransformLibrary {
 
-  public RemoveEntityUpdateStrategy(Map<String, Object> propertyMatches) {
-    super(propertyMatches);
-  }
-
-  @Override
-  public void run(TransformContext context, GtfsMutableRelationalDao dao,
-      BeanWrapper entity) {
-
-    if (!isModificationApplicable(entity))
-      return;
-
-    Object obj = entity.getWrappedInstance(Object.class);
+  public void removeEntity(GtfsMutableRelationalDao dao, Object obj) {
     if (obj instanceof Agency) {
       removeAgency(dao, (Agency) obj);
     } else if (obj instanceof Route) {
@@ -38,7 +22,6 @@ public class RemoveEntityUpdateStrategy extends
     } else if (obj instanceof StopTime) {
       removeStopTime(dao, (StopTime) obj);
     }
-
   }
 
   private void removeAgency(GtfsMutableRelationalDao dao, Agency agency) {

@@ -27,7 +27,7 @@ import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.serialization.comparators.ShapePointComparator;
 import org.onebusaway.gtfs.serialization.comparators.StopTimeComparator;
 import org.onebusaway.gtfs.serialization.mappings.AgencyIdTranslationFieldMappingFactory;
-import org.onebusaway.gtfs.serialization.mappings.DateFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.ServiceDateFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.RouteAgencyFieldMappingFactory;
@@ -143,8 +143,8 @@ public class GtfsEntitySchemaFactory {
     helper.addIgnorableField(calendar, "id");
     helper.addField(calendar, "serviceId", "service_id",
         new DefaultAgencyIdFieldMappingFactory());
-    helper.addField(calendar, "startDate", new DateFieldMappingFactory());
-    helper.addField(calendar, "endDate", new DateFieldMappingFactory());
+    helper.addField(calendar, "startDate", new ServiceDateFieldMappingFactory());
+    helper.addField(calendar, "endDate", new ServiceDateFieldMappingFactory());
 
     CsvEntityMappingBean calendarDate = helper.addEntity(
         ServiceCalendarDate.class, "calendar_dates.txt");
@@ -152,7 +152,7 @@ public class GtfsEntitySchemaFactory {
     helper.addIgnorableField(calendarDate, "id");
     helper.addField(calendarDate, "serviceId", "service_id",
         new DefaultAgencyIdFieldMappingFactory());
-    helper.addField(calendarDate, "date", new DateFieldMappingFactory());
+    helper.addField(calendarDate, "date", new ServiceDateFieldMappingFactory());
 
     CsvEntityMappingBean fareAttributes = helper.addEntity(FareAttribute.class,
         "fare_attributes.txt");

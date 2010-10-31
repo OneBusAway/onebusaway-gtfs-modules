@@ -16,4 +16,8 @@ public class IntrospectionException extends CsvEntityException {
   public IntrospectionException(Class<?> entityType) {
     super(entityType, "introspection error for type " + entityType);
   }
+  
+  public IntrospectionException(Class<?> entityType, Throwable cause) {
+    super(entityType, "introspection error for type " + entityType,cause);
+  }
 }

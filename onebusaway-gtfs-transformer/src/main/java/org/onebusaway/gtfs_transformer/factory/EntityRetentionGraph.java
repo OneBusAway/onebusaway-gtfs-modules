@@ -1,10 +1,11 @@
-package org.onebusaway.gtfs_transformer.updates;
+package org.onebusaway.gtfs_transformer.factory;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
@@ -14,6 +15,22 @@ import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 
+/**
+ * We have the concept of retaining up and retaining down.
+ * 
+ * Retain up: retain things that depend on the target object
+ * 
+ * Retain down: retain things that the target object depends on
+ * 
+ * Usually, we start by retaining some object, which starts as series of
+ * "retain up" operations to grab everything that depends on that object. As
+ * each object is retained up, it typically at this point also starts a
+ * subsequent chain of retain down operations, so that the dependencies of that
+ * object are retained as well.
+ * 
+ * @author bdferris
+ * 
+ */
 public class EntityRetentionGraph {
 
   private Set<Object> _retainedDown = new HashSet<Object>();
@@ -88,6 +105,8 @@ public class EntityRetentionGraph {
       retainShapeId(((ShapeIdKey) object).getId(), retainUp);
     else if (object instanceof BlockIdKey)
       retainBlockId(((BlockIdKey) object).getId(), retainUp);
+    else if (object instanceof Frequency)
+      retainFrequency((Frequency) object, retainUp);
 
     if (retainUp)
       retainDown(object);
@@ -117,6 +136,8 @@ public class EntityRetentionGraph {
         AgencyAndId blockId = new AgencyAndId(trip.getId().getAgencyId(),
             trip.getBlockId());
         retainUp(new BlockIdKey(blockId));
+        for (Frequency frequency : _dao.getFrequenciesForTrip(trip))
+          retainUp(frequency);
       }
     } else {
       retainDown(trip.getRoute());
@@ -150,6 +171,15 @@ public class EntityRetentionGraph {
             parentStationId));
         retainDown(parent);
       }
+
+      /**
+       * Need to make sure a stop's agency is included as well, since the agency
+       * might not be included by any routes serving that stop
+       */
+      AgencyAndId stopId = stop.getId();
+      String agencyId = stopId.getAgencyId();
+      Agency agency = _dao.getAgencyForId(agencyId);
+      retainDown(agency);
     }
   }
 
@@ -162,6 +192,14 @@ public class EntityRetentionGraph {
         retainDown(calendar);
       for (ServiceCalendarDate calendarDate : _dao.getCalendarDatesForServiceId(serviceId))
         retainDown(calendarDate);
+
+      /**
+       * Need to make sure a service id's agency is included as well, since the
+       * agency might not be included by any trips serving that service id
+       */
+      String agencyId = serviceId.getAgencyId();
+      Agency agency = _dao.getAgencyForId(agencyId);
+      retainDown(agency);
     }
   }
 
@@ -169,8 +207,18 @@ public class EntityRetentionGraph {
     if (retainUp) {
 
     } else {
+
       for (ShapePoint shapePoint : _dao.getShapePointsForShapeId(shapeId))
         retainDown(shapePoint);
+
+      /**
+       * Need to make sure a shape id's agency is included as well, since the
+       * agency might not be included by any trips serving that shape id
+       */
+      String agencyId = shapeId.getAgencyId();
+      Agency agency = _dao.getAgencyForId(agencyId);
+      retainDown(agency);
+
     }
   }
 
@@ -181,6 +229,14 @@ public class EntityRetentionGraph {
     } else {
       for (Trip trip : _dao.getTripsForBlockId(blockId))
         retainUp(trip);
+    }
+  }
+
+  private void retainFrequency(Frequency frequency, boolean retainUp) {
+    if (retainUp) {
+
+    } else {
+      retainDown(frequency.getTrip());
     }
   }
 

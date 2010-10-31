@@ -54,7 +54,7 @@ public class GtfsTransformer {
   private List<GtfsTransformStrategy> _transformStrategies = new ArrayList<GtfsTransformStrategy>();
 
   private List<SchemaUpdateStrategy> _outputSchemaUpdates = new ArrayList<SchemaUpdateStrategy>();
-  
+
   private GtfsReader _reader = new GtfsReader();
 
   private GtfsMutableRelationalDao _dao = new GtfsRelationalDaoImpl();
@@ -79,6 +79,16 @@ public class GtfsTransformer {
     _transformStrategies.add(strategy);
   }
 
+  public List<GtfsTransformStrategy> getTransforms() {
+    return _transformStrategies;
+  }
+
+  public GtfsTransformStrategy getLastTransform() {
+    if (_transformStrategies.isEmpty())
+      return null;
+    return _transformStrategies.get(_transformStrategies.size() - 1);
+  }
+
   public void addOutputSchemaUpdate(SchemaUpdateStrategy outputSchemaUpdate) {
     _outputSchemaUpdates.add(outputSchemaUpdate);
   }
@@ -86,7 +96,7 @@ public class GtfsTransformer {
   public void setAgencyId(String agencyId) {
     _agencyId = agencyId;
   }
-  
+
   public GtfsReader getReader() {
     return _reader;
   }
@@ -101,7 +111,6 @@ public class GtfsTransformer {
       System.out.println("KCM Data Input Directory=" + _dataInputDirectory);
     System.out.println("Output Directory=" + _outputDirectory);
 
-   
     readData();
     readGtfs();
     udateGtfs();
@@ -110,7 +119,6 @@ public class GtfsTransformer {
 
   private void readGtfs() throws IOException {
 
-    
     _reader.setInputLocation(_gtfsInputDirectory);
     _reader.setEntityStore(_dao);
 

@@ -10,7 +10,7 @@ import org.onebusaway.gtfs.csv.schema.FieldMapping;
 import org.onebusaway.gtfs.csv.schema.FieldMappingFactory;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 
-public class DateFieldMappingFactory implements FieldMappingFactory {
+public class ServiceDateFieldMappingFactory implements FieldMappingFactory {
 
   public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
       Class<?> entityType, String csvFieldName, String objFieldName,

@@ -20,8 +20,8 @@ import org.onebusaway.gtfs_transformer.GtfsTransformer;
 import org.onebusaway.gtfs_transformer.impl.MatchingEntityModificationStrategyWrapper;
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
 import org.onebusaway.gtfs_transformer.impl.SimpleModificationStrategy;
-import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
+import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 
 public class TransformFactory {
 
@@ -94,10 +94,12 @@ public class TransformFactory {
       JSONObject json) throws JSONException {
 
     JSONObject properties = json.getJSONObject("obj");
-    Map<String, Object> here = getEntityPropertiesAndValuesFromJsonObject(properties);
 
     Class<?> entityClass = getEntityTypeForName(properties.getString("class"));
     Object instance = instantiate(entityClass);
+
+    Map<String, Object> here = getEntityPropertiesAndValuesFromJsonObject(
+        entityClass, properties);
 
     BeanWrapper wrapper = BeanWrapperFactory.wrap(instance);
     for (Map.Entry<String, Object> entry : here.entrySet())
@@ -145,7 +147,8 @@ public class TransformFactory {
 
     JSONObject update = json.getJSONObject("update");
 
-    Map<String, Object> propertyUpdates = getEntityPropertiesAndValuesFromJsonObject(update);
+    Map<String, Object> propertyUpdates = getEntityPropertiesAndValuesFromJsonObject(
+        match.getType(), update);
     SimpleModificationStrategy mod = new SimpleModificationStrategy(
         match.getPropertyMatches(), propertyUpdates);
 
@@ -243,14 +246,15 @@ public class TransformFactory {
           "modification match must have \"class\" argument: line=" + line);
     Class<?> entityType = getEntityTypeForName(entityTypeString);
 
-    Map<String, Object> propertyMatches = getEntityPropertiesAndValuesFromJsonObject(match);
+    Map<String, Object> propertyMatches = getEntityPropertiesAndValuesFromJsonObject(
+        entityType, match);
 
     return new EntityMatch(entityType, propertyMatches);
   }
 
   @SuppressWarnings("unchecked")
   private Map<String, Object> getEntityPropertiesAndValuesFromJsonObject(
-      JSONObject obj) throws JSONException {
+      Class<?> entityType, JSONObject obj) throws JSONException {
 
     Map<String, Object> map = new HashMap<String, Object>();
 

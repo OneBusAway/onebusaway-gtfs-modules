@@ -40,6 +40,8 @@ public class CalendarServiceDataFactoryImpl implements
 
   private GtfsRelationalDao _dao;
 
+  private int _excludeFutureServiceDatesInDays;
+
   public CalendarServiceDataFactoryImpl() {
 
   }
@@ -50,6 +52,11 @@ public class CalendarServiceDataFactoryImpl implements
 
   public void setGtfsDao(GtfsRelationalDao dao) {
     _dao = dao;
+  }
+
+  public void setExcludeFutureServiceDatesInDays(
+      int excludeFutureServiceDatesInDays) {
+    _excludeFutureServiceDatesInDays = excludeFutureServiceDatesInDays;
   }
 
   @Override
@@ -191,7 +198,7 @@ public class CalendarServiceDataFactoryImpl implements
       }
 
       if (active) {
-        activeDates.add(new ServiceDate(c));
+        addServiceDate(activeDates, c);
       }
 
       c.add(java.util.Calendar.DAY_OF_YEAR, 1);
@@ -207,7 +214,7 @@ public class CalendarServiceDataFactoryImpl implements
 
     switch (calendarDate.getExceptionType()) {
       case ServiceCalendarDate.EXCEPTION_TYPE_ADD:
-        activeDates.add(new ServiceDate(c));
+        addServiceDate(activeDates, c);
         break;
       case ServiceCalendarDate.EXCEPTION_TYPE_REMOVE:
         activeDates.remove(new ServiceDate(c));
@@ -219,4 +226,13 @@ public class CalendarServiceDataFactoryImpl implements
     }
   }
 
+  private void addServiceDate(Set<ServiceDate> activeDates, Calendar c) {
+    if (_excludeFutureServiceDatesInDays > 0) {
+      int days = (int) ((c.getTimeInMillis() - System.currentTimeMillis()) / (24 * 60 * 60 * 1000));
+      if (days > _excludeFutureServiceDatesInDays)
+        return;
+    }
+
+    activeDates.add(new ServiceDate(c));
+  }
 }

@@ -14,12 +14,15 @@ import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.onebusaway.collections.tuple.Pair;
+import org.onebusaway.collections.tuple.Tuples;
 import org.onebusaway.gtfs.csv.schema.BeanWrapper;
 import org.onebusaway.gtfs.csv.schema.BeanWrapperFactory;
 import org.onebusaway.gtfs_transformer.GtfsTransformer;
 import org.onebusaway.gtfs_transformer.impl.MatchingEntityModificationStrategyWrapper;
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
 import org.onebusaway.gtfs_transformer.impl.SimpleModificationStrategy;
+import org.onebusaway.gtfs_transformer.impl.StringModificationStrategy;
 import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 
@@ -141,18 +144,29 @@ public class TransformFactory {
       return;
     }
 
-    if (!json.has("update"))
-      throw new IllegalArgumentException(
-          "modification must have \"update\" argument: line=" + line);
+    if (json.has("update")) {
+      
+      JSONObject update = json.getJSONObject("update");
 
-    JSONObject update = json.getJSONObject("update");
+      Map<String, Object> propertyUpdates = getEntityPropertiesAndValuesFromJsonObject(
+          match.getType(), update);
+      SimpleModificationStrategy mod = new SimpleModificationStrategy(
+          match.getPropertyMatches(), propertyUpdates);
 
-    Map<String, Object> propertyUpdates = getEntityPropertiesAndValuesFromJsonObject(
-        match.getType(), update);
-    SimpleModificationStrategy mod = new SimpleModificationStrategy(
-        match.getPropertyMatches(), propertyUpdates);
+      strategy.addModification(match.getType(), mod);
+    }
 
-    strategy.addModification(match.getType(), mod);
+    if (json.has("strings")) {
+      
+      JSONObject strings = json.getJSONObject("strings");
+      
+      Map<String, Pair<String>> replacements = getEntityPropertiesAndStringReplacementsFromJsonObject(
+          match.getType(), strings);
+      StringModificationStrategy mod = new StringModificationStrategy(
+          match.getPropertyMatches(), replacements);
+
+      strategy.addModification(match.getType(), mod);
+    }
   }
 
   private void handleRemoveOperation(GtfsTransformer transformer, String line,
@@ -267,6 +281,25 @@ public class TransformFactory {
         continue;
 
       map.put(property, value);
+    }
+
+    return map;
+  }
+  
+  @SuppressWarnings("unchecked")
+  private Map<String, Pair<String>> getEntityPropertiesAndStringReplacementsFromJsonObject(
+      Class<?> entityType, JSONObject obj) throws JSONException {
+
+    Map<String, Pair<String>> map = new HashMap<String, Pair<String>>();
+
+    for (Iterator<String> it = obj.keys(); it.hasNext();) {
+
+      String property = it.next();
+      JSONObject pairs = obj.getJSONObject(property);
+      String from = (String) pairs.keys().next();
+      String to = pairs.getString(from);
+      Pair<String> pair = Tuples.pair(from,to);
+      map.put(property, pair);
     }
 
     return map;

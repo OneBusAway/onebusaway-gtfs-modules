@@ -28,6 +28,8 @@ public class CsvEntityReader {
   private CsvEntityContextImpl _context = new CsvEntityContextImpl();
 
   private CsvInputSource _source;
+  
+  private TokenizerStrategy _tokenizerStrategy = new CsvTokenizerStrategy();
 
   private List<EntityHandler> _handlers = new ArrayList<EntityHandler>();
 
@@ -50,6 +52,10 @@ public class CsvEntityReader {
       _source = new FileCsvInputSource(path);
     else
       _source = new ZipFileCsvInputSource(new ZipFile(path));
+  }
+  
+  public void setTokenizerStrategy(TokenizerStrategy tokenizerStrategy) {
+    _tokenizerStrategy = tokenizerStrategy;
   }
 
   public void setTrimValues(boolean trimValues) {
@@ -106,7 +112,7 @@ public class CsvEntityReader {
 
     try {
       while ((line = lineReader.readLine()) != null) {
-        List<String> values = CSVLibrary.parse(line);
+        List<String> values = _tokenizerStrategy.parse(line);
         entityLoader.handleLine(values);
         lineNumber++;
       }

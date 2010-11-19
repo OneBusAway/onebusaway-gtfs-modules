@@ -24,31 +24,48 @@ class IndividualCsvEntityWriter implements EntityHandler {
 
   private CsvEntityContext _context;
 
+  private TokenizerStrategy _tokenizerStrategy = new CsvTokenizerStrategy();
+
+  private boolean _seenFirstRecord = false;
+
   public IndividualCsvEntityWriter(CsvEntityContext context,
       EntitySchema schema, PrintWriter writer) {
     _writer = writer;
     _schema = schema;
     _context = context;
 
-    _fieldNames.clear();
-    for (FieldMapping field : _schema.getFields())
-      field.getCSVFieldNames(_fieldNames);
-    _writer.println(CSVLibrary.getIterableAsCSV(_fieldNames));
+  }
+
+  public void setTokenizerStrategy(TokenizerStrategy tokenizerStrategy) {
+    _tokenizerStrategy = tokenizerStrategy;
   }
 
   public void handleEntity(Object object) {
+
+    if (!_seenFirstRecord) {
+
+      _fieldNames.clear();
+      for (FieldMapping field : _schema.getFields())
+        field.getCSVFieldNames(_fieldNames);
+
+      _writer.println(_tokenizerStrategy.format(_fieldNames));
+
+      _seenFirstRecord = true;
+    }
+
     BeanWrapper wrapper = BeanWrapperFactory.wrap(object);
     Map<String, Object> csvValues = new HashMap<String, Object>();
     for (FieldMapping field : _schema.getFields())
       field.translateFromObjectToCSV(_context, wrapper, csvValues);
-    List<Object> values = new ArrayList<Object>(csvValues.size());
+    List<String> values = new ArrayList<String>(csvValues.size());
     for (String fieldName : _fieldNames) {
       Object value = csvValues.get(fieldName);
       if (value == null)
         value = "";
-      values.add(value);
+      values.add(value.toString());
     }
-    _writer.println(CSVLibrary.getIterableAsCSV(values));
+    String line = _tokenizerStrategy.format(values);
+    _writer.println(line);
   }
 
   public void flush() {

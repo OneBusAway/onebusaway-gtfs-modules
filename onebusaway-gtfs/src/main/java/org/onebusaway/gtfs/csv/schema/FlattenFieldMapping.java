@@ -40,6 +40,8 @@ class FlattenFieldMapping extends AbstractFieldMapping {
 
   public void translateFromObjectToCSV(CsvEntityContext context,
       BeanWrapper object, Map<String, Object> csvValues) {
+    if( isMissingAndOptional(object))
+      return;
     Object id = object.getPropertyValue(_objFieldName);
     BeanWrapper wrapper = BeanWrapperFactory.wrap(id);
     for (FieldMapping mapping : _schema.getFields())

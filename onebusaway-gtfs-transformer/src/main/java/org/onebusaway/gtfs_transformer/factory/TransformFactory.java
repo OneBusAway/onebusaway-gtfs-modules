@@ -12,12 +12,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.beanutils.ConvertUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.onebusaway.collections.PropertyPathExpression;
 import org.onebusaway.collections.tuple.Pair;
 import org.onebusaway.collections.tuple.Tuples;
 import org.onebusaway.gtfs.csv.schema.BeanWrapper;
 import org.onebusaway.gtfs.csv.schema.BeanWrapperFactory;
+import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs_transformer.GtfsTransformer;
 import org.onebusaway.gtfs_transformer.impl.MatchingEntityModificationStrategyWrapper;
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
@@ -27,6 +30,10 @@ import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 
 public class TransformFactory {
+  
+  static {
+    ConvertUtils.register(new ServiceDateConverter(), ServiceDate.class);
+  }
 
   public void addModificationsFromFile(GtfsTransformer updater, File path)
       throws IOException {
@@ -145,7 +152,7 @@ public class TransformFactory {
     }
 
     if (json.has("update")) {
-      
+
       JSONObject update = json.getJSONObject("update");
 
       Map<String, Object> propertyUpdates = getEntityPropertiesAndValuesFromJsonObject(
@@ -157,9 +164,9 @@ public class TransformFactory {
     }
 
     if (json.has("strings")) {
-      
+
       JSONObject strings = json.getJSONObject("strings");
-      
+
       Map<String, Pair<String>> replacements = getEntityPropertiesAndStringReplacementsFromJsonObject(
           match.getType(), strings);
       StringModificationStrategy mod = new StringModificationStrategy(
@@ -262,8 +269,16 @@ public class TransformFactory {
 
     Map<String, Object> propertyMatches = getEntityPropertiesAndValuesFromJsonObject(
         entityType, match);
+    
+    Map<PropertyPathExpression,Object> propertyPathExpressionMatches = new HashMap<PropertyPathExpression, Object>();
+    
+    for( Map.Entry<String,Object> entry : propertyMatches.entrySet() ) {
+      String property = entry.getKey();
+      PropertyPathExpression expression = new PropertyPathExpression(property);
+      propertyPathExpressionMatches.put(expression, entry.getValue());
+    }
 
-    return new EntityMatch(entityType, propertyMatches);
+    return new EntityMatch(entityType, propertyPathExpressionMatches);
   }
 
   @SuppressWarnings("unchecked")
@@ -280,12 +295,24 @@ public class TransformFactory {
       if (property.equals("class"))
         continue;
 
+      Class<?> fromType = value.getClass();
+
+      if (fromType.equals(String.class)) {
+
+        PropertyPathExpression exp = new PropertyPathExpression(property);
+        Class<?> toType = exp.initialize(entityType);
+
+        if (!toType.isAssignableFrom(fromType)) {
+          value = ConvertUtils.convert((String) value, toType);
+        }
+      }
+
       map.put(property, value);
     }
 
     return map;
   }
-  
+
   @SuppressWarnings("unchecked")
   private Map<String, Pair<String>> getEntityPropertiesAndStringReplacementsFromJsonObject(
       Class<?> entityType, JSONObject obj) throws JSONException {
@@ -298,7 +325,7 @@ public class TransformFactory {
       JSONObject pairs = obj.getJSONObject(property);
       String from = (String) pairs.keys().next();
       String to = pairs.getString(from);
-      Pair<String> pair = Tuples.pair(from,to);
+      Pair<String> pair = Tuples.pair(from, to);
       map.put(property, pair);
     }
 

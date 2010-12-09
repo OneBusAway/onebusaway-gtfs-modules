@@ -5,6 +5,7 @@ import java.util.Map;
 import org.onebusaway.collections.tuple.Pair;
 import org.onebusaway.gtfs.csv.schema.BeanWrapper;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.factory.PropertyMatches;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class StringModificationStrategy extends
@@ -12,7 +13,7 @@ public class StringModificationStrategy extends
 
   private Map<String, Pair<String>> _propertyUpdates;
 
-  public StringModificationStrategy(Map<String, Object> propertyMatches,
+  public StringModificationStrategy(PropertyMatches propertyMatches,
       Map<String, Pair<String>> propertyUpdates) {
     super(propertyMatches);
     _propertyUpdates = propertyUpdates;

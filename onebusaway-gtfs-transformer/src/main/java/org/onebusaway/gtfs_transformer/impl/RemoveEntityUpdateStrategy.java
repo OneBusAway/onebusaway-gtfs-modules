@@ -1,7 +1,5 @@
 package org.onebusaway.gtfs_transformer.impl;
 
-import java.util.Map;
-
 import org.onebusaway.gtfs.csv.schema.BeanWrapper;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.Frequency;
@@ -10,12 +8,13 @@ import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.factory.PropertyMatches;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class RemoveEntityUpdateStrategy extends
     AbstractEntityModificationStrategy {
 
-  public RemoveEntityUpdateStrategy(Map<String, Object> propertyMatches) {
+  public RemoveEntityUpdateStrategy(PropertyMatches propertyMatches) {
     super(propertyMatches);
   }
 

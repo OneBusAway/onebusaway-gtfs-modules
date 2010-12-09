@@ -18,6 +18,8 @@ public class DefaultFieldMapping extends AbstractFieldMapping {
     super(entityType, csvFieldName, objFieldName, required);
     _objFieldType = objFieldType;
     _converter = ConvertUtils.lookup(objFieldType);
+    if (_converter == null && objFieldType.equals(Object.class))
+      _converter = new DefaultConverter();
     if (_converter == null)
       throw new NoDefaultConverterException(_entityType, _csvFieldName,
           _objFieldName, _objFieldType);

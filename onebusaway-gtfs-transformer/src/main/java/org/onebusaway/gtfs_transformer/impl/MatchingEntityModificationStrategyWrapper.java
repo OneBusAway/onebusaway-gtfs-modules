@@ -1,9 +1,8 @@
 package org.onebusaway.gtfs_transformer.impl;
 
-import java.util.Map;
-
 import org.onebusaway.gtfs.csv.schema.BeanWrapper;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.factory.PropertyMatches;
 import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
@@ -13,7 +12,7 @@ public class MatchingEntityModificationStrategyWrapper extends
   private EntityTransformStrategy _strategy;
 
   public MatchingEntityModificationStrategyWrapper(
-      Map<String, Object> propertyMatches, EntityTransformStrategy strategy) {
+      PropertyMatches propertyMatches, EntityTransformStrategy strategy) {
     super(propertyMatches);
     _strategy = strategy;
   }

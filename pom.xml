@@ -16,6 +16,29 @@
         <relativePath>../onebusaway</relativePath>
     </parent>
 
+    <repositories>
+        <repository>
+            <id>releases.developer.onebusaway.org</id>
+            <url>http://developer.onebusaway.org/maven/repository/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>snapshots.developer.onebusaway.org</id>
+            <url>http://developer.onebusaway.org/maven/snapshot-repository/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <scm>
         <connection>scm:svn:http://onebusaway.googlecode.com/svn/onebusaway-gtfs-modules/trunk</connection>
         <developerConnection>scm:svn:https://onebusaway.googlecode.com/svn/onebusaway-gtfs-modules/trunk</developerConnection>

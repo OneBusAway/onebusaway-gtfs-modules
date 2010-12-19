@@ -12,9 +12,32 @@
     <parent>
         <groupId>org.onebusaway</groupId>
         <artifactId>onebusaway</artifactId>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
         <relativePath>../onebusaway</relativePath>
     </parent>
+
+    <repositories>
+        <repository>
+            <id>releases.developer.onebusaway.org</id>
+            <url>http://developer.onebusaway.org/maven/repository/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>snapshots.developer.onebusaway.org</id>
+            <url>http://developer.onebusaway.org/maven/snapshot-repository/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <scm>
         <connection>scm:svn:http://onebusaway.googlecode.com/svn/onebusaway-gtfs-modules/tags/onebusaway-gtfs-modules-1.1.8</connection>

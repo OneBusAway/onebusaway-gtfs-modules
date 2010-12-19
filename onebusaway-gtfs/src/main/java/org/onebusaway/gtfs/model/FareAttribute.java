@@ -3,7 +3,7 @@ package org.onebusaway.gtfs.model;
 public final class FareAttribute extends IdentityBean<AgencyAndId> {
 
   private static final long serialVersionUID = 1L;
-  
+
   private static final int MISSING_VALUE = -999;
 
   private AgencyAndId id;
@@ -19,9 +19,9 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
   private int transferDuration = MISSING_VALUE;
 
   public FareAttribute() {
-    
+
   }
-  
+
   public FareAttribute(FareAttribute fa) {
     this.id = fa.id;
     this.price = fa.price;
@@ -30,7 +30,7 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
     this.transfers = fa.transfers;
     this.transferDuration = fa.transferDuration;
   }
-  
+
   @Override
   public AgencyAndId getId() {
     return id;
@@ -68,7 +68,7 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
   public boolean isTransfersSet() {
     return transfers != MISSING_VALUE;
   }
-  
+
   public int getTransfers() {
     return transfers;
   }
@@ -76,11 +76,15 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
   public void setTransfers(int transfers) {
     this.transfers = transfers;
   }
-  
+
+  public void clearTransfers() {
+    this.transfers = MISSING_VALUE;
+  }
+
   public boolean isTransferDurationSet() {
     return transferDuration != MISSING_VALUE;
   }
-  
+
   public int getTransferDuration() {
     return transferDuration;
   }
@@ -89,6 +93,10 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
     this.transferDuration = transferDuration;
   }
   
+  public void clearTransferDuration() {
+    this.transferDuration = MISSING_VALUE;
+  }
+
   public String toString() {
     return "<FareAttribute " + getId() + ">";
   }

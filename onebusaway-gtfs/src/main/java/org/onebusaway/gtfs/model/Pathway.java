@@ -62,6 +62,10 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
     return wheelchairTraversalTime != MISSING_VALUE;
   }
 
+  public void clearWheelchairTraversalTime() {
+    this.wheelchairTraversalTime = MISSING_VALUE;
+  }
+
   @Override
   public String toString() {
     return "<Pathway " + this.id + ">";

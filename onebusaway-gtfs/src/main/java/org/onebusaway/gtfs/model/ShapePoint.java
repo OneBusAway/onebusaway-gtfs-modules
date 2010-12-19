@@ -4,7 +4,7 @@ public final class ShapePoint extends IdentityBean<Integer> implements
     Comparable<ShapePoint> {
 
   private static final long serialVersionUID = 1L;
-  
+
   public static final double MISSING_VALUE = -999;
 
   private int id;
@@ -71,6 +71,10 @@ public final class ShapePoint extends IdentityBean<Integer> implements
 
   public void setDistTraveled(double distTraveled) {
     this.distTraveled = distTraveled;
+  }
+
+  public void clearDistTraveled() {
+    this.distTraveled = MISSING_VALUE;
   }
 
   public double getLat() {

@@ -93,6 +93,10 @@ public final class StopTime extends IdentityBean<Integer> implements
   public void setArrivalTime(int arrivalTime) {
     this.arrivalTime = arrivalTime;
   }
+  
+  public void clearArrivalTime() {
+    this.arrivalTime = MISSING_VALUE;
+  }
 
   public boolean isDepartureTimeSet() {
     return departureTime != MISSING_VALUE;
@@ -107,6 +111,10 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   public void setDepartureTime(int departureTime) {
     this.departureTime = departureTime;
+  }
+  
+  public void clearDepartureTime() {
+    this.departureTime = MISSING_VALUE;
   }
 
   public String getStopHeadsign() {
@@ -151,6 +159,10 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   public void setShapeDistTraveled(double shapeDistTraveled) {
     this.shapeDistTraveled = shapeDistTraveled;
+  }
+  
+  public void clearShapeDistTraveled() {
+    this.shapeDistTraveled = MISSING_VALUE;
   }
 
   public int compareTo(StopTime o) {

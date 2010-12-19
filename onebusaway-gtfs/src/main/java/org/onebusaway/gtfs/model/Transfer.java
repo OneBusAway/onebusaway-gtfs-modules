@@ -74,6 +74,10 @@ public final class Transfer extends IdentityBean<Integer> {
     this.minTransferTime = minTransferTime;
   }
 
+  public void clearMinTransferTime() {
+    this.minTransferTime = MISSING_VALUE;
+  }
+
   public String toString() {
     return "<Transfer " + getId() + ">";
   }

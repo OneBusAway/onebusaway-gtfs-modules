@@ -20,7 +20,7 @@
         SELECT st FROM StopTime st WHERE st.stop = :stop
     </query>
     <query name="shapePointsForShapeId" read-only="true">
-        FROM ShapePoint point WHERE point.id.shapeId = :shapeId
+        FROM ShapePoint point WHERE point.id.shapeId = :shapeId ORDER BY point.sequence
     </query>
     <query name="frequenciesForTrip" read-only="true">
         FROM Frequency f WHERE f.trip = :trip

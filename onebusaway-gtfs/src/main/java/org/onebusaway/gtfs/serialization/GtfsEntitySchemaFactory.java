@@ -106,7 +106,7 @@ public class GtfsEntitySchemaFactory {
     CsvEntityMappingBean stop = helper.addEntity(Stop.class, "stops.txt",
         "stop_");
     helper.addField(stop, "id", new DefaultAgencyIdFieldMappingFactory());
-    helper.addOptionalFields(stop, "code", "desc", "url");
+    helper.addOptionalFields(stop, "code", "desc", "direction", "url");
     helper.addOptionalField(stop, "zoneId", "zone_id");
     helper.addOptionalField(stop, "locationType", "location_type");
     helper.addOptionalField(stop, "parentStation", "parent_station");

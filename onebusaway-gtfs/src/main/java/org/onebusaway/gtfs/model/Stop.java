@@ -25,6 +25,8 @@ public final class Stop extends IdentityBean<AgencyAndId> {
   private String parentStation;
 
   private int wheelchairBoarding = 0;
+  
+  private String direction;
 
   public Stop() {
 
@@ -42,6 +44,7 @@ public final class Stop extends IdentityBean<AgencyAndId> {
     this.locationType = obj.locationType;
     this.parentStation = obj.parentStation;
     this.wheelchairBoarding = obj.wheelchairBoarding;
+    this.direction = obj.direction;
   }
 
   public AgencyAndId getId() {
@@ -135,5 +138,13 @@ public final class Stop extends IdentityBean<AgencyAndId> {
 
   public int getWheelchairBoarding() {
     return wheelchairBoarding;
+  }
+
+  public String getDirection() {
+    return direction;
+  }
+
+  public void setDirection(String direction) {
+    this.direction = direction;
   }
 }

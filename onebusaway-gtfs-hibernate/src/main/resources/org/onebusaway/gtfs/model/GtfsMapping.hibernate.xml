@@ -141,6 +141,7 @@
         <property name="code" />
         <property name="name" />
         <property name="desc" column="description" />
+        <property name="direction" />
         <property name="lat" />
         <property name="lon" />
         <property name="zoneId" />

@@ -35,6 +35,8 @@ public class CsvEntityReader {
 
   private boolean _trimValues = false;
 
+  private boolean _internStrings = false;
+
   public void setEntitySchemaFactory(EntitySchemaFactory entitySchemaFactory) {
     _entitySchemaFactory = entitySchemaFactory;
   }
@@ -68,6 +70,10 @@ public class CsvEntityReader {
 
   public CsvEntityContext getContext() {
     return _context;
+  }
+  
+  public void setInternStrings(boolean internStrings) {
+    _internStrings = internStrings;
   }
 
   public void readEntities(Class<?> entityClass) throws IOException {
@@ -113,6 +119,8 @@ public class CsvEntityReader {
     try {
       while ((line = lineReader.readLine()) != null) {
         List<String> values = _tokenizerStrategy.parse(line);
+        if( _internStrings )
+          internStrings(values);
         entityLoader.handleLine(values);
         lineNumber++;
       }
@@ -146,6 +154,15 @@ public class CsvEntityReader {
   public void close() throws IOException {
     if (_source != null)
       _source.close();
+  }
+  
+
+  private void internStrings(List<String> values) {
+    for( int i=0; i<values.size(); i++ ) {
+      String value = values.get(i);
+      value = value.intern();
+      values.set(i, value);
+    }
   }
 
   private class EntityHandlerImpl implements EntityHandler {

@@ -3,13 +3,16 @@ package org.onebusaway.gtfs.serialization;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Test;
@@ -38,7 +41,7 @@ public class GtfsReaderTest {
   public void testIslandTransit() throws IOException {
 
     String agencyId = "26";
-    GtfsDao entityStore = processFeed(GtfsTestData.getIslandGtfs(), agencyId);
+    GtfsDao entityStore = processFeed(GtfsTestData.getIslandGtfs(), agencyId, false);
 
     Collection<Agency> agencies = entityStore.getAllAgencies();
     assertEquals(1, agencies.size());
@@ -113,7 +116,7 @@ public class GtfsReaderTest {
 
     File resourcePath = GtfsTestData.getCaltrainGtfs();
     String agencyId = "Caltrain";
-    GtfsDao entityStore = processFeed(resourcePath, agencyId);
+    GtfsDao entityStore = processFeed(resourcePath, agencyId, false);
 
     Collection<Agency> agencies = entityStore.getAllAgencies();
     assertEquals(1, agencies.size());
@@ -272,7 +275,7 @@ public class GtfsReaderTest {
 
     File resourcePath = GtfsTestData.getBartGtfs();
     String agencyId = "BART";
-    GtfsDao entityStore = processFeed(resourcePath, agencyId);
+    GtfsDao entityStore = processFeed(resourcePath, agencyId, false);
 
     Collection<Frequency> frequencies = entityStore.getAllFrequencies();
     assertEquals(6, frequencies.size());
@@ -289,12 +292,55 @@ public class GtfsReaderTest {
     assertEquals(4, transfers.size());
   }
 
+
+  @Test
+  public void testIntern() throws IOException, ParseException {
+    File resourcePath;
+    String agencyId;
+    GtfsDao entityStore;
+    
+    resourcePath = GtfsTestData.getBartGtfs();
+    agencyId = "BART";
+    
+    entityStore = processFeed(resourcePath, agencyId, true);
+    Collection<Trip> trips = entityStore.getAllTrips();
+    for (Iterator<Trip> iter = trips.iterator(); iter.hasNext();) {
+    	Trip t = iter.next();
+    	iter.remove();
+		String s1 = t.getTripHeadsign();
+    	for (Trip u : trips) {
+    		String s2 = u.getTripHeadsign();
+    		if (s1.equals(s2)) {
+    			assertSame(s1, s2);
+    		} else {
+    			assertNotSame(s1, s2);
+    		}
+    	}
+    }
+
+    resourcePath = GtfsTestData.getCaltrainGtfs();
+    agencyId = "Caltrain";
+    
+    entityStore = processFeed(resourcePath, agencyId, false);
+    Collection<FareAttribute> fareAttributes = entityStore.getAllFareAttributes();
+    assertTrue(fareAttributes.size() > 1);
+    for (FareAttribute f : fareAttributes) {
+		String s1 = f.getCurrencyType();
+        for (FareAttribute g : fareAttributes) {
+    		if (f == g) continue;
+    		String s2 = g.getCurrencyType();
+    		assertEquals(s1, s2);
+   			assertNotSame(s1, s2);
+    	}
+    }
+  }
+  
   @Test
   public void testTestAgency() throws IOException {
 
     String agencyId = "agency";
     GtfsRelationalDao dao = processFeed(GtfsTestData.getTestAgencyGtfs(),
-        agencyId);
+        agencyId, false);
 
     Agency agency = dao.getAgencyForId(agencyId);
     assertEquals(agencyId, agency.getId());
@@ -371,7 +417,7 @@ public class GtfsReaderTest {
   public void testUtf8() throws IOException, ParseException, InterruptedException {
 
     String agencyId = "agency";
-    GtfsDao dao = processFeed(new File("src/test/resources/org/onebusaway/gtfs/utf8-agency"), agencyId);
+    GtfsDao dao = processFeed(new File("src/test/resources/org/onebusaway/gtfs/utf8-agency"), agencyId, false);
 
     Route route = dao.getRouteForId(new AgencyAndId(agencyId,"A"));
     assertEquals("Enguera-Alcúdia de Crespins-Xàtiva",route.getLongName());
@@ -383,7 +429,7 @@ public class GtfsReaderTest {
   @Test
   public void testBom() throws IOException, ParseException, InterruptedException {
 
-    GtfsDao dao = processFeed(new File("src/test/resources/org/onebusaway/gtfs/bom-agency"), "1");
+    GtfsDao dao = processFeed(new File("src/test/resources/org/onebusaway/gtfs/bom-agency"), "1", false);
 
     Route route = dao.getRouteForId(new AgencyAndId("1","02-88"));
     assertEquals("La Poterie - Haut Sancé / Grand Quartier",route.getLongName());
@@ -392,12 +438,13 @@ public class GtfsReaderTest {
     assertEquals("Saint Saëns - ZI Sud Est / Stade Rennais ZI Ouest",route.getLongName());
   }
 
-  private GtfsRelationalDao processFeed(File resourcePath, String agencyId)
+  private GtfsRelationalDao processFeed(File resourcePath, String agencyId, boolean internStrings)
       throws IOException {
 
     GtfsReader reader = new GtfsReader();
     reader.setDefaultAgencyId(agencyId);
-
+    reader.setInternStrings(internStrings);
+    
     reader.setInputLocation(resourcePath);
 
     GtfsRelationalDaoImpl entityStore = new GtfsRelationalDaoImpl();

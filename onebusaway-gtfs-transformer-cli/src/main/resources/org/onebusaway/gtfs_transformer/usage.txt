@@ -2,7 +2,7 @@ Usage: [args] gtfs_input_dir gtfs_output_dir
 
 Args:
  --agencyId ID                    override the default agency id for imported GTFS data
- --transform PATH                 apply general transform from the specified path / resource
+ --transform=SPEC                 apply general transform from the specified definition
  
 Transforms:
 

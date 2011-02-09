@@ -1,13 +1,13 @@
 package org.onebusaway.gtfs_transformer.services;
 
-import org.onebusaway.gtfs_transformer.king_county_metro.MetroKCDao;
-
+import java.util.HashMap;
+import java.util.Map;
 
 public class TransformContext {
 
   private String _defaultAgencyId;
 
-  private MetroKCDao _metroKCDao;
+  private Map<String, Object> _parameters = new HashMap<String, Object>();
 
   public void setDefaultAgencyId(String agencyId) {
     _defaultAgencyId = agencyId;
@@ -17,11 +17,12 @@ public class TransformContext {
     return _defaultAgencyId;
   }
 
-  public void setMetroKCDao(MetroKCDao metroKCDao) {
-    _metroKCDao = metroKCDao;
+  public void putParameter(String key, Object value) {
+    _parameters.put(key, value);
   }
 
-  public MetroKCDao getMetroKCDao() {
-    return _metroKCDao;
+  @SuppressWarnings("unchecked")
+  public <T> T getParameter(String key) {
+    return (T) _parameters.get(key);
   }
 }

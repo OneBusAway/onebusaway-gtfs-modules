@@ -8,8 +8,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.ConvertUtils;
@@ -28,11 +30,22 @@ import org.onebusaway.gtfs_transformer.impl.SimpleModificationStrategy;
 import org.onebusaway.gtfs_transformer.impl.StringModificationStrategy;
 import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
+import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategyFactory;
 
 public class TransformFactory {
-  
+
   static {
     ConvertUtils.register(new ServiceDateConverter(), ServiceDate.class);
+  }
+
+  private List<String> _entityPackages = new ArrayList<String>();
+
+  public TransformFactory() {
+    addEntityPackage("org.onebusaway.gtfs.model");
+  }
+
+  public void addEntityPackage(String entityPackage) {
+    _entityPackages.add(entityPackage);
   }
 
   public void addModificationsFromFile(GtfsTransformer updater, File path)
@@ -213,10 +226,7 @@ public class TransformFactory {
 
       Class<?> clazz = Class.forName(value);
       Object factoryObj = clazz.newInstance();
-      if (!(factoryObj instanceof GtfsTransformStrategy))
-        throw new IllegalArgumentException(
-            "factory object is not an instance of GtfsTransformStrategy: "
-                + clazz.getName());
+
       BeanWrapper wrapped = BeanWrapperFactory.wrap(factoryObj);
       for (Iterator<?> it = json.keys(); it.hasNext();) {
         String key = (String) it.next();
@@ -226,23 +236,36 @@ public class TransformFactory {
         wrapped.setPropertyValue(key, v);
       }
 
-      transformer.addTransform((GtfsTransformStrategy) factoryObj);
+      if (factoryObj instanceof GtfsTransformStrategy) {
+        transformer.addTransform((GtfsTransformStrategy) factoryObj);
+      } else if (factoryObj instanceof GtfsTransformStrategyFactory) {
+        GtfsTransformStrategyFactory factory = (GtfsTransformStrategyFactory) factoryObj;
+        factory.createTransforms(transformer);
+      } else {
+        throw new IllegalArgumentException(
+            "factory object is not an instance of GtfsTransformStrategy or GtfsTransformStrategyFactory: "
+                + clazz.getName());
+      }
+
     } catch (Exception ex) {
       throw new IllegalStateException("error instantiating class: " + value, ex);
     }
   }
 
   private Class<?> getEntityTypeForName(String name) {
-    Class<?> type = getClassForName(name);
-    if (type == null)
-      type = getClassForName("org.onebusaway.gtfs.model." + name);
-    if (type == null)
-      type = getClassForName("org.onebusaway.gtfs_transformer.king_county_metro.model."
-          + name);
-    if (type == null)
-      throw new IllegalArgumentException("class not found: " + name);
 
-    return type;
+    Class<?> type = getClassForName(name);
+
+    if (type != null)
+      return type;
+
+    for (String entityPackage : _entityPackages) {
+      type = getClassForName(entityPackage + "." + name);
+      if (type != null)
+        return type;
+    }
+
+    throw new IllegalArgumentException("class not found: " + name);
   }
 
   private Class<?> getClassForName(String className) {
@@ -269,10 +292,10 @@ public class TransformFactory {
 
     Map<String, Object> propertyMatches = getEntityPropertiesAndValuesFromJsonObject(
         entityType, match);
-    
-    Map<PropertyPathExpression,Object> propertyPathExpressionMatches = new HashMap<PropertyPathExpression, Object>();
-    
-    for( Map.Entry<String,Object> entry : propertyMatches.entrySet() ) {
+
+    Map<PropertyPathExpression, Object> propertyPathExpressionMatches = new HashMap<PropertyPathExpression, Object>();
+
+    for (Map.Entry<String, Object> entry : propertyMatches.entrySet()) {
       String property = entry.getKey();
       PropertyPathExpression expression = new PropertyPathExpression(property);
       propertyPathExpressionMatches.put(expression, entry.getValue());

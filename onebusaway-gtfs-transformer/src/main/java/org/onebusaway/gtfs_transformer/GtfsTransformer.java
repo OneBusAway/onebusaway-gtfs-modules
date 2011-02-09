@@ -26,15 +26,7 @@ import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.king_county_metro.MetroKCDao;
-import org.onebusaway.gtfs_transformer.king_county_metro.MetroKCDaoImpl;
-import org.onebusaway.gtfs_transformer.king_county_metro.MetroKCDataReader;
-import org.onebusaway.gtfs_transformer.king_county_metro.model.MetroKCBlockTrip;
-import org.onebusaway.gtfs_transformer.king_county_metro.model.MetroKCChangeDate;
-import org.onebusaway.gtfs_transformer.king_county_metro.model.MetroKCPatternPair;
-import org.onebusaway.gtfs_transformer.king_county_metro.model.MetroKCStop;
-import org.onebusaway.gtfs_transformer.king_county_metro.model.MetroKCStopTime;
-import org.onebusaway.gtfs_transformer.king_county_metro.model.MetroKCTrip;
+import org.onebusaway.gtfs_transformer.factory.TransformFactory;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.SchemaUpdateStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
@@ -47,8 +39,6 @@ public class GtfsTransformer {
 
   private File _gtfsInputDirectory;
 
-  private File _dataInputDirectory;
-
   private File _outputDirectory;
 
   private List<GtfsTransformStrategy> _transformStrategies = new ArrayList<GtfsTransformStrategy>();
@@ -59,16 +49,12 @@ public class GtfsTransformer {
 
   private GtfsMutableRelationalDao _dao = new GtfsRelationalDaoImpl();
 
-  private MetroKCDao _metrokcDao = new MetroKCDaoImpl();
-
   private String _agencyId;
+
+  private TransformFactory _transformFactory = new TransformFactory();
 
   public void setGtfsInputDirectory(File gtfsInputDirectory) {
     _gtfsInputDirectory = gtfsInputDirectory;
-  }
-
-  public void setDataInputDirectory(File dataInputDirectory) {
-    _dataInputDirectory = dataInputDirectory;
   }
 
   public void setOutputDirectory(File outputDirectory) {
@@ -101,17 +87,17 @@ public class GtfsTransformer {
     return _reader;
   }
 
+  public TransformFactory getTransformFactory() {
+    return _transformFactory;
+  }
+
   public void run() throws Exception {
 
     if (!_outputDirectory.exists())
       _outputDirectory.mkdirs();
 
-    System.out.println("GTFS Input Directory=" + _gtfsInputDirectory);
-    if (_dataInputDirectory != null)
-      System.out.println("KCM Data Input Directory=" + _dataInputDirectory);
     System.out.println("Output Directory=" + _outputDirectory);
 
-    readData();
     readGtfs();
     udateGtfs();
     writeGtfs();
@@ -128,32 +114,10 @@ public class GtfsTransformer {
     _reader.run();
   }
 
-  private void readData() throws IOException {
-
-    if (_dataInputDirectory == null)
-      return;
-
-    MetroKCDataReader reader = new MetroKCDataReader();
-    reader.setInputLocation(_dataInputDirectory);
-    reader.setDao(_metrokcDao);
-
-    List<Class<?>> entityClasses = reader.getEntityClasses();
-    entityClasses.clear();
-    entityClasses.add(MetroKCChangeDate.class);
-    entityClasses.add(MetroKCStop.class);
-    entityClasses.add(MetroKCTrip.class);
-    entityClasses.add(MetroKCPatternPair.class);
-    entityClasses.add(MetroKCStopTime.class);
-    entityClasses.add(MetroKCBlockTrip.class);
-
-    reader.run();
-  }
-
   private void udateGtfs() {
     TransformContext context = new TransformContext();
     if (_agencyId != null)
       context.setDefaultAgencyId(_agencyId);
-    context.setMetroKCDao(_metrokcDao);
     for (GtfsTransformStrategy strategy : _transformStrategies)
       strategy.run(context, _dao);
   }

@@ -136,9 +136,9 @@ public class EntityRetentionGraph {
         AgencyAndId blockId = new AgencyAndId(trip.getId().getAgencyId(),
             trip.getBlockId());
         retainUp(new BlockIdKey(blockId));
-        for (Frequency frequency : _dao.getFrequenciesForTrip(trip))
-          retainUp(frequency);
       }
+      for (Frequency frequency : _dao.getFrequenciesForTrip(trip))
+        retainUp(frequency);
     } else {
       retainDown(trip.getRoute());
       retainDown(new ServiceIdKey(trip.getServiceId()));

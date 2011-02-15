@@ -55,35 +55,47 @@ public class EntityRetentionGraph {
     _retainAllStopTimesForTrip = retainAllStopTimesForTrip;
   }
 
-  public void retain(Object object) {
-    if (object == null)
-      throw new IllegalArgumentException("object to retain is null");
+  /**
+   * Retain up: retain things that depend on the target object
+   * 
+   * For example, if you retain up on a {@link Route}, we would also retain up
+   * on the {@link Trip} objects depending on this route
+   * 
+   * @param object
+   */
+  public void retainUp(Object object) {
     retain(object, true);
   }
 
-  public boolean isRetained(Object object) {
-    if (object == null)
-      throw new IllegalArgumentException("object to check is null");
-    /**
-     * Retained down should contain ALL retained objects, since every object
-     * that is retained up is also retained down (but not vice versa)
-     */
-    return _retainedDown.contains(object);
-  }
-
-  public int getSize() {
-    return _retainedDown.size();
-  }
-
-  private void retainUp(Object object) {
-    retain(object, true);
-  }
-
-  private void retainDown(Object object) {
+  /**
+   * Retain down: retain things that the target object depends on
+   * 
+   * For example, if you retain down on a {@link Route}, we would also retain
+   * down on the route's {@link Agency}.
+   * 
+   * @param object
+   */
+  public void retainDown(Object object) {
     retain(object, false);
   }
 
-  private void retain(Object object, boolean retainUp) {
+  /**
+   * Retain up: retain things that depend on the target object
+   * 
+   * For example, if you retain up on a {@link Route}, we would also retain up
+   * on the {@link Trip} objects depending on this route
+   * 
+   * Retain down: retain things that the target object depends on
+   * 
+   * For example, if you retain down on a {@link Route}, we would also retain
+   * down on the route's {@link Agency}.
+   * 
+   * @param object
+   */
+  public void retain(Object object, boolean retainUp) {
+
+    if (object == null)
+      throw new IllegalArgumentException("object to retain is null");
 
     Set<Object> retained = retainUp ? _retainedUp : _retainedDown;
     if (!retained.add(object))
@@ -112,6 +124,24 @@ public class EntityRetentionGraph {
       retainDown(object);
   }
 
+  public boolean isRetained(Object object) {
+    if (object == null)
+      throw new IllegalArgumentException("object to check is null");
+    /**
+     * Retained down should contain ALL retained objects, since every object
+     * that is retained up is also retained down (but not vice versa)
+     */
+    return _retainedDown.contains(object);
+  }
+
+  public int getSize() {
+    return _retainedDown.size();
+  }
+
+  /****
+   * Private Methods
+   ****/
+
   private void retainAgency(Agency agency, boolean retainUp) {
     if (retainUp) {
       for (Route route : _dao.getRoutesForAgency(agency))
@@ -122,7 +152,7 @@ public class EntityRetentionGraph {
   private void retainRoute(Route route, boolean retainUp) {
     if (retainUp) {
       for (Trip trip : _dao.getTripsForRoute(route))
-        retain(trip);
+        retainUp(trip);
     } else {
       retainDown(route.getAgency());
     }
@@ -131,7 +161,7 @@ public class EntityRetentionGraph {
   private void retainTrip(Trip trip, boolean retainUp) {
     if (retainUp) {
       for (StopTime stopTime : _dao.getStopTimesForTrip(trip))
-        retain(stopTime);
+        retainUp(stopTime);
       if (_retainBlocks && trip.getBlockId() != null) {
         AgencyAndId blockId = new AgencyAndId(trip.getId().getAgencyId(),
             trip.getBlockId());

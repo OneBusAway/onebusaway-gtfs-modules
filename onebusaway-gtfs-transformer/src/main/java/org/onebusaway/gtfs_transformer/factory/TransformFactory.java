@@ -209,8 +209,13 @@ public class TransformFactory {
         RetainEntitiesTransformStrategy.class);
 
     EntityMatch match = getMatch(line, json);
+    
+    boolean retainUp = true;
+    
+    if( json.has("retainUp"))
+      retainUp = json.getBoolean("retainUp");
 
-    strategy.addRetention(match);
+    strategy.addRetention(match, retainUp);
   }
 
   private void handleTransformOperation(GtfsTransformer transformer,

@@ -39,7 +39,7 @@ public class EntityRetentionGraphTest {
   @Test
   public void testRetainStop() {
     Stop stop = _dao.getStopForId(aid("A"));
-    _graph.retain(stop);
+    _graph.retainUp(stop);
 
     // 9 stop_times + 3 trips + 1 route + 1 agency + 3 stops + 1 service id + 1
     // calendar
@@ -60,14 +60,14 @@ public class EntityRetentionGraphTest {
 
     assertTrue(_graph.isRetained(_dao.getAgencyForId("agency")));
 
-    _graph.retain(stop);
+    _graph.retainUp(stop);
     assertEquals(19, _graph.getSize());
   }
 
   @Test
   public void testRetainRoute() {
 
-    _graph.retain(_dao.getRouteForId(aid("2")));
+    _graph.retainUp(_dao.getRouteForId(aid("2")));
 
     // 6 stop_times + 2 trips + 1 route + 1 agency + 3 stops + 1 service id + 1
     // calendar
@@ -90,7 +90,7 @@ public class EntityRetentionGraphTest {
 
   @Test
   public void testRetainTripWithBlock() {
-    _graph.retain(_dao.getTripForId(aid("6.1")));
+    _graph.retainUp(_dao.getTripForId(aid("6.1")));
 
     // 4 stop_times + 2 trips + 2 route + 1 agency + 3 stops + 1 service id + 1
     // calendar + 1 block id key
@@ -116,7 +116,7 @@ public class EntityRetentionGraphTest {
 
     _graph.setRetainBlocks(false);
 
-    _graph.retain(_dao.getTripForId(aid("6.1")));
+    _graph.retainUp(_dao.getTripForId(aid("6.1")));
 
     // 2 stop_times + 1 trips + 1 route + 1 agency + 2 stops + 1 service id + 1
     // calendar
@@ -134,7 +134,7 @@ public class EntityRetentionGraphTest {
 
   @Test
   public void testRetainTripWithShapes() {
-    _graph.retain(_dao.getTripForId(aid("4.1")));
+    _graph.retainUp(_dao.getTripForId(aid("4.1")));
 
     // 3 stop_times + 1 trips + 1 route + 1 agency + 3 stops + 1 service id + 1
     // calendar + 1 shape id key + 4 shape point

@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.onebusaway</groupId>
   <artifactId>onebusaway-gtfs-modules</artifactId>
-  <version>1.2.0</version>
+  <version>1.2.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>onebusaway-gtfs-modules</name>
@@ -43,9 +43,9 @@
   </repositories>
 
   <scm>
-    <connection>scm:svn:http://onebusaway.googlecode.com/svn/onebusaway-gtfs-modules/tags/onebusaway-gtfs-modules-1.2.0</connection>
-    <developerConnection>scm:svn:https://onebusaway.googlecode.com/svn/onebusaway-gtfs-modules/tags/onebusaway-gtfs-modules-1.2.0</developerConnection>
-    <url>http://code.google.com/p/onebusaway/source/browse/#svn/onebusaway-gtfs-modules/tags/onebusaway-gtfs-modules-1.2.0</url>
+    <connection>scm:svn:http://onebusaway.googlecode.com/svn/onebusaway-gtfs-modules/trunk</connection>
+    <developerConnection>scm:svn:https://onebusaway.googlecode.com/svn/onebusaway-gtfs-modules/trunk</developerConnection>
+    <url>http://code.google.com/p/onebusaway/source/browse/#svn/onebusaway-gtfs-modules/trunk</url>
   </scm>
 
   <distributionManagement>

@@ -2,26 +2,28 @@ Release Notes
 
 * ${currentVersion}
 
-  * Documentation tweaks
-  
-  * Full Documentation: {{${site_base_url}/onebusaway-collections/${currentVersion}/}}
-
-* 1.1.0
-
   * Initial Site Documentation
   
   * Bump to require Maven 3
 
   * FunctionalLibrary - simple filter, grep operations on collections
 
-  * Full Documentation: {{${site_base_url}/onebusaway-collections/1.1.0/}}
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
 
-* 1.0.4
+* 1.1.11
 
-* 1.0.3
+* 1.1.10
 
-* 1.0.2
+* 1.1.9
 
-* 1.0.1
+* 1.1.8
 
-* 1.0.0
+* 1.1.7
+
+* 1.1.6
+
+* 1.1.5
+
+* 1.1.4
+
+* 1.1.3

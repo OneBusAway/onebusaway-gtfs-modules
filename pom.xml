@@ -8,7 +8,6 @@
 
   <name>onebusaway-gtfs-modules</name>
   <description>Parent bundle of all OneBusAway GTFS modules</description>
-  <url>http://code.google.com/p/onebusaway/wiki/ModuleGtfs</url>
 
   <parent>
     <groupId>org.onebusaway</groupId>
@@ -16,6 +15,10 @@
     <version>1.1.0</version>
     <relativePath>../onebusaway</relativePath>
   </parent>
+  
+  <properties>
+    <onebusaway_csv_entities_version>1.0.0</onebusaway_csv_entities_version>
+  </properties>
 
   <repositories>
     <repository>
@@ -61,6 +64,34 @@
     <module>onebusaway-gtfs-transformer-cli</module>
   </modules>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.5.6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>1.5.6</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.4</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>1.8.0</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <build>
     <pluginManagement>
       <plugins>
@@ -72,5 +103,6 @@
       </plugins>
     </pluginManagement>
   </build>
+
 
 </project>

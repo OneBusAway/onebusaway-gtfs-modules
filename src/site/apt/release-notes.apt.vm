@@ -6,7 +6,7 @@ Release Notes
   
   * Bump to require Maven 3
 
-  * FunctionalLibrary - simple filter, grep operations on collections
+  * Refactor CSV entity reading and writing support into its own module: {{${site_base_url}/onebusaway-csv-entities/1.0.0/}}
 
   * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
 

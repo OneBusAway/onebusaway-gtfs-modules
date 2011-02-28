@@ -1,6 +1,6 @@
 package org.onebusaway.gtfs.serialization;
 
-import org.onebusaway.gtfs.csv.exceptions.CsvEntityException;
+import org.onebusaway.csv_entities.exceptions.CsvEntityException;
 
 /**
  * Indicates that a GTFS entity has a reference to another entity that has not

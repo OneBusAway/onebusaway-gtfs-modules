@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.onebusaway.gtfs.csv.EntityHandler;
+import org.onebusaway.csv_entities.EntityHandler;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 
 public class EntityCounterMain {

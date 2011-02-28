@@ -2,12 +2,12 @@ package org.onebusaway.gtfs.serialization.mappings;
 
 import java.util.Map;
 
-import org.onebusaway.gtfs.csv.CsvEntityContext;
-import org.onebusaway.gtfs.csv.schema.AbstractFieldMapping;
-import org.onebusaway.gtfs.csv.schema.BeanWrapper;
-import org.onebusaway.gtfs.csv.schema.EntitySchemaFactory;
-import org.onebusaway.gtfs.csv.schema.FieldMapping;
-import org.onebusaway.gtfs.csv.schema.FieldMappingFactory;
+import org.onebusaway.csv_entities.CsvEntityContext;
+import org.onebusaway.csv_entities.schema.AbstractFieldMapping;
+import org.onebusaway.csv_entities.schema.BeanWrapper;
+import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
+import org.onebusaway.csv_entities.schema.FieldMapping;
+import org.onebusaway.csv_entities.schema.FieldMappingFactory;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.serialization.GtfsReader;

@@ -1,6 +1,6 @@
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.gtfs.csv.schema.BeanWrapper;
+import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Route;

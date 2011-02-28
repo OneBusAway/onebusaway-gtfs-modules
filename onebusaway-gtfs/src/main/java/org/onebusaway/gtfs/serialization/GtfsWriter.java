@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.onebusaway.gtfs.csv.CsvEntityWriter;
-import org.onebusaway.gtfs.csv.schema.DefaultEntitySchemaFactory;
+import org.onebusaway.csv_entities.CsvEntityWriter;
+import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.services.GtfsDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

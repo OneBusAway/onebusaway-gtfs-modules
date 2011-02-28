@@ -6,7 +6,7 @@ package org.onebusaway.gtfs_transformer.factory;
 import java.util.Map;
 
 import org.onebusaway.collections.PropertyPathExpression;
-import org.onebusaway.gtfs.csv.schema.BeanWrapper;
+import org.onebusaway.csv_entities.schema.BeanWrapper;
 
 public class PropertyMatches {
 

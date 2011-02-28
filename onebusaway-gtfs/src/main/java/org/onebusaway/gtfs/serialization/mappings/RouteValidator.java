@@ -1,8 +1,8 @@
 package org.onebusaway.gtfs.serialization.mappings;
 
-import org.onebusaway.gtfs.csv.CsvEntityContext;
-import org.onebusaway.gtfs.csv.schema.AbstractEntityValidator;
-import org.onebusaway.gtfs.csv.schema.BeanWrapper;
+import org.onebusaway.csv_entities.CsvEntityContext;
+import org.onebusaway.csv_entities.schema.AbstractEntityValidator;
+import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.gtfs.model.Route;
 
 import java.util.Map;

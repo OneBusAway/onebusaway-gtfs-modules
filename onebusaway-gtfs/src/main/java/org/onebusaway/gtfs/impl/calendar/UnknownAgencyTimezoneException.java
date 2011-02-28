@@ -2,7 +2,7 @@ package org.onebusaway.gtfs.impl.calendar;
 
 import java.util.TimeZone;
 
-import org.onebusaway.gtfs.csv.exceptions.CsvEntityException;
+import org.onebusaway.csv_entities.exceptions.CsvEntityException;
 import org.onebusaway.gtfs.model.Agency;
 
 /**

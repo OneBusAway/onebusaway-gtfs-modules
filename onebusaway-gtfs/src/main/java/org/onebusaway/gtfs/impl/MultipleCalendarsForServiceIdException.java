@@ -1,6 +1,6 @@
 package org.onebusaway.gtfs.impl;
 
-import org.onebusaway.gtfs.csv.exceptions.CsvEntityException;
+import org.onebusaway.csv_entities.exceptions.CsvEntityException;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 

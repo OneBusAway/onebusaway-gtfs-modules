@@ -3,7 +3,7 @@ package org.onebusaway.gtfs_transformer.impl;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.onebusaway.gtfs.csv.schema.BeanWrapper;
+import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.factory.PropertyMatches;

@@ -6,12 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.onebusaway.gtfs.csv.CsvEntityContext;
-import org.onebusaway.gtfs.csv.CsvEntityContextImpl;
-import org.onebusaway.gtfs.csv.schema.BeanWrapper;
-import org.onebusaway.gtfs.csv.schema.BeanWrapperFactory;
-import org.onebusaway.gtfs.csv.schema.DefaultEntitySchemaFactory;
-import org.onebusaway.gtfs.csv.schema.FieldMapping;
+import org.onebusaway.csv_entities.CsvEntityContext;
+import org.onebusaway.csv_entities.CsvEntityContextImpl;
+import org.onebusaway.csv_entities.schema.BeanWrapper;
+import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
+import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
+import org.onebusaway.csv_entities.schema.FieldMapping;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 
 public class ServiceDateFieldMappingFactoryTest {

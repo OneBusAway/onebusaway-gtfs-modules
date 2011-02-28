@@ -1,6 +1,6 @@
-onebusaway-collections
+onebusaway-gtfs-modules
 
-  The <<<onebusaway-collections>>> module provides a set of Common collection and utility classes used by a number of OneBusAway modules.
+  The <<<onebusaway-gtfs-modules>>> module provides a set of Common collection and utility classes used by a number of OneBusAway modules.
 
   <<Latest Version:>> ${currentVersion}
 

@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.onebusaway.gtfs.csv.CsvEntityContext;
-import org.onebusaway.gtfs.csv.CsvEntityReader;
-import org.onebusaway.gtfs.csv.CsvInputSource;
-import org.onebusaway.gtfs.csv.EntityHandler;
-import org.onebusaway.gtfs.csv.schema.DefaultEntitySchemaFactory;
+import org.onebusaway.csv_entities.CsvEntityContext;
+import org.onebusaway.csv_entities.CsvEntityReader;
+import org.onebusaway.csv_entities.CsvInputSource;
+import org.onebusaway.csv_entities.EntityHandler;
+import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.impl.GtfsDaoImpl;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;

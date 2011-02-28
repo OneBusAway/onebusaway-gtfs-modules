@@ -1,6 +1,6 @@
 package org.onebusaway.gtfs.serialization;
 
-import org.onebusaway.gtfs.csv.exceptions.CsvEntityException;
+import org.onebusaway.csv_entities.exceptions.CsvEntityException;
 import org.onebusaway.gtfs.model.AgencyAndId;
 
 /**

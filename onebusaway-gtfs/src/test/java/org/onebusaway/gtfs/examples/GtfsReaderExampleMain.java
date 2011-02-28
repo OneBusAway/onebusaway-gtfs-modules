@@ -1,6 +1,6 @@
 package org.onebusaway.gtfs.examples;
 
-import org.onebusaway.gtfs.csv.EntityHandler;
+import org.onebusaway.csv_entities.EntityHandler;
 import org.onebusaway.gtfs.impl.GtfsDaoImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Route;

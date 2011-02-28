@@ -1,6 +1,6 @@
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.gtfs.csv.schema.BeanWrapper;
+import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.factory.PropertyMatches;
 import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;

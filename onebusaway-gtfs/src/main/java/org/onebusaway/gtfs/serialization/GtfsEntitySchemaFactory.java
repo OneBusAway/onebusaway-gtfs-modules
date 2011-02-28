@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.onebusaway.gtfs.csv.schema.DefaultEntitySchemaFactory;
-import org.onebusaway.gtfs.csv.schema.EntitySchemaFactoryHelper;
-import org.onebusaway.gtfs.csv.schema.beans.CsvEntityMappingBean;
+import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
+import org.onebusaway.csv_entities.schema.EntitySchemaFactoryHelper;
+import org.onebusaway.csv_entities.schema.beans.CsvEntityMappingBean;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;

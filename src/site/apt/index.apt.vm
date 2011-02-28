@@ -1,0 +1,25 @@
+onebusaway-collections
+
+  The <<<onebusaway-collections>>> module provides a set of Common collection and utility classes used by a number of OneBusAway modules.
+
+  <<Latest Version:>> ${currentVersion}
+
+  Details on all releases can be found in the {{{./release-notes.html}Release Notes}}.
+
+Documentation
+
+  You can access the {{{./apidocs/index.html}latest Javadoc for the library}}.
+
+Using in Maven
+
+  The <<<onebusaway-collection>>> library is available as a Maven module.  Simply add the following dependency:
+
++---+
+<dependencies>
+    <dependency>
+        <groupId>org.onebusaway</groupId>
+        <artifactId>onebusaway-collection</artifactId>
+        <version>${currentVersion}</version>
+    </dependency>
+</dependencies>
++---+

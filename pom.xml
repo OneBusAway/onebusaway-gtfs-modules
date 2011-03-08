@@ -16,7 +16,7 @@
   </parent>
   
   <properties>
-    <onebusaway_csv_entities_version>1.0.0</onebusaway_csv_entities_version>
+    <onebusaway_csv_entities_version>1.0.1-SNAPSHOT</onebusaway_csv_entities_version>
   </properties>
 
   <repositories>

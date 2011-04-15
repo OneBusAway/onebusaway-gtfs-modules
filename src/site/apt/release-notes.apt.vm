@@ -2,6 +2,10 @@ Release Notes
 
 * ${currentVersion}
 
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
+
+* 1.2.1
+
   * Support for {{{http://groups.google.com/group/gtfs-changes/browse_frm/thread/42a6863ae3661bba/d65149383c0d65e5?lnk=gst&q=bicycle#d65149383c0d65e5} bicycle accessibility}} proposal.
   
   * Support for {{{http://groups.google.com/group/gtfs-changes/browse_frm/thread/e6ef325c1ae92b6c} exact_times}} proposal.
@@ -10,7 +14,7 @@ Release Notes
   
   * Add {{{./apidocs/org/onebusaway/gtfs/model/AgencyAndIdInstance.html} AgencyAndIdInstance}} class.
   
-  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/1.2.1/}}
   
 * 1.2.0
 

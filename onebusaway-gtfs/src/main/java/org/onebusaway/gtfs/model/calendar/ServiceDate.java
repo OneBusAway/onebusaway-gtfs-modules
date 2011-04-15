@@ -136,14 +136,7 @@ public class ServiceDate implements Serializable, Comparable<ServiceDate> {
     c.set(Calendar.MONTH, month - 1);
     c.set(Calendar.DAY_OF_MONTH, day);
 
-    // Initial set time to noon
-    c.set(Calendar.HOUR_OF_DAY, 12);
-    c.set(Calendar.MINUTE, 0);
-    c.set(Calendar.SECOND, 0);
-    c.set(Calendar.MILLISECOND, 0);
-
-    // Subtract 12 hours. Usually takes you to midnight, except on DST days
-    c.add(Calendar.HOUR_OF_DAY, -12);
+    moveCalendarToServiceDate(c);
 
     return c.getTime();
   }
@@ -201,6 +194,30 @@ public class ServiceDate implements Serializable, Comparable<ServiceDate> {
     return true;
   }
 
+  /**
+   * Adjust the supplied {@link Calendar} object such that the calendar will be
+   * at "midnight" (12:00am) at the start of the day specified by the current
+   * calendar date and locale. Note that we take the GTFS convention of
+   * calculating midnight by setting the target date to noon (12:00pm) for the
+   * service date and timezone specified and then subtracting twelve hours.
+   * Normally that would be equivalent to midnight, except on Daylight Saving
+   * Time days, in which case it can be an hour ahead or behind. This behavior
+   * ensures correct calculation of {@link StopTime} arrival and departure time
+   * when the second offset is added to the localized service date.
+   * 
+   * @param c the target calendar, already to some time on the target date
+   */
+  public static void moveCalendarToServiceDate(Calendar c) {
+    // Initial set time to noon
+    c.set(Calendar.HOUR_OF_DAY, 12);
+    c.set(Calendar.MINUTE, 0);
+    c.set(Calendar.SECOND, 0);
+    c.set(Calendar.MILLISECOND, 0);
+
+    // Subtract 12 hours. Usually takes you to midnight, except on DST days
+    c.add(Calendar.HOUR_OF_DAY, -12);
+  }
+
   /****
    * Private Methods
    ****/
@@ -210,4 +227,5 @@ public class ServiceDate implements Serializable, Comparable<ServiceDate> {
     c.setTime(date);
     return c;
   }
+
 }

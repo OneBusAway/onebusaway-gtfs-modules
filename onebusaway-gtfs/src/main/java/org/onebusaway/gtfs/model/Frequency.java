@@ -14,6 +14,8 @@ public final class Frequency extends IdentityBean<Integer> {
 
   private int headwaySecs;
 
+  private int exactTimes = 0;
+
   public Frequency() {
 
   }
@@ -24,6 +26,7 @@ public final class Frequency extends IdentityBean<Integer> {
     this.startTime = f.startTime;
     this.endTime = f.endTime;
     this.headwaySecs = f.headwaySecs;
+    this.exactTimes = f.exactTimes;
   }
 
   @Override
@@ -66,6 +69,14 @@ public final class Frequency extends IdentityBean<Integer> {
 
   public void setHeadwaySecs(int headwaySecs) {
     this.headwaySecs = headwaySecs;
+  }
+
+  public int getExactTimes() {
+    return exactTimes;
+  }
+
+  public void setExactTimes(int exactTimes) {
+    this.exactTimes = exactTimes;
   }
 
   public String toString() {

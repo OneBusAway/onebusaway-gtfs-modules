@@ -22,6 +22,8 @@ public final class Route extends IdentityBean<AgencyAndId> {
 
   private String textColor;
 
+  private int bikesAllowed = 0;
+
   public Route() {
 
   }
@@ -36,6 +38,7 @@ public final class Route extends IdentityBean<AgencyAndId> {
     this.url = r.url;
     this.color = r.color;
     this.textColor = r.textColor;
+    this.bikesAllowed = r.bikesAllowed;
   }
 
   public AgencyAndId getId() {
@@ -108,6 +111,14 @@ public final class Route extends IdentityBean<AgencyAndId> {
 
   public void setTextColor(String textColor) {
     this.textColor = textColor;
+  }
+
+  public int getBikesAllowed() {
+      return bikesAllowed;
+  }
+
+  public void setBikesAllowed(int bikesAllowed) {
+      this.bikesAllowed = bikesAllowed;
   }
 
   @Override

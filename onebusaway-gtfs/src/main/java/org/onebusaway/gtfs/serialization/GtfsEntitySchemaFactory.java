@@ -89,7 +89,7 @@ public class GtfsEntitySchemaFactory {
     helper.addField(route, "id", new DefaultAgencyIdFieldMappingFactory(
         "agency.id"), 1);
     helper.addOptionalFields(route, "desc", "shortName", "longName", "url",
-        "color", "textColor");
+        "color", "textColor", "bikesAllowed");
     route.addValidator(new RouteValidator());
 
     CsvEntityMappingBean shapePoint = helper.addEntity(ShapePoint.class,
@@ -123,6 +123,7 @@ public class GtfsEntitySchemaFactory {
         new DefaultAgencyIdFieldMappingFactory());
     helper.addOptionalField(trip, "wheelchairAccessible",
         "wheelchair_accessible");
+    helper.addOptionalField(trip, "tripBikesAllowed");
 
     CsvEntityMappingBean stopTime = helper.addEntity(StopTime.class,
         "stop_times.txt");
@@ -184,6 +185,7 @@ public class GtfsEntitySchemaFactory {
     helper.addOptionalField(frequencies, "endTime",
         new StopTimeFieldMappingFactory());
     helper.addFields(frequencies, "headwaySecs");
+    helper.addOptionalField(frequencies, "exactTimes");
 
     CsvEntityMappingBean pathways = helper.addEntity(Pathway.class,
         "pathways.txt");

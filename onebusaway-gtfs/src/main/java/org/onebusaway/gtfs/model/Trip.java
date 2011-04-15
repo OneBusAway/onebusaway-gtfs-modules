@@ -24,6 +24,8 @@ public final class Trip extends IdentityBean<AgencyAndId> {
 
   private int wheelchairAccessible = 0;
 
+  private int tripBikesAllowed = 0;
+
   public Trip() {
 
   }
@@ -39,6 +41,7 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.blockId = obj.blockId;
     this.shapeId = obj.shapeId;
     this.wheelchairAccessible = obj.wheelchairAccessible;
+    this.tripBikesAllowed = obj.tripBikesAllowed;
   }
 
   public AgencyAndId getId() {
@@ -119,6 +122,14 @@ public final class Trip extends IdentityBean<AgencyAndId> {
 
   public int getWheelchairAccessible() {
     return wheelchairAccessible;
+  }
+
+  public void setTripBikesAllowed(int tripBikesAllowed) {
+    this.tripBikesAllowed = tripBikesAllowed;
+  }
+
+  public int getTripBikesAllowed() {
+    return tripBikesAllowed;
   }
 
   public String toString() {

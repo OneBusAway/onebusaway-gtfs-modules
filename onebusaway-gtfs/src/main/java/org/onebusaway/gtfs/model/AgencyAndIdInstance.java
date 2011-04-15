@@ -17,6 +17,16 @@ package org.onebusaway.gtfs.model;
 
 import java.io.Serializable;
 
+import org.onebusaway.gtfs.model.calendar.ServiceDate;
+
+/**
+ * An identifier class that combines a {@link AgencyAndId} id with a service
+ * date. See {@link ServiceDate} for more details of the service date idea.
+ * 
+ * @author bdferris
+ * @see AgencyAndId
+ * @see ServiceDate
+ */
 public class AgencyAndIdInstance implements Serializable,
     Comparable<AgencyAndIdInstance> {
 

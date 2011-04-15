@@ -8,6 +8,8 @@ Release Notes
   
   * Bump to {{{${site_base_url}/onebusaway-csv-entities/1.0.1/} onebusaway-csv-entities-1.0.1}}.
   
+  * Add {{{./apidocs/org/onebusaway/gtfs/model/AgencyAndIdInstance.html} AgencyAndIdInstance}} class.
+  
   * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
   
 * 1.2.0

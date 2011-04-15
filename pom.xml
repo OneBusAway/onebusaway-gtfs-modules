@@ -85,7 +85,40 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>com.mycila.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+        <version>1.9.0</version>
+        <configuration>
+          <header>src/license/header.txt</header>
+          <excludes>
+            <exclude>src/site/**</exclude>
+            <exclude>LICENSE.txt</exclude>
+            <exclude>src/test/resources/org/onebusaway/gtfs/**</exclude>
+            <exclude>onebusaway-gtfs/src/test/resources/org/onebusaway/gtfs/**</exclude>
+            <exclude>src/test/resources/org/onebusaway/gtfs_transformer/**</exclude>
+            <exclude>onebusaway-gtfs-transformer/src/test/resources/org/onebusaway/gtfs_transformer/**</exclude>            
+            <exclude>**/usage.txt</exclude>
+            <exclude>**/log4j.properties</exclude>
+          </excludes>
+          <strictCheck>true</strictCheck>
+          <properties>
+            <license.name>Brian Ferris</license.name>
+            <license.email>bdferris@onebusaway.org</license.email>
+            <license.year>2011</license.year>
+          </properties>
+          <aggregate>true</aggregate>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
-
 
 </project>

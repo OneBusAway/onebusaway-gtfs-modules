@@ -2,7 +2,7 @@ onebusaway-gtfs-modules
 
   We provide a Java library for reading and writing {{{http://code.google.com/transit/spec/transit_feed_specification.html} GTFS}} feeds, including database support.
   
-  <<Latest Version:>> ${currentVersion}
+  <<Current Version:>> ${currentVersion}
 
   Details on all releases can be found in the {{{./release-notes.html}Release Notes}}.
   
@@ -46,6 +46,10 @@ Using in Maven
     </dependency>
 </dependencies>
 +---+
+
+#if( $currentVersion.contains('SNAPSHOT') )
+  To use a SNAPSHOT version of the library, you'll need to {{{https://code.google.com/p/onebusaway/wiki/MavenRepository}add a reference to the OneBusAway Maven repository}}.
+#end
 
 Example Code
 

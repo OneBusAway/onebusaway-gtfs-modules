@@ -21,12 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
+import org.onebusaway.gtfs.impl.GenericMutableDaoWrapper;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
+import org.onebusaway.gtfs.services.GenericMutableDao;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.factory.TransformFactory;
+import org.onebusaway.gtfs_transformer.services.GtfsEntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.SchemaUpdateStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
@@ -43,7 +46,11 @@ public class GtfsTransformer {
 
   private List<GtfsTransformStrategy> _transformStrategies = new ArrayList<GtfsTransformStrategy>();
 
+  private List<GtfsEntityTransformStrategy> _entityTransformStrategies = new ArrayList<GtfsEntityTransformStrategy>();
+
   private List<SchemaUpdateStrategy> _outputSchemaUpdates = new ArrayList<SchemaUpdateStrategy>();
+
+  private TransformContext _context = new TransformContext();
 
   private GtfsReader _reader = new GtfsReader();
 
@@ -75,6 +82,10 @@ public class GtfsTransformer {
     return _transformStrategies.get(_transformStrategies.size() - 1);
   }
 
+  public void addEntityTransform(GtfsEntityTransformStrategy entityTransform) {
+    _entityTransformStrategies.add(entityTransform);
+  }
+
   public void addOutputSchemaUpdate(SchemaUpdateStrategy outputSchemaUpdate) {
     _outputSchemaUpdates.add(outputSchemaUpdate);
   }
@@ -98,6 +109,9 @@ public class GtfsTransformer {
 
     System.out.println("Output Directory=" + _outputDirectory);
 
+    if (_agencyId != null)
+      _context.setDefaultAgencyId(_agencyId);
+
     readGtfs();
     udateGtfs();
     writeGtfs();
@@ -105,8 +119,12 @@ public class GtfsTransformer {
 
   private void readGtfs() throws IOException {
 
+    GenericMutableDao dao = _dao;
+    if (!_entityTransformStrategies.isEmpty())
+      dao = new DaoInterceptor(_dao);
+
     _reader.setInputLocation(_gtfsInputDirectory);
-    _reader.setEntityStore(_dao);
+    _reader.setEntityStore(dao);
 
     if (_agencyId != null)
       _reader.setDefaultAgencyId(_agencyId);
@@ -115,11 +133,8 @@ public class GtfsTransformer {
   }
 
   private void udateGtfs() {
-    TransformContext context = new TransformContext();
-    if (_agencyId != null)
-      context.setDefaultAgencyId(_agencyId);
     for (GtfsTransformStrategy strategy : _transformStrategies)
-      strategy.run(context, _dao);
+      strategy.run(_context, _dao);
   }
 
   private void writeGtfs() throws IOException {
@@ -137,4 +152,22 @@ public class GtfsTransformer {
     writer.run(_dao);
   }
 
+  private class DaoInterceptor extends GenericMutableDaoWrapper {
+
+    public DaoInterceptor(GenericMutableDao source) {
+      super(source);
+    }
+
+    @Override
+    public void saveEntity(Object entity) {
+
+      for (GtfsEntityTransformStrategy strategy : _entityTransformStrategies) {
+        entity = strategy.transformEntity(_context, _dao, entity);
+        if (entity == null)
+          return;
+      }
+
+      super.saveEntity(entity);
+    }
+  }
 }

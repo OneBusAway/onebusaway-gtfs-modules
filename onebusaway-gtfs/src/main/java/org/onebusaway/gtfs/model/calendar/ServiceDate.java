@@ -129,22 +129,21 @@ public class ServiceDate implements Serializable, Comparable<ServiceDate> {
   }
 
   /**
-   * Constructs a {@link Date} object such that the Date will be at "midnight"
-   * (12:00am) at the start of the day specified by this service date and the
-   * target timezone. Note that we take the GTFS convention of calculating
-   * midnight by setting the target date to noon (12:00pm) for the service date
-   * and timezone specified and then subtracting twelve hours. Normally that
-   * would be equivalent to midnight, except on Daylight Saving Time days, in
-   * which case it can be an hour ahead or behind. This behavior ensures correct
-   * calculation of {@link StopTime} arrival and departure time when the second
-   * offset is added to the localized service date.
+   * Constructs a {@link Calendar} object such that the Calendar will be at
+   * "midnight" (12:00am) at the start of the day specified by this service date
+   * and the target timezone. Note that we take the GTFS convention of
+   * calculating midnight by setting the target date to noon (12:00pm) for the
+   * service date and timezone specified and then subtracting twelve hours.
+   * Normally that would be equivalent to midnight, except on Daylight Saving
+   * Time days, in which case it can be an hour ahead or behind. This behavior
+   * ensures correct calculation of {@link StopTime} arrival and departure time
+   * when the second offset is added to the localized service date.
    * 
    * @param timeZone the target timezone to localize the service date to
    * @return a localized date at "midnight" at the start of this service date in
    *         the specified timezone
    */
-  public Date getAsDate(TimeZone timeZone) {
-
+  public Calendar getAsCalendar(TimeZone timeZone) {
     Calendar c = Calendar.getInstance();
     c.setTimeZone(timeZone);
     c.set(Calendar.YEAR, year);
@@ -153,6 +152,18 @@ public class ServiceDate implements Serializable, Comparable<ServiceDate> {
 
     moveCalendarToServiceDate(c);
 
+    return c;
+  }
+
+  /**
+   * See {@link #getAsCalendar(TimeZone)} for more details.
+   * 
+   * @param timeZone the target timezone to localize the service date to
+   * @return a localized date at "midnight" at the start of this service date in
+   *         the specified timezone
+   */
+  public Date getAsDate(TimeZone timeZone) {
+    Calendar c = getAsCalendar(timeZone);
     return c.getTime();
   }
 
@@ -164,6 +175,28 @@ public class ServiceDate implements Serializable, Comparable<ServiceDate> {
     String month = _monthAndDayFormat.format(this.month);
     String day = _monthAndDayFormat.format(this.day);
     return year + month + day;
+  }
+
+  /**
+   * 
+   * @param timeZone
+   * @return the service date following the current service date
+   */
+  public ServiceDate next(TimeZone timeZone) {
+    Calendar c = getAsCalendar(timeZone);
+    c.add(Calendar.DAY_OF_YEAR, 1);
+    return new ServiceDate(c);
+  }
+
+  /**
+   * 
+   * @param timeZone
+   * @return the service date preceding the current service date
+   */
+  public ServiceDate previous(TimeZone timeZone) {
+    Calendar c = getAsCalendar(timeZone);
+    c.add(Calendar.DAY_OF_YEAR, -11);
+    return new ServiceDate(c);
   }
 
   @Override

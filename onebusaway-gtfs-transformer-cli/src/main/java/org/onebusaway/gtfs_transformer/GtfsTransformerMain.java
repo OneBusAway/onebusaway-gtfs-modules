@@ -152,9 +152,9 @@ public class GtfsTransformerMain {
       System.exit(-1);
     }
 
-    GtfsTransformer updater = new GtfsTransformer();
-    updater.setGtfsInputDirectory(new File(args[0]));
-    updater.setOutputDirectory(new File(args[1]));
+    GtfsTransformer transformer = new GtfsTransformer();
+    transformer.setGtfsInputDirectory(new File(args[0]));
+    transformer.setOutputDirectory(new File(args[1]));
 
     Option[] options = getOptionsInCommandLineOrder(cli, originalArgs);
 
@@ -163,26 +163,26 @@ public class GtfsTransformerMain {
       String name = option.getOpt();
 
       if (name.equals(ARG_REMOVE_REPEATED_STOP_TIMES))
-        configureRemoveRepeatedStopTimes(updater);
+        configureRemoveRepeatedStopTimes(transformer);
 
       if (name.equals(ARG_REMOVE_DUPLICATE_TRIPS))
-        configureRemoveDuplicateTrips(updater);
+        configureRemoveDuplicateTrips(transformer);
 
       if (name.equals(ARG_CHECK_STOP_TIMES))
-        configureEnsureStopTimesInOrder(updater);
+        configureEnsureStopTimesInOrder(transformer);
 
       if (name.equals(ARG_AGENCY_ID))
-        configureAgencyId(updater, cli.getOptionValue(ARG_AGENCY_ID));
+        configureAgencyId(transformer, cli.getOptionValue(ARG_AGENCY_ID));
 
       if (name.equals(ARG_MODIFICATIONS) || name.equals(ARG_TRANSFORM))
-        GtfsTransformerLibrary.configureTransformation(updater,
+        GtfsTransformerLibrary.configureTransformation(transformer,
             option.getValue());
 
       if (name.equals(ARG_LOCAL_VS_EXPRESS))
-        configureLocalVsExpressUpdates(updater);
+        configureLocalVsExpressUpdates(transformer);
     }
 
-    updater.run();
+    transformer.run();
   }
 
   private Option[] getOptionsInCommandLineOrder(CommandLine cli,

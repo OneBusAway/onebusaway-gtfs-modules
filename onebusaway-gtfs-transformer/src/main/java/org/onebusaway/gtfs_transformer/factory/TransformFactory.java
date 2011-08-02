@@ -44,6 +44,7 @@ import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
 import org.onebusaway.gtfs_transformer.impl.SimpleModificationStrategy;
 import org.onebusaway.gtfs_transformer.impl.StringModificationStrategy;
 import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
+import org.onebusaway.gtfs_transformer.services.GtfsEntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategyFactory;
 
@@ -224,10 +225,10 @@ public class TransformFactory {
         RetainEntitiesTransformStrategy.class);
 
     EntityMatch match = getMatch(line, json);
-    
+
     boolean retainUp = true;
-    
-    if( json.has("retainUp"))
+
+    if (json.has("retainUp"))
       retainUp = json.getBoolean("retainUp");
 
     strategy.addRetention(match, retainUp);
@@ -256,14 +257,25 @@ public class TransformFactory {
         wrapped.setPropertyValue(key, v);
       }
 
+      boolean added = false;
+
       if (factoryObj instanceof GtfsTransformStrategy) {
         transformer.addTransform((GtfsTransformStrategy) factoryObj);
-      } else if (factoryObj instanceof GtfsTransformStrategyFactory) {
+        added = true;
+      }
+      if (factoryObj instanceof GtfsEntityTransformStrategy) {
+        transformer.addEntityTransform((GtfsEntityTransformStrategy) factoryObj);
+        added = true;
+      }
+      if (factoryObj instanceof GtfsTransformStrategyFactory) {
         GtfsTransformStrategyFactory factory = (GtfsTransformStrategyFactory) factoryObj;
         factory.createTransforms(transformer);
-      } else {
+        added = true;
+      }
+
+      if (!added) {
         throw new IllegalArgumentException(
-            "factory object is not an instance of GtfsTransformStrategy or GtfsTransformStrategyFactory: "
+            "factory object is not an instance of GtfsTransformStrategy, GtfsEntityTransformStrategy, or GtfsTransformStrategyFactory: "
                 + clazz.getName());
       }
 

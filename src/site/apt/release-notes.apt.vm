@@ -2,6 +2,16 @@ Release Notes
 
 * ${currentVersion}
 
+  * Add sorting of calendar.txt and calendar_dates.txt entries by service id when writing to output
+
+  * Add additional manipulation methods to {{{./apidocs/org/onebusaway/gtfs/model/calendar/ServiceDate.html} ServiceDate}}
+  
+  * Initial entry for {{{./apidocs/org/onebusaway/gtfs/impl/GenericMutableDaoWrapper.html} GenericMutableDaoWrapper}}
+  
+  * Initial entry for {{{./apidocs/org/onebusaway/gtfs_transformer/services/GtfsEntityTransformStrategy.html} GtfsEntityTransformStrategy}}
+  
+  * Support in gtfs-transformer for the new entity tranformation strategy
+
   * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
 
 * 1.2.1

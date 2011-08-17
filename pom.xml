@@ -85,6 +85,8 @@
       </plugins>
     </pluginManagement>
     <plugins>
+      <!-- 
+      Temporarily disable the plugin while we wait for our patch to maven-license-plugin more flexible header support to (hopefully) be accepted
       <plugin>
         <groupId>com.mycila.maven-license-plugin</groupId>
         <artifactId>maven-license-plugin</artifactId>
@@ -117,6 +119,7 @@
           </execution>
         </executions>
       </plugin>
+      -->
     </plugins>
   </build>
 

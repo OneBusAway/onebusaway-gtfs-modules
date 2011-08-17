@@ -7,6 +7,14 @@ Release Notes
   * Better support for entity id matching in <<<onebusaway-gtfs-transformer-cli>>>.
 
   * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
+  
+* 1.2.3
+
+  * More documentation for {{{./onebusaway-gtfs-transformer-cli.html}onebusaway-gtfs-transformer-cli}}.
+  
+  * Better support for entity id matching in <<<onebusaway-gtfs-transformer-cli>>>.
+
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/1.2.3/}}
 
 * 1.2.2
 

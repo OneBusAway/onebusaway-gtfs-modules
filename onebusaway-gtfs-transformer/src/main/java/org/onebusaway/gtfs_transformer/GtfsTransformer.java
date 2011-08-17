@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +21,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.Converter;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.impl.GenericMutableDaoWrapper;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
+import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
 import org.onebusaway.gtfs.services.GenericMutableDao;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.factory.PropertyMatches;
 import org.onebusaway.gtfs_transformer.factory.TransformFactory;
+import org.onebusaway.gtfs_transformer.impl.converters.AgencyAndIdConverter;
 import org.onebusaway.gtfs_transformer.services.GtfsEntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.SchemaUpdateStrategy;
@@ -104,6 +110,8 @@ public class GtfsTransformer {
 
   public void run() throws Exception {
 
+    registerConverters();
+
     if (!_outputDirectory.exists())
       _outputDirectory.mkdirs();
 
@@ -116,6 +124,29 @@ public class GtfsTransformer {
     udateGtfs();
     writeGtfs();
   }
+
+  /****
+   * Protected Methods
+   ****/
+
+  /**
+   * Internally, we use {@link Converter} objects, as registered with
+   * {@link ConvertUtils#register(Converter, Class)}, to handle conversion from
+   * String values to other types when doing property matching and assignment.
+   * See {@link PropertyMatches} for additional details.
+   * 
+   * If you wish to register your OWN converters, you can simply call
+   * {@link ConvertUtils#register(Converter, Class)} before running the
+   * transformer. You can also override this method, but you should still be
+   * sure to call the parent method in your sub-class.
+   */
+  protected void registerConverters() {
+    ConvertUtils.register(new AgencyAndIdConverter(), AgencyAndId.class);
+  }
+
+  /****
+   * Private Methods
+   ****/
 
   private void readGtfs() throws IOException {
 

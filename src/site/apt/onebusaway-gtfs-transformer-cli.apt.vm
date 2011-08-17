@@ -1,0 +1,190 @@
+ ------
+GTFS Transformation Command-Line Application
+ ------
+Brian Ferris
+ ------
+2011-08-17
+ ------
+
+Introduction
+
+  The <<<onebusaway-gtfs-transformer-cli>>> command-line application is a simple command-line tool for transforming
+{{{http://code.google.com/transit/spec/transit_feed_specification.html}GTFS}} feeds. 
+
+Getting the Application
+
+  You can download the application here:
+
+#set( $url = 'http://nexus.onebusaway.org/service/local/artifact/maven/content?r=public&g=org.onebusaway&a=onebusaway-gtfs-transformer-cli&v=' + ${currentVersion} )
+  
+  {{{${url}}onebusaway-gtfs-transformer-cli-${currentVersion}.jar}}
+  
+Using the Application
+
+  You'll need a Java 1.6 runtime installed to run the client.  To run the application:
+
++---+
+java -jar onebusaway-gtfs-transformer-cli.jar [-args] input_gtfs_path output_gtfs_path
++---+
+
+* Arguments
+
+  * <<<--transform=...>>> : specify a transformation to apply to the input GTFS feed (see syntax described below)
+  
+  * <<<--agencyId=id>>> : specify a default agency id for the input GTFS feed
+
+* Transform Syntax
+
+  Transforms are specified as snippets of example.  A simple example to remove a stop might look like:
+  
++---+
+{"op":"remove","match":{"class":"Stop","name":"DUMMY STOP"}}
++---+
+
+  You can pass those snippets to the application in a couple of ways.  The simplest is directly on the command line.
+
++---+
+--transform='json:{...}'
++---+
+
+  You can have multiple <<<--transform>>> arguments to specify multiple transformations.  However, if you have a LOT of
+transformations that you wish to apply, it can be easier to put them in a file, with a JSON snippet per line.  Then
+specify the file on the command-line:
+
++---+  
+  --transform=path/to/local-file
++---+
+
+  You can even specify a URL where the transformations will be read:
+  
++---+  
+--transform=http://server/path
++--+
+
+* Matching 
+
+  We provide a number of configurable transformations out-of-the-box that can do simple operations like adding,
+updating, retaining, and removing GTFS entities.  Many of the transforms accept a "`match`" term that controls how the
+rule matches against entities:
+
++---+
+{"op":...,"match":{"class":"Route","shortName":"574"}}
++---+
+
+  Here, the match snippet at minimum requires a `class` property the specifies the type of GTFS entity to match.
+However, you can match additional properties of each entity, such as the "shortName" property of
+{{{./apidocs/org/onebusaway/gtfs/model/Route.html}Route}}, for example.  For a full list of all GTFS types and their
+properties, see
+{{{./apidocs/org/onebusaway/gtfs/model/package-summary.html}the current Javadoc}}.
+
+  You can specify additional properties to match as needed.  These are just simple Java bean property expressions.  For
+example, the snippet above will match any Route object with a `shortName` property value of `574`.  You can specify
+compound property path expressions as well:
+
++---+
+{"op":...,"match":{"class":"Route","agency.name":"Metro"}}
++---+
+
+** A Note on Matching Ids
+
+  If you wanted to match a stop with an id of 500, it might be tempting to try something like:
+
++---+
+# THIS WILL NOT WORK!
+{"op":...,"match":{"class":"Stop","id":"500"}}
++---+
+
+  Unfortunately, this will not work.  OneBusAway tools are designed with multiple agency support, such that multiple
+feeds from different agencies can be worked with in the same data model.  Since there is no guarantee that ids are
+unique across GTFS feeds from different agencies, we always include an agency id prefix on all GTFS entities.  Ids
+take the form "agencyId_id", so if you agency id was "METRO", then your match should actually look like:
+
++---+
+# THIS SHOULD WORK
+{"op":...,"match":{"class":"Stop","id":"METRO_500"}}
++---+
+
+  How do you know which agency id to use?  For routes and trips, it's always the agency id of the agency who operates
+the route, as specified in the GTFS.  For stops, shapes, and calendar service ids, we default to using the id of the
+first agency that appears in your <<<'agency.txt'>>> file.  If that first agency doesn't have an agency id specifed,
+we then use the agency's name.  You can also specify a default agency id with the <<<--agencyId>>> command-line
+argument.
+ 
+Types of Transforms
+
+* Add an Entity
+
+  Create and add a new entity to the feed.
+
++---+
+{"op":"add","obj":{"class":"Agency","id":"ST","name":"Sound Transit",
+"url":"http://www.soundtransit.org","timezone":"America/Los_Angeles"}}
++---+
+
+* Update an Entity
+
+  You can update arbitrary fields of a GTFS entity.
+
++---+
+{"op":"update","match":{"class":"Route","shortName":"574"},"update":{"agency":"ST"}}
++---+
+
+* Retain an Entity
+
+  We also provide a powerful mechanism for selecting just a sub-set of a feed.  You can apply retain operations to entities you wish to keep and all the supporting entities referenced by the retained entity will be retained as well.  By the same token, unreferenced entities will be pruned.
+  
+  In the following example, only route B15 will be retained, along with all the stops, trips, stop times, shapes, and agencies linked to directly by that route.
+
++---+
+{"op":"retain","match":{"class":"Route","shortName":"B15"}}
++---+
+
+* Remove an Entity
+
+  You can remove a specific entity from a feed.
+
++---+
+{"op":"remove","match":{"class":"Stop","name":"DUMMY STOP"}}
++---+
+
+  Note that this has a cascading effect.  If you remove a trip, all the stop times that depend on that trip will also be removed.  If you remove a route, all the trips and stop times for that route will be removed. 
+
+* Arbitrary Transform
+
+  We also allow you to specify arbitrary transformations as well.  Here, you specify your transformation class and we will automatically instantiate it for use in the transform pipeline.
+
++---+
+{"op":"transform","class":"some.class.implementing.GtfsTranformStrategy"}
++---+
+
+  We additionally provide a mechanism for setting additional properties of the transform.  For all additional properties specified in the JSON snippet, we will attempt to set that Java bean property value on the instantiated transformation object.  See for example:
+
++---+
+{"op":"transform","class":"org.onebusaway.gtfs_transformer.updates.ShapeTransformStrategy","shapeId":"6010031", \
+"shape":"wjb~G|abmVpAz]v_@@?wNE_GDaFs@?@dFX`GGjN__@A"}
++--+
+
+  Here, we set additional properties on the `ShapeTransformStrategy`, making it possible to reuse and configure a generic transformer to your needs.
+
+Additional Examples
+
+* How to reduce your GTFS
+
+  We can apply a modification that retains certain GTFS entities and all other entities required directly or indirectly by those entities.  For example, create a file with the following contents (call it modifications.txt, as an example):
+
++---+
+{"op":"retain","match":{"class":"Route","shortName":"B15"}}
+{"op":"retain","match":{"class":"Route","shortName":"B62"}}
+{"op":"retain","match":{"class":"Route","shortName":"B63"}}
+{"op":"retain","match":{"class":"Route","shortName":"BX19"}}
+{"op":"retain","match":{"class":"Route","shortName":"Q54"}}
+{"op":"retain","match":{"class":"Route","shortName":"S53"}}
++---+
+
+  Then run:
+
++---+
+java -jar onebusaway-gtfs-transformer-cli.jar --transform=modifications.txt source-gtfs.zip target-gtfs.zip
++--+
+
+  The resulting GTFS will have the retained routes with the matching short names and all other entities required to support those routes.

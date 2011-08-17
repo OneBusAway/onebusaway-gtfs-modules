@@ -14,7 +14,7 @@ onebusaway-gtfs-modules
   
   * <<<onebusaway-gtfs-transformer>>> - Tools for transforming GTFS data
   
-  * <<<onebusaway-gtfs-transformer-cli>>> - Command-line utility for transforming GTFS
+  * <<<onebusaway-gtfs-transformer-cli>>> - Command-line utility for transforming GTFS - see {{{./onebusaway-gtfs-transformer-cli.html}the full documentation}}.
 
 Documentation
 

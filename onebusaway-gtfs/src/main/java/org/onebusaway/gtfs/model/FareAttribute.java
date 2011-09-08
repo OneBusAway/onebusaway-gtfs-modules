@@ -32,6 +32,11 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
   private int transfers = MISSING_VALUE;
 
   private int transferDuration = MISSING_VALUE;
+  
+  /**
+   * This is a proposed extension to the GTFS spec
+   */
+  private int journeyDuration = MISSING_VALUE;
 
   public FareAttribute() {
 
@@ -44,6 +49,7 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
     this.paymentMethod = fa.paymentMethod;
     this.transfers = fa.transfers;
     this.transferDuration = fa.transferDuration;
+    this.journeyDuration = fa.journeyDuration;
   }
 
   @Override
@@ -110,6 +116,22 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
   
   public void clearTransferDuration() {
     this.transferDuration = MISSING_VALUE;
+  }
+  
+  public boolean isJourneyDurationSet() {
+	return journeyDuration != MISSING_VALUE;
+  }
+
+  public int getJourneyDuration() {
+	return journeyDuration;
+  }
+
+  public void setJourneyDuration(int journeyDuration) {
+    this.journeyDuration = journeyDuration;
+  }
+	  
+  public void clearJourneyDuration() {
+    this.journeyDuration = MISSING_VALUE;
   }
 
   public String toString() {

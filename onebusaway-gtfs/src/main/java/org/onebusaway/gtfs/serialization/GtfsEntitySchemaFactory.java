@@ -181,7 +181,7 @@ public class GtfsEntitySchemaFactory {
     helper.addField(fareAttributes, "id", "fare_id",
         new DefaultAgencyIdFieldMappingFactory());
     helper.addFields(fareAttributes, "price", "currencyType", "paymentMethod");
-    helper.addOptionalFields(fareAttributes, "transfers", "transferDuration");
+    helper.addOptionalFields(fareAttributes, "transfers", "transferDuration", "journeyDuration");
 
     CsvEntityMappingBean fareRules = helper.addEntity(FareRule.class,
         "fare_rules.txt");

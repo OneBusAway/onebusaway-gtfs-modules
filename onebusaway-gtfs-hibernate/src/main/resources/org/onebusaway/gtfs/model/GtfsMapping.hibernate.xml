@@ -41,6 +41,7 @@
         <property name="paymentMethod" />
         <property name="transfers" />
         <property name="transferDuration" />
+        <property name="journeyDuration" />
     </class>
 
     <class name="org.onebusaway.gtfs.model.FareRule" table="gtfs_fare_rules" mutable="false">

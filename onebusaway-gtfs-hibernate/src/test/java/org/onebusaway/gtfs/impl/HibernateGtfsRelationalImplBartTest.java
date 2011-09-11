@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +17,7 @@
 package org.onebusaway.gtfs.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,5 +93,13 @@ public class HibernateGtfsRelationalImplBartTest {
     assertEquals(6 * 60 * 60, frequency.getEndTime());
     assertEquals(trip, frequency.getTrip());
     assertEquals(1200, frequency.getHeadwaySecs());
+  }
+  
+  @Test
+  public void testGet() {
+    List<AgencyAndId> shapeIds = _dao.getAllShapeIds();
+    assertEquals(2,shapeIds.size());
+    assertTrue(shapeIds.contains(new AgencyAndId("BART","airbart-up.csv")));
+    assertTrue(shapeIds.contains(new AgencyAndId("BART", "airbart-dn.csv")));
   }
 }

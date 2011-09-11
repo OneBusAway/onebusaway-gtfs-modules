@@ -117,6 +117,7 @@ public class AgencyAndId implements Serializable, Comparable<AgencyAndId> {
    * 
    * @param value id of the form "agencyId_entityId"
    * @return an id object
+   * @throws IllegalArgumentException if the id cannot be parsed
    */
   public static AgencyAndId convertFromString(String value) throws IllegalArgumentException {
     if( value == null || value.isEmpty())

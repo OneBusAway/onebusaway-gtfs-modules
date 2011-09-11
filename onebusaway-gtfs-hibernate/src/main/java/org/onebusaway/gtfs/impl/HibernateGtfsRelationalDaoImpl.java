@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -245,6 +246,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
+  public List<AgencyAndId> getAllShapeIds() {
+    return _ops.findByNamedQuery("allShapeIds");
+  }
+
+  @Override
   public List<ShapePoint> getShapePointsForShapeId(AgencyAndId shapeId) {
     return _ops.findByNamedQueryAndNamedParam("shapePointsForShapeId",
         "shapeId", shapeId);
@@ -323,5 +329,4 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   public <T> void clearAllEntitiesForType(Class<T> type) {
     _ops.clearAllEntitiesForType(type);
   }
-
 }

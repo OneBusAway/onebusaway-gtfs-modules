@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -292,6 +294,14 @@ public class HibernateGtfsRelationalDaoImplCaltrainTest {
    * {@link ShapePoint} Methods
    ****/
 
+  @Test
+  public void testGet() {
+    List<AgencyAndId> shapeIds = _dao.getAllShapeIds();
+    assertEquals(6,shapeIds.size());
+    assertTrue(shapeIds.contains(aid("cal_gil_sf")));
+    assertTrue(shapeIds.contains(aid("cal_sf_gil")));
+  }
+  
   @Test
   public void testGetShapePointsByShapeId() {
     List<ShapePoint> shapePoints = _dao.getShapePointsForShapeId(aid("cal_sf_gil"));

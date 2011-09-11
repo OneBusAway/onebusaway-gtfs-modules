@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -126,14 +127,14 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   }
 
   @Override
-  public List<ShapePoint> getShapePointsForShapeId(AgencyAndId shapeId) {
-    if (_shapePointsByShapeId == null) {
-      _shapePointsByShapeId = mapToValueList(getAllShapePoints(), "shapeId",
-          AgencyAndId.class);
-      for (List<ShapePoint> shapePoints : _shapePointsByShapeId.values())
-        Collections.sort(shapePoints);
-    }
+  public List<AgencyAndId> getAllShapeIds() {
+    ensureShapePointRelation();
+    return new ArrayList<AgencyAndId>(_shapePointsByShapeId.keySet());
+  }
 
+  @Override
+  public List<ShapePoint> getShapePointsForShapeId(AgencyAndId shapeId) {
+    ensureShapePointRelation();
     return list(_shapePointsByShapeId.get(shapeId));
   }
 
@@ -220,6 +221,15 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   /****
    * Private Methods
    ****/
+  
+  private void ensureShapePointRelation() {
+    if (_shapePointsByShapeId == null) {
+      _shapePointsByShapeId = mapToValueList(getAllShapePoints(), "shapeId",
+          AgencyAndId.class);
+      for (List<ShapePoint> shapePoints : _shapePointsByShapeId.values())
+        Collections.sort(shapePoints);
+    }
+  }
 
   private static <T> List<T> list(List<T> list) {
     if (list == null)

@@ -4,6 +4,10 @@ Release Notes
 
   * More documentation for {{{./onebusaway-gtfs-transformer-cli.html}onebusaway-gtfs-transformer-cli}}.
   
+  * Add <<<getAllShapeIds()>>> method to {{{./apidocs/org/onebusaway/gtfs/services/GtfsRelationalDao.html#getAllShapeIds()}GtfsRelationalDao}}
+  
+  * Add <<<journeyDuration>>> property to {{{./apidocs/org/onebusaway/gtfs/model/FareAttribute.html}FareAttribute}} 
+  
   * Better support for entity id matching in <<<onebusaway-gtfs-transformer-cli>>>.
 
   * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}

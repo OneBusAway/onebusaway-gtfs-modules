@@ -2,6 +2,10 @@ Release Notes
 
 * ${currentVersion}
 
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
+  
+* 1.2.4
+
   * More documentation for {{{./onebusaway-gtfs-transformer-cli.html}onebusaway-gtfs-transformer-cli}}.
   
   * Add <<<getAllShapeIds()>>> method to {{{./apidocs/org/onebusaway/gtfs/services/GtfsRelationalDao.html#getAllShapeIds()}GtfsRelationalDao}}
@@ -10,7 +14,7 @@ Release Notes
   
   * Better support for entity id matching in <<<onebusaway-gtfs-transformer-cli>>>.
 
-  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/1.2.4/}}
   
 * 1.2.3
 

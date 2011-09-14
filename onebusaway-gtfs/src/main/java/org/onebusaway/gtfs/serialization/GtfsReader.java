@@ -206,8 +206,9 @@ public class GtfsReader extends CsvEntityReader {
         Agency agency = (Agency) entity;
         if (agency.getId() == null) {
           if (_defaultAgencyId == null)
-            _defaultAgencyId = agency.getName();
-          agency.setId(_defaultAgencyId);
+            agency.setId(agency.getName());
+          else
+            agency.setId(_defaultAgencyId);
         }
 
         // If we already have this agency from a previous load, then we don't

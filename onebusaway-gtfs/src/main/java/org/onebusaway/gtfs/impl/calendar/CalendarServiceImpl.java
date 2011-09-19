@@ -106,7 +106,8 @@ public class CalendarServiceImpl implements CalendarService {
 
   public List<Date> getDatesForLocalizedServiceId(
       LocalizedServiceId localizedServiceId) {
-    return _data.getDatesForLocalizedServiceId(localizedServiceId);
+    CalendarServiceData data = getData();
+    return data.getDatesForLocalizedServiceId(localizedServiceId);
   }
 
   @Override
@@ -114,7 +115,8 @@ public class CalendarServiceImpl implements CalendarService {
       LocalizedServiceId localizedServiceId, Date serviceDate) {
 
     // TODO : Make this more efficient?
-    List<Date> dates = _data.getDatesForLocalizedServiceId(localizedServiceId);
+    CalendarServiceData data = getData();
+    List<Date> dates = data.getDatesForLocalizedServiceId(localizedServiceId);
     return Collections.binarySearch(dates, serviceDate) >= 0;
   }
 

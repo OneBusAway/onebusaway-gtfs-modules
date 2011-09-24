@@ -22,7 +22,7 @@
 
 <hibernate-mapping package="org.onebusaway">
 
-    <class name="org.onebusaway.gtfs.model.Agency" table="gtfs_agencies" mutable="false">
+    <class name="org.onebusaway.gtfs.model.Agency" table="gtfs_agencies">
         <id name="id" type="string" length="50" />
         <property name="lang" />
         <property name="name" />
@@ -31,7 +31,7 @@
         <property name="url" />
     </class>
 
-    <class name="org.onebusaway.gtfs.model.FareAttribute" table="gtfs_fare_attributes" mutable="false">
+    <class name="org.onebusaway.gtfs.model.FareAttribute" table="gtfs_fare_attributes">
         <composite-id name="id" class="org.onebusaway.gtfs.model.AgencyAndId">
             <key-property name="agencyId" length="50" />
             <key-property name="id" />
@@ -44,7 +44,7 @@
         <property name="journeyDuration" />
     </class>
 
-    <class name="org.onebusaway.gtfs.model.FareRule" table="gtfs_fare_rules" mutable="false">
+    <class name="org.onebusaway.gtfs.model.FareRule" table="gtfs_fare_rules">
         <id name="id" column="gid" type="int" length="11" unsaved-value="null">
             <generator class="native" />
         </id>
@@ -61,7 +61,7 @@
         <property name="containsId" />
     </class>
 
-    <class name="org.onebusaway.gtfs.model.Frequency" table="gtfs_frequencies" mutable="false">
+    <class name="org.onebusaway.gtfs.model.Frequency" table="gtfs_frequencies">
         <id name="id" column="gid" type="int" length="11" unsaved-value="null">
             <generator class="native" />
         </id>
@@ -74,7 +74,7 @@
         <property name="headwaySecs" />
     </class>
 
-    <class name="org.onebusaway.gtfs.model.Pathway" table="gtfs_pathways" mutable="false">
+    <class name="org.onebusaway.gtfs.model.Pathway" table="gtfs_pathways">
         <composite-id name="id" class="org.onebusaway.gtfs.model.AgencyAndId">
             <key-property name="agencyId" length="50" />
             <key-property name="id" />
@@ -91,7 +91,7 @@
         <property name="wheelchairTraversalTime" />
     </class>
     
-    <class name="org.onebusaway.gtfs.model.Route" table="gtfs_routes" mutable="false">
+    <class name="org.onebusaway.gtfs.model.Route" table="gtfs_routes">
         <composite-id name="id" class="org.onebusaway.gtfs.model.AgencyAndId">
             <key-property name="agencyId" length="50" />
             <key-property name="id" />
@@ -106,7 +106,7 @@
         <many-to-one name="agency" not-null="true" />
     </class>
 
-    <class name="org.onebusaway.gtfs.model.ServiceCalendar" table="gtfs_calendars" mutable="false">
+    <class name="org.onebusaway.gtfs.model.ServiceCalendar" table="gtfs_calendars">
         <id name="id" column="gid" type="int" length="11" unsaved-value="null">
             <generator class="native" />
         </id>
@@ -125,7 +125,7 @@
         </component>
     </class>
 
-    <class name="org.onebusaway.gtfs.model.ServiceCalendarDate" table="gtfs_calendar_dates" mutable="false">
+    <class name="org.onebusaway.gtfs.model.ServiceCalendarDate" table="gtfs_calendar_dates">
         <id name="id" column="gid" type="int" length="11" unsaved-value="null">
             <generator class="native" />
         </id>
@@ -137,7 +137,7 @@
         </component>
     </class>
 
-    <class name="org.onebusaway.gtfs.model.ShapePoint" table="gtfs_shape_points" mutable="false">
+    <class name="org.onebusaway.gtfs.model.ShapePoint" table="gtfs_shape_points">
         <id name="id" column="gid" type="int" length="11" unsaved-value="null">
             <generator class="native" />
         </id>
@@ -151,7 +151,7 @@
         </component>
     </class>
 
-    <class name="org.onebusaway.gtfs.model.Stop" table="gtfs_stops" mutable="false">
+    <class name="org.onebusaway.gtfs.model.Stop" table="gtfs_stops">
         <composite-id name="id" class="org.onebusaway.gtfs.model.AgencyAndId">
             <key-property name="agencyId" length="50" />
             <key-property name="id" />
@@ -169,7 +169,7 @@
         <property name="wheelchairBoarding" />
     </class>
 
-    <class name="org.onebusaway.gtfs.model.StopTime" table="gtfs_stop_times" mutable="false">
+    <class name="org.onebusaway.gtfs.model.StopTime" table="gtfs_stop_times">
         <id name="id" column="gid" type="int" length="11" unsaved-value="null">
             <generator class="native" />
         </id>
@@ -193,7 +193,7 @@
 
     </class>
 
-    <class name="org.onebusaway.gtfs.model.Transfer" table="gtfs_transfers" mutable="false">
+    <class name="org.onebusaway.gtfs.model.Transfer" table="gtfs_transfers">
         <id name="id" column="gid" type="int" length="11" unsaved-value="null">
             <generator class="native" />
         </id>
@@ -209,7 +209,7 @@
         <property name="minTransferTime" />
     </class>
   
-    <class name="org.onebusaway.gtfs.model.Trip" table="gtfs_trips" mutable="false">
+    <class name="org.onebusaway.gtfs.model.Trip" table="gtfs_trips">
 
         <composite-id name="id" class="org.onebusaway.gtfs.model.AgencyAndId">
             <key-property name="agencyId" length="50" />

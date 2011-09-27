@@ -16,6 +16,7 @@
 package org.onebusaway.gtfs.model.calendar;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,6 +57,10 @@ public class CalendarServiceData implements Serializable {
     return Collections.unmodifiableSet(_serviceDatesByServiceId.keySet());
   }
 
+  public Set<LocalizedServiceId> getLocalizedServiceIds() {
+    return Collections.unmodifiableSet(_datesByLocalizedServiceId.keySet());
+  }
+
   public List<ServiceDate> getServiceDatesForServiceId(AgencyAndId serviceId) {
     return _serviceDatesByServiceId.get(serviceId);
   }
@@ -69,7 +74,9 @@ public class CalendarServiceData implements Serializable {
 
   public void putServiceDatesForServiceId(AgencyAndId serviceId,
       List<ServiceDate> serviceDates) {
+    serviceDates = new ArrayList<ServiceDate>(serviceDates);
     Collections.sort(serviceDates);
+    serviceDates = Collections.unmodifiableList(serviceDates);
     _serviceDatesByServiceId.put(serviceId, serviceDates);
     for (ServiceDate serviceDate : serviceDates) {
       Set<AgencyAndId> serviceIds = _serviceIdsByDate.get(serviceDate);
@@ -87,7 +94,14 @@ public class CalendarServiceData implements Serializable {
 
   public void putDatesForLocalizedServiceId(LocalizedServiceId serviceId,
       List<Date> dates) {
+    dates = Collections.unmodifiableList(new ArrayList<Date>(dates));
     _datesByLocalizedServiceId.put(serviceId, dates);
   }
 
+  public void makeReadOnly() {
+    _timeZonesByAgencyId = Collections.unmodifiableMap(_timeZonesByAgencyId);
+    _serviceDatesByServiceId = Collections.unmodifiableMap(_serviceDatesByServiceId);
+    _datesByLocalizedServiceId = Collections.unmodifiableMap(_datesByLocalizedServiceId);
+    _serviceIdsByDate = Collections.unmodifiableMap(_serviceIdsByDate);
+  }
 }

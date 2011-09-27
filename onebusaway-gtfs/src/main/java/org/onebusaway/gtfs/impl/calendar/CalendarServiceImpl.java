@@ -107,7 +107,7 @@ public class CalendarServiceImpl implements CalendarService {
   public List<Date> getDatesForLocalizedServiceId(
       LocalizedServiceId localizedServiceId) {
     CalendarServiceData data = getData();
-    return data.getDatesForLocalizedServiceId(localizedServiceId);
+    return list(data.getDatesForLocalizedServiceId(localizedServiceId));
   }
 
   @Override
@@ -198,7 +198,7 @@ public class CalendarServiceImpl implements CalendarService {
    * Private Methods
    ****/
 
-  private CalendarServiceData getData() {
+  protected CalendarServiceData getData() {
     if (_data == null) {
       synchronized (this) {
         if (_data == null) {
@@ -290,5 +290,11 @@ public class CalendarServiceImpl implements CalendarService {
       return search(serviceDates, op, indexFrom, index, key);
     else
       return search(serviceDates, op, index + 1, indexTo, key);
+  }
+
+  private static final <T> List<T> list(List<T> values) {
+    if (values == null)
+      return Collections.emptyList();
+    return values;
   }
 }

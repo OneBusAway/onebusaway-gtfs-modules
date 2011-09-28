@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +31,8 @@ public final class Agency extends IdentityBean<String> {
   private String lang;
 
   private String phone;
+
+  private String fareUrl;
 
   public Agency() {
 
@@ -90,6 +93,14 @@ public final class Agency extends IdentityBean<String> {
 
   public void setPhone(String phone) {
     this.phone = phone;
+  }
+
+  public String getFareUrl() {
+    return fareUrl;
+  }
+
+  public void setFareUrl(String fareUrl) {
+    this.fareUrl = fareUrl;
   }
 
   public String toString() {

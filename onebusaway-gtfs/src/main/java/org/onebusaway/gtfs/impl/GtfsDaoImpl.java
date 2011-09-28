@@ -21,6 +21,7 @@ import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
+import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Pathway;
 import org.onebusaway.gtfs.model.Route;
@@ -62,6 +63,11 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   public Collection<FareRule> getAllFareRules() {
     return getAllEntitiesForType(FareRule.class);
+  }
+
+  @Override
+  public Collection<FeedInfo> getAllFeedInfos() {
+    return getAllEntitiesForType(FeedInfo.class);
   }
 
   public Collection<Frequency> getAllFrequencies() {
@@ -106,6 +112,11 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   public FareRule getFareRuleForId(int id) {
     return getEntityForId(FareRule.class, id);
+  }
+
+  @Override
+  public FeedInfo getFeedInfoForId(int id) {
+    return getEntityForId(FeedInfo.class, id);
   }
 
   public Frequency getFrequencyForId(int id) {

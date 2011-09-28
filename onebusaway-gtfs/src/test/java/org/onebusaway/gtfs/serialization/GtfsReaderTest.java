@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,21 +23,27 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Test;
+import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
+import org.onebusaway.csv_entities.exceptions.InvalidValueEntityException;
+import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
 import org.onebusaway.gtfs.GtfsTestData;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
+import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
@@ -56,7 +63,8 @@ public class GtfsReaderTest {
   public void testIslandTransit() throws IOException {
 
     String agencyId = "26";
-    GtfsDao entityStore = processFeed(GtfsTestData.getIslandGtfs(), agencyId, false);
+    GtfsDao entityStore = processFeed(GtfsTestData.getIslandGtfs(), agencyId,
+        false);
 
     Collection<Agency> agencies = entityStore.getAllAgencies();
     assertEquals(1, agencies.size());
@@ -207,8 +215,9 @@ public class GtfsReaderTest {
 
     StopTime stopTimeA = entityStore.getStopTimeForId(new Integer(1));
     assertEquals(new Integer(1), stopTimeA.getId());
-    assertEquals(entityStore.getTripForId(new AgencyAndId(agencyId,
-        "10101272009")), stopTimeA.getTrip());
+    assertEquals(
+        entityStore.getTripForId(new AgencyAndId(agencyId, "10101272009")),
+        stopTimeA.getTrip());
     assertEquals(21120, stopTimeA.getArrivalTime());
     assertEquals(21120, stopTimeA.getDepartureTime());
     assertEquals(entityStore.getStopForId(new AgencyAndId(agencyId,
@@ -307,49 +316,49 @@ public class GtfsReaderTest {
     assertEquals(4, transfers.size());
   }
 
-
   @Test
   public void testIntern() throws IOException, ParseException {
     File resourcePath;
     String agencyId;
     GtfsDao entityStore;
-    
+
     resourcePath = GtfsTestData.getBartGtfs();
     agencyId = "BART";
-    
+
     entityStore = processFeed(resourcePath, agencyId, true);
     Collection<Trip> trips = entityStore.getAllTrips();
     for (Iterator<Trip> iter = trips.iterator(); iter.hasNext();) {
-    	Trip t = iter.next();
-    	iter.remove();
-		String s1 = t.getTripHeadsign();
-    	for (Trip u : trips) {
-    		String s2 = u.getTripHeadsign();
-    		if (s1.equals(s2)) {
-    			assertSame(s1, s2);
-    		} else {
-    			assertNotSame(s1, s2);
-    		}
-    	}
+      Trip t = iter.next();
+      iter.remove();
+      String s1 = t.getTripHeadsign();
+      for (Trip u : trips) {
+        String s2 = u.getTripHeadsign();
+        if (s1.equals(s2)) {
+          assertSame(s1, s2);
+        } else {
+          assertNotSame(s1, s2);
+        }
+      }
     }
 
     resourcePath = GtfsTestData.getCaltrainGtfs();
     agencyId = "Caltrain";
-    
+
     entityStore = processFeed(resourcePath, agencyId, false);
     Collection<FareAttribute> fareAttributes = entityStore.getAllFareAttributes();
     assertTrue(fareAttributes.size() > 1);
     for (FareAttribute f : fareAttributes) {
-		String s1 = f.getCurrencyType();
-        for (FareAttribute g : fareAttributes) {
-    		if (f == g) continue;
-    		String s2 = g.getCurrencyType();
-    		assertEquals(s1, s2);
-   			assertNotSame(s1, s2);
-    	}
+      String s1 = f.getCurrencyType();
+      for (FareAttribute g : fareAttributes) {
+        if (f == g)
+          continue;
+        String s2 = g.getCurrencyType();
+        assertEquals(s1, s2);
+        assertNotSame(s1, s2);
+      }
     }
   }
-  
+
   @Test
   public void testTestAgency() throws IOException {
 
@@ -426,40 +435,182 @@ public class GtfsReaderTest {
     assertEquals(3, stopTimeC.getStopSequence());
     assertEquals(trip12, stopTimeC.getTrip());
   }
-  
 
   @Test
-  public void testUtf8() throws IOException, ParseException, InterruptedException {
+  public void testUtf8() throws IOException, ParseException,
+      InterruptedException {
 
     String agencyId = "agency";
-    GtfsDao dao = processFeed(new File("src/test/resources/org/onebusaway/gtfs/utf8-agency"), agencyId, false);
+    GtfsDao dao = processFeed(new File(
+        "src/test/resources/org/onebusaway/gtfs/utf8-agency"), agencyId, false);
 
-    Route route = dao.getRouteForId(new AgencyAndId(agencyId,"A"));
-    assertEquals("Enguera-Alcúdia de Crespins-Xàtiva",route.getLongName());
-    
-    route = dao.getRouteForId(new AgencyAndId(agencyId,"B"));
-    assertEquals("Tuéjar-Casinos",route.getLongName());
+    Route route = dao.getRouteForId(new AgencyAndId(agencyId, "A"));
+    assertEquals("Enguera-Alcúdia de Crespins-Xàtiva", route.getLongName());
+
+    route = dao.getRouteForId(new AgencyAndId(agencyId, "B"));
+    assertEquals("Tuéjar-Casinos", route.getLongName());
   }
-  
+
   @Test
-  public void testBom() throws IOException, ParseException, InterruptedException {
+  public void testBom() throws IOException, ParseException,
+      InterruptedException {
 
-    GtfsDao dao = processFeed(new File("src/test/resources/org/onebusaway/gtfs/bom-agency"), "1", false);
+    GtfsDao dao = processFeed(new File(
+        "src/test/resources/org/onebusaway/gtfs/bom-agency"), "1", false);
 
-    Route route = dao.getRouteForId(new AgencyAndId("1","02-88"));
-    assertEquals("La Poterie - Haut Sancé / Grand Quartier",route.getLongName());
-    
-    route = dao.getRouteForId(new AgencyAndId("1","11-88"));
-    assertEquals("Saint Saëns - ZI Sud Est / Stade Rennais ZI Ouest",route.getLongName());
+    Route route = dao.getRouteForId(new AgencyAndId("1", "02-88"));
+    assertEquals("La Poterie - Haut Sancé / Grand Quartier",
+        route.getLongName());
+
+    route = dao.getRouteForId(new AgencyAndId("1", "11-88"));
+    assertEquals("Saint Saëns - ZI Sud Est / Stade Rennais ZI Ouest",
+        route.getLongName());
   }
 
-  private GtfsRelationalDao processFeed(File resourcePath, String agencyId, boolean internStrings)
-      throws IOException {
+  @Test
+  public void testAgency() throws CsvEntityIOException, IOException {
+
+    GtfsReader reader = new GtfsReader();
+
+    StringBuilder b = new StringBuilder();
+    b.append("agency_id,agency_name,agency_url,agency_timezone,agency_fare_url,agency_lang,agency_phone\n");
+    b.append("1,Agency,http://agency/,Amercia/Los_Angeles,http://agency/fare_url,en,800-555-BUS1\n");
+
+    reader.readEntities(Agency.class, new StringReader(b.toString()));
+
+    Agency agency = reader.getEntityStore().getEntityForId(Agency.class, "1");
+    assertEquals("1", agency.getId());
+    assertEquals("Agency", agency.getName());
+    assertEquals("http://agency/", agency.getUrl());
+    assertEquals("Amercia/Los_Angeles", agency.getTimezone());
+    assertEquals("http://agency/fare_url", agency.getFareUrl());
+    assertEquals("en", agency.getLang());
+    assertEquals("800-555-BUS1", agency.getPhone());
+  }
+
+  @Test
+  public void testFrequency() throws CsvEntityIOException, IOException {
+
+    GtfsReader reader = new GtfsReader();
+    reader.setDefaultAgencyId("1");
+
+    Trip trip = new Trip();
+    trip.setId(new AgencyAndId("1", "trip"));
+    reader.injectEntity(trip);
+
+    StringBuilder b = new StringBuilder();
+    b.append("trip_id,start_time,end_time,headway_secs,exact_times\n");
+    b.append("trip,08:30:00,09:45:00,300,1\n");
+
+    reader.readEntities(Frequency.class, new StringReader(b.toString()));
+
+    Frequency frequency = reader.getEntityStore().getEntityForId(
+        Frequency.class, 1);
+    assertEquals(30600, frequency.getStartTime());
+    assertEquals(35100, frequency.getEndTime());
+    assertEquals(1, frequency.getExactTimes());
+    assertEquals(300, frequency.getHeadwaySecs());
+    assertSame(trip, frequency.getTrip());
+  }
+
+  @Test
+  public void testFeedInfo() throws CsvEntityIOException, IOException {
+
+    GtfsReader reader = new GtfsReader();
+
+    StringBuilder b = new StringBuilder();
+    b.append("feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version\n");
+    b.append("Test,http://test/,en,20110928,20120131,1.0\n");
+
+    reader.readEntities(FeedInfo.class, new StringReader(b.toString()));
+
+    FeedInfo feedInfo = reader.getEntityStore().getEntityForId(FeedInfo.class,
+        1);
+    assertEquals("Test", feedInfo.getPublisherName());
+    assertEquals("http://test/", feedInfo.getPublisherUrl());
+    assertEquals("en", feedInfo.getLang());
+    assertEquals(new ServiceDate(2011, 9, 28), feedInfo.getStartDate());
+    assertEquals(new ServiceDate(2012, 1, 31), feedInfo.getEndDate());
+    assertEquals("1.0", feedInfo.getVersion());
+
+    /**
+     * Test with a missing "field_publisher_url" field
+     */
+    b = new StringBuilder();
+    b.append("feed_publisher_name\n");
+    b.append("Test\n");
+
+    try {
+      reader.readEntities(FeedInfo.class, new StringReader(b.toString()));
+      fail();
+    } catch (CsvEntityIOException ex) {
+      MissingRequiredFieldException ex2 = (MissingRequiredFieldException) ex.getCause();
+      assertEquals(FeedInfo.class, ex2.getEntityType());
+      assertEquals("feed_publisher_url", ex2.getFieldName());
+    }
+
+    /**
+     * Test with a missing "field_lang" field
+     */
+    b = new StringBuilder();
+    b.append("feed_publisher_name,feed_publisher_url\n");
+    b.append("Test,http://test/\n");
+
+    try {
+      reader.readEntities(FeedInfo.class, new StringReader(b.toString()));
+      fail();
+    } catch (CsvEntityIOException ex) {
+      MissingRequiredFieldException ex2 = (MissingRequiredFieldException) ex.getCause();
+      assertEquals(FeedInfo.class, ex2.getEntityType());
+      assertEquals("feed_lang", ex2.getFieldName());
+    }
+
+    /**
+     * Test with a malformed "feed_start_date" field
+     */
+    b = new StringBuilder();
+    b.append("feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date\n");
+    b.append("Test,http://test/,en,2011XX01\n");
+
+    try {
+      reader.readEntities(FeedInfo.class, new StringReader(b.toString()));
+      fail();
+    } catch (CsvEntityIOException ex) {
+      InvalidValueEntityException ex2 = (InvalidValueEntityException) ex.getCause();
+      assertEquals(FeedInfo.class, ex2.getEntityType());
+      assertEquals("feed_start_date", ex2.getFieldName());
+      assertEquals("2011XX01", ex2.getFieldValue());
+    }
+
+    /**
+     * Test with a malformed "feed_end_date" field
+     */
+    b = new StringBuilder();
+    b.append("feed_publisher_name,feed_publisher_url,feed_lang,feed_end_date\n");
+    b.append("Test,http://test/,en,2011XX01\n");
+
+    try {
+      reader.readEntities(FeedInfo.class, new StringReader(b.toString()));
+      fail();
+    } catch (CsvEntityIOException ex) {
+      InvalidValueEntityException ex2 = (InvalidValueEntityException) ex.getCause();
+      assertEquals(FeedInfo.class, ex2.getEntityType());
+      assertEquals("feed_end_date", ex2.getFieldName());
+      assertEquals("2011XX01", ex2.getFieldValue());
+    }
+  }
+
+  /****
+   * Private Methods
+   ****/
+
+  private GtfsRelationalDao processFeed(File resourcePath, String agencyId,
+      boolean internStrings) throws IOException {
 
     GtfsReader reader = new GtfsReader();
     reader.setDefaultAgencyId(agencyId);
     reader.setInternStrings(internStrings);
-    
+
     reader.setInputLocation(resourcePath);
 
     GtfsRelationalDaoImpl entityStore = new GtfsRelationalDaoImpl();

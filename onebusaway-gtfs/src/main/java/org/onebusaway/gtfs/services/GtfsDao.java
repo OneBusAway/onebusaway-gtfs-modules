@@ -21,6 +21,7 @@ import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
+import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Pathway;
 import org.onebusaway.gtfs.model.Route;
@@ -38,7 +39,7 @@ import org.onebusaway.gtfs.model.Trip;
  * @author bdferris
  */
 public interface GtfsDao extends GenericDao {
-  
+
   /****
    * Agency Methods
    ****/
@@ -62,29 +63,37 @@ public interface GtfsDao extends GenericDao {
   public Collection<ServiceCalendarDate> getAllCalendarDates();
 
   public ServiceCalendarDate getCalendarDateForId(int id);
-  
+
   /****
    * {@link FareAttribute} Methods
    ****/
-  
+
   public Collection<FareAttribute> getAllFareAttributes();
-  
+
   public FareAttribute getFareAttributeForId(AgencyAndId id);
-  
+
   /****
    * {@link FareRule} Methods
    ***/
-  
+
   public Collection<FareRule> getAllFareRules();
-  
+
   public FareRule getFareRuleForId(int id);
-  
+
+  /****
+   * {@link FeedInfo} Methods
+   ****/
+
+  public Collection<FeedInfo> getAllFeedInfos();
+
+  public FeedInfo getFeedInfoForId(int id);
+
   /****
    * {@link Frequency} Methods
    ****/
-  
+
   public Collection<Frequency> getAllFrequencies();
-  
+
   public Frequency getFrequencyForId(int id);
 
   /****
@@ -102,7 +111,7 @@ public interface GtfsDao extends GenericDao {
   public Collection<Route> getAllRoutes();
 
   public Route getRouteForId(AgencyAndId id);
-  
+
   /****
    * {@link ShapePoint} Methods
    ****/
@@ -126,15 +135,15 @@ public interface GtfsDao extends GenericDao {
   public Collection<StopTime> getAllStopTimes();
 
   public StopTime getStopTimeForId(int id);
-  
+
   /****
    * {@link Transfer} Methods
    ****/
-  
+
   public Collection<Transfer> getAllTransfers();
-  
+
   public Transfer getTransferForId(int id);
-  
+
   /****
    * {@link Trip} Methods
    ****/
@@ -142,6 +151,5 @@ public interface GtfsDao extends GenericDao {
   public Collection<Trip> getAllTrips();
 
   public Trip getTripForId(AgencyAndId id);
-
 
 }

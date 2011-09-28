@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.text.ParseException;
 
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
@@ -68,7 +70,11 @@ public class ServiceDateUserType implements UserType {
     if (rs.wasNull())
       return null;
 
-    return ServiceDate.parseString(value);
+    try {
+      return ServiceDate.parseString(value);
+    } catch (ParseException ex) {
+      throw new SQLException("error parsing service date value: " + value, ex);
+    }
   }
 
   @Override

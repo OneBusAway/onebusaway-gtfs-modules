@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +29,7 @@ import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
+import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.model.Pathway;
@@ -99,6 +101,7 @@ public class GtfsEntitySchemaFactory {
     helper.addOptionalField(agency, "id", "agency_id",
         new AgencyIdTranslationFieldMappingFactory());
     helper.addOptionalFields(agency, "lang", "phone");
+    helper.addOptionalField(agency, "fareUrl", "agency_fare_url");
 
     CsvEntityMappingBean route = helper.addEntity(Route.class, "routes.txt",
         "route_");
@@ -181,7 +184,8 @@ public class GtfsEntitySchemaFactory {
     helper.addField(fareAttributes, "id", "fare_id",
         new DefaultAgencyIdFieldMappingFactory());
     helper.addFields(fareAttributes, "price", "currencyType", "paymentMethod");
-    helper.addOptionalFields(fareAttributes, "transfers", "transferDuration", "journeyDuration");
+    helper.addOptionalFields(fareAttributes, "transfers", "transferDuration",
+        "journeyDuration");
 
     CsvEntityMappingBean fareRules = helper.addEntity(FareRule.class,
         "fare_rules.txt");
@@ -230,6 +234,19 @@ public class GtfsEntitySchemaFactory {
         new EntityFieldMappingFactory());
     helper.addField(transfers, "transferType");
     helper.addOptionalField(transfers, "minTransferTime");
+
+    CsvEntityMappingBean feedInfo = helper.addEntity(FeedInfo.class,
+        "feed_info.txt");
+    feedInfo.setRequired(false);
+    helper.addIgnorableField(feedInfo, "id");
+    helper.addField(feedInfo, "publisherName", "feed_publisher_name");
+    helper.addField(feedInfo, "publisherUrl", "feed_publisher_url");
+    helper.addField(feedInfo, "lang", "feed_lang");
+    helper.addOptionalField(feedInfo, "startDate", "feed_start_date",
+        new ServiceDateFieldMappingFactory());
+    helper.addOptionalField(feedInfo, "endDate", "feed_end_date",
+        new ServiceDateFieldMappingFactory());
+    helper.addOptionalField(feedInfo, "version", "feed_version");
 
     return factory;
   }

@@ -25,6 +25,7 @@ import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
+import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.model.Pathway;
@@ -56,9 +57,9 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   public void setSessionFactory(SessionFactory sessionFactory) {
     _ops = new HibernateOperationsImpl(sessionFactory);
   }
-  
+
   public SessionFactory getSessionFactory() {
-    if( _ops == null)
+    if (_ops == null)
       return null;
     return _ops.getSessionFactory();
   }
@@ -100,6 +101,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   @Override
   public Collection<FareRule> getAllFareRules() {
     return _ops.find("FROM FareRule");
+  }
+
+  @Override
+  public Collection<FeedInfo> getAllFeedInfos() {
+    return _ops.find("FROM FeedInfo");
   }
 
   @Override
@@ -155,6 +161,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   @Override
   public FareRule getFareRuleForId(int id) {
     return (FareRule) _ops.get(FareRule.class, id);
+  }
+
+  @Override
+  public FeedInfo getFeedInfoForId(int id) {
+    return (FeedInfo) _ops.get(FeedInfo.class, id);
   }
 
   @Override

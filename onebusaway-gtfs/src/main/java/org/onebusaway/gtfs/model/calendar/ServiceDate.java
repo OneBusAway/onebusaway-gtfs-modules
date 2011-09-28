@@ -1,6 +1,7 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- *
+ * Copyright (C) 2011 Google, Inc.
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,6 +19,7 @@ package org.onebusaway.gtfs.model.calendar;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -94,13 +96,14 @@ public class ServiceDate implements Serializable, Comparable<ServiceDate> {
    * 
    * @param value a string of the form "YYYYMMDD"
    * @return a new ServiceDate object
+   * @throws ParseException on parse error
    */
-  public static ServiceDate parseString(String value) {
+  public static ServiceDate parseString(String value) throws ParseException {
 
     Matcher matcher = _pattern.matcher(value);
 
     if (!matcher.matches())
-      throw new IllegalStateException("error parsing date: " + value);
+      throw new ParseException("error parsing date: " + value, 0);
 
     int year = Integer.parseInt(matcher.group(1));
     int month = Integer.parseInt(matcher.group(2));

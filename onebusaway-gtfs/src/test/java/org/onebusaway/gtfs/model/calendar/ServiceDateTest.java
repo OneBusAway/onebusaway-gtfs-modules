@@ -1,6 +1,7 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- *
+ * Copyright (C) 2011 Google, Inc.
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,8 +18,10 @@ package org.onebusaway.gtfs.model.calendar;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.onebusaway.gtfs.DateSupport.date;
 
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -111,7 +114,7 @@ public class ServiceDateTest {
   }
 
   @Test
-  public void testString() {
+  public void testString() throws ParseException {
 
     ServiceDate serviceDate = ServiceDate.parseString("20100201");
 
@@ -121,5 +124,12 @@ public class ServiceDateTest {
 
     String value = serviceDate.getAsString();
     assertEquals("20100201", value);
+
+    try {
+      ServiceDate.parseString("201002XX");
+      fail();
+    } catch (ParseException ex) {
+
+    }
   }
 }

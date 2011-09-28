@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +16,11 @@
  */
 package org.onebusaway.gtfs.serialization.mappings;
 
+import java.text.ParseException;
 import java.util.Map;
 
 import org.onebusaway.csv_entities.CsvEntityContext;
+import org.onebusaway.csv_entities.exceptions.InvalidValueEntityException;
 import org.onebusaway.csv_entities.schema.AbstractFieldMapping;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
@@ -30,13 +33,15 @@ public class ServiceDateFieldMappingFactory implements FieldMappingFactory {
   public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
       Class<?> entityType, String csvFieldName, String objFieldName,
       Class<?> objFieldType, boolean required) {
-    return new FieldMappingImpl(entityType, csvFieldName, objFieldName);
+    return new FieldMappingImpl(entityType, csvFieldName, objFieldName,
+        required);
   }
 
   private static class FieldMappingImpl extends AbstractFieldMapping {
 
-    public FieldMappingImpl(Class<?> entityType, String csvFieldName, String objFieldName) {
-      super(entityType, csvFieldName, objFieldName, true);
+    public FieldMappingImpl(Class<?> entityType, String csvFieldName,
+        String objFieldName, boolean required) {
+      super(entityType, csvFieldName, objFieldName, required);
     }
 
     public void translateFromCSVToObject(CsvEntityContext context,
@@ -46,8 +51,14 @@ public class ServiceDateFieldMappingFactory implements FieldMappingFactory {
         return;
 
       Object value = csvValues.get(_csvFieldName);
-      ServiceDate date = ServiceDate.parseString(value.toString());
-      object.setPropertyValue(_objFieldName, date);
+
+      try {
+        ServiceDate date = ServiceDate.parseString(value.toString());
+        object.setPropertyValue(_objFieldName, date);
+      } catch (ParseException ex) {
+        throw new InvalidValueEntityException(_entityType, _csvFieldName,
+            value.toString());
+      }
     }
 
     public void translateFromObjectToCSV(CsvEntityContext context,

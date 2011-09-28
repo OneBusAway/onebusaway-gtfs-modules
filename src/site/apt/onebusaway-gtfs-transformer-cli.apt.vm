@@ -188,3 +188,37 @@ java -jar onebusaway-gtfs-transformer-cli.jar --transform=modifications.txt sour
 +--+
 
   The resulting GTFS will have the retained routes with the matching short names and all other entities required to support those routes.
+  
+* Merge Trips and Refactor Calendar Entries
+
+  Some agencies model their transit schedule favoring multiple entries in
+calendar_dates.txt as opposed to a more concise entry in calendar.txt.
+A smaller number of agencies take this scheme even further, creating trips.txt
+entries for each service date, even when the underlying trips are exactly the
+same.  This can cause the size of the GTFS to grow dramatically as trips and
+stop times are duplicated.
+
+  We provide a simple transformer that can attempt to detect these duplicate
+trips, remove them, and simplify the underlying calendar entries to match.  To
+run it, apply the following transform:
+
++---+
+{"op":"transform","class":"org.onebusaway.gtfs_transformer.updates.CalendarSimplicationStrategy"}
++---+
+
+  The transform optionally takes two additional arguments:
+  
+  * minNumberOfWeeksForCalendarEntry - how many weeks does a service id need to
+    span before it gets its own entry in calendar.txt (default=3)
+
+  * dayOfTheWeekInclusionRatio - if a service id is being modeled with a
+    calendar.txt entry, how frequent does a day of the week need to before it's
+    modeled positively in calendar.txt with any negative exceptions noted in
+    calendar_dates.txt, vs making no entry for that day of the week in
+    calendar.txt and instead noting any positive exceptions in
+    calendar_dates.txt.  This is useful for filtering out a calendar that is
+    always active on Sunday, but has one or two Mondays for a holiday.
+    Frequency is defined as how often the target day of the week occurs vs the
+    count for day of the week appearing MOST frequently for the service id
+    (default=0.5)
+     

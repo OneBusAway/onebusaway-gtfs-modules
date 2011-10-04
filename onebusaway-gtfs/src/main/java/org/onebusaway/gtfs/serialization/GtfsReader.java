@@ -110,6 +110,14 @@ public class GtfsReader extends CsvEntityReader {
     _defaultAgencyId = feedId;
   }
 
+  public String getDefaultAgencyId() {
+    if (_defaultAgencyId != null)
+      return _defaultAgencyId;
+    if (_agencies.size() > 0)
+      return _agencies.get(0).getId();
+    throw new NoDefaultAgencyIdException();
+  }
+
   public void addAgencyIdMapping(String fromAgencyId, String toAgencyId) {
     _agencyIdMapping.put(fromAgencyId, toAgencyId);
   }
@@ -164,14 +172,6 @@ public class GtfsReader extends CsvEntityReader {
     if (id == null)
       throw new IllegalArgumentException("entity id must not be null");
     return _entityStore.getEntityForId(entityClass, id);
-  }
-
-  protected String getDefaultAgencyId() {
-    if (_defaultAgencyId != null)
-      return _defaultAgencyId;
-    if (_agencies.size() > 0)
-      return _agencies.get(0).getId();
-    throw new NoDefaultAgencyIdException();
   }
 
   protected String getTranslatedAgencyId(String agencyId) {

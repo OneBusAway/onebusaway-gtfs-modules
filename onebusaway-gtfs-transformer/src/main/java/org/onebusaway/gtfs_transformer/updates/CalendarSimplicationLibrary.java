@@ -21,15 +21,18 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
 import org.onebusaway.collections.Counter;
+import org.onebusaway.collections.FactoryMap;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
+import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
@@ -64,6 +67,24 @@ public class CalendarSimplicationLibrary {
 		calendarService.setDataFactory(factory);
 		return calendarService;
 	}
+	
+  public Map<Set<AgencyAndId>, List<TripKey>> groupTripKeysByServiceIds(
+      Map<TripKey, List<Trip>> tripsByKey) {
+
+    Map<Set<AgencyAndId>, List<TripKey>> tripKeysByServiceIds = new FactoryMap<Set<AgencyAndId>, List<TripKey>>(
+        new ArrayList<TripKey>());
+
+    for (Map.Entry<TripKey, List<Trip>> entry : tripsByKey.entrySet()) {
+      TripKey key = entry.getKey();
+      List<Trip> tripsForKey = entry.getValue();
+      Set<AgencyAndId> serviceIds = new HashSet<AgencyAndId>();
+      for (Trip trip : tripsForKey) {
+        serviceIds.add(trip.getServiceId());
+      }
+      tripKeysByServiceIds.get(serviceIds).add(key);
+    }
+    return tripKeysByServiceIds;
+  }
 
 	public void computeSimplifiedCalendar(Set<AgencyAndId> serviceIds,
 			AgencyAndId updatedServiceId, List<ServiceCalendar> calendarsToAdd,

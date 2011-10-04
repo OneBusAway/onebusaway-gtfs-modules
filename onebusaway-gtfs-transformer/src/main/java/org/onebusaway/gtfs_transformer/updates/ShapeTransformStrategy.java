@@ -34,12 +34,24 @@ public class ShapeTransformStrategy implements GtfsTransformStrategy {
 
   private String _shape;
 
+  private boolean _matchStart = true;
+
+  private boolean _matchEnd = true;
+
   public void setShapeId(String shapeId) {
     _shapeId = shapeId;
   }
 
   public void setShape(String shape) {
     _shape = shape;
+  }
+
+  public void setMatchStart(boolean matchStart) {
+    _matchStart = matchStart;
+  }
+
+  public void setMatchEnd(boolean matchEnd) {
+    _matchEnd = matchEnd;
   }
 
   @Override
@@ -62,8 +74,13 @@ public class ShapeTransformStrategy implements GtfsTransformStrategy {
     ShapePoint from = segment.get(0);
     ShapePoint to = segment.get(segment.size() - 1);
 
-    int fromIndex = closest(shapePoints, from, 0);
-    int toIndex = closest(shapePoints, to, fromIndex);
+    int fromIndex = 0;
+    int toIndex = shapePoints.size() - 1;
+
+    if (_matchStart)
+      fromIndex = closest(shapePoints, from, 0);
+    if (_matchEnd)
+      toIndex = closest(shapePoints, to, fromIndex);
 
     if (toIndex < fromIndex) {
       _log.error("segment match is out of order: fromIndex=" + fromIndex

@@ -16,13 +16,14 @@
 package org.onebusaway.gtfs_transformer.updates;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.onebusaway.collections.FactoryMap;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceImpl;
@@ -30,9 +31,8 @@ import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
-import org.onebusaway.gtfs.model.Stop;
-import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.services.GtfsDao;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityLibrary;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
@@ -40,180 +40,173 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
 
-	private CalendarSimplicationLibrary _library = new CalendarSimplicationLibrary();
+  private static Pattern _mergedIdPattern = Pattern.compile("^(.*)_merged_(.*)$");
 
-	public void setMinNumberOfWeeksForCalendarEntry(
-			int minNumberOfWeeksForCalendarEntry) {
-		_library.setMinNumberOfWeeksForCalendarEntry(minNumberOfWeeksForCalendarEntry);
-	}
+  private CalendarSimplicationLibrary _library = new CalendarSimplicationLibrary();
 
-	public void setDayOfTheWeekInclusionRatio(double dayOfTheWeekInclusionRatio) {
-		_library.setDayOfTheWeekInclusionRatio(dayOfTheWeekInclusionRatio);
-	}
+  private boolean _undoGoogleTransitDataFeedMergeTool = false;
 
-	@Override
-	public void run(TransformContext context, GtfsMutableRelationalDao dao) {
+  public void setMinNumberOfWeeksForCalendarEntry(
+      int minNumberOfWeeksForCalendarEntry) {
+    _library.setMinNumberOfWeeksForCalendarEntry(minNumberOfWeeksForCalendarEntry);
+  }
 
-		RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
+  public void setDayOfTheWeekInclusionRatio(double dayOfTheWeekInclusionRatio) {
+    _library.setDayOfTheWeekInclusionRatio(dayOfTheWeekInclusionRatio);
+  }
 
-		CalendarServiceImpl calendarService = CalendarSimplicationLibrary
-				.createCalendarService(dao);
-		_library.setCalendarService(calendarService);
+  public void setUndoGoogleTransitDataFeedMergeTool(
+      boolean undoGoogleTransitDataFeedMergeTool) {
+    _undoGoogleTransitDataFeedMergeTool = undoGoogleTransitDataFeedMergeTool;
+  }
 
-		Map<Set<AgencyAndId>, AgencyAndId> serviceIdsToUpdatedServiceId = new HashMap<Set<AgencyAndId>, AgencyAndId>();
+  @Override
+  public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-		for (Route route : dao.getAllRoutes()) {
-			Map<TripKey, List<Trip>> tripsByKey = groupTripsForRouteByKey(dao,
-					route);
-			Map<Set<AgencyAndId>, List<TripKey>> tripKeysByServiceIds = groupTripKeysByServiceIds(tripsByKey);
+    RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
 
-			for (Set<AgencyAndId> serviceIds : tripKeysByServiceIds.keySet()) {
+    CalendarServiceImpl calendarService = CalendarSimplicationLibrary.createCalendarService(dao);
+    _library.setCalendarService(calendarService);
 
-				AgencyAndId updatedServiceId = createUpdatedServiceId(
-						serviceIdsToUpdatedServiceId, serviceIds);
+    Map<Set<AgencyAndId>, AgencyAndId> serviceIdsToUpdatedServiceId = new HashMap<Set<AgencyAndId>, AgencyAndId>();
 
-				for (TripKey tripKey : tripKeysByServiceIds.get(serviceIds)) {
-					List<Trip> tripsForKey = tripsByKey.get(tripKey);
-					Trip tripToKeep = tripsForKey.get(0);
-					tripToKeep.setServiceId(updatedServiceId);
-					for (int i = 1; i < tripsForKey.size(); i++) {
-						Trip trip = tripsForKey.get(i);
-						removeEntityLibrary.removeTrip(dao, trip);
-					}
-				}
-			}
-		}
+    Map<AgencyAndId, List<AgencyAndId>> mergeToolIdMapping = computeMergeToolIdMapping(dao);
 
-		List<ServiceCalendar> allCalendarsToAdd = new ArrayList<ServiceCalendar>();
-		List<ServiceCalendarDate> allCalendarDatesToAdd = new ArrayList<ServiceCalendarDate>();
+    for (Route route : dao.getAllRoutes()) {
+      Map<TripKey, List<Trip>> tripsByKey = TripKey.groupTripsForRouteByKey(
+          dao, route);
+      Map<Set<AgencyAndId>, List<TripKey>> tripKeysByServiceIds = _library.groupTripKeysByServiceIds(tripsByKey);
 
-		for (Map.Entry<Set<AgencyAndId>, AgencyAndId> entry : serviceIdsToUpdatedServiceId
-				.entrySet()) {
-			Set<AgencyAndId> serviceIds = entry.getKey();
-			AgencyAndId updatedServiceId = entry.getValue();
-			List<ServiceCalendar> calendarsToAdd = new ArrayList<ServiceCalendar>();
-			List<ServiceCalendarDate> calendarDatesToAdd = new ArrayList<ServiceCalendarDate>();
-			_library.computeSimplifiedCalendar(serviceIds, updatedServiceId,
-					calendarsToAdd, calendarDatesToAdd);
-			allCalendarsToAdd.addAll(calendarsToAdd);
-			allCalendarDatesToAdd.addAll(calendarDatesToAdd);
-		}
+      for (Set<AgencyAndId> serviceIds : tripKeysByServiceIds.keySet()) {
 
-		_library.saveUpdatedCalendarEntities(dao, allCalendarsToAdd,
-				allCalendarDatesToAdd);
-	}
+        AgencyAndId updatedServiceId = createUpdatedServiceId(
+            serviceIdsToUpdatedServiceId, serviceIds);
 
-	private AgencyAndId createUpdatedServiceId(
-			Map<Set<AgencyAndId>, AgencyAndId> serviceIdsToUpdatedServiceId,
-			Set<AgencyAndId> serviceIds) {
+        for (TripKey tripKey : tripKeysByServiceIds.get(serviceIds)) {
+          List<Trip> tripsForKey = tripsByKey.get(tripKey);
+          Trip tripToKeep = tripsForKey.get(0);
+          tripToKeep.setServiceId(updatedServiceId);
+          for (int i = 1; i < tripsForKey.size(); i++) {
+            Trip trip = tripsForKey.get(i);
+            removeEntityLibrary.removeTrip(dao, trip);
+          }
 
-		AgencyAndId updatedServiceId = serviceIdsToUpdatedServiceId
-				.get(serviceIds);
-		if (updatedServiceId == null) {
+          if (_undoGoogleTransitDataFeedMergeTool) {
+            AgencyAndId updatedTripId = computeUpdatedTripIdForMergedTripsIfApplicable(
+                mergeToolIdMapping, tripsForKey);
+            if (updatedTripId != null) {
+              tripToKeep.setId(updatedTripId);
+            }
+          }
+        }
+      }
+    }
 
-			if (serviceIds.isEmpty())
-				throw new IllegalStateException();
-			List<AgencyAndId> toSort = new ArrayList<AgencyAndId>(serviceIds);
-			Collections.sort(toSort);
-			StringBuilder b = new StringBuilder();
-			String agencyId = null;
-			for (int i = 0; i < toSort.size(); i++) {
-				AgencyAndId serviceId = toSort.get(i);
-				if (i == 0)
-					agencyId = serviceId.getAgencyId();
-				else
-					b.append("-");
-				b.append(serviceId.getId());
-			}
-			updatedServiceId = new AgencyAndId(agencyId, b.toString());
-			serviceIdsToUpdatedServiceId.put(serviceIds, updatedServiceId);
-		}
-		return updatedServiceId;
-	}
+    List<ServiceCalendar> allCalendarsToAdd = new ArrayList<ServiceCalendar>();
+    List<ServiceCalendarDate> allCalendarDatesToAdd = new ArrayList<ServiceCalendarDate>();
 
-	private Map<TripKey, List<Trip>> groupTripsForRouteByKey(
-			GtfsMutableRelationalDao dao, Route route) {
-		List<Trip> trips = dao.getTripsForRoute(route);
-		Map<TripKey, List<Trip>> tripsByKey = new FactoryMap<TripKey, List<Trip>>(
-				new ArrayList<Trip>());
-		for (Trip trip : trips) {
-			TripKey key = getTripKeyForTrip(dao, trip);
-			tripsByKey.get(key).add(trip);
-		}
-		return tripsByKey;
-	}
+    for (Map.Entry<Set<AgencyAndId>, AgencyAndId> entry : serviceIdsToUpdatedServiceId.entrySet()) {
+      Set<AgencyAndId> serviceIds = entry.getKey();
+      AgencyAndId updatedServiceId = entry.getValue();
+      List<ServiceCalendar> calendarsToAdd = new ArrayList<ServiceCalendar>();
+      List<ServiceCalendarDate> calendarDatesToAdd = new ArrayList<ServiceCalendarDate>();
+      _library.computeSimplifiedCalendar(serviceIds, updatedServiceId,
+          calendarsToAdd, calendarDatesToAdd);
+      allCalendarsToAdd.addAll(calendarsToAdd);
+      allCalendarDatesToAdd.addAll(calendarDatesToAdd);
+    }
 
-	private TripKey getTripKeyForTrip(GtfsMutableRelationalDao dao, Trip trip) {
-		List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
-		Stop[] stops = new Stop[stopTimes.size()];
-		int[] arrivalTimes = new int[stopTimes.size()];
-		int[] departureTimes = new int[stopTimes.size()];
-		for (int i = 0; i < stopTimes.size(); i++) {
-			StopTime stopTime = stopTimes.get(i);
-			stops[i] = stopTime.getStop();
-			arrivalTimes[i] = stopTime.getArrivalTime();
-			departureTimes[i] = stopTime.getDepartureTime();
-		}
-		return new TripKey(stops, arrivalTimes, departureTimes);
-	}
+    _library.saveUpdatedCalendarEntities(dao, allCalendarsToAdd,
+        allCalendarDatesToAdd);
+  }
 
-	private Map<Set<AgencyAndId>, List<TripKey>> groupTripKeysByServiceIds(
-			Map<TripKey, List<Trip>> tripsByKey) {
+  private AgencyAndId createUpdatedServiceId(
+      Map<Set<AgencyAndId>, AgencyAndId> serviceIdsToUpdatedServiceId,
+      Set<AgencyAndId> serviceIds) {
 
-		Map<Set<AgencyAndId>, List<TripKey>> tripKeysByServiceIds = new FactoryMap<Set<AgencyAndId>, List<TripKey>>(
-				new ArrayList<TripKey>());
+    AgencyAndId updatedServiceId = serviceIdsToUpdatedServiceId.get(serviceIds);
+    if (updatedServiceId == null) {
 
-		for (Map.Entry<TripKey, List<Trip>> entry : tripsByKey.entrySet()) {
-			TripKey key = entry.getKey();
-			List<Trip> tripsForKey = entry.getValue();
-			Set<AgencyAndId> serviceIds = new HashSet<AgencyAndId>();
-			for (Trip trip : tripsForKey) {
-				serviceIds.add(trip.getServiceId());
-			}
-			tripKeysByServiceIds.get(serviceIds).add(key);
-		}
-		return tripKeysByServiceIds;
-	}
+      if (serviceIds.isEmpty())
+        throw new IllegalStateException();
+      List<AgencyAndId> toSort = new ArrayList<AgencyAndId>(serviceIds);
+      Collections.sort(toSort);
+      StringBuilder b = new StringBuilder();
+      String agencyId = null;
+      for (int i = 0; i < toSort.size(); i++) {
+        AgencyAndId serviceId = toSort.get(i);
+        if (i == 0)
+          agencyId = serviceId.getAgencyId();
+        else
+          b.append("-");
+        b.append(serviceId.getId());
+      }
+      updatedServiceId = new AgencyAndId(agencyId, b.toString());
+      serviceIdsToUpdatedServiceId.put(serviceIds, updatedServiceId);
+    }
+    return updatedServiceId;
+  }
 
-	private static class TripKey {
+  private Map<AgencyAndId, List<AgencyAndId>> computeMergeToolIdMapping(
+      GtfsDao dao) {
 
-		private final Stop[] _stops;
-		private final int[] _arrivalTimes;
-		private final int[] _departureTimes;
+    if (!_undoGoogleTransitDataFeedMergeTool)
+      return Collections.emptyMap();
 
-		public TripKey(Stop[] stops, int[] arrivalTimes, int[] departureTimes) {
-			_stops = stops;
-			_arrivalTimes = arrivalTimes;
-			_departureTimes = departureTimes;
-		}
+    Map<AgencyAndId, List<AgencyAndId>> mergedIdMapping = new FactoryMap<AgencyAndId, List<AgencyAndId>>(
+        new ArrayList<AgencyAndId>());
+    Map<AgencyAndId, List<AgencyAndId>> unmergedIdMapping = new FactoryMap<AgencyAndId, List<AgencyAndId>>(
+        new ArrayList<AgencyAndId>());
 
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + Arrays.hashCode(_arrivalTimes);
-			result = prime * result + Arrays.hashCode(_departureTimes);
-			result = prime * result + Arrays.hashCode(_stops);
-			return result;
-		}
+    for (Trip trip : dao.getAllTrips()) {
+      AgencyAndId tripId = trip.getId();
+      AgencyAndId unmergedTripId = computeUnmergedTripId(tripId);
+      if (unmergedTripId.equals(tripId)) {
+        unmergedIdMapping.get(unmergedTripId).add(tripId);
+      } else {
+        mergedIdMapping.get(unmergedTripId).add(tripId);
+      }
+    }
+    Set<AgencyAndId> intersection = new HashSet<AgencyAndId>(
+        mergedIdMapping.keySet());
+    intersection.retainAll(unmergedIdMapping.keySet());
+    if (!intersection.isEmpty()) {
+      throw new IllegalStateException(
+          "some ids appeared both in the merged and unmerged case: "
+              + intersection);
+    }
 
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			TripKey other = (TripKey) obj;
-			if (!Arrays.equals(_arrivalTimes, other._arrivalTimes))
-				return false;
-			if (!Arrays.equals(_departureTimes, other._departureTimes))
-				return false;
-			if (!Arrays.equals(_stops, other._stops))
-				return false;
-			return true;
-		}
+    mergedIdMapping.putAll(unmergedIdMapping);
+    return mergedIdMapping;
+  }
 
-	}
+  private AgencyAndId computeUpdatedTripIdForMergedTripsIfApplicable(
+      Map<AgencyAndId, List<AgencyAndId>> mergeToolIdMapping, List<Trip> trips) {
+
+    AgencyAndId unmergedTripId = null;
+
+    for (Trip trip : trips) {
+      AgencyAndId id = computeUnmergedTripId(trip.getId());
+      if (unmergedTripId == null) {
+        unmergedTripId = id;
+      } else if (!unmergedTripId.equals(id)) {
+        return null;
+      }
+    }
+
+    List<AgencyAndId> originalIds = mergeToolIdMapping.get(unmergedTripId);
+    if (originalIds == null || originalIds.size() != trips.size())
+      return null;
+
+    return unmergedTripId;
+  }
+
+  private AgencyAndId computeUnmergedTripId(AgencyAndId tripId) {
+    Matcher m = _mergedIdPattern.matcher(tripId.getId());
+    if (m.matches()) {
+      return new AgencyAndId(tripId.getAgencyId(), m.group(1));
+    } else {
+      return tripId;
+    }
+  }
 }

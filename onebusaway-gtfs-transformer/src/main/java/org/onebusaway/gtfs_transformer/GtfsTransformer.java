@@ -118,9 +118,12 @@ public class GtfsTransformer {
     System.out.println("Output Directory=" + _outputDirectory);
 
     if (_agencyId != null)
-      _context.setDefaultAgencyId(_agencyId);
+      _reader.setDefaultAgencyId(_agencyId);
 
     readGtfs();
+
+    _context.setDefaultAgencyId(_reader.getDefaultAgencyId());
+
     udateGtfs();
     writeGtfs();
   }

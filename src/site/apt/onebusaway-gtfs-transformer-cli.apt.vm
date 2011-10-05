@@ -27,6 +27,10 @@ Using the Application
 java -jar onebusaway-gtfs-transformer-cli.jar [-args] input_gtfs_path output_gtfs_path
 +---+
 
+  <<Note>>: Transforming large GTFS feeds is often processor and memory intensive.  You'll likely need to increase the
+max amount of memory allocated to Java with an option like <<<-Xmx1G>>> (adjust the limit as needed).  I also recommend
+adding the <<<-server>>> argument if you are running the Oracle or OpenJDK, as it can really increase performance. 
+
 * Arguments
 
   * <<<--transform=...>>> : specify a transformation to apply to the input GTFS feed (see syntax described below)
@@ -35,10 +39,6 @@ java -jar onebusaway-gtfs-transformer-cli.jar [-args] input_gtfs_path output_gtf
   
   []
   
-  <<Note>>: Transforming large GTFS feeds is often processor and memory intensive.  You'll likely need to increase the
-max amount of memory allocated to Java with an option like <<<-Xmx1G>>> (adjust the limit as needed).  I also recommend
-adding the <<<-server>>> argument if you are running the Oracle or OpenJDK, as it can really increase performance. 
-
 * Transform Syntax
 
   Transforms are specified as snippets of example.  A simple example to remove a stop might look like:

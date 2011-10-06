@@ -15,6 +15,8 @@
  */
 package org.onebusaway.gtfs.model;
 
+import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
+
 public final class Frequency extends IdentityBean<Integer> {
 
   private static final long serialVersionUID = 1L;
@@ -95,6 +97,8 @@ public final class Frequency extends IdentityBean<Integer> {
   }
 
   public String toString() {
-    return "<Frequency " + getId() + ">";
+    return "<Frequency " + getId() + " start="
+        + StopTimeFieldMappingFactory.getSecondsAsString(startTime) + " end="
+        + StopTimeFieldMappingFactory.getSecondsAsString(endTime) + ">";
   }
 }

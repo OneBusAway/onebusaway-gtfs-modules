@@ -17,6 +17,7 @@ package org.onebusaway.gtfs_transformer.impl;
 
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.gtfs.model.Agency;
+import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
@@ -52,6 +53,11 @@ public class RemoveEntityUpdateStrategy extends
       _library.removeTrip(dao, (Trip) obj);
     } else if (obj instanceof StopTime) {
       _library.removeStopTime(dao, (StopTime) obj);
+    } else if (obj instanceof Frequency) {
+      _library.removeFrequency(dao, (Frequency) obj);
+    } else {
+      throw new IllegalStateException("attempt to remove entity of type "
+          + entity.getClass());
     }
   }
 }

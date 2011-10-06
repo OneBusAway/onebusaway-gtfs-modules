@@ -40,6 +40,18 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
         required);
   }
 
+  public static String getSecondsAsString(int t) {
+    int hours = t / (60 * 60);
+    t = t - hours * (60 * 60);
+    int minutes = t / 60;
+    t = t - minutes * 60;
+    int seconds = t;
+
+    String value = _format.format(hours) + ":" + _format.format(minutes) + ":"
+        + _format.format(seconds);
+    return value;
+  }
+
   private static class StopTimeFieldMapping extends AbstractFieldMapping {
 
     public StopTimeFieldMapping(Class<?> entityType, String csvFieldName,
@@ -84,16 +96,9 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
         return;
       }
 
-      int hours = t / (60 * 60);
-      t = t - hours * (60 * 60);
-      int minutes = t / 60;
-      t = t - minutes * 60;
-      int seconds = t;
-
-      String value = _format.format(hours) + ":" + _format.format(minutes)
-          + ":" + _format.format(seconds);
+      String value = getSecondsAsString(t);
       csvValues.put(_csvFieldName, value);
     }
-  }
 
+  }
 }

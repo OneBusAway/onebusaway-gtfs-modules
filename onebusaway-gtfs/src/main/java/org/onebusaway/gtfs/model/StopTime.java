@@ -15,6 +15,8 @@
  */
 package org.onebusaway.gtfs.model;
 
+import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
+
 public final class StopTime extends IdentityBean<Integer> implements
     Comparable<StopTime> {
 
@@ -108,7 +110,7 @@ public final class StopTime extends IdentityBean<Integer> implements
   public void setArrivalTime(int arrivalTime) {
     this.arrivalTime = arrivalTime;
   }
-  
+
   public void clearArrivalTime() {
     this.arrivalTime = MISSING_VALUE;
   }
@@ -127,7 +129,7 @@ public final class StopTime extends IdentityBean<Integer> implements
   public void setDepartureTime(int departureTime) {
     this.departureTime = departureTime;
   }
-  
+
   public void clearDepartureTime() {
     this.departureTime = MISSING_VALUE;
   }
@@ -175,7 +177,7 @@ public final class StopTime extends IdentityBean<Integer> implements
   public void setShapeDistTraveled(double shapeDistTraveled) {
     this.shapeDistTraveled = shapeDistTraveled;
   }
-  
+
   public void clearShapeDistTraveled() {
     this.shapeDistTraveled = MISSING_VALUE;
   }
@@ -187,6 +189,8 @@ public final class StopTime extends IdentityBean<Integer> implements
   @Override
   public String toString() {
     return "StopTime(seq=" + stopSequence + " stop=" + stop.getId() + " trip="
-        + trip.getId() + " times=" + arrivalTime + ":" + departureTime + ")";
+        + trip.getId() + " times="
+        + StopTimeFieldMappingFactory.getSecondsAsString(arrivalTime) + "-"
+        + StopTimeFieldMappingFactory.getSecondsAsString(departureTime) + ")";
   }
 }

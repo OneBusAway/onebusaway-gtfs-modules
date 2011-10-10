@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Laurent Gregoire <laurent.gregoire@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,6 +120,40 @@ public class GtfsRelationalDaoImplTest {
     assertEquals(2, agencyIds.size());
     assertTrue(agencyIds.contains("A"));
     assertTrue(agencyIds.contains("B"));
+  }
+  
+  @Test
+  public void testStationSubStops() {
+	  
+	  GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();
+	  
+	  Stop st = new Stop();
+	  st.setLocationType(1);
+	  st.setId(new AgencyAndId("X", "ST"));
+	  dao.saveEntity(st);
+	  
+	  Stop st1 = new Stop();
+	  st1.setLocationType(0);
+	  st1.setId(new AgencyAndId("X", "ST1"));
+	  st1.setParentStation("ST");
+	  dao.saveEntity(st1);
+	  
+	  Stop st2 = new Stop();
+	  st2.setLocationType(0);
+	  st2.setId(new AgencyAndId("X", "ST2"));
+	  st2.setParentStation("ST");
+	  dao.saveEntity(st2);
+
+	  Stop st3 = new Stop();
+	  st3.setLocationType(0);
+	  st3.setId(new AgencyAndId("X", "ST3"));
+	  dao.saveEntity(st3);
+
+	  List<Stop> sts = dao.getStopsForStation(st);
+	  assertTrue(sts.contains(st1));
+	  assertTrue(sts.contains(st2));
+	  assertTrue(!sts.contains(st3));
+	  assertEquals(sts.size(), 2);
   }
 
   @Test

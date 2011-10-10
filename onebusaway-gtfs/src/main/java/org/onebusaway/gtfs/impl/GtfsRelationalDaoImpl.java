@@ -1,6 +1,7 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2011 Laurent Gregoire <laurent.gregoire@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +56,8 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
 
   private Map<Agency, List<Route>> _routesByAgency = null;
 
+  private Map<Stop, List<Stop>> _stopsByStation = null;
+  
   private Map<Trip, List<StopTime>> _stopTimesByTrip = null;
 
   private Map<Stop, List<StopTime>> _stopTimesByStop = null;
@@ -74,6 +77,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   public void clearAllCaches() {
     _tripAgencyIdsByServiceId = clearMap(_tripAgencyIdsByServiceId);
     _routesByAgency = clearMap(_routesByAgency);
+    _stopsByStation = clearMap(_stopsByStation);
     _stopTimesByTrip = clearMap(_stopTimesByTrip);
     _stopTimesByStop = clearMap(_stopTimesByStop);
     _tripsByRoute = clearMap(_tripsByRoute);
@@ -124,6 +128,26 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
     if (_routesByAgency == null)
       _routesByAgency = mapToValueList(getAllRoutes(), "agency", Agency.class);
     return list(_routesByAgency.get(agency));
+  }
+  
+  @Override
+  public List<Stop> getStopsForStation(Stop station) {
+  	if (_stopsByStation == null) {
+      _stopsByStation = new HashMap<Stop, List<Stop>>();
+      for (Stop stop : getAllStops()) {
+        if (stop.getLocationType() == 0 && stop.getParentStation() != null) {
+          Stop parentStation = getStopForId(new AgencyAndId(
+              stop.getId().getAgencyId(), stop.getParentStation()));
+          List<Stop> subStops = _stopsByStation.get(parentStation); 
+          if (subStops == null) {
+            subStops = new ArrayList<Stop>(2);
+            _stopsByStation.put(parentStation, subStops);
+          }
+          subStops.add(stop);
+        }
+      }
+  	}
+  	return list(_stopsByStation.get(station));
   }
 
   @Override

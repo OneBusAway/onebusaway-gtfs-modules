@@ -1,6 +1,7 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2011 Laurent Gregoire <laurent.gregoire@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -232,6 +233,13 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   public List<Route> getRoutesForAgency(Agency agency) {
     return _ops.findByNamedQueryAndNamedParam("routesForAgency", "agency",
         agency);
+  }
+
+  @Override
+  public List<Stop> getStopsForStation(Stop station) {
+    String[] names = { "stationId", "agencyId" };
+    Object[] values = { station.getId().getId(), station.getId().getAgencyId() };
+    return _ops.findByNamedQueryAndNamedParams("stopsForStation", names, values);
   }
 
   @Override

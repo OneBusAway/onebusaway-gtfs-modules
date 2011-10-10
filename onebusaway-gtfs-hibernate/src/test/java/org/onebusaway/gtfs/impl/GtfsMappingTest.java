@@ -55,7 +55,6 @@ public class GtfsMappingTest {
 
     _reader = new GtfsReader();
     _reader.setEntityStore(_dao);
-
   }
 
   @After

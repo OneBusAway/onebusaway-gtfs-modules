@@ -2,6 +2,24 @@ Release Notes
 
 * ${currentVersion}
 
+  * Support for {{{http://code.google.com/transit/spec/transit_feed_specification.html#feed_info_txt___Field_Definitions}feed_info.txt}}
+  
+  * Support for {{{http://code.google.com/transit/spec/transit_feed_specification.html#agency_txt___Field_Definitions}agency.txt}} <<<agency_fare_url>>> field
+  
+  * Support for {{{http://code.google.com/transit/spec/transit_feed_specification.html#frequencies_txt___Field_Definitions}frequencies.txt}} <<<exact_times>> field
+  
+  * Mark Hibernate GTFS classes as mutable (see {{{https://groups.google.com/group/onebusaway-developers/browse_thread/thread/219d40f7a99c9709}discussion}})
+  
+  * Add <<<getStopsForStation()>>> method to {{{./apidocs/org/onebusaway/gtfs/services/GtfsRelationalDao.html#getStopsForStation(org.onebusaway.gtfs.model.Stop)}GtfsRelationalDao}} (see {{{https://groups.google.com/group/onebusaway-developers/browse_thread/thread/95f4335fcc0d056e}discussion}})
+  
+  * Add <<<makeReadOnly()>>> method to {{{./apidocs/org/onebusaway/gtfs/model/calendar/CalendarServiceData.html#makeReadOnly()}CalendarServiceData}}
+  
+  * {{{./apidocs/org/onebusaway/gtfs/model/calendar/ServiceDate.html#parseString(java.lang.String)}ServiceDate.parseString()}} now throws a ParseException
+  
+  * Add {{{./apidocs/org/onebusaway/gtfs_transformer/updates/CalendarSimplicationStrategy.html}CalendarSimplicationStrategy}} for simplifying redundant trips / calendar entries - see {{{./onebusaway-gtfs-transformer-cli.html#Merge_Trips_and_Refactor_Calendar_Entries}usage instructions}}
+  
+  * Update {{{./apidocs/org/onebusaway/gtfs_transformer/updates/ShapeTransformStrategy.html}ShapeTransformStrategy}} to support updating just the start or end of a shape
+
   * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
   
 * 1.2.4

@@ -2,6 +2,10 @@ Release Notes
 
 * ${currentVersion}
 
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
+
+* 1.2.5
+
   * Support for {{{http://code.google.com/transit/spec/transit_feed_specification.html#feed_info_txt___Field_Definitions}feed_info.txt}}
   
   * Support for {{{http://code.google.com/transit/spec/transit_feed_specification.html#agency_txt___Field_Definitions}agency.txt}} <<<agency_fare_url>>> field
@@ -20,7 +24,7 @@ Release Notes
   
   * Update {{{./apidocs/org/onebusaway/gtfs_transformer/updates/ShapeTransformStrategy.html}ShapeTransformStrategy}} to support updating just the start or end of a shape
 
-  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/1.2.5/}}
   
 * 1.2.4
 

@@ -6,7 +6,7 @@ Release Notes
   
   * Support for {{{http://code.google.com/transit/spec/transit_feed_specification.html#agency_txt___Field_Definitions}agency.txt}} <<<agency_fare_url>>> field
   
-  * Support for {{{http://code.google.com/transit/spec/transit_feed_specification.html#frequencies_txt___Field_Definitions}frequencies.txt}} <<<exact_times>> field
+  * Support for {{{http://code.google.com/transit/spec/transit_feed_specification.html#frequencies_txt___Field_Definitions}frequencies.txt}} <<<exact_times>>> field
   
   * Mark Hibernate GTFS classes as mutable (see {{{https://groups.google.com/group/onebusaway-developers/browse_thread/thread/219d40f7a99c9709}discussion}})
   

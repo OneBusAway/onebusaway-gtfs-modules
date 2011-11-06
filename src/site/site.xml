@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="onebusaway-gtfs-modules">
-    <bannerLeft>
-        <name>OneBusAway</name>
-        <src>OneBusAway.png</src>
-        <href>http://code.google.com/p/onebusaway/</href>
-    </bannerLeft>
-    <publishDate position="right"/>
-    <version position="right"/>
-    <body>
-        <menu name="onebusaway-gtfs-modules">
-            <item name="About" href="/index.html" />
-            <item name="Release Notes" href="/release-notes.html"/>
-            <item name="API Javadoc" href="/apidocs/index.html"/>
-            <item name="GTFS Transformer" href="/onebusaway-gtfs-transformer-cli.html"/>
-        </menu>
-        <menu ref="reports" />
-    </body>
+  <bannerLeft>
+    <name>OneBusAway</name>
+    <src>OneBusAway.png</src>
+    <href>http://code.google.com/p/onebusaway/</href>
+  </bannerLeft>
+  <publishDate position="right" />
+  <version position="right" />
+  <body>
+    <head>
+      <!-- Google Analytics - Start -->
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-2423527-16']);
+  _gaq.push(['_trackPageview']);
+
+ (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+      <!-- Google Analytics - End -->
+    </head>  
+    <menu name="onebusaway-gtfs-modules">
+      <item name="About" href="/index.html" />
+      <item name="Release Notes" href="/release-notes.html" />
+      <item name="API Javadoc" href="/apidocs/index.html" />
+      <item name="GTFS Transformer" href="/onebusaway-gtfs-transformer-cli.html" />
+    </menu>
+    <menu ref="reports" />
+  </body>
 </project>

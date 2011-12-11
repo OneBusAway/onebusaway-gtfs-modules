@@ -210,6 +210,7 @@ public class GtfsEntitySchemaFactory {
         new StopTimeFieldMappingFactory());
     helper.addFields(frequencies, "headwaySecs");
     helper.addOptionalField(frequencies, "exactTimes");
+    helper.addOptionalField(frequencies, "labelOnly");
 
     CsvEntityMappingBean pathways = helper.addEntity(Pathway.class,
         "pathways.txt");

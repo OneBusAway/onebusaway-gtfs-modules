@@ -87,6 +87,7 @@
         <property name="endTime" />
         <property name="exactTimes" />
         <property name="headwaySecs" />
+        <property name="labelOnly" />
     </class>
 
     <class name="org.onebusaway.gtfs.model.Pathway" table="gtfs_pathways">

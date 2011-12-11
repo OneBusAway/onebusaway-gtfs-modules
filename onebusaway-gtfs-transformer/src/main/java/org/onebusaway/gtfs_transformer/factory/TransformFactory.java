@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.Converter;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.onebusaway.collections.PropertyPathExpression;
@@ -37,7 +39,13 @@ import org.onebusaway.collections.tuple.Pair;
 import org.onebusaway.collections.tuple.Tuples;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
+import org.onebusaway.csv_entities.schema.EntitySchema;
+import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
+import org.onebusaway.csv_entities.schema.FieldMapping;
+import org.onebusaway.csv_entities.schema.SingleFieldMapping;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
+import org.onebusaway.gtfs.serialization.GtfsReader;
+import org.onebusaway.gtfs.serialization.mappings.ConverterFactory;
 import org.onebusaway.gtfs_transformer.GtfsTransformer;
 import org.onebusaway.gtfs_transformer.impl.MatchingEntityModificationStrategyWrapper;
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
@@ -132,21 +140,11 @@ public class TransformFactory {
   private void handleAddOperation(GtfsTransformer transformer, String line,
       JSONObject json) throws JSONException {
 
-    JSONObject properties = json.getJSONObject("obj");
-
-    Class<?> entityClass = getEntityTypeForName(properties.getString("class"));
-    Object instance = instantiate(entityClass);
-
-    Map<String, Object> here = getEntityPropertiesAndValuesFromJsonObject(
-        entityClass, properties);
-
-    BeanWrapper wrapper = BeanWrapperFactory.wrap(instance);
-    for (Map.Entry<String, Object> entry : here.entrySet())
-      wrapper.setPropertyValue(entry.getKey(), entry.getValue());
-
+    EntitySourceImpl source = new EntitySourceImpl(transformer, line, json);
     AddEntitiesTransformStrategy strategy = getStrategy(transformer,
         AddEntitiesTransformStrategy.class);
-    strategy.addEntity(instance);
+    strategy.addEntityFactory(source);
+
   }
 
   private void handleUpdateOperation(GtfsTransformer transformer, String line,
@@ -155,7 +153,7 @@ public class TransformFactory {
     ModifyEntitiesTransformStrategy strategy = getStrategy(transformer,
         ModifyEntitiesTransformStrategy.class);
 
-    EntityMatch match = getMatch(line, json);
+    EntityMatch match = getMatch(transformer, line, json);
 
     if (json.has("factory")) {
       String value = json.getString("factory");
@@ -185,7 +183,7 @@ public class TransformFactory {
       JSONObject update = json.getJSONObject("update");
 
       Map<String, Object> propertyUpdates = getEntityPropertiesAndValuesFromJsonObject(
-          match.getType(), update);
+          transformer, match.getType(), update);
       SimpleModificationStrategy mod = new SimpleModificationStrategy(
           match.getPropertyMatches(), propertyUpdates);
 
@@ -211,7 +209,7 @@ public class TransformFactory {
     ModifyEntitiesTransformStrategy strategy = getStrategy(transformer,
         ModifyEntitiesTransformStrategy.class);
 
-    EntityMatch match = getMatch(line, json);
+    EntityMatch match = getMatch(transformer, line, json);
     RemoveEntityUpdateStrategy mod = new RemoveEntityUpdateStrategy(
         match.getPropertyMatches());
 
@@ -224,7 +222,7 @@ public class TransformFactory {
     RetainEntitiesTransformStrategy strategy = getStrategy(transformer,
         RetainEntitiesTransformStrategy.class);
 
-    EntityMatch match = getMatch(line, json);
+    EntityMatch match = getMatch(transformer, line, json);
 
     boolean retainUp = true;
 
@@ -308,8 +306,8 @@ public class TransformFactory {
     }
   }
 
-  private EntityMatch getMatch(String line, JSONObject json)
-      throws JSONException {
+  private EntityMatch getMatch(GtfsTransformer transformer, String line,
+      JSONObject json) throws JSONException {
 
     JSONObject match = json.getJSONObject("match");
     if (match == null)
@@ -323,7 +321,7 @@ public class TransformFactory {
     Class<?> entityType = getEntityTypeForName(entityTypeString);
 
     Map<String, Object> propertyMatches = getEntityPropertiesAndValuesFromJsonObject(
-        entityType, match);
+        transformer, entityType, match);
 
     Map<PropertyPathExpression, Object> propertyPathExpressionMatches = new HashMap<PropertyPathExpression, Object>();
 
@@ -338,7 +336,8 @@ public class TransformFactory {
 
   @SuppressWarnings("unchecked")
   private Map<String, Object> getEntityPropertiesAndValuesFromJsonObject(
-      Class<?> entityType, JSONObject obj) throws JSONException {
+      GtfsTransformer transformer, Class<?> entityType, JSONObject obj)
+      throws JSONException {
 
     Map<String, Object> map = new HashMap<String, Object>();
 
@@ -356,8 +355,13 @@ public class TransformFactory {
 
         PropertyPathExpression exp = new PropertyPathExpression(property);
         Class<?> toType = exp.initialize(entityType);
-
-        if (!toType.isAssignableFrom(fromType)) {
+        Class<?> parentType = exp.getParentType(entityType);
+        String lastProperty = exp.getLastProperty();
+        Converter converter = getEntitySchemaConverterForTypeAndProperty(
+            transformer, parentType, lastProperty, toType);
+        if (converter != null) {
+          value = converter.convert(toType, value);
+        } else if (!toType.isAssignableFrom(fromType)) {
           value = ConvertUtils.convert((String) value, toType);
         }
       }
@@ -366,6 +370,35 @@ public class TransformFactory {
     }
 
     return map;
+  }
+
+  private Converter getEntitySchemaConverterForTypeAndProperty(
+      GtfsTransformer transformer, Class<?> entityType, String property,
+      Class<?> toType) {
+    GtfsReader reader = transformer.getReader();
+    EntitySchemaFactory schemaFactory = reader.getEntitySchemaFactory();
+    EntitySchema schema = schemaFactory.getSchema(entityType);
+    if (schema == null) {
+      return null;
+    }
+    for (FieldMapping mapping : schema.getFields()) {
+      if (!(mapping instanceof SingleFieldMapping)) {
+        continue;
+      }
+      SingleFieldMapping singleMapping = (SingleFieldMapping) mapping;
+      if (!singleMapping.getObjFieldName().equals(property)) {
+        continue;
+      }
+      if (mapping instanceof ConverterFactory) {
+        ConverterFactory factory = (ConverterFactory) mapping;
+        return factory.create(reader.getContext());
+      }
+      if (mapping instanceof Converter) {
+        return (Converter) mapping;
+      }
+    }
+
+    return null;
   }
 
   @SuppressWarnings("unchecked")
@@ -408,6 +441,44 @@ public class TransformFactory {
     } catch (Exception ex) {
       throw new IllegalStateException("error instantiating type: "
           + entityClass.getName());
+    }
+  }
+
+  private class EntitySourceImpl implements
+      AddEntitiesTransformStrategy.EntityFactory {
+
+    private GtfsTransformer _transformer;
+
+    private String _line;
+
+    private JSONObject _json;
+
+    public EntitySourceImpl(GtfsTransformer transformer, String line,
+        JSONObject json) {
+      _transformer = transformer;
+      _line = line;
+      _json = json;
+    }
+
+    @Override
+    public Object create() {
+      try {
+        JSONObject properties = _json.getJSONObject("obj");
+
+        Class<?> entityClass = getEntityTypeForName(properties.getString("class"));
+        Object instance = instantiate(entityClass);
+
+        Map<String, Object> here = getEntityPropertiesAndValuesFromJsonObject(
+            _transformer, entityClass, properties);
+
+        BeanWrapper wrapper = BeanWrapperFactory.wrap(instance);
+        for (Map.Entry<String, Object> entry : here.entrySet())
+          wrapper.setPropertyValue(entry.getKey(), entry.getValue());
+        return instance;
+      } catch (Exception ex) {
+        throw new IllegalStateException(
+            "error processing add operation for line=" + _line, ex);
+      }
     }
   }
 }

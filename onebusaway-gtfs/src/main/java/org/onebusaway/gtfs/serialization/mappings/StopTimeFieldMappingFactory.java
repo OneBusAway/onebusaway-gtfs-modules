@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +16,19 @@
  */
 package org.onebusaway.gtfs.serialization.mappings;
 
+import java.text.DecimalFormat;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.beanutils.ConversionException;
+import org.apache.commons.beanutils.Converter;
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.schema.AbstractFieldMapping;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.FieldMapping;
 import org.onebusaway.csv_entities.schema.FieldMappingFactory;
-
-import java.text.DecimalFormat;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class StopTimeFieldMappingFactory implements FieldMappingFactory {
 
@@ -52,13 +55,30 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
     return value;
   }
 
-  private static class StopTimeFieldMapping extends AbstractFieldMapping {
+  public static int getStringAsSeconds(String value) {
+    Matcher m = _pattern.matcher(value);
+    if (!m.matches())
+      throw new InvalidStopTimeException(value);
+    try {
+      int hours = Integer.parseInt(m.group(1));
+      int minutes = Integer.parseInt(m.group(2));
+      int seconds = Integer.parseInt(m.group(3));
+
+      return seconds + 60 * (minutes + 60 * hours);
+    } catch (NumberFormatException ex) {
+      throw new InvalidStopTimeException(value);
+    }
+  }
+
+  private static class StopTimeFieldMapping extends AbstractFieldMapping
+      implements Converter {
 
     public StopTimeFieldMapping(Class<?> entityType, String csvFieldName,
         String objFieldName, boolean required) {
       super(entityType, csvFieldName, objFieldName, required);
     }
 
+    @Override
     public void translateFromCSVToObject(CsvEntityContext context,
         Map<String, Object> csvValues, BeanWrapper object) {
 
@@ -66,26 +86,10 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
         return;
 
       Object value = csvValues.get(_csvFieldName);
-      String stringValue = value.toString();
-
-      Matcher m = _pattern.matcher(stringValue);
-      if (!m.matches())
-        throw new InvalidStopTimeException(stringValue);
-
-      try {
-        int hours = Integer.parseInt(m.group(1));
-        int minutes = Integer.parseInt(m.group(2));
-        int seconds = Integer.parseInt(m.group(3));
-
-        object.setPropertyValue(_objFieldName, seconds + 60
-            * (minutes + 60 * hours));
-
-      } catch (NumberFormatException ex) {
-        throw new InvalidStopTimeException(stringValue);
-      }
-
+      object.setPropertyValue(_objFieldName, convert(Integer.TYPE, value));
     }
 
+    @Override
     public void translateFromObjectToCSV(CsvEntityContext context,
         BeanWrapper object, Map<String, Object> csvValues) {
 
@@ -98,6 +102,18 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
 
       String value = getSecondsAsString(t);
       csvValues.put(_csvFieldName, value);
+    }
+
+    @Override
+    public Object convert(@SuppressWarnings("rawtypes") Class type, Object value) {
+      if (type == Integer.class || type == Integer.TYPE) {
+        String stringValue = value.toString();
+        return getStringAsSeconds(stringValue);
+      } else if (type == String.class) {
+        return getSecondsAsString(((Integer) value).intValue());
+      }
+      throw new ConversionException("Could not convert " + value + " of type "
+          + value.getClass() + " to " + type);
     }
 
   }

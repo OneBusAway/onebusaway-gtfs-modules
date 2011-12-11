@@ -112,7 +112,8 @@ public class GtfsTransformer {
 
     registerConverters();
 
-    if (!_outputDirectory.exists())
+    if (!_outputDirectory.exists()
+        && !_outputDirectory.getName().endsWith(".zip"))
       _outputDirectory.mkdirs();
 
     System.out.println("Output Directory=" + _outputDirectory);

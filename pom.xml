@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.onebusaway</groupId>
   <artifactId>onebusaway-gtfs-modules</artifactId>
@@ -16,7 +17,8 @@
   </parent>
 
   <properties>
-    <onebusaway_csv_entities_version>1.0.2</onebusaway_csv_entities_version>
+    <onebusaway_csv_entities_version>1.0.3-SNAPSHOT</onebusaway_csv_entities_version>
+    <onebusaway_collections_version>1.1.3-SNAPSHOT</onebusaway_collections_version>
   </properties>
 
   <repositories>
@@ -49,6 +51,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.onebusaway</groupId>
+        <artifactId>onebusaway-collections</artifactId>
+        <version>${onebusaway_collections_version}</version>
+      </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
@@ -97,7 +104,7 @@
             <exclude>src/test/resources/org/onebusaway/gtfs/**</exclude>
             <exclude>onebusaway-gtfs/src/test/resources/org/onebusaway/gtfs/**</exclude>
             <exclude>src/test/resources/org/onebusaway/gtfs_transformer/**</exclude>
-            <exclude>onebusaway-gtfs-transformer/src/test/resources/org/onebusaway/gtfs_transformer/**</exclude>            
+            <exclude>onebusaway-gtfs-transformer/src/test/resources/org/onebusaway/gtfs_transformer/**</exclude>
             <exclude>**/usage.txt</exclude>
             <exclude>**/log4j.properties</exclude>
           </excludes>

@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +33,8 @@ public final class Frequency extends IdentityBean<Integer> {
   private int headwaySecs;
 
   private int exactTimes = 0;
+  
+  private int labelOnly = 0;
 
   public Frequency() {
 
@@ -94,6 +97,14 @@ public final class Frequency extends IdentityBean<Integer> {
 
   public void setExactTimes(int exactTimes) {
     this.exactTimes = exactTimes;
+  }
+
+  public int getLabelOnly() {
+    return labelOnly;
+  }
+
+  public void setLabelOnly(int labelOnly) {
+    this.labelOnly = labelOnly;
   }
 
   public String toString() {

@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,17 +25,40 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class AddEntitiesTransformStrategy implements GtfsTransformStrategy {
 
-  private List<Object> _objectsToAdd = new ArrayList<Object>();
+  private List<EntityFactory> _objectsToAdd = new ArrayList<EntityFactory>();
 
   public void addEntity(Object object) {
-    _objectsToAdd.add(object);
+    addEntityFactory(new EntityFactoryImpl(object));
+  }
+
+  public void addEntityFactory(EntityFactory factory) {
+    _objectsToAdd.add(factory);
   }
 
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     // Additions
-    for (Object entity : _objectsToAdd)
-      dao.saveEntity(entity);
+    for (EntityFactory factory : _objectsToAdd)
+      dao.saveEntity(factory.create());
   }
+
+  public interface EntityFactory {
+    public Object create();
+  }
+
+  private static class EntityFactoryImpl implements EntityFactory {
+
+    private final Object _entity;
+
+    public EntityFactoryImpl(Object entity) {
+      _entity = entity;
+    }
+
+    @Override
+    public Object create() {
+      return _entity;
+    }
+  }
+
 }

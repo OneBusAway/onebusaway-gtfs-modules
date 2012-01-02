@@ -16,6 +16,7 @@
 package org.onebusaway.gtfs.serialization.mappings;
 
 import org.onebusaway.csv_entities.CsvEntityContext;
+import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.DefaultFieldMapping;
 import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
@@ -63,6 +64,13 @@ public class AgencyIdFieldMappingFactory implements FieldMappingFactory {
 
       String agencyId = (String) csvValues.get(_csvFieldName + "_agencyId");
       String id = (String) csvValues.get(_csvFieldName + "_id");
+      boolean missing = (agencyId == null || agencyId.isEmpty())
+          || (id == null || id.isEmpty());
+      if (missing) {
+        if (_required)
+          throw new MissingRequiredFieldException(_entityType, _csvFieldName);
+        return;
+      }
       AgencyAndId agencyAndId = new AgencyAndId(agencyId, id);
       object.setPropertyValue(_objFieldName, agencyAndId);
     }

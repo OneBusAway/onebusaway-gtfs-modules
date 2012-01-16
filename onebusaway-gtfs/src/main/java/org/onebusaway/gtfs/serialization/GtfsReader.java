@@ -68,6 +68,8 @@ public class GtfsReader extends CsvEntityReader {
 
   private Map<String, String> _agencyIdMapping = new HashMap<String, String>();
 
+  private boolean _overwriteDuplicates = false;
+
   public GtfsReader() {
 
     _entityClasses.add(Agency.class);
@@ -136,6 +138,10 @@ public class GtfsReader extends CsvEntityReader {
 
   public void setEntityClasses(List<Class<?>> entityClasses) {
     _entityClasses = entityClasses;
+  }
+
+  public void setOverwriteDuplicates(boolean overwriteDuplicates) {
+    _overwriteDuplicates = overwriteDuplicates;
   }
 
   public void run() throws IOException {
@@ -249,8 +255,9 @@ public class GtfsReader extends CsvEntityReader {
         _agencyIdsByEntityClassAndId.put(entityType, agencyIdsByEntityId);
       }
 
-      if (agencyIdsByEntityId.containsKey(id.getId()))
+      if (agencyIdsByEntityId.containsKey(id.getId()) && !_overwriteDuplicates) {
         throw new DuplicateEntityException(entityType, id);
+      }
 
       agencyIdsByEntityId.put(id.getId(), id.getAgencyId());
     }

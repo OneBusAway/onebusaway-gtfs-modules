@@ -60,6 +60,8 @@ public class GtfsTransformerMain {
 
   private static final String ARG_REMOVE_DUPLICATE_TRIPS = "removeDuplicateTrips";
 
+  private static final String ARG_OVERWRITE_DUPLICATES = "overwriteDuplicates";
+
   private static CommandLineParser _parser = new PosixParser();
 
   private Options _options = new Options();
@@ -127,6 +129,8 @@ public class GtfsTransformerMain {
         "remove repeated stop times");
     options.addOption(ARG_REMOVE_DUPLICATE_TRIPS, false,
         "remove duplicate trips");
+    options.addOption(ARG_OVERWRITE_DUPLICATES, false,
+        "overwrite duplicate elements");
   }
 
   protected void printHelp(PrintWriter out, Options options) throws IOException {
@@ -147,14 +151,18 @@ public class GtfsTransformerMain {
 
     String[] args = cli.getArgs();
 
-    if (args.length != 2) {
+    if (args.length < 2) {
       printHelp();
       System.exit(-1);
     }
 
+    List<File> paths = new ArrayList<File>();
+    for (int i = 0; i < args.length - 1; ++i) {
+      paths.add(new File(args[i]));
+    }
     GtfsTransformer transformer = new GtfsTransformer();
-    transformer.setGtfsInputDirectory(new File(args[0]));
-    transformer.setOutputDirectory(new File(args[1]));
+    transformer.setGtfsInputDirectories(paths);
+    transformer.setOutputDirectory(new File(args[args.length - 1]));
 
     Option[] options = getOptionsInCommandLineOrder(cli, originalArgs);
 
@@ -180,6 +188,10 @@ public class GtfsTransformerMain {
 
       if (name.equals(ARG_LOCAL_VS_EXPRESS))
         configureLocalVsExpressUpdates(transformer);
+
+      if (name.equals(ARG_OVERWRITE_DUPLICATES)) {
+        transformer.getReader().setOverwriteDuplicates(true);
+      }
     }
 
     transformer.run();

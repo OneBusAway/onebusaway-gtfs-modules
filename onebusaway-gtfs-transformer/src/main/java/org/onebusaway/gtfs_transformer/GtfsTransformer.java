@@ -19,6 +19,7 @@ package org.onebusaway.gtfs_transformer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.beanutils.ConvertUtils;
@@ -46,7 +47,7 @@ public class GtfsTransformer {
    * 
    ****************************************************************************/
 
-  private File _gtfsInputDirectory;
+  private List<File> _gtfsInputDirectories;
 
   private File _outputDirectory;
 
@@ -67,7 +68,11 @@ public class GtfsTransformer {
   private TransformFactory _transformFactory = new TransformFactory();
 
   public void setGtfsInputDirectory(File gtfsInputDirectory) {
-    _gtfsInputDirectory = gtfsInputDirectory;
+    setGtfsInputDirectories(Arrays.asList(gtfsInputDirectory));
+  }
+
+  public void setGtfsInputDirectories(List<File> paths) {
+    _gtfsInputDirectories = paths;
   }
 
   public void setOutputDirectory(File outputDirectory) {
@@ -118,9 +123,6 @@ public class GtfsTransformer {
 
     System.out.println("Output Directory=" + _outputDirectory);
 
-    if (_agencyId != null)
-      _reader.setDefaultAgencyId(_agencyId);
-
     readGtfs();
 
     _context.setDefaultAgencyId(_reader.getDefaultAgencyId());
@@ -158,13 +160,15 @@ public class GtfsTransformer {
     if (!_entityTransformStrategies.isEmpty())
       dao = new DaoInterceptor(_dao);
 
-    _reader.setInputLocation(_gtfsInputDirectory);
     _reader.setEntityStore(dao);
 
     if (_agencyId != null)
       _reader.setDefaultAgencyId(_agencyId);
 
-    _reader.run();
+    for (File path : _gtfsInputDirectories) {
+      _reader.setInputLocation(path);
+      _reader.run();
+    }
   }
 
   private void udateGtfs() {

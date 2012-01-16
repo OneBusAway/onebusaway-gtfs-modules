@@ -1,8 +1,9 @@
-Usage: [args] gtfs_input_dir gtfs_output_dir
+Usage: [args] gtfs_input_dir ... gtfs_output_dir
 
 Args:
  --agencyId ID                    override the default agency id for imported GTFS data
  --transform=SPEC                 apply general transform from the specified definition
+ --overwriteDuplicates            specify that duplicate GTFS entities should overwrite each other
  
 Transforms:
 

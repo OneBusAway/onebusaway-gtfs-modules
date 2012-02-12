@@ -112,7 +112,7 @@
           <headerSections>
             <headerSection>
               <key>COPYRIGHT_SECTION</key>
-              <defaultValue>Copyright (C) 2011 Brian Ferri &lt;bdferris@onebusaway.org&gt;</defaultValue>
+              <defaultValue>Copyright (C) 2011 Brian Ferris &lt;bdferris@onebusaway.org&gt;</defaultValue>
               <ensureMatch>Copyright \(C\) \d{4} .+</ensureMatch>
             </headerSection>
           </headerSections>

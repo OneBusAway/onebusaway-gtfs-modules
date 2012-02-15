@@ -224,7 +224,9 @@ public class EntityRetentionGraph {
       AgencyAndId stopId = stop.getId();
       String agencyId = stopId.getAgencyId();
       Agency agency = _dao.getAgencyForId(agencyId);
-      retainDown(agency);
+      if (agency != null) {
+        retainDown(agency);
+      }
     }
   }
 
@@ -244,7 +246,9 @@ public class EntityRetentionGraph {
        */
       String agencyId = serviceId.getAgencyId();
       Agency agency = _dao.getAgencyForId(agencyId);
-      retainDown(agency);
+      if (agency != null) {
+        retainDown(agency);
+      }
     }
   }
 
@@ -262,7 +266,9 @@ public class EntityRetentionGraph {
        */
       String agencyId = shapeId.getAgencyId();
       Agency agency = _dao.getAgencyForId(agencyId);
-      retainDown(agency);
+      if (agency != null) {
+        retainDown(agency);
+      }
 
     }
   }

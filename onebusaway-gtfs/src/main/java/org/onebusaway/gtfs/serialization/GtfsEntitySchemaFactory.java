@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.onebusaway.csv_entities.schema.DecimalFieldMappingFactory;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.EntitySchemaFactoryHelper;
 import org.onebusaway.csv_entities.schema.beans.CsvEntityMappingBean;
@@ -130,6 +131,11 @@ public class GtfsEntitySchemaFactory {
         "stop_");
     helper.addField(stop, "id", new DefaultAgencyIdFieldMappingFactory());
     helper.addOptionalFields(stop, "code", "desc", "direction", "url");
+    
+    DecimalFieldMappingFactory stopLocationMapping = new DecimalFieldMappingFactory("0.000000");
+    helper.addField(stop, "lat", stopLocationMapping);
+    helper.addField(stop, "lon", stopLocationMapping);
+    
     helper.addOptionalField(stop, "zoneId", "zone_id");
     helper.addOptionalField(stop, "locationType", "location_type");
     helper.addOptionalField(stop, "parentStation", "parent_station");

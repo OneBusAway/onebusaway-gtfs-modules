@@ -13,14 +13,6 @@
     <version>1.2.6-SNAPSHOT</version>
   </parent>
 
-  <distributionManagement>
-    <!-- Even though we specify this in the parent pom, we need to specify it here to have full control over the url -->
-    <site>
-      <id>${site_id}</id>
-      <url>${site_url}</url>
-    </site>
-  </distributionManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.onebusaway</groupId>
@@ -44,4 +36,17 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.mycila.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+        <configuration>
+          <excludes combine.children="append">
+            <exclude>src/test/resources/org/onebusaway/gtfs/**</exclude>
+          </excludes>
+        </configuration>
+      </plugin>    
+    </plugins>
+  </build>
 </project>

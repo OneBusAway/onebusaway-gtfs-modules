@@ -19,14 +19,6 @@
     <skip-deploy-onebusaway-gtfs-transformer-cli-jar>true</skip-deploy-onebusaway-gtfs-transformer-cli-jar>
   </properties>
 
-  <distributionManagement>
-    <!-- Even though we specify this in the parent pom, we need to specify it here to have full control over the url -->
-    <site>
-      <id>${site_id}</id>
-      <url>${site_url}</url>
-    </site>
-  </distributionManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.onebusaway</groupId>

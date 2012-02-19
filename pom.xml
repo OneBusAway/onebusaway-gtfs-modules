@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.onebusaway</groupId>
     <artifactId>onebusaway</artifactId>
-    <version>1.1.6</version>
+    <version>1.1.7-SNAPSHOT</version>
   </parent>
   
   <artifactId>onebusaway-gtfs-modules</artifactId>
@@ -39,10 +39,9 @@
   </issueManagement>
 
   <distributionManagement>
-    <!-- Even though we specify this in the parent pom, we need to specify it here to have full control over the url -->
     <site>
       <id>${site_id}</id>
-      <url>${site_url}</url>
+      <url>${site_deployment_base}/onebusaway-gtfs-modules/${project.version}</url>
     </site>
   </distributionManagement>
 
@@ -84,53 +83,5 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.5</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>com.mycila.maven-license-plugin</groupId>
-        <artifactId>maven-license-plugin</artifactId>
-        <version>1.10.b1</version>
-        <configuration>
-          <header>src/license/header.txt</header>
-          <excludes>
-            <exclude>src/site/**</exclude>
-            <exclude>LICENSE.txt</exclude>
-            <exclude>src/test/resources/org/onebusaway/gtfs/**</exclude>
-            <exclude>onebusaway-gtfs/src/test/resources/org/onebusaway/gtfs/**</exclude>
-            <exclude>src/test/resources/org/onebusaway/gtfs_transformer/**</exclude>
-            <exclude>onebusaway-gtfs-transformer/src/test/resources/org/onebusaway/gtfs_transformer/**</exclude>
-            <exclude>**/usage.txt</exclude>
-            <exclude>**/log4j.properties</exclude>
-          </excludes>
-          <strictCheck>true</strictCheck>
-          <aggregate>true</aggregate>
-          <headerSections>
-            <headerSection>
-              <key>COPYRIGHT_SECTION</key>
-              <defaultValue>Copyright (C) 2011 Brian Ferris &lt;bdferris@onebusaway.org&gt;</defaultValue>
-              <ensureMatch>Copyright \(C\) \d{4} .+</ensureMatch>
-            </headerSection>
-          </headerSections>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

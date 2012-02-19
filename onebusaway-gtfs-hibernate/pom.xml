@@ -5,8 +5,7 @@
   <packaging>jar</packaging>
 
   <name>onebusaway-gtfs-hibernate</name>
-  <description>A Java library for reading and writing Google Transit Feed Spec feeds into a database</description>
-  <url>http://code.google.com/p/onebusaway/wiki/ModuleGtfs</url>
+  <description>A Java library for reading and writing General Transit Feed Spec feeds into a database</description>
 
   <parent>
     <groupId>org.onebusaway</groupId>

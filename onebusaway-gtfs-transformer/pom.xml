@@ -5,7 +5,6 @@
 
   <name>onebusaway-gtfs-transformer</name>
   <description>A Java library for transforming Google Transit Feed Spec feeds</description>
-  <url>http://code.google.com/p/onebusaway/wiki/ModuleGtfs</url>
 
   <parent>
     <groupId>org.onebusaway</groupId>

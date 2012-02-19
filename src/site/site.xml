@@ -8,5 +8,6 @@
       <item name="GTFS Transformer" href="/onebusaway-gtfs-transformer-cli.html" />
     </menu>
     <menu ref="reports" />
+    <menu ref="modules" />
   </body>
 </project>

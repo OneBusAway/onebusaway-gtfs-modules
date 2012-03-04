@@ -2,6 +2,26 @@ Release Notes
 
 * ${currentVersion}
 
+  * Migrate to GitHub.
+  
+  * When doing GTFS graph retention, allow the agency id referenced by stops, shapes, and service ids to refer to a
+    non-existent agency.  These elements don't technically require an agency in the same way routes do, so it's ok if
+    they have a non-existent reference.
+  
+  * Add a custom field mapping for stop_lat and stop_lon in stops.txt that will better serialize their values when
+    writing back to the output file.  We ran into an issue when working with stop locations very close to the prime
+    meridian where the stop_lon value was serialized using scientific notation.  The new field mapping introduces a
+    custom formatter that will enforce a more normal decimal representation when the value is written to the output
+    file.
+  
+  * Allow input of multiple GTFS files to GTFS importer.
+  
+  * Better support for missing values when reading entity ids in the CSV-to-Object serialization library.
+  
+  * Support for frequencies.txt label_only field.
+  
+  * Better support for injecting new entities with the GtfsTransformer.
+
   * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
 
 * 1.2.5

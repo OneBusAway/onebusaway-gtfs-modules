@@ -26,11 +26,11 @@ Release Notes
 
 * 1.2.5
 
-  * Support for {{{http://code.google.com/transit/spec/transit_feed_specification.html#feed_info_txt___Field_Definitions}feed_info.txt}}
+  * Support for {{{https://developers.google.com/transit/gtfs/reference#feed_info_fields}feed_info.txt}}
   
-  * Support for {{{http://code.google.com/transit/spec/transit_feed_specification.html#agency_txt___Field_Definitions}agency.txt}} <<<agency_fare_url>>> field
+  * Support for {{{https://developers.google.com/transit/gtfs/reference#agency_fields}agency.txt}} <<<agency_fare_url>>> field
   
-  * Support for {{{http://code.google.com/transit/spec/transit_feed_specification.html#frequencies_txt___Field_Definitions}frequencies.txt}} <<<exact_times>>> field
+  * Support for {{{https://developers.google.com/transit/gtfs/reference#frequencies_fields}frequencies.txt}} <<<exact_times>>> field
   
   * Mark Hibernate GTFS classes as mutable (see {{{https://groups.google.com/group/onebusaway-developers/browse_thread/thread/219d40f7a99c9709}discussion}})
   

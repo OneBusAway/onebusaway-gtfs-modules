@@ -9,7 +9,7 @@ Brian Ferris
 Introduction
 
   The <<<onebusaway-gtfs-transformer-cli>>> command-line application is a simple command-line tool for transforming
-{{{http://code.google.com/transit/spec/transit_feed_specification.html}GTFS}} feeds. 
+{{{https://developers.google.com/transit/gtfs}GTFS}} feeds. 
 
 Getting the Application
 

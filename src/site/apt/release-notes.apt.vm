@@ -2,6 +2,10 @@ Release Notes
 
 * ${currentVersion}
 
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
+
+* 1.2.6
+
   * Migrate to GitHub.
   
   * When doing GTFS graph retention, allow the agency id referenced by stops, shapes, and service ids to refer to a
@@ -22,7 +26,7 @@ Release Notes
   
   * Better support for injecting new entities with the GtfsTransformer.
 
-  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/1.2.6/}}
 
 * 1.2.5
 

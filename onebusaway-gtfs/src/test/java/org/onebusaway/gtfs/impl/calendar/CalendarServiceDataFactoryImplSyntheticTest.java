@@ -61,6 +61,8 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
         2, 15), ServiceCalendarDate.EXCEPTION_TYPE_REMOVE);
     ServiceCalendarDate cd2 = calendarDate(serviceIdA2, new ServiceDate(2010,
         2, 26), ServiceCalendarDate.EXCEPTION_TYPE_ADD);
+    ServiceCalendarDate cd3 = calendarDate(serviceIdA2, new ServiceDate(2010,
+        3, 14), ServiceCalendarDate.EXCEPTION_TYPE_ADD);
 
     Trip t1 = trip("A", "1", serviceIdA1);
     Trip t2 = trip("A", "2", serviceIdA1);
@@ -74,7 +76,7 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
 
     saveEntities(dao, agencyA, agencyB);
     saveEntities(dao, c1, c2, c3);
-    saveEntities(dao, cd1, cd2);
+    saveEntities(dao, cd1, cd2, cd3);
     saveEntities(dao, t1, t2, t3, t4, t5, t6);
 
     CalendarServiceData data = factory.createData();
@@ -101,13 +103,15 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
 
     // 7-days a week, with some calendar modifications for this service id
     serviceDates = data.getServiceDatesForServiceId(serviceIdA2);
-    assertEquals(15, serviceDates.size());
+    assertEquals(16, serviceDates.size());
     assertEquals(dStart, serviceDates.get(0));
     assertEquals(new ServiceDate(2010, 2, 14), serviceDates.get(4));
     // 2010-02-15 should be excluded
     assertEquals(new ServiceDate(2010, 2, 16), serviceDates.get(5));
     // 2010-02-26 should be added
     assertEquals(new ServiceDate(2010, 2, 26), serviceDates.get(14));
+    // DST switchover day should be added
+    assertTrue(serviceDates.contains(new ServiceDate(2010, 3, 14)));
 
     // Just weekends for this service id
     serviceDates = data.getServiceDatesForServiceId(serviceIdB1);
@@ -145,12 +149,12 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
     assertNull(dates);
     
     dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(serviceIdA2, tzA));
-    assertEquals(15,dates.size());
+    assertEquals(16,dates.size());
     assertEquals(DateSupport.date("2010-02-10 00:00 Pacific Standard Time"),dates.get(0));
     assertEquals(DateSupport.date("2010-02-26 00:00 Pacific Standard Time"),dates.get(14));
     
     dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(serviceIdA2, tzB));
-    assertEquals(15,dates.size());
+    assertEquals(16,dates.size());
     assertEquals(DateSupport.date("2010-02-10 00:00 Mountain Standard Time"),dates.get(0));
     assertEquals(DateSupport.date("2010-02-26 00:00 Mountain Standard Time"),dates.get(14));
     

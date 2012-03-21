@@ -16,7 +16,6 @@
     <dependency>
       <groupId>org.onebusaway</groupId>
       <artifactId>onebusaway-csv-entities</artifactId>
-      <version>${onebusaway_csv_entities_version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

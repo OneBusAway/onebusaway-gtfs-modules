@@ -101,6 +101,7 @@ public class GtfsEntitySchemaFactory {
         "agency_");
     helper.addOptionalField(agency, "id", "agency_id",
         new AgencyIdTranslationFieldMappingFactory());
+    helper.addFields(agency, "name", "url", "timezone");
     helper.addOptionalFields(agency, "lang", "phone");
     helper.addOptionalField(agency, "fareUrl", "agency_fare_url");
 
@@ -111,9 +112,11 @@ public class GtfsEntitySchemaFactory {
     // We set the order of the id field to come after the agency field, such
     // that the agency field will be set before we attempt to set the id field
     helper.addField(route, "id", new DefaultAgencyIdFieldMappingFactory(
-        "agency.id"), 1);
-    helper.addOptionalFields(route, "desc", "shortName", "longName", "url",
-        "color", "textColor", "bikesAllowed");
+        "agency.id"));
+    helper.addOptionalFields(route, "shortName", "longName");
+    helper.addFields(route, "type");
+    helper.addOptionalFields(route, "shortName", "longName", "url", "color",
+        "textColor", "desc", "bikesAllowed");
     route.addValidator(new RouteValidator());
 
     CsvEntityMappingBean shapePoint = helper.addEntity(ShapePoint.class,
@@ -130,12 +133,12 @@ public class GtfsEntitySchemaFactory {
     CsvEntityMappingBean stop = helper.addEntity(Stop.class, "stops.txt",
         "stop_");
     helper.addField(stop, "id", new DefaultAgencyIdFieldMappingFactory());
-    helper.addOptionalFields(stop, "code", "desc", "direction", "url");
-    
-    DecimalFieldMappingFactory stopLocationMapping = new DecimalFieldMappingFactory("0.000000");
+    helper.addField(stop, "name");
+    DecimalFieldMappingFactory stopLocationMapping = new DecimalFieldMappingFactory(
+        "0.000000");
     helper.addField(stop, "lat", stopLocationMapping);
     helper.addField(stop, "lon", stopLocationMapping);
-    
+    helper.addOptionalFields(stop, "code", "desc", "direction", "url");
     helper.addOptionalField(stop, "zoneId", "zone_id");
     helper.addOptionalField(stop, "locationType", "location_type");
     helper.addOptionalField(stop, "parentStation", "parent_station");
@@ -144,10 +147,10 @@ public class GtfsEntitySchemaFactory {
     CsvEntityMappingBean trip = helper.addEntity(Trip.class, "trips.txt");
     helper.addField(trip, "route", "route_id", new EntityFieldMappingFactory());
     helper.addField(trip, "id", "trip_id",
-        new DefaultAgencyIdFieldMappingFactory("route.agency.id"), 1);
+        new DefaultAgencyIdFieldMappingFactory("route.agency.id"));
+    helper.addField(trip, "serviceId", new DefaultAgencyIdFieldMappingFactory());
     helper.addOptionalFields(trip, "tripShortName", "tripHeadsign",
         "routeShortName", "directionId", "blockId");
-    helper.addField(trip, "serviceId", new DefaultAgencyIdFieldMappingFactory());
     helper.addOptionalField(trip, "shapeId",
         new DefaultAgencyIdFieldMappingFactory());
     helper.addOptionalField(trip, "wheelchairAccessible",
@@ -165,6 +168,7 @@ public class GtfsEntitySchemaFactory {
         new StopTimeFieldMappingFactory());
     helper.addOptionalField(stopTime, "departureTime",
         new StopTimeFieldMappingFactory());
+    helper.addField(stopTime, "stopSequence");
     helper.addOptionalFields(stopTime, "stopHeadsign", "routeShortName",
         "pickupType", "dropOffType", "shapeDistTraveled");
 
@@ -173,6 +177,8 @@ public class GtfsEntitySchemaFactory {
     helper.addIgnorableField(calendar, "id");
     helper.addField(calendar, "serviceId", "service_id",
         new DefaultAgencyIdFieldMappingFactory());
+    helper.addFields(calendar, "monday", "tuesday", "wednesday", "thursday",
+        "friday", "saturday", "sunday");
     helper.addField(calendar, "startDate", new ServiceDateFieldMappingFactory());
     helper.addField(calendar, "endDate", new ServiceDateFieldMappingFactory());
 
@@ -183,6 +189,7 @@ public class GtfsEntitySchemaFactory {
     helper.addField(calendarDate, "serviceId", "service_id",
         new DefaultAgencyIdFieldMappingFactory());
     helper.addField(calendarDate, "date", new ServiceDateFieldMappingFactory());
+    helper.addField(calendarDate, "exceptionType");
 
     CsvEntityMappingBean fareAttributes = helper.addEntity(FareAttribute.class,
         "fare_attributes.txt");

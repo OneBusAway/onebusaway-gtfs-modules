@@ -15,8 +15,12 @@
  */
 package org.onebusaway.gtfs.model;
 
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
+import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 
+@CsvFields(filename = "stop_times.txt")
 public final class StopTime extends IdentityBean<Integer> implements
     Comparable<StopTime> {
 
@@ -24,26 +28,36 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   private static final int MISSING_VALUE = -999;
 
+  @CsvField(ignore = true)
   private int id;
 
+  @CsvField(name = "trip_id", mapping = EntityFieldMappingFactory.class)
   private Trip trip;
+
+  @CsvField(name = "stop_id", mapping = EntityFieldMappingFactory.class)
+  private Stop stop;
+
+  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
+  private int arrivalTime = MISSING_VALUE;
+
+  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
+  private int departureTime = MISSING_VALUE;
 
   private int stopSequence;
 
-  private Stop stop;
-
-  private int arrivalTime = MISSING_VALUE;
-
-  private int departureTime = MISSING_VALUE;
-
+  @CsvField(optional = true)
   private String stopHeadsign;
 
+  @CsvField(optional = true)
   private String routeShortName;
 
+  @CsvField(optional = true, defaultValue = "0")
   private int pickupType;
 
+  @CsvField(optional = true, defaultValue = "0")
   private int dropOffType;
 
+  @CsvField(optional = true)
   private double shapeDistTraveled = MISSING_VALUE;
 
   public StopTime() {

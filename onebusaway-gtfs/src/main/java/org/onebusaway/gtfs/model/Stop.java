@@ -15,32 +15,49 @@
  */
 package org.onebusaway.gtfs.model;
 
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
+import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.LatLonFieldMappingFactory;
+
+@CsvFields(filename = "stops.txt", prefix = "stop_")
 public final class Stop extends IdentityBean<AgencyAndId> {
 
   private static final long serialVersionUID = 1L;
 
+  @CsvField(mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
-
-  private String code;
 
   private String name;
 
-  private String desc;
-
+  @CsvField(mapping = LatLonFieldMappingFactory.class)
   private double lat;
 
+  @CsvField(mapping = LatLonFieldMappingFactory.class)
   private double lon;
 
+  @CsvField(optional = true)
+  private String code;
+
+  @CsvField(optional = true)
+  private String desc;
+
+  @CsvField(name="zone_id", optional = true)
   private String zoneId;
 
+  @CsvField(optional = true)
   private String url;
 
-  private int locationType;
+  @CsvField(name="location_type", optional = true, defaultValue = "0")
+  private int locationType = 0;
 
+  @CsvField(optional = true)
   private String parentStation;
 
+  @CsvField(name="wheelchair_boarding", optional = true, defaultValue = "0")
   private int wheelchairBoarding = 0;
-  
+
+  @CsvField(optional = true)
   private String direction;
 
   public Stop() {

@@ -56,6 +56,7 @@ import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
+import org.onebusaway.gtfs.services.MockGtfs;
 
 public class GtfsReaderTest {
 
@@ -295,7 +296,7 @@ public class GtfsReaderTest {
   }
 
   @Test
-  public void testBar() throws IOException, ParseException {
+  public void testBart() throws IOException, ParseException {
 
     File resourcePath = GtfsTestData.getBartGtfs();
     String agencyId = "BART";
@@ -440,14 +441,18 @@ public class GtfsReaderTest {
   public void testUtf8() throws IOException, ParseException,
       InterruptedException {
 
-    String agencyId = "agency";
-    GtfsDao dao = processFeed(new File(
-        "src/test/resources/org/onebusaway/gtfs/utf8-agency"), agencyId, false);
+    MockGtfs mockGtfs = MockGtfs.create();
+    mockGtfs.putDefaultStopTimes();
+    mockGtfs.putFile("routes.txt", new File(
+        "src/test/resources/org/onebusaway/gtfs/utf8-routes.txt"));
 
-    Route route = dao.getRouteForId(new AgencyAndId(agencyId, "A"));
+    String agencyId = "1";
+    GtfsDao dao = processFeed(mockGtfs.getPath(), agencyId, false);
+
+    Route route = dao.getRouteForId(new AgencyAndId(agencyId, "R10"));
     assertEquals("Enguera-Alcúdia de Crespins-Xàtiva", route.getLongName());
 
-    route = dao.getRouteForId(new AgencyAndId(agencyId, "B"));
+    route = dao.getRouteForId(new AgencyAndId(agencyId, "R11"));
     assertEquals("Tuéjar-Casinos", route.getLongName());
   }
 
@@ -455,16 +460,15 @@ public class GtfsReaderTest {
   public void testBom() throws IOException, ParseException,
       InterruptedException {
 
-    GtfsDao dao = processFeed(new File(
-        "src/test/resources/org/onebusaway/gtfs/bom-agency"), "1", false);
+    MockGtfs mockGtfs = MockGtfs.create();
+    mockGtfs.putDefaultStopTimes();
+    mockGtfs.putFile("agency.txt", new File(
+        "src/test/resources/org/onebusaway/gtfs/bom-agency.txt"));
 
-    Route route = dao.getRouteForId(new AgencyAndId("1", "02-88"));
-    assertEquals("La Poterie - Haut Sancé / Grand Quartier",
-        route.getLongName());
+    GtfsDao dao = processFeed(mockGtfs.getPath(), "1", false);
 
-    route = dao.getRouteForId(new AgencyAndId("1", "11-88"));
-    assertEquals("Saint Saëns - ZI Sud Est / Stade Rennais ZI Ouest",
-        route.getLongName());
+    Agency agency = dao.getAgencyForId("1");
+    assertEquals("Keolis Rennes", agency.getName());
   }
 
   @Test

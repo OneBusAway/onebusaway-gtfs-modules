@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.onebusaway.csv_entities.schema.DecimalFieldMappingFactory;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.EntitySchemaFactoryHelper;
 import org.onebusaway.csv_entities.schema.beans.CsvEntityMappingBean;
@@ -30,7 +29,6 @@ import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
-import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.model.Pathway;
@@ -46,13 +44,6 @@ import org.onebusaway.gtfs.serialization.comparators.ServiceCalendarComparator;
 import org.onebusaway.gtfs.serialization.comparators.ServiceCalendarDateComparator;
 import org.onebusaway.gtfs.serialization.comparators.ShapePointComparator;
 import org.onebusaway.gtfs.serialization.comparators.StopTimeComparator;
-import org.onebusaway.gtfs.serialization.mappings.AgencyIdTranslationFieldMappingFactory;
-import org.onebusaway.gtfs.serialization.mappings.ServiceDateFieldMappingFactory;
-import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
-import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
-import org.onebusaway.gtfs.serialization.mappings.RouteAgencyFieldMappingFactory;
-import org.onebusaway.gtfs.serialization.mappings.RouteValidator;
-import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 
 public class GtfsEntitySchemaFactory {
 
@@ -96,171 +87,6 @@ public class GtfsEntitySchemaFactory {
 
     CsvEntityMappingBean agencyId = helper.addEntity(AgencyAndId.class);
     helper.addIgnorableField(agencyId, "agencyId");
-
-    CsvEntityMappingBean agency = helper.addEntity(Agency.class, "agency.txt",
-        "agency_");
-    helper.addOptionalField(agency, "id", "agency_id",
-        new AgencyIdTranslationFieldMappingFactory());
-    helper.addFields(agency, "name", "url", "timezone");
-    helper.addOptionalFields(agency, "lang", "phone");
-    helper.addOptionalField(agency, "fareUrl", "agency_fare_url");
-
-    CsvEntityMappingBean route = helper.addEntity(Route.class, "routes.txt",
-        "route_");
-    helper.addOptionalField(route, "agency", "agency_id",
-        new RouteAgencyFieldMappingFactory());
-    // We set the order of the id field to come after the agency field, such
-    // that the agency field will be set before we attempt to set the id field
-    helper.addField(route, "id", new DefaultAgencyIdFieldMappingFactory(
-        "agency.id"));
-    helper.addOptionalFields(route, "shortName", "longName");
-    helper.addFields(route, "type");
-    helper.addOptionalFields(route, "shortName", "longName", "url", "color",
-        "textColor", "desc", "bikesAllowed");
-    route.addValidator(new RouteValidator());
-
-    CsvEntityMappingBean shapePoint = helper.addEntity(ShapePoint.class,
-        "shapes.txt");
-    shapePoint.setRequired(false);
-    helper.addIgnorableField(shapePoint, "id");
-    helper.addOptionalField(shapePoint, "shapeId",
-        new DefaultAgencyIdFieldMappingFactory());
-    helper.addOptionalField(shapePoint, "distTraveled", "shape_dist_traveled");
-    helper.addField(shapePoint, "lat", "shape_pt_lat");
-    helper.addField(shapePoint, "lon", "shape_pt_lon");
-    helper.addField(shapePoint, "sequence", "shape_pt_sequence");
-
-    CsvEntityMappingBean stop = helper.addEntity(Stop.class, "stops.txt",
-        "stop_");
-    helper.addField(stop, "id", new DefaultAgencyIdFieldMappingFactory());
-    helper.addField(stop, "name");
-    DecimalFieldMappingFactory stopLocationMapping = new DecimalFieldMappingFactory(
-        "0.000000");
-    helper.addField(stop, "lat", stopLocationMapping);
-    helper.addField(stop, "lon", stopLocationMapping);
-    helper.addOptionalFields(stop, "code", "desc", "direction", "url");
-    helper.addOptionalField(stop, "zoneId", "zone_id");
-    helper.addOptionalField(stop, "locationType", "location_type");
-    helper.addOptionalField(stop, "parentStation", "parent_station");
-    helper.addOptionalField(stop, "wheelchairBoarding", "wheelchair_boarding");
-
-    CsvEntityMappingBean trip = helper.addEntity(Trip.class, "trips.txt");
-    helper.addField(trip, "route", "route_id", new EntityFieldMappingFactory());
-    helper.addField(trip, "id", "trip_id",
-        new DefaultAgencyIdFieldMappingFactory("route.agency.id"));
-    helper.addField(trip, "serviceId", new DefaultAgencyIdFieldMappingFactory());
-    helper.addOptionalFields(trip, "tripShortName", "tripHeadsign",
-        "routeShortName", "directionId", "blockId");
-    helper.addOptionalField(trip, "shapeId",
-        new DefaultAgencyIdFieldMappingFactory());
-    helper.addOptionalField(trip, "wheelchairAccessible",
-        "wheelchair_accessible");
-    helper.addOptionalField(trip, "tripBikesAllowed");
-
-    CsvEntityMappingBean stopTime = helper.addEntity(StopTime.class,
-        "stop_times.txt");
-    helper.addIgnorableField(stopTime, "id");
-    helper.addField(stopTime, "trip", "trip_id",
-        new EntityFieldMappingFactory());
-    helper.addField(stopTime, "stop", "stop_id",
-        new EntityFieldMappingFactory());
-    helper.addOptionalField(stopTime, "arrivalTime",
-        new StopTimeFieldMappingFactory());
-    helper.addOptionalField(stopTime, "departureTime",
-        new StopTimeFieldMappingFactory());
-    helper.addField(stopTime, "stopSequence");
-    helper.addOptionalFields(stopTime, "stopHeadsign", "routeShortName",
-        "pickupType", "dropOffType", "shapeDistTraveled");
-
-    CsvEntityMappingBean calendar = helper.addEntity(ServiceCalendar.class,
-        "calendar.txt");
-    helper.addIgnorableField(calendar, "id");
-    helper.addField(calendar, "serviceId", "service_id",
-        new DefaultAgencyIdFieldMappingFactory());
-    helper.addFields(calendar, "monday", "tuesday", "wednesday", "thursday",
-        "friday", "saturday", "sunday");
-    helper.addField(calendar, "startDate", new ServiceDateFieldMappingFactory());
-    helper.addField(calendar, "endDate", new ServiceDateFieldMappingFactory());
-
-    CsvEntityMappingBean calendarDate = helper.addEntity(
-        ServiceCalendarDate.class, "calendar_dates.txt");
-    calendarDate.setRequired(false);
-    helper.addIgnorableField(calendarDate, "id");
-    helper.addField(calendarDate, "serviceId", "service_id",
-        new DefaultAgencyIdFieldMappingFactory());
-    helper.addField(calendarDate, "date", new ServiceDateFieldMappingFactory());
-    helper.addField(calendarDate, "exceptionType");
-
-    CsvEntityMappingBean fareAttributes = helper.addEntity(FareAttribute.class,
-        "fare_attributes.txt");
-    fareAttributes.setRequired(false);
-    helper.addField(fareAttributes, "id", "fare_id",
-        new DefaultAgencyIdFieldMappingFactory());
-    helper.addFields(fareAttributes, "price", "currencyType", "paymentMethod");
-    helper.addOptionalFields(fareAttributes, "transfers", "transferDuration",
-        "journeyDuration");
-
-    CsvEntityMappingBean fareRules = helper.addEntity(FareRule.class,
-        "fare_rules.txt");
-    fareRules.setRequired(false);
-    helper.addIgnorableField(fareRules, "id");
-    helper.addField(fareRules, "fare", "fare_id",
-        new EntityFieldMappingFactory());
-    helper.addOptionalField(fareRules, "route", "route_id",
-        new EntityFieldMappingFactory());
-    helper.addOptionalFields(fareRules, "originId", "destinationId",
-        "containsId");
-
-    CsvEntityMappingBean frequencies = helper.addEntity(Frequency.class,
-        "frequencies.txt");
-    frequencies.setRequired(false);
-    helper.addIgnorableField(frequencies, "id");
-    helper.addField(frequencies, "trip", "trip_id",
-        new EntityFieldMappingFactory());
-    helper.addOptionalField(frequencies, "startTime",
-        new StopTimeFieldMappingFactory());
-    helper.addOptionalField(frequencies, "endTime",
-        new StopTimeFieldMappingFactory());
-    helper.addFields(frequencies, "headwaySecs");
-    helper.addOptionalField(frequencies, "exactTimes");
-    helper.addOptionalField(frequencies, "labelOnly");
-
-    CsvEntityMappingBean pathways = helper.addEntity(Pathway.class,
-        "pathways.txt");
-    pathways.setRequired(false);
-    helper.addField(pathways, "id", "pathway_id",
-        new DefaultAgencyIdFieldMappingFactory());
-    helper.addField(pathways, "fromStop", "from_stop_id",
-        new EntityFieldMappingFactory());
-    helper.addField(pathways, "toStop", "to_stop_id",
-        new EntityFieldMappingFactory());
-    helper.addField(pathways, "traversalTime", "traversal_time");
-    helper.addOptionalField(pathways, "wheelchairTraversalTime",
-        "wheelchair_traversal_time");
-
-    CsvEntityMappingBean transfers = helper.addEntity(Transfer.class,
-        "transfers.txt");
-    transfers.setRequired(false);
-    helper.addIgnorableField(transfers, "id");
-    helper.addField(transfers, "fromStop", "from_stop_id",
-        new EntityFieldMappingFactory());
-    helper.addField(transfers, "toStop", "to_stop_id",
-        new EntityFieldMappingFactory());
-    helper.addField(transfers, "transferType");
-    helper.addOptionalField(transfers, "minTransferTime");
-
-    CsvEntityMappingBean feedInfo = helper.addEntity(FeedInfo.class,
-        "feed_info.txt");
-    feedInfo.setRequired(false);
-    helper.addIgnorableField(feedInfo, "id");
-    helper.addField(feedInfo, "publisherName", "feed_publisher_name");
-    helper.addField(feedInfo, "publisherUrl", "feed_publisher_url");
-    helper.addField(feedInfo, "lang", "feed_lang");
-    helper.addOptionalField(feedInfo, "startDate", "feed_start_date",
-        new ServiceDateFieldMappingFactory());
-    helper.addOptionalField(feedInfo, "endDate", "feed_end_date",
-        new ServiceDateFieldMappingFactory());
-    helper.addOptionalField(feedInfo, "version", "feed_version");
 
     return factory;
   }

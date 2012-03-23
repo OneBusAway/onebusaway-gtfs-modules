@@ -15,20 +15,29 @@
  */
 package org.onebusaway.gtfs.model;
 
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
+import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
+
+@CsvFields(filename = "transfers.txt", required = false)
 public final class Transfer extends IdentityBean<Integer> {
 
   private static final long serialVersionUID = 1L;
 
   private static final int MISSING_VALUE = -999;
 
+  @CsvField(ignore = true)
   private int id;
 
+  @CsvField(name = "from_stop_id", mapping = EntityFieldMappingFactory.class)
   private Stop fromStop;
 
+  @CsvField(name = "to_stop_id", mapping = EntityFieldMappingFactory.class)
   private Stop toStop;
 
   private int transferType;
 
+  @CsvField(optional = true)
   private int minTransferTime = MISSING_VALUE;
 
   public Transfer() {

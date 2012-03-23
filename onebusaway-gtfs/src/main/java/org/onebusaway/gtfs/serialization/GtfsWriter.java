@@ -40,7 +40,7 @@ public class GtfsWriter extends CsvEntityWriter {
   private List<Class<?>> _entityClasses = new ArrayList<Class<?>>();
 
   private Map<Class<?>, Comparator<?>> _entityComparators = new HashMap<Class<?>, Comparator<?>>();
-  
+
   public GtfsWriter() {
 
     /**
@@ -55,8 +55,8 @@ public class GtfsWriter extends CsvEntityWriter {
   public List<Class<?>> getEntityClasses() {
     return _entityClasses;
   }
-  
-  public Map<Class<?>,Comparator<?>> getEntityComparators() {
+
+  public Map<Class<?>, Comparator<?>> getEntityComparators() {
     return _entityComparators;
   }
 
@@ -66,8 +66,9 @@ public class GtfsWriter extends CsvEntityWriter {
 
     for (Class<?> entityClass : classes) {
       _log.info("writing entities: " + entityClass.getName());
-      Collection<?> entities = dao.getAllEntitiesForType(entityClass);
-      entities = sortEntities(entityClass,entities);
+      Collection<Object> entities = sortEntities(entityClass,
+          dao.getAllEntitiesForType(entityClass));
+      excludeOptionalAndMissingFields(entityClass, entities);
       for (Object entity : entities)
         handleEntity(entity);
       flush();
@@ -77,13 +78,14 @@ public class GtfsWriter extends CsvEntityWriter {
   }
 
   @SuppressWarnings("unchecked")
-  private Collection<?> sortEntities(Class<?> entityClass, Collection<?> entities) {
-    
+  private Collection<Object> sortEntities(Class<?> entityClass,
+      Collection<?> entities) {
+
     Comparator<Object> comparator = (Comparator<Object>) _entityComparators.get(entityClass);
-    
-    if( comparator == null)
-      return entities;
-    
+
+    if (comparator == null)
+      return (Collection<Object>) entities;
+
     List<Object> sorted = new ArrayList<Object>();
     sorted.addAll(entities);
     Collections.sort(sorted, comparator);

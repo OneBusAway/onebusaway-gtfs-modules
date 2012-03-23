@@ -15,12 +15,17 @@
  */
 package org.onebusaway.gtfs.model;
 
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
+import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
+import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.ServiceDateFieldMappingFactory;
 
 /**
  * @author bdferris
  * 
  */
+@CsvFields(filename = "calendar_dates.txt", required = false)
 public final class ServiceCalendarDate extends IdentityBean<Integer> {
 
   private static final long serialVersionUID = 1L;
@@ -29,10 +34,13 @@ public final class ServiceCalendarDate extends IdentityBean<Integer> {
 
   public static final int EXCEPTION_TYPE_REMOVE = 2;
 
+  @CsvField(ignore = true)
   private int id;
 
+  @CsvField(mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId serviceId;
 
+  @CsvField(mapping = ServiceDateFieldMappingFactory.class)
   private ServiceDate date;
 
   private int exceptionType;

@@ -15,28 +15,43 @@
  */
 package org.onebusaway.gtfs.model;
 
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
+import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.serialization.mappings.RouteAgencyIdFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.RouteAgencyFieldMappingFactory;
+
+@CsvFields(filename = "routes.txt", prefix = "route_")
 public final class Route extends IdentityBean<AgencyAndId> {
 
   private static final long serialVersionUID = 1L;
 
+  @CsvField(mapping = RouteAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 
+  @CsvField(name="agency_id", optional = true, mapping = RouteAgencyFieldMappingFactory.class, order = -1)
   private Agency agency;
 
+  @CsvField(optional = true)
   private String shortName;
 
+  @CsvField(optional = true)
   private String longName;
-
-  private String desc;
 
   private int type;
 
+  @CsvField(optional = true)
+  private String desc;
+
+  @CsvField(optional = true)
   private String url;
 
+  @CsvField(optional = true)
   private String color;
 
+  @CsvField(optional = true)
   private String textColor;
 
+  @CsvField(optional = true, defaultValue = "0")
   private int bikesAllowed = 0;
 
   public Route() {
@@ -129,11 +144,11 @@ public final class Route extends IdentityBean<AgencyAndId> {
   }
 
   public int getBikesAllowed() {
-      return bikesAllowed;
+    return bikesAllowed;
   }
 
   public void setBikesAllowed(int bikesAllowed) {
-      this.bikesAllowed = bikesAllowed;
+    this.bikesAllowed = bikesAllowed;
   }
 
   @Override

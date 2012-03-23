@@ -20,39 +20,32 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.Arrays;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
-import org.onebusaway.gtfs.MockGtfs;
+import org.onebusaway.gtfs.model.Agency;
+import org.onebusaway.gtfs.model.Stop;
+import org.onebusaway.gtfs.services.MockGtfs;
 
 public class GtfsReaderStopsTest {
 
   private MockGtfs _gtfs;
 
-  private GtfsReader _reader;
-
   @Before
   public void setup() throws IOException {
     _gtfs = MockGtfs.create();
     _gtfs.putDefaultAgencies();
-    _reader = new GtfsReader();
-    _reader.setInputLocation(_gtfs.getDirectory());
-  }
-
-  @After
-  public void teardown() {
-    _gtfs.delete();
   }
 
   @Test
   public void testMissingStopLat() throws IOException {
-    _gtfs.putFile("stops.txt", "stop_id,stop_name,stop_lat,stop_lon\n"
-        + "1,The Stop, ,-122.0");
+    _gtfs.putLines("stops.txt", "stop_id,stop_name,stop_lat,stop_lon",
+        "1,The Stop, ,-122.0");
     try {
-      _reader.run();
+      run();
       fail();
     } catch (CsvEntityIOException ex) {
       MissingRequiredFieldException mrf = (MissingRequiredFieldException) ex.getCause();
@@ -62,14 +55,22 @@ public class GtfsReaderStopsTest {
 
   @Test
   public void testMissingStopLon() throws IOException {
-    _gtfs.putFile("stops.txt", "stop_id,stop_name,stop_lat,stop_lon\n"
-        + "1,The Stop,47.0,");
+    _gtfs.putLines("stops.txt", "stop_id,stop_name,stop_lat,stop_lon",
+        "1,The Stop,47.0,");
     try {
-      _reader.run();
+      run();
       fail();
     } catch (CsvEntityIOException ex) {
       MissingRequiredFieldException mrf = (MissingRequiredFieldException) ex.getCause();
       assertEquals("stop_lon", mrf.getFieldName());
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  private void run() throws IOException {
+    GtfsReader reader = new GtfsReader();
+    reader.setEntityClasses(Arrays.asList((Class<?>) Agency.class, Stop.class));
+    reader.setInputLocation(_gtfs.getPath());
+    reader.run();
   }
 }

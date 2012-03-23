@@ -15,30 +15,48 @@
  */
 package org.onebusaway.gtfs.model;
 
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
+import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.TripAgencyIdFieldMappingFactory;
+
+@CsvFields(filename = "trips.txt")
 public final class Trip extends IdentityBean<AgencyAndId> {
 
   private static final long serialVersionUID = 1L;
 
+  @CsvField(name = "trip_id", mapping = TripAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 
+  @CsvField(name = "route_id", mapping = EntityFieldMappingFactory.class, order = -1)
   private Route route;
 
+  @CsvField(mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId serviceId;
 
+  @CsvField(optional = true)
   private String tripShortName;
 
+  @CsvField(optional = true)
   private String tripHeadsign;
 
+  @CsvField(optional = true)
   private String routeShortName;
 
+  @CsvField(optional = true)
   private String directionId;
 
+  @CsvField(optional = true)
   private String blockId;
 
+  @CsvField(optional = true, mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId shapeId;
 
+  @CsvField(optional = true, defaultValue = "0")
   private int wheelchairAccessible = 0;
 
+  @CsvField(optional = true, defaultValue = "0")
   private int tripBikesAllowed = 0;
 
   public Trip() {

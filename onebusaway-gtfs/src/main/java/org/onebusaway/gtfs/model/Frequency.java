@@ -16,24 +16,34 @@
  */
 package org.onebusaway.gtfs.model;
 
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
+import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 
+@CsvFields(filename = "frequencies.txt", required = false)
 public final class Frequency extends IdentityBean<Integer> {
 
   private static final long serialVersionUID = 1L;
 
+  @CsvField(ignore = true)
   private int id;
 
+  @CsvField(name = "trip_id", mapping = EntityFieldMappingFactory.class)
   private Trip trip;
 
+  @CsvField(mapping = StopTimeFieldMappingFactory.class)
   private int startTime;
 
+  @CsvField(mapping = StopTimeFieldMappingFactory.class)
   private int endTime;
 
   private int headwaySecs;
 
+  @CsvField(optional = true, defaultValue = "0")
   private int exactTimes = 0;
-  
+
+  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int labelOnly = 0;
 
   public Frequency() {

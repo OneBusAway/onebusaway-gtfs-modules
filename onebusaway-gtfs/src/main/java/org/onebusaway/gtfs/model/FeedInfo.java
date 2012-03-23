@@ -15,12 +15,17 @@
  */
 package org.onebusaway.gtfs.model;
 
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
+import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
+import org.onebusaway.gtfs.serialization.mappings.ServiceDateFieldMappingFactory;
 
+@CsvFields(filename = "feed_info.txt", required = false, prefix = "feed_")
 public final class FeedInfo extends IdentityBean<Integer> {
 
   private static final long serialVersionUID = 1L;
 
+  @CsvField(ignore = true)
   private int id;
 
   private String publisherName;
@@ -29,10 +34,13 @@ public final class FeedInfo extends IdentityBean<Integer> {
 
   private String lang;
 
+  @CsvField(optional = true, mapping = ServiceDateFieldMappingFactory.class)
   private ServiceDate startDate;
 
+  @CsvField(optional = true, mapping = ServiceDateFieldMappingFactory.class)
   private ServiceDate endDate;
 
+  @CsvField(optional = true)
   private String version;
 
   public String getPublisherName() {

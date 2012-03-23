@@ -15,12 +15,18 @@
  */
 package org.onebusaway.gtfs.model;
 
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
+import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
+
+@CsvFields(filename = "fare_attributes.txt", required = false)
 public final class FareAttribute extends IdentityBean<AgencyAndId> {
 
   private static final long serialVersionUID = 1L;
 
   private static final int MISSING_VALUE = -999;
 
+  @CsvField(name = "fare_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 
   private float price;
@@ -29,13 +35,16 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
 
   private int paymentMethod;
 
+  @CsvField(optional = true)
   private int transfers = MISSING_VALUE;
 
+  @CsvField(optional = true)
   private int transferDuration = MISSING_VALUE;
-  
+
   /**
    * This is a proposed extension to the GTFS spec
    */
+  @CsvField(optional = true)
   private int journeyDuration = MISSING_VALUE;
 
   public FareAttribute() {
@@ -113,23 +122,23 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
   public void setTransferDuration(int transferDuration) {
     this.transferDuration = transferDuration;
   }
-  
+
   public void clearTransferDuration() {
     this.transferDuration = MISSING_VALUE;
   }
-  
+
   public boolean isJourneyDurationSet() {
-	return journeyDuration != MISSING_VALUE;
+    return journeyDuration != MISSING_VALUE;
   }
 
   public int getJourneyDuration() {
-	return journeyDuration;
+    return journeyDuration;
   }
 
   public void setJourneyDuration(int journeyDuration) {
     this.journeyDuration = journeyDuration;
   }
-	  
+
   public void clearJourneyDuration() {
     this.journeyDuration = MISSING_VALUE;
   }

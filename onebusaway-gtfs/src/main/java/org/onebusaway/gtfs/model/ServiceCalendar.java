@@ -15,7 +15,11 @@
  */
 package org.onebusaway.gtfs.model;
 
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
+import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
+import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.ServiceDateFieldMappingFactory;
 
 /**
  * Note that I decided to call this class ServiceCalendar instead of Calendar,
@@ -24,12 +28,15 @@ import org.onebusaway.gtfs.model.calendar.ServiceDate;
  * @author bdferris
  * 
  */
+@CsvFields(filename = "calendar.txt", required = false)
 public final class ServiceCalendar extends IdentityBean<Integer> {
 
   private static final long serialVersionUID = 1L;
 
+  @CsvField(ignore = true)
   private int id;
 
+  @CsvField(mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId serviceId;
 
   private int monday;
@@ -46,8 +53,10 @@ public final class ServiceCalendar extends IdentityBean<Integer> {
 
   private int sunday;
 
+  @CsvField(mapping = ServiceDateFieldMappingFactory.class)
   private ServiceDate startDate;
 
+  @CsvField(mapping = ServiceDateFieldMappingFactory.class)
   private ServiceDate endDate;
 
   public ServiceCalendar() {

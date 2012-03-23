@@ -223,9 +223,10 @@ public class CalendarServiceDataFactoryImpl implements
   private void addAndRemoveDatesFromCalendarDate(
       ServiceCalendarDate calendarDate, Set<ServiceDate> activeDates) {
 
-    Date targetDate = calendarDate.getDate().getAsDate();
     Calendar c = Calendar.getInstance();
-    c.setTime(targetDate);
+    c.set(calendarDate.getDate().getYear(),
+           calendarDate.getDate().getMonth() - 1,
+          calendarDate.getDate().getDay(), 0, 0, 0);
 
     switch (calendarDate.getExceptionType()) {
       case ServiceCalendarDate.EXCEPTION_TYPE_ADD:

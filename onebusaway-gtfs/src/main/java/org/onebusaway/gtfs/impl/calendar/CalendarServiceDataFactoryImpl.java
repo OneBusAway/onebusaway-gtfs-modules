@@ -100,14 +100,19 @@ public class CalendarServiceDataFactoryImpl implements
       _log.info("serviceId=" + serviceId + " (" + index + "/"
           + serviceIds.size() + ")");
 
+      TimeZone serviceIdTimeZone = data.getTimeZoneForAgencyId(serviceId.getAgencyId());
+      if (serviceIdTimeZone == null) {
+        serviceIdTimeZone = TimeZone.getDefault();
+      }
+
       Set<ServiceDate> activeDates = new HashSet<ServiceDate>();
       ServiceCalendar c = calendarsByServiceId.get(serviceId);
 
       if (c != null)
-        addDatesFromCalendar(c, activeDates);
+        addDatesFromCalendar(c, serviceIdTimeZone, activeDates);
       if (calendarDatesByServiceId.containsKey(serviceId)) {
         for (ServiceCalendarDate cd : calendarDatesByServiceId.get(serviceId)) {
-          addAndRemoveDatesFromCalendarDate(cd, activeDates);
+          addAndRemoveDatesFromCalendarDate(cd, serviceIdTimeZone, activeDates);
         }
       }
 
@@ -172,12 +177,16 @@ public class CalendarServiceDataFactoryImpl implements
   }
 
   private void addDatesFromCalendar(ServiceCalendar calendar,
-      Set<ServiceDate> activeDates) {
+      TimeZone timeZone, Set<ServiceDate> activeDates) {
 
-    Date startDate = calendar.getStartDate().getAsDate();
-    Date endDate = calendar.getEndDate().getAsDate();
+    /**
+     * We calculate service dates relative to noon so as to avoid any weirdness
+     * relative to DST.
+     */
+    Date startDate = getServiceDateAsNoon(calendar.getStartDate(), timeZone);
+    Date endDate = getServiceDateAsNoon(calendar.getEndDate(), timeZone);
 
-    java.util.Calendar c = java.util.Calendar.getInstance();
+    java.util.Calendar c = java.util.Calendar.getInstance(timeZone);
     c.setTime(startDate);
 
     while (true) {
@@ -213,7 +222,7 @@ public class CalendarServiceDataFactoryImpl implements
       }
 
       if (active) {
-        addServiceDate(activeDates, c);
+        addServiceDate(activeDates, new ServiceDate(c), timeZone);
       }
 
       c.add(java.util.Calendar.DAY_OF_YEAR, 1);
@@ -221,18 +230,20 @@ public class CalendarServiceDataFactoryImpl implements
   }
 
   private void addAndRemoveDatesFromCalendarDate(
-      ServiceCalendarDate calendarDate, Set<ServiceDate> activeDates) {
+      ServiceCalendarDate calendarDate, TimeZone serviceIdTimeZone,
+      Set<ServiceDate> activeDates) {
 
+    ServiceDate serviceDate = calendarDate.getDate();
     Date targetDate = calendarDate.getDate().getAsDate();
     Calendar c = Calendar.getInstance();
     c.setTime(targetDate);
 
     switch (calendarDate.getExceptionType()) {
       case ServiceCalendarDate.EXCEPTION_TYPE_ADD:
-        addServiceDate(activeDates, c);
+        addServiceDate(activeDates, serviceDate, serviceIdTimeZone);
         break;
       case ServiceCalendarDate.EXCEPTION_TYPE_REMOVE:
-        activeDates.remove(new ServiceDate(c));
+        activeDates.remove(serviceDate);
         break;
       default:
         _log.warn("unknown CalendarDate exception type: "
@@ -241,13 +252,21 @@ public class CalendarServiceDataFactoryImpl implements
     }
   }
 
-  private void addServiceDate(Set<ServiceDate> activeDates, Calendar c) {
+  private void addServiceDate(Set<ServiceDate> activeDates,
+      ServiceDate serviceDate, TimeZone timeZone) {
     if (_excludeFutureServiceDatesInDays > 0) {
-      int days = (int) ((c.getTimeInMillis() - System.currentTimeMillis()) / (24 * 60 * 60 * 1000));
+      int days = (int) ((serviceDate.getAsDate(timeZone).getTime() - System.currentTimeMillis()) / (24 * 60 * 60 * 1000));
       if (days > _excludeFutureServiceDatesInDays)
         return;
     }
 
-    activeDates.add(new ServiceDate(c));
+    activeDates.add(new ServiceDate(serviceDate));
+  }
+
+  private static Date getServiceDateAsNoon(ServiceDate serviceDate,
+      TimeZone timeZone) {
+    Calendar c = serviceDate.getAsCalendar(timeZone);
+    c.add(Calendar.HOUR_OF_DAY, 12);
+    return c.getTime();
   }
 }

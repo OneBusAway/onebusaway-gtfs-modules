@@ -4,7 +4,9 @@ Release Notes
 
   * Support for more natural field order in header when writing CSV file - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/2}issue}}
   
-  * Support for excluding optional columns when no values are specified - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/3}issue}} 
+  * Support for excluding optional columns when no values are specified - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/3}issue}}
+  
+  * Fix for Daylight Saving Time service calendar computation bug - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/1}issue}}
 
   * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
 

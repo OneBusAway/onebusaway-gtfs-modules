@@ -30,7 +30,7 @@ public final class FareRule extends IdentityBean<Integer> {
   @CsvField(name = "fare_id", mapping = EntityFieldMappingFactory.class)
   private FareAttribute fare;
 
-  @CsvField(optional = true, mapping = EntityFieldMappingFactory.class)
+  @CsvField(name = "route_id", optional = true, mapping = EntityFieldMappingFactory.class)
   private Route route;
 
   @CsvField(optional = true)

@@ -43,7 +43,7 @@ public final class Frequency extends IdentityBean<Integer> {
   @CsvField(optional = true, defaultValue = "0")
   private int exactTimes = 0;
 
-  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
+  @CsvField(optional = true, defaultValue = "0")
   private int labelOnly = 0;
 
   public Frequency() {

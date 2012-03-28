@@ -19,6 +19,8 @@ package org.onebusaway.gtfs.services;
 
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.FareAttribute;
+import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
@@ -112,5 +114,11 @@ public interface GtfsRelationalDao extends GtfsDao {
    ****/
   
   public List<ServiceCalendarDate> getCalendarDatesForServiceId(AgencyAndId serviceId);
+  
+  /****
+   * {@link FareRule}
+   *****/
+  
+  public List<FareRule> getFareRulesForFareAttribute(FareAttribute fareAttribute);
 
 }

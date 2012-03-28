@@ -55,4 +55,7 @@
     <query name="calendarsForServiceId" read-only="true">
         FROM ServiceCalendar d WHERE d.serviceId = :serviceId
     </query>
+    <query name="fareRulesForFareAttribute" read-only="true">
+        FROM FareRule fr WHERE fr.fareAttribute = :fareAttribute
+    </query>
 </hibernate-mapping>

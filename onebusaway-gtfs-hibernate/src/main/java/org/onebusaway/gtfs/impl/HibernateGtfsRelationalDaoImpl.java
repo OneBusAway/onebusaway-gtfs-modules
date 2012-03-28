@@ -304,6 +304,12 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
     throw new MultipleCalendarsForServiceIdException(serviceId);
   }
 
+  @Override
+  public List<FareRule> getFareRulesForFareAttribute(FareAttribute fareAttribute) {
+    return _ops.findByNamedQueryAndNamedParam("fareRulesForFareAttribute",
+        "fareAttribute", fareAttribute);
+  }
+
   /****
    * Mutable Methods
    ****/

@@ -31,6 +31,8 @@ import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.FareAttribute;
+import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
@@ -57,7 +59,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   private Map<Agency, List<Route>> _routesByAgency = null;
 
   private Map<Stop, List<Stop>> _stopsByStation = null;
-  
+
   private Map<Trip, List<StopTime>> _stopTimesByTrip = null;
 
   private Map<Stop, List<StopTime>> _stopTimesByStop = null;
@@ -74,6 +76,8 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
 
   private Map<AgencyAndId, List<ServiceCalendar>> _calendarsByServiceId = null;
 
+  private Map<FareAttribute, List<FareRule>> _fareRulesByFareAttribute = null;
+
   public void clearAllCaches() {
     _tripAgencyIdsByServiceId = clearMap(_tripAgencyIdsByServiceId);
     _routesByAgency = clearMap(_routesByAgency);
@@ -86,6 +90,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
     _frequenciesByTrip = clearMap(_frequenciesByTrip);
     _calendarDatesByServiceId = clearMap(_calendarDatesByServiceId);
     _calendarsByServiceId = clearMap(_calendarsByServiceId);
+    _fareRulesByFareAttribute = clearMap(_fareRulesByFareAttribute);
   }
 
   @Override
@@ -129,16 +134,16 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
       _routesByAgency = mapToValueList(getAllRoutes(), "agency", Agency.class);
     return list(_routesByAgency.get(agency));
   }
-  
+
   @Override
   public List<Stop> getStopsForStation(Stop station) {
-  	if (_stopsByStation == null) {
+    if (_stopsByStation == null) {
       _stopsByStation = new HashMap<Stop, List<Stop>>();
       for (Stop stop : getAllStops()) {
         if (stop.getLocationType() == 0 && stop.getParentStation() != null) {
           Stop parentStation = getStopForId(new AgencyAndId(
               stop.getId().getAgencyId(), stop.getParentStation()));
-          List<Stop> subStops = _stopsByStation.get(parentStation); 
+          List<Stop> subStops = _stopsByStation.get(parentStation);
           if (subStops == null) {
             subStops = new ArrayList<Stop>(2);
             _stopsByStation.put(parentStation, subStops);
@@ -146,8 +151,8 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
           subStops.add(stop);
         }
       }
-  	}
-  	return list(_stopsByStation.get(station));
+    }
+    return list(_stopsByStation.get(station));
   }
 
   @Override
@@ -242,10 +247,18 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
     throw new MultipleCalendarsForServiceIdException(serviceId);
   }
 
+  @Override
+  public List<FareRule> getFareRulesForFareAttribute(FareAttribute fareAttribute) {
+    if (_fareRulesByFareAttribute == null) {
+      _fareRulesByFareAttribute = mapToValueList(getAllFareRules(), "fare", FareAttribute.class);
+    }
+    return list(_fareRulesByFareAttribute.get(fareAttribute));
+  }
+
   /****
    * Private Methods
    ****/
-  
+
   private void ensureShapePointRelation() {
     if (_shapePointsByShapeId == null) {
       _shapePointsByShapeId = mapToValueList(getAllShapePoints(), "shapeId",

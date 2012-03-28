@@ -51,7 +51,7 @@ public final class Stop extends IdentityBean<AgencyAndId> {
   @CsvField(name="location_type", optional = true, defaultValue = "0")
   private int locationType = 0;
 
-  @CsvField(optional = true)
+  @CsvField(name="parent_station", optional = true)
   private String parentStation;
 
   @CsvField(name="wheelchair_boarding", optional = true, defaultValue = "0")

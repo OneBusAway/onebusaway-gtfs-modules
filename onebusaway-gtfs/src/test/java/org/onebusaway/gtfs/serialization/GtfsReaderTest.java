@@ -45,6 +45,7 @@ import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
+import org.onebusaway.gtfs.model.Pathway;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
@@ -59,6 +60,205 @@ import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs.services.MockGtfs;
 
 public class GtfsReaderTest {
+
+  @Test
+  public void testAllFields() throws IOException {
+    MockGtfs gtfs = MockGtfs.create();
+    gtfs.putLines(
+        "agency.txt",
+        "agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url",
+        "1,Agency,http://agency.gov/,America/Los_Angeles,en,555-1234,http://agency.gov/fares");
+    gtfs.putLines(
+        "stops.txt",
+        "stop_id,stop_name,stop_lat,stop_lon,stop_desc,stop_code,stop_direction,location_type,parent_station,"
+            + "stop_url,wheelchair_boarding,zone_id",
+        "S1,Stop,47.0,-122.0,description,123,N,1,1234,http://agency.gov/stop,1,Z");
+    gtfs.putLines(
+        "routes.txt",
+        "agency_id,route_id,route_short_name,route_long_name,route_type,route_desc,route_color,route_text_color,"
+            + "route_bikes_allowed,route_url",
+        "1,R1,10,The Ten,3,route desc,FF0000,0000FF,1,http://agency.gov/route");
+    gtfs.putLines(
+        "trips.txt",
+        "route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,block_id,shape_id,route_short_name,"
+            + "trip_bikes_allowed,wheelchair_accessible",
+        "R1,WEEK,T1,head-sign,short-name,1,B1,SHP1,10X,1,1");
+    gtfs.putLines(
+        "stop_times.txt",
+        "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_type,drop_off_type,"
+            + "shape_dist_traveled,route_short_name",
+        "T1,09:01:30,10:20:02,S1,2,head-sign,1,2,23.1,10X");
+    gtfs.putLines(
+        "calendar.txt",
+        "service_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday",
+        "WEEK,20120105,20120215,1,1,1,1,1,1,1");
+    gtfs.putLines("calendar_dates.txt", "service_id,date,exception_type",
+        "WEEK,20120304,2");
+    gtfs.putLines(
+        "fare_attributes.txt",
+        "fare_id,price,currency_type,payment_method,transfers,transfer_duration,journey_duration",
+        "FA1,2.0,USD,1,2,60,61");
+    gtfs.putLines("fare_rules.txt",
+        "fare_id,route_id,origin_id,destination_id,contains_id",
+        "FA1,R1,Z1,Z2,Z3");
+    gtfs.putLines(
+        "shapes.txt",
+        "shape_id,shape_pt_sequence,shape_pt_lat,shape_pt_lon,shape_dist_traveled",
+        "SHP1,2,47.0,-122.0,123.4");
+    gtfs.putLines("frequencies.txt",
+        "trip_id,start_time,end_time,headway_secs,exact_times,label_only",
+        "T1,09:01:30,10:20:02,300,1,1");
+    gtfs.putLines("transfers.txt",
+        "from_stop_id,to_stop_id,transfer_type,min_transfer_time", "S1,S1,2,60");
+    gtfs.putLines(
+        "feed_info.txt",
+        "feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version",
+        "Test,http://agency.gov/,en,20120110,20120217,2.0");
+    gtfs.putLines(
+        "pathways.txt",
+        "pathway_id,from_stop_id,to_stop_id,traversal_time,wheelchair_traversal_time",
+        "P1,S1,S1,60,61");
+
+    GtfsRelationalDao dao = processFeed(gtfs.getPath(), "1", false);
+
+    Agency agency = dao.getAgencyForId("1");
+    assertEquals("1", agency.getId());
+    assertEquals("Agency", agency.getName());
+    assertEquals("http://agency.gov/", agency.getUrl());
+    assertEquals("America/Los_Angeles", agency.getTimezone());
+    assertEquals("en", agency.getLang());
+    assertEquals("555-1234", agency.getPhone());
+    assertEquals("http://agency.gov/fares", agency.getFareUrl());
+
+    Stop stop = dao.getStopForId(new AgencyAndId("1", "S1"));
+    assertEquals(new AgencyAndId("1", "S1"), stop.getId());
+    assertEquals("Stop", stop.getName());
+    assertEquals(47.0, stop.getLat(), 0.0);
+    assertEquals(-122.0, stop.getLon(), 0.0);
+    assertEquals("description", stop.getDesc());
+    assertEquals("123", stop.getCode());
+    assertEquals("N", stop.getDirection());
+    assertEquals(1, stop.getLocationType());
+    assertEquals("1234", stop.getParentStation());
+    assertEquals("http://agency.gov/stop", stop.getUrl());
+    assertEquals(1, stop.getWheelchairBoarding());
+    assertEquals("Z", stop.getZoneId());
+
+    Route route = dao.getRouteForId(new AgencyAndId("1", "R1"));
+    assertEquals(new AgencyAndId("1", "R1"), route.getId());
+    assertEquals(agency, route.getAgency());
+    assertEquals("10", route.getShortName());
+    assertEquals("The Ten", route.getLongName());
+    assertEquals(3, route.getType());
+    assertEquals("route desc", route.getDesc());
+    assertEquals("FF0000", route.getColor());
+    assertEquals("0000FF", route.getTextColor());
+    assertEquals(1, route.getBikesAllowed());
+    assertEquals("http://agency.gov/route", route.getUrl());
+
+    Trip trip = dao.getTripForId(new AgencyAndId("1", "T1"));
+    assertEquals(new AgencyAndId("1", "T1"), trip.getId());
+    assertEquals(route, trip.getRoute());
+    assertEquals(new AgencyAndId("1", "WEEK"), trip.getServiceId());
+    assertEquals("head-sign", trip.getTripHeadsign());
+    assertEquals("short-name", trip.getTripShortName());
+    assertEquals("1", trip.getDirectionId());
+    assertEquals("B1", trip.getBlockId());
+    assertEquals(new AgencyAndId("1", "SHP1"), trip.getShapeId());
+    assertEquals("10X", trip.getRouteShortName());
+    assertEquals(1, trip.getTripBikesAllowed());
+    assertEquals(1, trip.getWheelchairAccessible());
+
+    List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
+    StopTime stopTime = stopTimes.get(0);
+    assertEquals(trip, stopTime.getTrip());
+    assertEquals(stop, stopTime.getStop());
+    assertEquals((9 * 60 + 1) * 60 + 30, stopTime.getArrivalTime());
+    assertEquals((10 * 60 + 20) * 60 + 2, stopTime.getDepartureTime());
+    assertEquals(2, stopTime.getStopSequence());
+    assertEquals("head-sign", stopTime.getStopHeadsign());
+    assertEquals(1, stopTime.getPickupType());
+    assertEquals(2, stopTime.getDropOffType());
+    assertEquals(23.1, stopTime.getShapeDistTraveled(), 0.0);
+    assertEquals("10X", stopTime.getRouteShortName());
+
+    ServiceCalendar calendar = dao.getCalendarForServiceId(new AgencyAndId("1",
+        "WEEK"));
+    assertEquals(new AgencyAndId("1", "WEEK"), calendar.getServiceId());
+    assertEquals(new ServiceDate(2012, 01, 05), calendar.getStartDate());
+    assertEquals(new ServiceDate(2012, 02, 15), calendar.getEndDate());
+    assertEquals(1, calendar.getMonday());
+    assertEquals(1, calendar.getTuesday());
+    assertEquals(1, calendar.getWednesday());
+    assertEquals(1, calendar.getThursday());
+    assertEquals(1, calendar.getFriday());
+    assertEquals(1, calendar.getSaturday());
+    assertEquals(1, calendar.getSunday());
+
+    List<ServiceCalendarDate> calendarDates = dao.getCalendarDatesForServiceId(new AgencyAndId(
+        "1", "WEEK"));
+    ServiceCalendarDate calendarDate = calendarDates.get(0);
+    assertEquals(new AgencyAndId("1", "WEEK"), calendarDate.getServiceId());
+    assertEquals(new ServiceDate(2012, 03, 04), calendarDate.getDate());
+    assertEquals(2, calendarDate.getExceptionType());
+
+    FareAttribute fareAttribute = dao.getFareAttributeForId(new AgencyAndId(
+        "1", "FA1"));
+    assertEquals(new AgencyAndId("1", "FA1"), fareAttribute.getId());
+    assertEquals(2.0, fareAttribute.getPrice(), 1.0);
+    assertEquals("USD", fareAttribute.getCurrencyType());
+    assertEquals(1, fareAttribute.getPaymentMethod());
+    assertEquals(2, fareAttribute.getTransfers());
+    assertEquals(60, fareAttribute.getTransferDuration());
+    assertEquals(61, fareAttribute.getJourneyDuration());
+
+    List<FareRule> rules = dao.getFareRulesForFareAttribute(fareAttribute);
+    FareRule fareRule = rules.get(0);
+    assertEquals(fareAttribute, fareRule.getFare());
+    assertEquals(route, fareRule.getRoute());
+    assertEquals("Z1", fareRule.getOriginId());
+    assertEquals("Z2", fareRule.getDestinationId());
+    assertEquals("Z3", fareRule.getContainsId());
+
+    List<ShapePoint> shapePoints = dao.getShapePointsForShapeId(new AgencyAndId(
+        "1", "SHP1"));
+    ShapePoint shapePoint = shapePoints.get(0);
+    assertEquals(new AgencyAndId("1", "SHP1"), shapePoint.getShapeId());
+    assertEquals(2, shapePoint.getSequence());
+    assertEquals(47.0, shapePoint.getLat(), 0.0);
+    assertEquals(-122.0, shapePoint.getLon(), 0.0);
+    assertEquals(123.4, shapePoint.getDistTraveled(), 0.0);
+
+    List<Frequency> frequencies = dao.getFrequenciesForTrip(trip);
+    Frequency frequency = frequencies.get(0);
+    assertEquals(trip, frequency.getTrip());
+    assertEquals((9 * 60 + 1) * 60 + 30, frequency.getStartTime());
+    assertEquals((10 * 60 + 20) * 60 + 2, frequency.getEndTime());
+    assertEquals(300, frequency.getHeadwaySecs());
+    assertEquals(1, frequency.getExactTimes());
+    assertEquals(1, frequency.getLabelOnly());
+
+    Transfer transfer = dao.getAllTransfers().iterator().next();
+    assertEquals(stop, transfer.getFromStop());
+    assertEquals(stop, transfer.getToStop());
+    assertEquals(2, transfer.getTransferType(), 1);
+    assertEquals(60, transfer.getMinTransferTime());
+
+    FeedInfo feedInfo = dao.getAllFeedInfos().iterator().next();
+    assertEquals("Test", feedInfo.getPublisherName());
+    assertEquals("http://agency.gov/", feedInfo.getPublisherUrl());
+    assertEquals("en", feedInfo.getLang());
+    assertEquals(new ServiceDate(2012, 1, 10), feedInfo.getStartDate());
+    assertEquals(new ServiceDate(2012, 2, 17), feedInfo.getEndDate());
+    assertEquals("2.0", feedInfo.getVersion());
+
+    Pathway pathway = dao.getAllPathways().iterator().next();
+    assertEquals(new AgencyAndId("1", "P1"), pathway.getId());
+    assertEquals(stop, pathway.getFromStop());
+    assertEquals(stop, pathway.getToStop());
+    assertEquals(60, pathway.getTraversalTime());
+    assertEquals(61, pathway.getWheelchairTraversalTime());
+  }
 
   @Test
   public void testIslandTransit() throws IOException {

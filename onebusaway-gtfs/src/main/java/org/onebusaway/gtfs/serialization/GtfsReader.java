@@ -32,6 +32,7 @@ import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
+import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.model.Pathway;
@@ -85,6 +86,7 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Frequency.class);
     _entityClasses.add(Pathway.class);
     _entityClasses.add(Transfer.class);
+    _entityClasses.add(FeedInfo.class);
 
     setTrimValues(true);
 

@@ -34,7 +34,7 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
 
   private static DecimalFormat _format = new DecimalFormat("00");
 
-  private static Pattern _pattern = Pattern.compile("^(\\d{1,2}):(\\d{2}):(\\d{2})$");
+  private static Pattern _pattern = Pattern.compile("^(\\d+):(\\d{2}):(\\d{2})$");
 
   public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
       Class<?> entityType, String csvFieldName, String objFieldName,

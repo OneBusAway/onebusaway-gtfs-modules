@@ -19,6 +19,7 @@ package org.onebusaway.gtfs.impl.calendar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -232,6 +233,26 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
     List<ServiceDate> serviceDates = data.getServiceDatesForServiceId(serviceId);
     assertEquals(serviceDates,
         Arrays.asList(cd1.getDate(), cd2.getDate(), cd3.getDate()));
+  }
+
+  @Test
+  public void testBadTimezone() throws IOException {
+
+    CalendarServiceDataFactoryImpl factory = new CalendarServiceDataFactoryImpl();
+
+    Agency agencyA = agency("A", "America/SomewhereThatDoesNotExist");
+
+    GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();
+    factory.setGtfsDao(dao);
+
+    saveEntities(dao, agencyA);
+
+    try {
+      factory.createData();
+      fail();
+    } catch (UnknownAgencyTimezoneException ex) {
+
+    }
   }
 
   private Agency agency(String id, String timezone) {

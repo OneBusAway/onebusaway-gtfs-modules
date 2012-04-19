@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2012 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,9 +147,11 @@ public class CalendarServiceDataFactoryImpl implements
   private void setTimeZonesForAgencies(CalendarServiceData data) {
     for (Agency agency : _dao.getAllAgencies()) {
       TimeZone timeZone = TimeZone.getTimeZone(agency.getTimezone());
-      if (timeZone == null)
+      if (timeZone.getID().equals("GMT")
+          && !agency.getTimezone().toUpperCase().equals("gmt")) {
         throw new UnknownAgencyTimezoneException(agency.getName(),
             agency.getTimezone());
+      }
       data.putTimeZoneForAgencyId(agency.getId(), timeZone);
     }
   }

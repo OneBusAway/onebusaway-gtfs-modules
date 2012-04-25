@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="onebusaway-gtfs-modules">
   <body>
-    <menu name="onebusaway-gtfs-modules">
+    <links>
+      <item name="GitHub Project" href="http://github.com/OneBusAway/onebusaway-gtfs-modules/" />
+    </links>
+    <menu name="Introduction">
       <item name="About" href="/index.html" />
+      <item name="GitHub Project" href="http://github.com/OneBusAway/onebusaway-gtfs-modules/" />
       <item name="Release Notes" href="/release-notes.html" />
       <item name="API Javadoc" href="/apidocs/index.html" />
       <item name="GTFS Transformer" href="/onebusaway-gtfs-transformer-cli.html" />

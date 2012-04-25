@@ -7,6 +7,12 @@ Release Notes
   * Support for excluding optional columns when no values are specified - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/3}issue}}
   
   * Fix for Daylight Saving Time service calendar computation bug - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/1}issue}}
+  
+  * Fix for bogus-timezone bug - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/6}issue}}
+  
+  * Support for week-long stop_times.txt values - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/pull/5}issue}}
+  
+  * More flexible CSV parsing support from {{${site_base_url}/onebusaway-csv-entities/1.1.0/}}
 
   * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
 

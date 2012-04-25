@@ -25,6 +25,7 @@ import java.util.Map;
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.CsvEntityReader;
 import org.onebusaway.csv_entities.CsvInputSource;
+import org.onebusaway.csv_entities.CsvTokenizerStrategy;
 import org.onebusaway.csv_entities.EntityHandler;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.impl.GtfsDaoImpl;
@@ -88,6 +89,10 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Transfer.class);
     _entityClasses.add(FeedInfo.class);
 
+    CsvTokenizerStrategy tokenizerStrategy = new CsvTokenizerStrategy();
+    tokenizerStrategy.getCsvParser().setTrimInitialWhitespace(true);
+    setTokenizerStrategy(tokenizerStrategy);
+    
     setTrimValues(true);
 
     /**

@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -802,6 +803,25 @@ public class GtfsReaderTest {
       assertEquals("feed_end_date", ex2.getFieldName());
       assertEquals("2011XX01", ex2.getFieldValue());
     }
+  }
+
+  @Test
+  public void testCsvParser() throws CsvEntityIOException, IOException {
+    GtfsReader reader = new GtfsReader();
+    reader.setDefaultAgencyId("1");
+    
+    
+    Agency agency = new Agency();
+    agency.setId("1");
+    reader.setAgencies(Arrays.asList(agency));
+    
+    StringBuilder b = new StringBuilder();
+    b.append("agency_id,route_id,route_short_name,route_long_name,route_type\n");
+    b.append("        1,    R-10,              10,   \"Ten, Ten\",3\n");
+    reader.readEntities(Route.class, new StringReader(b.toString()));
+    Route route = reader.getEntityStore().getEntityForId(Route.class,
+        new AgencyAndId("1", "R-10"));
+    assertEquals("Ten, Ten", route.getLongName());
   }
 
   /****

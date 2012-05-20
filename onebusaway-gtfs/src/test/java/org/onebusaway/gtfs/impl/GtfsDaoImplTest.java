@@ -114,7 +114,7 @@ public class GtfsDaoImplTest {
     Collection<StopTime> stopTimes = dao.getAllStopTimes();
     assertEquals(33270,stopTimes.size());
     
-    StopTime stopTime = dao.getStopTimeForId(1);
+    StopTime stopTime = stopTimes.iterator().next();
     assertEquals(18000,stopTime.getArrivalTime());
    
     Collection<Transfer> transfers = dao.getAllTransfers();

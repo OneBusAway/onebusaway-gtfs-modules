@@ -22,11 +22,11 @@ import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 
 @CsvFields(filename = "stop_times.txt")
 public final class StopTime extends IdentityBean<Integer> implements
-    Comparable<StopTime> {
+    Comparable<StopTime>, StopTimeProxy {
 
   private static final long serialVersionUID = 1L;
 
-  private static final int MISSING_VALUE = -999;
+  public static final int MISSING_VALUE = -999;
 
   @CsvField(ignore = true)
   private int id;
@@ -60,6 +60,9 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true)
   private double shapeDistTraveled = MISSING_VALUE;
 
+  @CsvField(ignore = true)
+  private transient StopTimeProxy proxy = null;
+
   public StopTime() {
 
   }
@@ -79,38 +82,69 @@ public final class StopTime extends IdentityBean<Integer> implements
   }
 
   public Integer getId() {
+    if (proxy != null) {
+      return proxy.getId();
+    }
     return id;
   }
 
   public void setId(Integer id) {
+    if (proxy != null) {
+      proxy.setId(id);
+      return;
+    }
     this.id = id;
   }
 
   public Trip getTrip() {
+    if (proxy != null) {
+      return proxy.getTrip();
+    }
     return trip;
   }
 
   public void setTrip(Trip trip) {
+    if (proxy != null) {
+      proxy.setTrip(trip);
+      return;
+    }
     this.trip = trip;
   }
 
   public int getStopSequence() {
+    if (proxy != null) {
+      return proxy.getStopSequence();
+    }
     return stopSequence;
   }
 
   public void setStopSequence(int stopSequence) {
+    if (proxy != null) {
+      proxy.setStopSequence(stopSequence);
+      return;
+    }
     this.stopSequence = stopSequence;
   }
 
   public Stop getStop() {
+    if (proxy != null) {
+      return proxy.getStop();
+    }
     return stop;
   }
 
   public void setStop(Stop stop) {
+    if (proxy != null) {
+      proxy.setStop(stop);
+      return;
+    }
     this.stop = stop;
   }
 
   public boolean isArrivalTimeSet() {
+    if (proxy != null) {
+      return proxy.isArrivalTimeSet();
+    }
     return arrivalTime != MISSING_VALUE;
   }
 
@@ -118,18 +152,32 @@ public final class StopTime extends IdentityBean<Integer> implements
    * @return arrival time, in seconds since midnight
    */
   public int getArrivalTime() {
+    if (proxy != null) {
+      return proxy.getArrivalTime();
+    }
     return arrivalTime;
   }
 
   public void setArrivalTime(int arrivalTime) {
+    if (proxy != null) {
+      proxy.setArrivalTime(arrivalTime);
+      return;
+    }
     this.arrivalTime = arrivalTime;
   }
 
   public void clearArrivalTime() {
+    if (proxy != null) {
+      proxy.clearArrivalTime();
+      return;
+    }
     this.arrivalTime = MISSING_VALUE;
   }
 
   public boolean isDepartureTimeSet() {
+    if (proxy != null) {
+      return proxy.isDepartureTimeSet();
+    }
     return departureTime != MISSING_VALUE;
   }
 
@@ -137,74 +185,142 @@ public final class StopTime extends IdentityBean<Integer> implements
    * @return departure time, in seconds since midnight
    */
   public int getDepartureTime() {
+    if (proxy != null) {
+      return proxy.getDepartureTime();
+    }
     return departureTime;
   }
 
   public void setDepartureTime(int departureTime) {
+    if (proxy != null) {
+      proxy.setDepartureTime(departureTime);
+      return;
+    }
     this.departureTime = departureTime;
   }
 
   public void clearDepartureTime() {
+    if (proxy != null) {
+      proxy.clearDepartureTime();
+      return;
+    }
     this.departureTime = MISSING_VALUE;
   }
 
   public String getStopHeadsign() {
+    if (proxy != null) {
+      return proxy.getStopHeadsign();
+    }
     return stopHeadsign;
   }
 
   public void setStopHeadsign(String headSign) {
+    if (proxy != null) {
+      proxy.setStopHeadsign(headSign);
+      return;
+    }
     this.stopHeadsign = headSign;
   }
 
   public String getRouteShortName() {
+    if (proxy != null) {
+      return proxy.getRouteShortName();
+    }
     return routeShortName;
   }
 
   public void setRouteShortName(String routeShortName) {
+    if (proxy != null) {
+      proxy.setRouteShortName(routeShortName);
+      return;
+    }
     this.routeShortName = routeShortName;
   }
 
   public int getPickupType() {
+    if (proxy != null) {
+      return proxy.getPickupType();
+    }
     return pickupType;
   }
 
   public void setPickupType(int pickupType) {
+    if (proxy != null) {
+      proxy.setPickupType(pickupType);
+    }
     this.pickupType = pickupType;
   }
 
   public int getDropOffType() {
+    if (proxy != null) {
+      return proxy.getDropOffType();
+    }
     return dropOffType;
   }
 
   public void setDropOffType(int dropOffType) {
+    if (proxy != null) {
+      proxy.setDropOffType(dropOffType);
+      return;
+    }
     this.dropOffType = dropOffType;
   }
 
   public boolean isShapeDistTraveledSet() {
+    if (proxy != null) {
+      return proxy.isShapeDistTraveledSet();
+    }
     return shapeDistTraveled != MISSING_VALUE;
   }
 
   public double getShapeDistTraveled() {
+    if (proxy != null) {
+      return proxy.getShapeDistTraveled();
+    }
     return shapeDistTraveled;
   }
 
   public void setShapeDistTraveled(double shapeDistTraveled) {
+    if (proxy != null) {
+      proxy.setShapeDistTraveled(shapeDistTraveled);
+      return;
+    }
     this.shapeDistTraveled = shapeDistTraveled;
   }
 
   public void clearShapeDistTraveled() {
+    if (proxy != null) {
+      proxy.clearShapeDistTraveled();
+      return;
+    }
     this.shapeDistTraveled = MISSING_VALUE;
   }
 
   public int compareTo(StopTime o) {
-    return this.stopSequence - o.stopSequence;
+    return this.getStopSequence() - o.getStopSequence();
+  }
+
+  /**
+   * When set, all interactions with this stop time will be redirected through
+   * this proxy.
+   * 
+   * @param proxy
+   */
+  public void setProxy(StopTimeProxy proxy) {
+    this.proxy = proxy;
+  }
+
+  public StopTimeProxy getProxy() {
+    return proxy;
   }
 
   @Override
   public String toString() {
-    return "StopTime(seq=" + stopSequence + " stop=" + stop.getId() + " trip="
-        + trip.getId() + " times="
-        + StopTimeFieldMappingFactory.getSecondsAsString(arrivalTime) + "-"
-        + StopTimeFieldMappingFactory.getSecondsAsString(departureTime) + ")";
+    return "StopTime(seq=" + getStopSequence() + " stop=" + getStop().getId()
+        + " trip=" + getTrip().getId() + " times="
+        + StopTimeFieldMappingFactory.getSecondsAsString(getArrivalTime())
+        + "-"
+        + StopTimeFieldMappingFactory.getSecondsAsString(getDepartureTime())
+        + ")";
   }
 }

@@ -415,8 +415,7 @@ public class GtfsReaderTest {
     Collection<StopTime> stopTimes = entityStore.getAllStopTimes();
     assertEquals(4712, stopTimes.size());
 
-    StopTime stopTimeA = entityStore.getStopTimeForId(new Integer(1));
-    assertEquals(new Integer(1), stopTimeA.getId());
+    StopTime stopTimeA = stopTimes.iterator().next();
     assertEquals(
         entityStore.getTripForId(new AgencyAndId(agencyId, "10101272009")),
         stopTimeA.getTrip());

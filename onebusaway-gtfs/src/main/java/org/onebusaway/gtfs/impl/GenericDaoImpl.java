@@ -46,6 +46,10 @@ public class GenericDaoImpl implements GenericMutableDao {
     return _entitiesByClassAndId.keySet();
   }
 
+  public void clear() {
+    _entitiesByClassAndId.clear();
+  }
+
   @SuppressWarnings("unchecked")
   public <K, V> Map<K, V> getEntitiesByIdForEntityType(Class<K> keyType,
       Class<V> entityType) {
@@ -71,7 +75,7 @@ public class GenericDaoImpl implements GenericMutableDao {
     Map<Object, Object> byId = _entitiesByClassAndId.get(type);
 
     if (byId == null) {
-      _log.warn("no stored entities type " + type);
+      _log.debug("no stored entities type {}", type);
       return null;
     }
 

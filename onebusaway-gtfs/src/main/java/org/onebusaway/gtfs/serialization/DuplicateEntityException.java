@@ -15,8 +15,9 @@
  */
 package org.onebusaway.gtfs.serialization;
 
+import java.io.Serializable;
+
 import org.onebusaway.csv_entities.exceptions.CsvEntityException;
-import org.onebusaway.gtfs.model.AgencyAndId;
 
 /**
  * Indicates that two entities with the same id were found in a GTFS feed as it
@@ -29,8 +30,15 @@ public class DuplicateEntityException extends CsvEntityException {
 
   private static final long serialVersionUID = 1L;
 
-  public DuplicateEntityException(Class<?> entityType, AgencyAndId id) {
+  private final Serializable id;
+
+  public DuplicateEntityException(Class<?> entityType, Serializable id) {
     super(entityType, "duplicate entity id: type=" + entityType.getName()
-        + " agencyId=" + id.getAgencyId() + " id=" + id.getId());
+        + " id=" + id);
+    this.id = id;
+  }
+
+  public Serializable getId() {
+    return id;
   }
 }

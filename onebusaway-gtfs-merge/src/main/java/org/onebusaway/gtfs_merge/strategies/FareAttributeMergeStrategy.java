@@ -15,21 +15,24 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
-import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
-import org.onebusaway.gtfs.model.IdentityBean;
+import org.onebusaway.gtfs.model.FareRule;
+import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
-public class FareAttributeMergeStrategy extends AbstractEntityMergeStrategy {
+public class FareAttributeMergeStrategy extends
+    AbstractIdentifiableSingleEntityMergeStrategy<FareAttribute> {
 
   public FareAttributeMergeStrategy() {
     super(FareAttribute.class);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
-  protected void rename(GtfsMergeContext context,
-      Object entity) {
-    renameWithAgencyAndId(context, (IdentityBean<AgencyAndId>) entity);
+  protected void replaceDuplicateEntry(GtfsMergeContext context,
+      FareAttribute oldAttribute, FareAttribute newAttribute) {
+    GtfsRelationalDao source = context.getSource();
+    for (FareRule fareRule : source.getFareRulesForFareAttribute(oldAttribute)) {
+      fareRule.setFare(newAttribute);
+    }
   }
 }

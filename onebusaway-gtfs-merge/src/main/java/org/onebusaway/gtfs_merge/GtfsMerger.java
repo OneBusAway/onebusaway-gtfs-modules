@@ -19,10 +19,10 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.serialization.GtfsReader;
@@ -33,7 +33,6 @@ import org.onebusaway.gtfs_merge.strategies.FareAttributeMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.FareRuleMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.FrequencyMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.RouteMergeStrategy;
-import org.onebusaway.gtfs_merge.strategies.ServiceCalendarDateMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.ServiceCalendarMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.ShapePointMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.StopMergeStrategy;
@@ -57,8 +56,6 @@ public class GtfsMerger {
   private EntityMergeStrategy _stopStrategy = new StopMergeStrategy();
 
   private EntityMergeStrategy _serviceCalendarStrategy = new ServiceCalendarMergeStrategy();
-
-  private EntityMergeStrategy _serviceCalendarDateStrategy = new ServiceCalendarDateMergeStrategy();
 
   private EntityMergeStrategy _routeStrategy = new RouteMergeStrategy();
 
@@ -87,11 +84,6 @@ public class GtfsMerger {
   public void setServiceCalendarStrategy(
       EntityMergeStrategy serviceCalendarStrategy) {
     _serviceCalendarStrategy = serviceCalendarStrategy;
-  }
-
-  public void setServiceCalendarDateStrategy(
-      EntityMergeStrategy serviceCalendarDateStrategy) {
-    _serviceCalendarDateStrategy = serviceCalendarDateStrategy;
   }
 
   public void setRouteStrategy(EntityMergeStrategy routeStrategy) {
@@ -132,7 +124,14 @@ public class GtfsMerger {
     mergedDao.setPackShapePoints(true);
     mergedDao.setPackStopTimes(true);
 
-    Map<Class<?>, Set<String>> entityIdsByType = new HashMap<Class<?>, Set<String>>();
+    List<EntityMergeStrategy> strategies = new ArrayList<EntityMergeStrategy>();
+    buildStrategies(strategies);
+
+    Map<EntityMergeStrategy, Map<String, Object>> rawEntityIdMapsByMergeStrategy = new HashMap<EntityMergeStrategy, Map<String, Object>>();
+    for (EntityMergeStrategy strategy : strategies) {
+      rawEntityIdMapsByMergeStrategy.put(strategy,
+          new HashMap<String, Object>());
+    }
 
     for (int index = 0; index < inputPaths.size(); ++index) {
       File inputPath = inputPaths.get(index);
@@ -149,9 +148,11 @@ public class GtfsMerger {
       reader.setEntityStore(dao);
       reader.run();
 
-      GtfsMergeContext context = new GtfsMergeContext(dao, mergedDao, prefix,
-          entityIdsByType);
-      merge(context);
+      for (EntityMergeStrategy strategy : strategies) {
+        GtfsMergeContext context = new GtfsMergeContext(dao, mergedDao, prefix,
+            rawEntityIdMapsByMergeStrategy.get(strategy));
+        strategy.merge(context);
+      }
     }
 
     _log.info("writing merged output: " + outputPath);
@@ -168,18 +169,17 @@ public class GtfsMerger {
     return _numberPrefixFormat.format(index) + "-";
   }
 
-  protected void merge(GtfsMergeContext context) {
-    _agencyStrategy.merge(context);
-    _stopStrategy.merge(context);
-    _serviceCalendarStrategy.merge(context);
-    _serviceCalendarDateStrategy.merge(context);
-    _routeStrategy.merge(context);
-    _tripStrategy.merge(context);
-    _stopTimeStrategy.merge(context);
-    _shapePointStrategy.merge(context);
-    _frequencyStrategy.merge(context);
-    _transferStrategy.merge(context);
-    _fareAttributeStrategy.merge(context);
-    _fareRuleStrategy.merge(context);
+  private void buildStrategies(List<EntityMergeStrategy> strategies) {
+    strategies.add(_agencyStrategy);
+    strategies.add(_stopStrategy);
+    strategies.add(_serviceCalendarStrategy);
+    strategies.add(_routeStrategy);
+    strategies.add(_tripStrategy);
+    strategies.add(_stopTimeStrategy);
+    strategies.add(_shapePointStrategy);
+    strategies.add(_frequencyStrategy);
+    strategies.add(_transferStrategy);
+    strategies.add(_fareAttributeStrategy);
+    strategies.add(_fareRuleStrategy);
   }
 }

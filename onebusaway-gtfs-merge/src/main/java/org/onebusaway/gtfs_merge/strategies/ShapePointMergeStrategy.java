@@ -15,27 +15,47 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
+import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ShapePoint;
+import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
-public class ShapePointMergeStrategy extends AbstractEntityMergeStrategy {
-
-  private int _nextSequence = 0;
+public class ShapePointMergeStrategy extends
+    AbstractCollectionEntityMergeStrategy<AgencyAndId> {
 
   public ShapePointMergeStrategy() {
-    super(ShapePoint.class);
+    super("shapes.txt shape_id");
   }
 
   @Override
-  protected void rename(GtfsMergeContext context,
-      Object entity) {
-    ShapePoint shapePoint = (ShapePoint) entity;
-    shapePoint.setId(-1);
+  protected Iterable<AgencyAndId> getKeys(GtfsMergeContext context) {
+    GtfsRelationalDao source = context.getSource();
+    return source.getAllShapeIds();
   }
 
   @Override
-  protected void prepareToSave(Object entity) {
-    ShapePoint shapePoint = (ShapePoint) entity;
-    shapePoint.setSequence(_nextSequence++);
+  protected void renameKey(GtfsMergeContext context, AgencyAndId oldId,
+      AgencyAndId newId) {
+    GtfsRelationalDao source = context.getSource();
+    for (ShapePoint shapePoint : source.getShapePointsForShapeId(oldId)) {
+      shapePoint.setShapeId(newId);
+    }
+    for (Trip trip : source.getTripsForShapeId(oldId)) {
+      trip.setShapeId(newId);
+    }
+  }
+
+  @Override
+  protected void saveElementsForKey(GtfsMergeContext context,
+      AgencyAndId shapeId) {
+    GtfsRelationalDao source = context.getSource();
+    GtfsMutableRelationalDao target = context.getTarget();
+    for (ShapePoint shapePoint : source.getShapePointsForShapeId(shapeId)) {
+      shapePoint.setId(0);
+      shapePoint.setSequence(context.getNextSequenceCounter());
+      target.saveEntity(shapePoint);
+    }
   }
 }

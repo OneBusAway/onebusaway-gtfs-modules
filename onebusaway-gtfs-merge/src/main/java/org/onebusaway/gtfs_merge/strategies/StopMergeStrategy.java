@@ -15,21 +15,28 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
-import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.model.Stop;
+import org.onebusaway.gtfs.model.StopTime;
+import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
-public class StopMergeStrategy extends AbstractEntityMergeStrategy {
+public class StopMergeStrategy extends
+    AbstractIdentifiableSingleEntityMergeStrategy<Stop> {
 
   public StopMergeStrategy() {
     super(Stop.class);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
-  protected void rename(GtfsMergeContext context,
-      Object entity) {
-    renameWithAgencyAndId(context, (IdentityBean<AgencyAndId>) entity);
+  protected void replaceDuplicateEntry(GtfsMergeContext context, Stop oldStop,
+      Stop newStop) {
+    GtfsRelationalDao source = context.getSource();
+    for (StopTime stopTime : source.getStopTimesForStop(oldStop)) {
+      stopTime.setStop(newStop);
+    }
+    MergeSupport.bulkReplaceValueInProperties(source.getAllTransfers(),
+        oldStop, newStop, "fromStop", "toStop");
+    MergeSupport.bulkReplaceValueInProperties(source.getAllPathways(), oldStop,
+        newStop, "fromStop", "toStop");
   }
 }

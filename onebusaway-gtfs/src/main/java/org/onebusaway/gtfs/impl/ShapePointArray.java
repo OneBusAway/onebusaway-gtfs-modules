@@ -146,7 +146,7 @@ public class ShapePointArray extends AbstractList<ShapePoint> {
 
     @Override
     public void setId(Integer id) {
-      throw new UnsupportedOperationException();
+      // ignored
     }
 
     @Override

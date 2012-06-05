@@ -15,9 +15,7 @@
  */
 package org.onebusaway.gtfs_merge;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
@@ -30,15 +28,17 @@ public class GtfsMergeContext {
 
   private final String prefix;
 
-  private final Map<Class<?>, Set<String>> rawEntityIdsByType;
+  private final Map<String, Object> entityByRawId;
+
+  private int _sequenceCounter = 1;
 
   public GtfsMergeContext(GtfsRelationalDao source,
       GtfsMutableRelationalDao target, String prefix,
-      Map<Class<?>, Set<String>> rawEntityIdsByType) {
+      Map<String, Object> entityByRawId) {
     this.source = source;
     this.target = target;
     this.prefix = prefix;
-    this.rawEntityIdsByType = rawEntityIdsByType;
+    this.entityByRawId = entityByRawId;
   }
 
   public GtfsRelationalDao getSource() {
@@ -53,24 +53,15 @@ public class GtfsMergeContext {
     return prefix;
   }
 
-  public Map<Class<?>, Set<String>> getRawEntityIdsByType() {
-    return rawEntityIdsByType;
+  public void putEntityWithRawId(String rawId, Object entity) {
+    entityByRawId.put(rawId, entity);
   }
 
-  public void addRawEntityId(Class<?> entityClass, String rawId) {
-    Set<String> ids = rawEntityIdsByType.get(entityClass);
-    if (ids == null) {
-      ids = new HashSet<String>();
-      rawEntityIdsByType.put(entityClass, ids);
-    }
-    ids.add(rawId);
+  public Object getEntityForRawId(String rawId) {
+    return entityByRawId.get(rawId);
   }
 
-  public boolean containsRawEntityId(Class<?> entityClass, String rawId) {
-    Set<String> ids = rawEntityIdsByType.get(entityClass);
-    if (ids == null) {
-      return false;
-    }
-    return ids.contains(rawId);
+  public int getNextSequenceCounter() {
+    return _sequenceCounter++;
   }
 }

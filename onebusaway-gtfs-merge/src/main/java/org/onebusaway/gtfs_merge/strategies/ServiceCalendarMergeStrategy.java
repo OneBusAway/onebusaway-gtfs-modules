@@ -15,72 +15,56 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
-import java.util.List;
-import java.util.Map;
-
-import org.onebusaway.collections.MappingLibrary;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ServiceCalendar;
+import org.onebusaway.gtfs.model.ServiceCalendarDate;
+import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
-public class ServiceCalendarMergeStrategy extends AbstractEntityMergeStrategy {
+public class ServiceCalendarMergeStrategy extends
+    AbstractCollectionEntityMergeStrategy<AgencyAndId> {
 
   public ServiceCalendarMergeStrategy() {
-    super(ServiceCalendar.class);
+    super("calendar.txt/calendar_dates.txt service_id");
   }
 
   @Override
-  public void merge(GtfsMergeContext context) {
-
+  protected Iterable<AgencyAndId> getKeys(GtfsMergeContext context) {
     GtfsRelationalDao source = context.getSource();
-    Map<AgencyAndId, List<ServiceCalendar>> calendarsByServiceId = MappingLibrary.mapToValueList(
-        source.getAllCalendars(), "serviceId");
-    for (Map.Entry<AgencyAndId, List<ServiceCalendar>> entry : calendarsByServiceId.entrySet()) {
-      mergeServiceCalendars(context, entry.getKey(), entry.getValue());
+    return source.getAllServiceIds();
+  }
+
+  @Override
+  protected void renameKey(GtfsMergeContext context, AgencyAndId oldId,
+      AgencyAndId newId) {
+    GtfsRelationalDao source = context.getSource();
+    ServiceCalendar calendar = source.getCalendarForServiceId(oldId);
+    if (calendar != null) {
+      calendar.setServiceId(newId);
+    }
+    for (ServiceCalendarDate calendarDate : source.getCalendarDatesForServiceId(oldId)) {
+      calendarDate.setServiceId(newId);
+    }
+    for (Trip trip : source.getTripsForServiceId(oldId)) {
+      trip.setServiceId(newId);
     }
   }
 
   @Override
-  protected void rename(GtfsMergeContext context, Object entity) {
-    ServiceCalendar calendar = (ServiceCalendar) entity;
-    calendar.setId(-1);
-  }
-
-  private void mergeServiceCalendars(GtfsMergeContext context,
-      AgencyAndId serviceId, List<ServiceCalendar> calendars) {
-
-    boolean duplicate = isDuplicate(context, serviceId, calendars);
-    if (duplicate) {
-      switch (_duplicatesStrategy) {
-        case DROP: {
-          logDuplicateEntity(serviceId);
-          return;
-        }
-
-        case RENAME: {
-          break;
-        }
-
-        case COMBINE: {
-          break;
-        }
-      }
-    }
-
-    for (ServiceCalendar calendar : calendars) {
-      prepareToSave(calendar);
-      save(context, calendar);
-    }
-  }
-
-  private boolean isDuplicate(GtfsMergeContext context, AgencyAndId serviceId,
-      List<ServiceCalendar> calendars) {
+  protected void saveElementsForKey(GtfsMergeContext context,
+      AgencyAndId serviceId) {
+    GtfsRelationalDao source = context.getSource();
     GtfsMutableRelationalDao target = context.getTarget();
-    ServiceCalendar existingCalendar = target.getCalendarForServiceId(serviceId);
-    // TODO Auto-generated method stub
-    return false;
+    ServiceCalendar calendar = source.getCalendarForServiceId(serviceId);
+    if (calendar != null) {
+      calendar.setId(0);
+      target.saveEntity(calendar);
+    }
+    for (ServiceCalendarDate calendarDate : source.getCalendarDatesForServiceId(serviceId)) {
+      calendarDate.setId(0);
+      target.saveEntity(calendarDate);
+    }
   }
-
 }

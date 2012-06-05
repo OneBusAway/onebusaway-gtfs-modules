@@ -16,18 +16,35 @@
 package org.onebusaway.gtfs_merge.strategies;
 
 import org.onebusaway.gtfs.model.FareRule;
-import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
-public class FareRuleMergeStrategy extends AbstractEntityMergeStrategy {
+public class FareRuleMergeStrategy extends
+    AbstractNonIdentifiableSingleEntityMergeStrategy<FareRule> {
 
   public FareRuleMergeStrategy() {
     super(FareRule.class);
   }
 
   @Override
-  protected void rename(GtfsMergeContext context,
-      Object entity) {
-    FareRule fareRule = (FareRule) entity;
-    fareRule.setId(-1);
+  protected boolean entitiesAreIdentical(FareRule fareRuleA, FareRule fareRuleB) {
+    if (!fareRuleA.getFare().equals(fareRuleB.getFare())) {
+      return false;
+    }
+    if (!equals(fareRuleA.getRoute(), fareRuleB.getRoute())) {
+      return false;
+    }
+    if (!equals(fareRuleA.getOriginId(), fareRuleB.getOriginId())) {
+      return false;
+    }
+    if (!equals(fareRuleA.getDestinationId(), fareRuleB.getDestinationId())) {
+      return false;
+    }
+    if (!equals(fareRuleA.getContainsId(), fareRuleB.getContainsId())) {
+      return false;
+    }
+    return true;
+  }
+
+  private static final boolean equals(Object a, Object b) {
+    return a == null ? b == null : a.equals(b);
   }
 }

@@ -167,7 +167,7 @@ public class StopTimeArray extends AbstractList<StopTime> {
 
     @Override
     public void setId(Integer id) {
-      throw new UnsupportedOperationException();
+      // ignored
     }
 
     @Override

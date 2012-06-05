@@ -31,8 +31,14 @@
     <query name="tripsByRoute" read-only="true">
         FROM Trip trip WHERE trip.route = :route
     </query>
-    <query name="tripsByBlockId" read-only="true">SELECT trip FROM Trip trip WHERE trip.id.agencyId = :agencyId AND
-        trip.blockId = :blockId
+    <query name="tripsByShapeId" read-only="true">
+        FROM Trip trip WHERE trip.shapeId = :shapeId
+    </query>
+    <query name="tripsByServiceId" read-only="true">
+        FROM Trip trip WHERE trip.serviceId = :serviceId
+    </query>
+    <query name="tripsByBlockId" read-only="true">
+        FROM Trip trip WHERE trip.id.agencyId = :agencyId AND trip.blockId = :blockId
     </query>
     <query name="stopTimesByTrip" read-only="true">
         SELECT st FROM StopTime st WHERE st.trip = :trip ORDER BY st.stopSequence
@@ -49,6 +55,12 @@
     <query name="frequenciesForTrip" read-only="true">
         FROM Frequency f WHERE f.trip = :trip
     </query>
+    <query name="calendarServiceIds" read-only="true">
+        SELECT serviceId FROM ServiceCalendar
+    </query>
+    <query name="calendarDateServiceIds" read-only="true">
+        SELECT serviceId FROM ServiceCalendarDate
+    </query>    
     <query name="calendarDatesForServiceId" read-only="true">
         FROM ServiceCalendarDate d WHERE d.serviceId = :serviceId
     </query>

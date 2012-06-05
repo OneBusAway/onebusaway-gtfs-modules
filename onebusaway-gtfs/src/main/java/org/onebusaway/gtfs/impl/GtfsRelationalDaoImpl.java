@@ -66,6 +66,10 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
 
   private Map<Route, List<Trip>> _tripsByRoute = null;
 
+  private Map<AgencyAndId, List<Trip>> _tripsByShapeId = null;
+
+  private Map<AgencyAndId, List<Trip>> _tripsByServiceId = null;
+
   private Map<AgencyAndId, List<Trip>> _tripsByBlockId = null;
 
   private Map<AgencyAndId, List<ShapePoint>> _shapePointsByShapeId = null;
@@ -85,6 +89,8 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
     _stopTimesByTrip = clearMap(_stopTimesByTrip);
     _stopTimesByStop = clearMap(_stopTimesByStop);
     _tripsByRoute = clearMap(_tripsByRoute);
+    _tripsByShapeId = clearMap(_tripsByShapeId);
+    _tripsByServiceId = clearMap(_tripsByServiceId);
     _tripsByBlockId = clearMap(_tripsByBlockId);
     _shapePointsByShapeId = clearMap(_shapePointsByShapeId);
     _frequenciesByTrip = clearMap(_frequenciesByTrip);
@@ -194,6 +200,24 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   }
 
   @Override
+  public List<Trip> getTripsForShapeId(AgencyAndId shapeId) {
+    if (_tripsByShapeId == null) {
+      _tripsByShapeId = mapToValueList(getAllTrips(), "shapeId",
+          AgencyAndId.class);
+    }
+    return list(_tripsByShapeId.get(shapeId));
+  }
+
+  @Override
+  public List<Trip> getTripsForServiceId(AgencyAndId serviceId) {
+    if (_tripsByServiceId == null) {
+      _tripsByServiceId = mapToValueList(getAllTrips(), "serviceId",
+          AgencyAndId.class);
+    }
+    return list(_tripsByServiceId.get(serviceId));
+  }
+
+  @Override
   public List<Trip> getTripsForBlockId(AgencyAndId blockId) {
 
     if (_tripsByBlockId == null) {
@@ -224,19 +248,25 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   }
 
   @Override
+  public List<AgencyAndId> getAllServiceIds() {
+    ensureCalendarDatesByServiceIdRelation();
+    ensureCalendarsByServiceIdRelation();
+    Set<AgencyAndId> serviceIds = new HashSet<AgencyAndId>();
+    serviceIds.addAll(_calendarDatesByServiceId.keySet());
+    serviceIds.addAll(_calendarsByServiceId.keySet());
+    return new ArrayList<AgencyAndId>(serviceIds);
+  }
+
+  @Override
   public List<ServiceCalendarDate> getCalendarDatesForServiceId(
       AgencyAndId serviceId) {
-    if (_calendarDatesByServiceId == null)
-      _calendarDatesByServiceId = mapToValueList(getAllCalendarDates(),
-          "serviceId", AgencyAndId.class);
+    ensureCalendarDatesByServiceIdRelation();
     return list(_calendarDatesByServiceId.get(serviceId));
   }
 
   @Override
   public ServiceCalendar getCalendarForServiceId(AgencyAndId serviceId) {
-    if (_calendarsByServiceId == null)
-      _calendarsByServiceId = mapToValueList(getAllCalendars(), "serviceId",
-          AgencyAndId.class);
+    ensureCalendarsByServiceIdRelation();
     List<ServiceCalendar> calendars = list(_calendarsByServiceId.get(serviceId));
     switch (calendars.size()) {
       case 0:
@@ -250,7 +280,8 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   @Override
   public List<FareRule> getFareRulesForFareAttribute(FareAttribute fareAttribute) {
     if (_fareRulesByFareAttribute == null) {
-      _fareRulesByFareAttribute = mapToValueList(getAllFareRules(), "fare", FareAttribute.class);
+      _fareRulesByFareAttribute = mapToValueList(getAllFareRules(), "fare",
+          FareAttribute.class);
     }
     return list(_fareRulesByFareAttribute.get(fareAttribute));
   }
@@ -258,6 +289,20 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   /****
    * Private Methods
    ****/
+
+  private void ensureCalendarDatesByServiceIdRelation() {
+    if (_calendarDatesByServiceId == null) {
+      _calendarDatesByServiceId = mapToValueList(getAllCalendarDates(),
+          "serviceId", AgencyAndId.class);
+    }
+  }
+
+  private void ensureCalendarsByServiceIdRelation() {
+    if (_calendarsByServiceId == null) {
+      _calendarsByServiceId = mapToValueList(getAllCalendars(), "serviceId",
+          AgencyAndId.class);
+    }
+  }
 
   private void ensureShapePointRelation() {
     if (_shapePointsByShapeId == null) {

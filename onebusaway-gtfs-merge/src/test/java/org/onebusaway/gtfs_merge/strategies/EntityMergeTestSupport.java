@@ -17,7 +17,6 @@ package org.onebusaway.gtfs_merge.strategies;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.Before;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
@@ -25,16 +24,16 @@ import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
 public class EntityMergeTestSupport {
 
-  protected Map<Class<?>, Set<String>> rawEntityIdsByType;
+  protected Map<String, Object> entityByRawId;
 
   @Before
   public void setup() {
-    rawEntityIdsByType = new HashMap<Class<?>, Set<String>>();
+    entityByRawId = new HashMap<String, Object>();
   }
 
   protected GtfsMergeContext context(GtfsRelationalDaoImpl source,
       GtfsRelationalDaoImpl target, String prefix) {
-    return new GtfsMergeContext(source, target, prefix, rawEntityIdsByType);
+    return new GtfsMergeContext(source, target, prefix, entityByRawId);
   }
 
 }

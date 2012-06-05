@@ -62,16 +62,20 @@ public interface GtfsRelationalDao extends GtfsDao {
   /****
    * Stop Methods
    ****/
-  
+
   public List<Stop> getStopsForStation(Stop station);
-  
+
   /****
    * {@link Trip} Methods
    ****/
 
   public List<Trip> getTripsForRoute(Route route);
-  
-  public List<Trip> getTripsForBlockId(AgencyAndId blockId); 
+
+  public List<Trip> getTripsForShapeId(AgencyAndId shapeId);
+
+  public List<Trip> getTripsForServiceId(AgencyAndId serviceId);
+
+  public List<Trip> getTripsForBlockId(AgencyAndId blockId);
 
   /****
    * {@link StopTime} Methods
@@ -92,7 +96,7 @@ public interface GtfsRelationalDao extends GtfsDao {
   /****
    * {@link ShapePoint} Methods
    ****/
-  
+
   public List<AgencyAndId> getAllShapeIds();
 
   public List<ShapePoint> getShapePointsForShapeId(AgencyAndId shapeId);
@@ -102,23 +106,26 @@ public interface GtfsRelationalDao extends GtfsDao {
    ****/
 
   public List<Frequency> getFrequenciesForTrip(Trip trip);
-  
+
   /****
    * {@link ServiceCalendar} Methods
    ****/
-  
+
+  public List<AgencyAndId> getAllServiceIds();
+
   public ServiceCalendar getCalendarForServiceId(AgencyAndId serviceId);
-  
+
   /****
    * {@link ServiceCalendarDate} Methods
    ****/
-  
-  public List<ServiceCalendarDate> getCalendarDatesForServiceId(AgencyAndId serviceId);
-  
+
+  public List<ServiceCalendarDate> getCalendarDatesForServiceId(
+      AgencyAndId serviceId);
+
   /****
    * {@link FareRule}
    *****/
-  
+
   public List<FareRule> getFareRulesForFareAttribute(FareAttribute fareAttribute);
 
 }

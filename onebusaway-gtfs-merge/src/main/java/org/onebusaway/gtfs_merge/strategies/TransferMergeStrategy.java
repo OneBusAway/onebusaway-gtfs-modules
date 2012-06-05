@@ -16,18 +16,29 @@
 package org.onebusaway.gtfs_merge.strategies;
 
 import org.onebusaway.gtfs.model.Transfer;
-import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
-public class TransferMergeStrategy extends AbstractEntityMergeStrategy {
+public class TransferMergeStrategy extends
+    AbstractNonIdentifiableSingleEntityMergeStrategy<Transfer> {
 
   public TransferMergeStrategy() {
     super(Transfer.class);
   }
 
   @Override
-  protected void rename(GtfsMergeContext context,
-      Object entity) {
-    Transfer transfer = (Transfer) entity;
-    transfer.setId(-1);
+  protected boolean entitiesAreIdentical(Transfer transferA, Transfer transferB) {
+    if (!transferA.getFromStop().equals(transferB.getFromStop())) {
+      return false;
+    }
+    if (!transferA.getToStop().equals(transferB.getToStop())) {
+      return false;
+    }
+    if (transferA.getTransferType() != transferB.getTransferType()) {
+      return false;
+    }
+    if (transferA.getMinTransferTime() != transferB.getMinTransferTime()) {
+      return false;
+    }
+    return true;
   }
+
 }

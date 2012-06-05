@@ -16,18 +16,33 @@
 package org.onebusaway.gtfs_merge.strategies;
 
 import org.onebusaway.gtfs.model.Frequency;
-import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
-public class FrequencyMergeStrategy extends AbstractEntityMergeStrategy {
+public class FrequencyMergeStrategy extends
+    AbstractNonIdentifiableSingleEntityMergeStrategy<Frequency> {
 
   public FrequencyMergeStrategy() {
     super(Frequency.class);
   }
 
   @Override
-  protected void rename(GtfsMergeContext context,
-      Object entity) {
-    Frequency frequency = (Frequency) entity;
-    frequency.setId(-1);
+  protected boolean entitiesAreIdentical(Frequency frequencyA,
+      Frequency frequencyB) {
+    if (!frequencyA.getTrip().equals(frequencyB.getTrip())) {
+      return false;
+    }
+    if (frequencyA.getStartTime() != frequencyB.getStartTime()) {
+      return false;
+    }
+    if (frequencyA.getEndTime() != frequencyB.getEndTime()) {
+      return false;
+    }
+    /**
+     * If everything else matches but headway secs, should we consider them the
+     * same? Maybe for fuzzy matching?
+     */
+    if (frequencyA.getHeadwaySecs() != frequencyB.getHeadwaySecs()) {
+      return false;
+    }
+    return true;
   }
 }

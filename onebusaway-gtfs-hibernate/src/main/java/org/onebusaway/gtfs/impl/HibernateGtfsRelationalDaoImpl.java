@@ -18,8 +18,11 @@
 package org.onebusaway.gtfs.impl;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.SessionFactory;
 import org.onebusaway.gtfs.model.Agency;
@@ -246,6 +249,17 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   public List<Trip> getTripsForRoute(Route route) {
     return _ops.findByNamedQueryAndNamedParam("tripsByRoute", "route", route);
   }
+  
+
+  @Override
+  public List<Trip> getTripsForShapeId(AgencyAndId shapeId) {
+    return _ops.findByNamedQueryAndNamedParam("tripsByShapeId", "shapeId", shapeId);
+  }
+
+  @Override
+  public List<Trip> getTripsForServiceId(AgencyAndId serviceId) {
+    return _ops.findByNamedQueryAndNamedParam("tripsByServiceId", "serviceId", serviceId);
+  }
 
   @Override
   public List<Trip> getTripsForBlockId(AgencyAndId blockId) {
@@ -279,6 +293,16 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   public List<Frequency> getFrequenciesForTrip(Trip trip) {
     return _ops.findByNamedQueryAndNamedParam("frequenciesForTrip", "trip",
         trip);
+  }
+  
+  @Override
+  public List<AgencyAndId> getAllServiceIds() {
+    List<AgencyAndId> calendarIds = _ops.findByNamedQuery("calendarServiceIds");
+    List<AgencyAndId> calendarDateIds = _ops.findByNamedQuery("calendarDateServiceIds");
+    Set<AgencyAndId> allIds = new HashSet<AgencyAndId>();
+    allIds.addAll(calendarIds);
+    allIds.addAll(calendarDateIds);
+    return new ArrayList<AgencyAndId>(allIds);
   }
 
   @Override

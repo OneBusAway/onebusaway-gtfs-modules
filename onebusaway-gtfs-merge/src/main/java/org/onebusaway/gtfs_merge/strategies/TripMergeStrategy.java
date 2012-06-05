@@ -15,21 +15,28 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
-import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.IdentityBean;
+import org.onebusaway.gtfs.model.Frequency;
+import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
-public class TripMergeStrategy extends AbstractEntityMergeStrategy {
+public class TripMergeStrategy extends
+    AbstractIdentifiableSingleEntityMergeStrategy<Trip> {
 
   public TripMergeStrategy() {
     super(Trip.class);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
-  protected void rename(GtfsMergeContext context,
-      Object entity) {
-    renameWithAgencyAndId(context, (IdentityBean<AgencyAndId>) entity);
+  protected void replaceDuplicateEntry(GtfsMergeContext context, Trip oldTrip,
+      Trip newTrip) {
+    GtfsRelationalDao source = context.getSource();
+    for (StopTime stopTime : source.getStopTimesForTrip(oldTrip)) {
+      stopTime.setTrip(newTrip);
+    }
+    for (Frequency frequency : source.getFrequenciesForTrip(oldTrip)) {
+      frequency.setTrip(newTrip);
+    }
   }
 }

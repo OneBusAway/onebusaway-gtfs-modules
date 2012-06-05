@@ -16,6 +16,10 @@ onebusaway-gtfs-modules
   
   * <<<onebusaway-gtfs-transformer-cli>>> - Command-line utility for transforming GTFS - see {{{./onebusaway-gtfs-transformer-cli.html}the full documentation}}.
 
+  * <<<onebusaway-gtfs-merge>>> - Tools for merging GTFS data
+  
+  * <<<onebusaway-gtfs-merge-cli>>> - Command-line utility for merging GTFS feeds - see {{{./onebusaway-gtfs-merge-cli.html}the full documentation}}.
+
 Documentation
 
   You can access the {{{./apidocs/index.html}latest Javadoc for the library}}.  Also, see example source code below.

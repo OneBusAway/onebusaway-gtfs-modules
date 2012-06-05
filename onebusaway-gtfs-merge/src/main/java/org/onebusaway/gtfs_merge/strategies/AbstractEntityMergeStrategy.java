@@ -38,5 +38,4 @@ public abstract class AbstractEntityMergeStrategy implements
       ELogDuplicatesStrategy logDuplicatesStrategy) {
     _logDuplicatesStrategy = logDuplicatesStrategy;
   }
-
 }

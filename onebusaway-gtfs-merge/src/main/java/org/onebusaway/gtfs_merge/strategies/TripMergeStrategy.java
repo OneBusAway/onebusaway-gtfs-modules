@@ -16,16 +16,23 @@
 package org.onebusaway.gtfs_merge.strategies;
 
 import org.onebusaway.gtfs.model.Frequency;
+import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
+import org.onebusaway.gtfs_merge.strategies.scoring.TripScheduleOverlapDuplicateScoringStrategy;
+import org.onebusaway.gtfs_merge.strategies.scoring.TripStopsInCommonDuplicateScoringStrategy;
 
 public class TripMergeStrategy extends
     AbstractIdentifiableSingleEntityMergeStrategy<Trip> {
 
   public TripMergeStrategy() {
     super(Trip.class);
+    _duplicateScoringStrategy.addPropertyMatch("route");
+    _duplicateScoringStrategy.addStrategy(new TripStopsInCommonDuplicateScoringStrategy());
+    _duplicateScoringStrategy.addStrategy(new TripScheduleOverlapDuplicateScoringStrategy());
   }
 
   @Override
@@ -37,6 +44,18 @@ public class TripMergeStrategy extends
     }
     for (Frequency frequency : source.getFrequenciesForTrip(oldTrip)) {
       frequency.setTrip(newTrip);
+    }
+  }
+
+  @Override
+  protected void save(GtfsMergeContext context, IdentityBean<?> entity) {
+    super.save(context, entity);
+    Trip trip = (Trip) entity;
+    GtfsRelationalDao source = context.getSource();
+    GtfsMutableRelationalDao target = context.getTarget();
+    for (StopTime stopTime : source.getStopTimesForTrip(trip)) {
+      stopTime.setId(0);
+      target.saveEntity(stopTime);
     }
   }
 }

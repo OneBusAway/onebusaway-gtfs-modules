@@ -15,16 +15,21 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
+
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
+import org.onebusaway.gtfs_merge.strategies.scoring.StopDistanceDuplicateScoringStrategy;
 
 public class StopMergeStrategy extends
     AbstractIdentifiableSingleEntityMergeStrategy<Stop> {
 
   public StopMergeStrategy() {
     super(Stop.class);
+    //_duplicateScoringStrategy.addPropertyMatch("name");
+    _duplicateScoringStrategy.addStrategy(
+        new StopDistanceDuplicateScoringStrategy());
   }
 
   @Override

@@ -15,6 +15,8 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
+import java.util.Collection;
+
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.model.Trip;
@@ -30,9 +32,14 @@ public class ShapePointMergeStrategy extends
   }
 
   @Override
-  protected Iterable<AgencyAndId> getKeys(GtfsMergeContext context) {
-    GtfsRelationalDao source = context.getSource();
-    return source.getAllShapeIds();
+  protected Collection<AgencyAndId> getKeys(GtfsRelationalDao dao) {
+    return dao.getAllShapeIds();
+  }
+
+  @Override
+  protected double scoreDuplicateKey(GtfsMergeContext context, AgencyAndId key) {
+    // TODO - Implement something appropriate here
+    return 0.0;
   }
 
   @Override
@@ -58,4 +65,5 @@ public class ShapePointMergeStrategy extends
       target.saveEntity(shapePoint);
     }
   }
+
 }

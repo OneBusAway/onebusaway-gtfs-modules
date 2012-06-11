@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import org.onebusaway.gtfs.model.IdentityBean;
+import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.serialization.DuplicateEntityException;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
@@ -57,19 +58,18 @@ public abstract class AbstractSingleEntityMergeStrategy<T> extends
 
     resetGeneratedIds(context, entity);
 
+    if (entity instanceof Stop) {
+      Stop stop = (Stop) entity;
+      if (stop.getId().getId().equals("521")) {
+        System.out.println("here");
+      }
+    }
+
     IdentityBean<?> duplicate = getDuplicate(context, entity);
     if (duplicate != null) {
-      switch (_duplicatesStrategy) {
-        case DROP: {
-          logDuplicateEntity(entity.getId());
-          replaceDuplicateEntry(context, (T) entity, (T) duplicate);
-          return;
-        }
-        case RENAME: {
-          rename(context, entity);
-          break;
-        }
-      }
+      logDuplicateEntity(entity.getId());
+      replaceDuplicateEntry(context, (T) entity, (T) duplicate);
+      return;
     }
 
     save(context, entity);
@@ -99,14 +99,15 @@ public abstract class AbstractSingleEntityMergeStrategy<T> extends
 
   private IdentityBean<?> getDuplicate(GtfsMergeContext context,
       IdentityBean<?> entity) {
-    switch (_duplicateDetectionStrategy) {
+    EDuplicateDetectionStrategy duplicateDetectionStrategy = determineDuplicateDetectionStrategy(context);
+    switch (duplicateDetectionStrategy) {
       case IDENTITY:
         return getIdentityDuplicate(context, entity);
       case FUZZY:
         return getFuzzyDuplicate(context, entity);
       default:
         throw new IllegalStateException(
-            "unknown duplicate detection strategy: "
+            "unexpected duplicate detection strategy: "
                 + _duplicateDetectionStrategy);
     }
   }
@@ -121,9 +122,6 @@ public abstract class AbstractSingleEntityMergeStrategy<T> extends
 
   protected abstract void replaceDuplicateEntry(GtfsMergeContext context,
       T oldEntity, T newEntity);
-
-  protected abstract void rename(GtfsMergeContext context,
-      IdentityBean<?> entity);
 
   protected void save(GtfsMergeContext context, IdentityBean<?> entity) {
     GtfsMutableRelationalDao target = context.getTarget();

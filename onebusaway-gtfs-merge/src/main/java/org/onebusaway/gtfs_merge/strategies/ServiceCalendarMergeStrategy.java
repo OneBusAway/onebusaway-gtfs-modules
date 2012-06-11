@@ -15,13 +15,20 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
+import java.util.Collection;
+import java.util.Set;
+import java.util.TimeZone;
+
+import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
+import org.onebusaway.gtfs_merge.strategies.scoring.DuplicateScoringSupport;
 
 public class ServiceCalendarMergeStrategy extends
     AbstractCollectionEntityMergeStrategy<AgencyAndId> {
@@ -31,9 +38,25 @@ public class ServiceCalendarMergeStrategy extends
   }
 
   @Override
-  protected Iterable<AgencyAndId> getKeys(GtfsMergeContext context) {
-    GtfsRelationalDao source = context.getSource();
-    return source.getAllServiceIds();
+  protected Collection<AgencyAndId> getKeys(GtfsRelationalDao dao) {
+    return dao.getAllServiceIds();
+  }
+
+  @Override
+  protected double scoreDuplicateKey(GtfsMergeContext context, AgencyAndId key) {
+    Set<ServiceDate> sourceServiceDates = getServiceDatesForServiceId(
+        context.getSource(), key);
+    Set<ServiceDate> targetServiceDates = getServiceDatesForServiceId(
+        context.getTarget(), key);
+    return DuplicateScoringSupport.scoreElementOverlap(sourceServiceDates,
+        targetServiceDates);
+  }
+
+  private Set<ServiceDate> getServiceDatesForServiceId(GtfsRelationalDao dao,
+      AgencyAndId key) {
+    CalendarServiceDataFactoryImpl factory = new CalendarServiceDataFactoryImpl();
+    factory.setGtfsDao(dao);
+    return factory.getServiceDatesForServiceId(key, TimeZone.getDefault());
   }
 
   @Override
@@ -67,4 +90,5 @@ public class ServiceCalendarMergeStrategy extends
       target.saveEntity(calendarDate);
     }
   }
+
 }

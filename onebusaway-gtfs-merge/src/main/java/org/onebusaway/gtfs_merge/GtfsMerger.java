@@ -36,7 +36,6 @@ import org.onebusaway.gtfs_merge.strategies.RouteMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.ServiceCalendarMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.ShapePointMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.StopMergeStrategy;
-import org.onebusaway.gtfs_merge.strategies.StopTimeMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.TransferMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.TripMergeStrategy;
 import org.slf4j.Logger;
@@ -60,8 +59,6 @@ public class GtfsMerger {
   private EntityMergeStrategy _routeStrategy = new RouteMergeStrategy();
 
   private EntityMergeStrategy _tripStrategy = new TripMergeStrategy();
-
-  private EntityMergeStrategy _stopTimeStrategy = new StopTimeMergeStrategy();
 
   private EntityMergeStrategy _shapePointStrategy = new ShapePointMergeStrategy();
 
@@ -92,10 +89,6 @@ public class GtfsMerger {
 
   public void setTripStrategy(EntityMergeStrategy tripStrategy) {
     _tripStrategy = tripStrategy;
-  }
-
-  public void setStopTimeStrategy(EntityMergeStrategy stopTimeStrategy) {
-    _stopTimeStrategy = stopTimeStrategy;
   }
 
   public void setShapePointStrategy(EntityMergeStrategy shapePointStrategy) {
@@ -133,7 +126,12 @@ public class GtfsMerger {
           new HashMap<String, Object>());
     }
 
-    for (int index = 0; index < inputPaths.size(); ++index) {
+    /**
+     * We iterate over the input feeds in reverse order, such that entities from
+     * the newest feeds are added first and older entities are potentially
+     * dropped.
+     */
+    for (int index = inputPaths.size() - 1; index >= 0; --index) {
       File inputPath = inputPaths.get(index);
       String prefix = getIndexAsPrefix(index, inputPaths.size());
 
@@ -149,6 +147,7 @@ public class GtfsMerger {
       reader.run();
 
       for (EntityMergeStrategy strategy : strategies) {
+        _log.info("strategy=" + strategy.getClass());
         GtfsMergeContext context = new GtfsMergeContext(dao, mergedDao, prefix,
             rawEntityIdMapsByMergeStrategy.get(strategy));
         strategy.merge(context);
@@ -175,7 +174,6 @@ public class GtfsMerger {
     strategies.add(_serviceCalendarStrategy);
     strategies.add(_routeStrategy);
     strategies.add(_tripStrategy);
-    strategies.add(_stopTimeStrategy);
     strategies.add(_shapePointStrategy);
     strategies.add(_frequencyStrategy);
     strategies.add(_transferStrategy);

@@ -15,10 +15,13 @@
  */
 package org.onebusaway.gtfs_merge;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
+import org.onebusaway.gtfs_merge.strategies.EDuplicateDetectionStrategy;
 
 public class GtfsMergeContext {
 
@@ -30,7 +33,11 @@ public class GtfsMergeContext {
 
   private final Map<String, Object> entityByRawId;
 
+  private final Set<String> entitiesJustAdded = new HashSet<String>();
+
   private int _sequenceCounter = 1;
+
+  private EDuplicateDetectionStrategy _resolvedDuplicateDetectionStrategy;
 
   public GtfsMergeContext(GtfsRelationalDao source,
       GtfsMutableRelationalDao target, String prefix,
@@ -55,13 +62,27 @@ public class GtfsMergeContext {
 
   public void putEntityWithRawId(String rawId, Object entity) {
     entityByRawId.put(rawId, entity);
+    entitiesJustAdded.add(rawId);
   }
 
   public Object getEntityForRawId(String rawId) {
     return entityByRawId.get(rawId);
   }
 
+  public boolean isEntityJustAddedWithRawId(String rawId) {
+    return entitiesJustAdded.contains(rawId);
+  }
+
   public int getNextSequenceCounter() {
     return _sequenceCounter++;
+  }
+
+  public EDuplicateDetectionStrategy getResolvedDuplicateDetectionStrategy() {
+    return _resolvedDuplicateDetectionStrategy;
+  }
+
+  public void setResolvedDuplicateDetectionStrategy(
+      EDuplicateDetectionStrategy resolvedDuplicateDetectionStrategy) {
+    _resolvedDuplicateDetectionStrategy = resolvedDuplicateDetectionStrategy;
   }
 }

@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs_merge.strategies;
+package org.onebusaway.gtfs_merge.strategies.scoring;
 
-public enum EDuplicatesStrategy {
-  AUTO, DROP, RENAME
+import org.onebusaway.gtfs_merge.GtfsMergeContext;
+
+public interface DuplicateScoringStrategy<T> {
+  public double score(GtfsMergeContext context, T source, T target);
 }

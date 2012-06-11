@@ -16,10 +16,15 @@
 package org.onebusaway.gtfs_merge.strategies;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.onebusaway.csv_entities.exceptions.CsvException;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
+import org.onebusaway.gtfs_merge.strategies.scoring.DuplicateScoringSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +41,7 @@ public abstract class AbstractCollectionEntityMergeStrategy<KEY extends Serializ
 
   @Override
   public void merge(GtfsMergeContext context) {
-    for (KEY key : getKeys(context)) {
+    for (KEY key : getKeys(context.getSource())) {
       processKey(context, key);
     }
   }
@@ -44,32 +49,35 @@ public abstract class AbstractCollectionEntityMergeStrategy<KEY extends Serializ
   private void processKey(GtfsMergeContext context, KEY key) {
     KEY duplicate = getDuplicate(context, key);
     if (duplicate != null) {
-      switch (_duplicatesStrategy) {
-        case DROP: {
-          logDuplicateKey(key);
-          if (!duplicate.equals(key)) {
-            renameKey(context, key, duplicate);
-          }
-          return;
-        }
-        case RENAME: {
-          KEY newKey = getRenamedKey(context, key);
-          renameKey(context, key, newKey);
-          key = newKey;
-          MergeSupport.clearCaches(context.getSource());
-          break;
-        }
+      logDuplicateKey(key);
+      if (!duplicate.equals(key)) {
+        renameKey(context, key, duplicate);
       }
+      return;
     }
     String rawKey = getRawKey(key);
+
+    /**
+     * If we've already saved elements using this key previously, we need to
+     * rename this key to avoid duplication.
+     */
+    if (context.getEntityForRawId(rawKey) != null) {
+      KEY newKey = getRenamedKey(context, key);
+      renameKey(context, key, newKey);
+      key = newKey;
+      rawKey = getRawKey(key);
+      MergeSupport.clearCaches(context.getSource());
+    }
+
     context.putEntityWithRawId(rawKey, key);
     saveElementsForKey(context, key);
   }
 
-  protected abstract Iterable<KEY> getKeys(GtfsMergeContext context);
+  protected abstract Collection<KEY> getKeys(GtfsRelationalDao dao);
 
   private KEY getDuplicate(GtfsMergeContext context, KEY key) {
-    switch (_duplicateDetectionStrategy) {
+    EDuplicateDetectionStrategy duplicateDetectionStrategy = determineDuplicateDetectionStrategy(context);
+    switch (duplicateDetectionStrategy) {
       case IDENTITY:
         return getIdentityDuplicate(context, key);
       case FUZZY:
@@ -80,6 +88,47 @@ public abstract class AbstractCollectionEntityMergeStrategy<KEY extends Serializ
                 + _duplicateDetectionStrategy);
     }
   }
+
+  @Override
+  protected EDuplicateDetectionStrategy pickBestDuplicateDetectionStrategy(
+      GtfsMergeContext context) {
+    if (hasLikelyIdentifierOverlap(context)) {
+      return EDuplicateDetectionStrategy.IDENTITY;
+    } else {
+      return EDuplicateDetectionStrategy.FUZZY;
+    }
+  }
+
+  private boolean hasLikelyIdentifierOverlap(GtfsMergeContext context) {
+
+    Collection<KEY> targetKeys = getKeys(context.getTarget());
+    Collection<KEY> sourceKeys = getKeys(context.getSource());
+
+    /**
+     * If there are no entities, then we can't have identifier overlap.
+     */
+    if (targetKeys.isEmpty() || sourceKeys.isEmpty()) {
+      return false;
+    }
+
+    Set<KEY> commonKeys = new HashSet<KEY>();
+    double elementOvelapScore = DuplicateScoringSupport.scoreElementOverlap(
+        sourceKeys, targetKeys, commonKeys);
+    if (commonKeys.isEmpty()
+        || elementOvelapScore < _minElementsInCommonScoreForAutoDetect) {
+      return false;
+    }
+
+    double totalScore = 0.0;
+    for (KEY key : commonKeys) {
+      totalScore += scoreDuplicateKey(context, key);
+    }
+    totalScore /= commonKeys.size();
+
+    return totalScore > _minElementsDuplicateScoreForAutoDetect;
+  }
+
+  protected abstract double scoreDuplicateKey(GtfsMergeContext context, KEY key);
 
   @SuppressWarnings("unchecked")
   private KEY getIdentityDuplicate(GtfsMergeContext context, KEY key) {

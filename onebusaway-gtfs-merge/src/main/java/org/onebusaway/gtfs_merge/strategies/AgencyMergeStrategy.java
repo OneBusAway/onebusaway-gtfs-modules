@@ -21,55 +21,16 @@ import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.model.Route;
-import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
 public class AgencyMergeStrategy extends
     AbstractIdentifiableSingleEntityMergeStrategy<Agency> {
 
-  public enum EFuzzyMatchStrategy {
-    NAME, URL
-  }
-
-  /**
-   * Could we try to automatically guess an appropriate strategy?
-   */
-  private EFuzzyMatchStrategy _fuzzyMatchStrategy = EFuzzyMatchStrategy.NAME;
-
   public AgencyMergeStrategy() {
     super(Agency.class);
-  }
-
-  public void setFuzzyMatchStrategy(EFuzzyMatchStrategy fuzzyMatchStrategy) {
-    _fuzzyMatchStrategy = fuzzyMatchStrategy;
-  }
-
-  @Override
-  protected IdentityBean<?> getFuzzyDuplicate(GtfsMergeContext context,
-      IdentityBean<?> entity) {
-    Agency newAgency = (Agency) entity;
-    GtfsMutableRelationalDao target = context.getTarget();
-    String newName = getFuzzyNameForAgency(newAgency);
-    for (Agency existingAgency : target.getAllAgencies()) {
-      String existingName = getFuzzyNameForAgency(existingAgency);
-      if (newName.equals(existingName)) {
-        return existingAgency;
-      }
-    }
-    return null;
-  }
-
-  private String getFuzzyNameForAgency(Agency agency) {
-    switch (_fuzzyMatchStrategy) {
-      case NAME:
-        return MergeSupport.noNull(agency.getName());
-      case URL:
-        return MergeSupport.noNull(agency.getUrl());
-      default:
-        throw new IllegalStateException("unexpected FuzzyMatchStrategy "
-            + _fuzzyMatchStrategy);
-    }
+    _duplicateScoringStrategy.addPropertyMatch("name");
+    _duplicateScoringStrategy.addPropertyMatch("url");
   }
 
   @Override

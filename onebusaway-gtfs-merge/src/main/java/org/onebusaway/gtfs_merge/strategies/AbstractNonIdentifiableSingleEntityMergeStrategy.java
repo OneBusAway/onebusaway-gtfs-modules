@@ -24,16 +24,15 @@ public abstract class AbstractNonIdentifiableSingleEntityMergeStrategy<T>
 
   public AbstractNonIdentifiableSingleEntityMergeStrategy(Class<T> entityType) {
     super(entityType);
-    setDuplicatesStrategy(EDuplicatesStrategy.DROP);
   }
 
   @Override
-  public void setDuplicatesStrategy(EDuplicatesStrategy duplicatesStrategy) {
-    if (duplicatesStrategy == EDuplicatesStrategy.RENAME) {
-      throw new UnsupportedOperationException(
-          "renaming duplicate entities is not supported for " + _entityType);
-    }
-    super.setDuplicatesStrategy(duplicatesStrategy);
+  protected EDuplicateDetectionStrategy pickBestDuplicateDetectionStrategy(
+      GtfsMergeContext context) {
+    /**
+     * TODO: Support better auto-detection here?
+     */
+    return EDuplicateDetectionStrategy.IDENTITY;
   }
 
   @SuppressWarnings("unchecked")

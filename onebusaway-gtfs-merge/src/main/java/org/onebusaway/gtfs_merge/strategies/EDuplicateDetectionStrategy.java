@@ -16,7 +16,19 @@
 package org.onebusaway.gtfs_merge.strategies;
 
 public enum EDuplicateDetectionStrategy {
+
+  /**
+   * Never attempt to look for duplicates.
+   */
+  NONE,
+
+  /**
+   * Entities that have the same ID are considered duplicates.
+   */
   IDENTITY,
 
+  /**
+   * Entities that have similar properties are considered duplicates.
+   */
   FUZZY
 }

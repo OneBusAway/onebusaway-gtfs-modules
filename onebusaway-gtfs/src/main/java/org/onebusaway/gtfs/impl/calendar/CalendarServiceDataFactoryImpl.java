@@ -18,13 +18,10 @@ package org.onebusaway.gtfs.impl.calendar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -82,15 +79,7 @@ public class CalendarServiceDataFactoryImpl implements
 
     setTimeZonesForAgencies(data);
 
-    Collection<ServiceCalendar> calendars = _dao.getAllCalendars();
-    Collection<ServiceCalendarDate> calendarDates = _dao.getAllCalendarDates();
-
-    Map<AgencyAndId, ServiceCalendar> calendarsByServiceId = getCalendarsByServiceId(calendars);
-    Map<AgencyAndId, List<ServiceCalendarDate>> calendarDatesByServiceId = getCalendarDatesByServiceId(calendarDates);
-
-    Set<AgencyAndId> serviceIds = new HashSet<AgencyAndId>();
-    serviceIds.addAll(calendarsByServiceId.keySet());
-    serviceIds.addAll(calendarDatesByServiceId.keySet());
+    List<AgencyAndId> serviceIds = _dao.getAllServiceIds();
 
     int index = 0;
 
@@ -106,16 +95,8 @@ public class CalendarServiceDataFactoryImpl implements
         serviceIdTimeZone = TimeZone.getDefault();
       }
 
-      Set<ServiceDate> activeDates = new HashSet<ServiceDate>();
-      ServiceCalendar c = calendarsByServiceId.get(serviceId);
-
-      if (c != null)
-        addDatesFromCalendar(c, serviceIdTimeZone, activeDates);
-      if (calendarDatesByServiceId.containsKey(serviceId)) {
-        for (ServiceCalendarDate cd : calendarDatesByServiceId.get(serviceId)) {
-          addAndRemoveDatesFromCalendarDate(cd, serviceIdTimeZone, activeDates);
-        }
-      }
+      Set<ServiceDate> activeDates = getServiceDatesForServiceId(serviceId,
+          serviceIdTimeZone);
 
       List<ServiceDate> serviceDates = new ArrayList<ServiceDate>(activeDates);
       Collections.sort(serviceDates);
@@ -144,6 +125,20 @@ public class CalendarServiceDataFactoryImpl implements
     return data;
   }
 
+  public Set<ServiceDate> getServiceDatesForServiceId(AgencyAndId serviceId,
+      TimeZone serviceIdTimeZone) {
+    Set<ServiceDate> activeDates = new HashSet<ServiceDate>();
+    ServiceCalendar c = _dao.getCalendarForServiceId(serviceId);
+
+    if (c != null) {
+      addDatesFromCalendar(c, serviceIdTimeZone, activeDates);
+    }
+    for (ServiceCalendarDate cd : _dao.getCalendarDatesForServiceId(serviceId)) {
+      addAndRemoveDatesFromCalendarDate(cd, serviceIdTimeZone, activeDates);
+    }
+    return activeDates;
+  }
+
   private void setTimeZonesForAgencies(CalendarServiceData data) {
     for (Agency agency : _dao.getAllAgencies()) {
       TimeZone timeZone = TimeZone.getTimeZone(agency.getTimezone());
@@ -154,29 +149,6 @@ public class CalendarServiceDataFactoryImpl implements
       }
       data.putTimeZoneForAgencyId(agency.getId(), timeZone);
     }
-  }
-
-  private Map<AgencyAndId, ServiceCalendar> getCalendarsByServiceId(
-      Collection<ServiceCalendar> calendars) {
-    Map<AgencyAndId, ServiceCalendar> calendarsByServiceId = new HashMap<AgencyAndId, ServiceCalendar>();
-    for (ServiceCalendar c : calendars)
-      calendarsByServiceId.put(c.getServiceId(), c);
-    return calendarsByServiceId;
-  }
-
-  private Map<AgencyAndId, List<ServiceCalendarDate>> getCalendarDatesByServiceId(
-      Collection<ServiceCalendarDate> calendarDates) {
-    Map<AgencyAndId, List<ServiceCalendarDate>> calendarDatesByServiceId = new HashMap<AgencyAndId, List<ServiceCalendarDate>>();
-
-    for (ServiceCalendarDate calendarDate : calendarDates) {
-      List<ServiceCalendarDate> cds = calendarDatesByServiceId.get(calendarDate.getServiceId());
-      if (cds == null) {
-        cds = new ArrayList<ServiceCalendarDate>();
-        calendarDatesByServiceId.put(calendarDate.getServiceId(), cds);
-      }
-      cds.add(calendarDate);
-    }
-    return calendarDatesByServiceId;
   }
 
   private void addDatesFromCalendar(ServiceCalendar calendar,
@@ -258,7 +230,7 @@ public class CalendarServiceDataFactoryImpl implements
   private void addServiceDate(Set<ServiceDate> activeDates,
       ServiceDate serviceDate, TimeZone timeZone) {
     if (_excludeFutureServiceDatesInDays > 0) {
-      int days = (int) ((serviceDate.getAsDate(timeZone).getTime() - System.currentTimeMillis()) / (24 * 60 * 60 * 1000));
+      int days = (int) ((serviceDate.getAsDate().getTime() - System.currentTimeMillis()) / (24 * 60 * 60 * 1000));
       if (days > _excludeFutureServiceDatesInDays)
         return;
     }

@@ -46,9 +46,9 @@ public class GtfsMergerMain {
 
   public static final String ARG_FILE = "file";
 
-  public static final String ARG_FUZZY_DUPLICATES = "fuzzyDuplicates";
+  public static final String ARG_IDENTITY_DUPLICATES = "identityDuplicates";
 
-  public static final String ARG_DROP_DUPLICATES = "dropDuplicates";
+  public static final String ARG_FUZZY_DUPLICATES = "fuzzyDuplicates";
 
   public static final String ARG_RENAME_DUPLICATES = "renameDuplicates";
 
@@ -118,9 +118,10 @@ public class GtfsMergerMain {
 
   protected void buildOptions(Options options) {
     options.addOption(ARG_FILE, true, "GTFS file name");
+    options.addOption(ARG_IDENTITY_DUPLICATES, false,
+        "use ids for detecting duplicates");
     options.addOption(ARG_FUZZY_DUPLICATES, false,
         "attempt fuzzy duplicate detection");
-    options.addOption(ARG_DROP_DUPLICATES, false, "drop duplicate entities");
     options.addOption(ARG_RENAME_DUPLICATES, false, "rename duplicate entities");
     options.addOption(ARG_LOG_DROPPED_DUPLICATES, false,
         "log dropped duplicates");

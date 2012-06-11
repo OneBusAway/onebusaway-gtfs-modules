@@ -18,16 +18,13 @@ package org.onebusaway.gtfs_merge;
 import org.apache.commons.cli.Option;
 import org.onebusaway.gtfs_merge.strategies.AbstractEntityMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.EDuplicateDetectionStrategy;
-import org.onebusaway.gtfs_merge.strategies.EDuplicatesStrategy;
 import org.onebusaway.gtfs_merge.strategies.ELogDuplicatesStrategy;
 
 public class OptionHandler {
 
   public void handleOption(Option option, AbstractEntityMergeStrategy strategy) {
-    if (option.getOpt().equals(GtfsMergerMain.ARG_DROP_DUPLICATES)) {
-      strategy.setDuplicatesStrategy(EDuplicatesStrategy.DROP);
-    } else if (option.getOpt().equals(GtfsMergerMain.ARG_RENAME_DUPLICATES)) {
-      strategy.setDuplicatesStrategy(EDuplicatesStrategy.RENAME);
+    if (option.getOpt().equals(GtfsMergerMain.ARG_IDENTITY_DUPLICATES)) {
+      strategy.setDuplicateDetectionStrategy(EDuplicateDetectionStrategy.IDENTITY);
     } else if (option.getOpt().equals(GtfsMergerMain.ARG_FUZZY_DUPLICATES)) {
       strategy.setDuplicateDetectionStrategy(EDuplicateDetectionStrategy.FUZZY);
     } else if (option.getOpt().equals(GtfsMergerMain.ARG_LOG_DROPPED_DUPLICATES)) {

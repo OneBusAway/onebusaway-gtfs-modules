@@ -32,6 +32,7 @@ import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
 public class AgencyMergeStrategyTest extends EntityMergeTestSupport {
 
@@ -52,24 +53,29 @@ public class AgencyMergeStrategyTest extends EntityMergeTestSupport {
     Agency agencyA = new Agency();
     agencyA.setId("1");
     agencyA.setName("Metro");
+    agencyA.setUrl("http://metro.gov/");
     sourceA.saveEntity(agencyA);
 
     GtfsRelationalDaoImpl sourceB = new GtfsRelationalDaoImpl();
     Agency agencyB = new Agency();
     agencyB.setId("1");
     agencyB.setName("Metro");
+    agencyB.setUrl("http://metro.gov/");
     sourceB.saveEntity(agencyB);
 
     Agency agencyC = new Agency();
     agencyC.setId("2");
-    agencyC.setName("Metro");
+    agencyC.setName("Metra");
+    agencyC.setUrl("http://metra.gov/");
     sourceB.saveEntity(agencyC);
 
-    _strategy.setDuplicatesStrategy(EDuplicatesStrategy.DROP);
-    _strategy.setDuplicateDetectionStrategy(EDuplicateDetectionStrategy.IDENTITY);
+    GtfsMergeContext contextA = context(sourceA, _target, "a-");
+    _strategy.merge(contextA);
 
-    _strategy.merge(context(sourceA, _target, "a-"));
-    _strategy.merge(context(sourceB, _target, "b-"));
+    GtfsMergeContext contextB = context(sourceB, _target, "b-");
+    _strategy.merge(contextB);
+    assertEquals(EDuplicateDetectionStrategy.IDENTITY,
+        contextB.getResolvedDuplicateDetectionStrategy());
 
     Collection<Agency> agencies = _target.getAllAgencies();
     assertEquals(2, agencies.size());
@@ -85,24 +91,35 @@ public class AgencyMergeStrategyTest extends EntityMergeTestSupport {
     Agency agencyA = new Agency();
     agencyA.setId("1");
     agencyA.setName("Metro");
+    agencyA.setUrl("http://metro.gov/");
     sourceA.saveEntity(agencyA);
 
     GtfsRelationalDaoImpl sourceB = new GtfsRelationalDaoImpl();
     Agency agencyB = new Agency();
-    agencyB.setId("2");
-    agencyB.setName("Metro");
+    agencyB.setId("1");
+    agencyB.setName("Metra");
+    agencyB.setUrl("http://metra.gov/");
     sourceB.saveEntity(agencyB);
 
-    _strategy.setDuplicatesStrategy(EDuplicatesStrategy.DROP);
-    _strategy.setDuplicateDetectionStrategy(EDuplicateDetectionStrategy.FUZZY);
+    Agency agencyC = new Agency();
+    agencyC.setId("2");
+    agencyC.setName("Metro");
+    agencyC.setUrl("http://metro.gov/");
+    sourceB.saveEntity(agencyC);
 
-    _strategy.merge(context(sourceA, _target, "a-"));
-    _strategy.merge(context(sourceB, _target, "b-"));
+    GtfsMergeContext contextA = context(sourceA, _target, "a-");
+    _strategy.merge(contextA);
+
+    GtfsMergeContext contextB = context(sourceB, _target, "b-");
+    _strategy.merge(contextB);
+    assertEquals(EDuplicateDetectionStrategy.FUZZY,
+        contextB.getResolvedDuplicateDetectionStrategy());
 
     Collection<Agency> agencies = _target.getAllAgencies();
-    assertEquals(1, agencies.size());
+    assertEquals(2, agencies.size());
 
     assertSame(agencyA, _target.getAgencyForId("1"));
+    assertSame(agencyB, _target.getAgencyForId("b-1"));
   }
 
   @Test
@@ -111,11 +128,15 @@ public class AgencyMergeStrategyTest extends EntityMergeTestSupport {
     GtfsRelationalDaoImpl sourceA = new GtfsRelationalDaoImpl();
     Agency agencyA = new Agency();
     agencyA.setId("1");
+    agencyA.setName("Metro");
+    agencyA.setUrl("http://metro.gov/");
     sourceA.saveEntity(agencyA);
 
     GtfsRelationalDaoImpl sourceB = new GtfsRelationalDaoImpl();
     Agency agencyB = new Agency();
     agencyB.setId("1");
+    agencyA.setName("Metra");
+    agencyA.setUrl("http://metra.gov/");    
     sourceB.saveEntity(agencyB);
 
     Route route = new Route();
@@ -150,11 +171,8 @@ public class AgencyMergeStrategyTest extends EntityMergeTestSupport {
     point.setShapeId(new AgencyAndId("1", "shapeId"));
     sourceB.saveEntity(point);
 
-    AgencyMergeStrategy strategy = new AgencyMergeStrategy();
-    strategy.setDuplicatesStrategy(EDuplicatesStrategy.RENAME);
-
-    strategy.merge(context(sourceA, _target, "a-"));
-    strategy.merge(context(sourceB, _target, "b-"));
+    _strategy.merge(context(sourceA, _target, "a-"));
+    _strategy.merge(context(sourceB, _target, "b-"));
 
     Collection<Agency> agencies = _target.getAllAgencies();
     assertEquals(2, agencies.size());

@@ -6,6 +6,8 @@ GTFS Merge Command-Line Application
 
 Introduction
 
+  <<NOTE>>: This tool is a work in progress!  This documentation may not be up-to-date.
+
   The <<<onebusaway-gtfs-merge-cli>>> command-line application is a simple command-line tool for merging
 {{{https://developers.google.com/transit/gtfs}GTFS}} feeds. 
 

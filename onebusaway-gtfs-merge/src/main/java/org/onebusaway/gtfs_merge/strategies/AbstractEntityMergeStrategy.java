@@ -15,13 +15,22 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
+import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
 public abstract class AbstractEntityMergeStrategy implements
     EntityMergeStrategy {
 
-  protected EDuplicateDetectionStrategy _duplicateDetectionStrategy = EDuplicateDetectionStrategy.IDENTITY;
+  /**
+   * By default, we don't specify a default duplicate detection strategy, but
+   * instead attempt auto-detection of the best strategy. When the auto-detected
+   * strategy is not appropriate, it can be manually overridden by setting this
+   * value.
+   */
+  protected EDuplicateDetectionStrategy _duplicateDetectionStrategy = null;
 
-  protected EDuplicatesStrategy _duplicatesStrategy = EDuplicatesStrategy.DROP;
+  protected double _minElementsInCommonScoreForAutoDetect = 0.5;
+
+  protected double _minElementsDuplicateScoreForAutoDetect = 0.5;
 
   protected ELogDuplicatesStrategy _logDuplicatesStrategy = ELogDuplicatesStrategy.NONE;
 
@@ -30,12 +39,24 @@ public abstract class AbstractEntityMergeStrategy implements
     _duplicateDetectionStrategy = duplicateDetectionStrategy;
   }
 
-  public void setDuplicatesStrategy(EDuplicatesStrategy duplicatesStrategy) {
-    _duplicatesStrategy = duplicatesStrategy;
-  }
-
   public void setLogDuplicatesStrategy(
       ELogDuplicatesStrategy logDuplicatesStrategy) {
     _logDuplicatesStrategy = logDuplicatesStrategy;
   }
+
+  protected EDuplicateDetectionStrategy determineDuplicateDetectionStrategy(
+      GtfsMergeContext context) {
+    if (_duplicateDetectionStrategy != null) {
+      return _duplicateDetectionStrategy;
+    }
+    EDuplicateDetectionStrategy resolvedDuplicateDetectionStrategy = context.getResolvedDuplicateDetectionStrategy();
+    if (resolvedDuplicateDetectionStrategy == null) {
+      resolvedDuplicateDetectionStrategy = pickBestDuplicateDetectionStrategy(context);
+      context.setResolvedDuplicateDetectionStrategy(resolvedDuplicateDetectionStrategy);
+    }
+    return resolvedDuplicateDetectionStrategy;
+  }
+
+  protected abstract EDuplicateDetectionStrategy pickBestDuplicateDetectionStrategy(
+      GtfsMergeContext context);
 }

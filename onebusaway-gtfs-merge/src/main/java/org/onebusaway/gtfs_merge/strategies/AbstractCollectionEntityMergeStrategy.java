@@ -82,6 +82,8 @@ public abstract class AbstractCollectionEntityMergeStrategy<KEY extends Serializ
         return getIdentityDuplicate(context, key);
       case FUZZY:
         return getFuzzyDuplicate(context, key);
+      case NONE:
+        return null;
       default:
         throw new IllegalStateException(
             "unknown duplicate detection strategy: "
@@ -92,14 +94,6 @@ public abstract class AbstractCollectionEntityMergeStrategy<KEY extends Serializ
   @Override
   protected EDuplicateDetectionStrategy pickBestDuplicateDetectionStrategy(
       GtfsMergeContext context) {
-    if (hasLikelyIdentifierOverlap(context)) {
-      return EDuplicateDetectionStrategy.IDENTITY;
-    } else {
-      return EDuplicateDetectionStrategy.FUZZY;
-    }
-  }
-
-  private boolean hasLikelyIdentifierOverlap(GtfsMergeContext context) {
 
     Collection<KEY> targetKeys = getKeys(context.getTarget());
     Collection<KEY> sourceKeys = getKeys(context.getSource());
@@ -108,8 +102,20 @@ public abstract class AbstractCollectionEntityMergeStrategy<KEY extends Serializ
      * If there are no entities, then we can't have identifier overlap.
      */
     if (targetKeys.isEmpty() || sourceKeys.isEmpty()) {
-      return false;
+      return EDuplicateDetectionStrategy.NONE;
     }
+
+    if (hasLikelyIdentifierOverlap(context, sourceKeys, targetKeys)) {
+      return EDuplicateDetectionStrategy.IDENTITY;
+    } else if (hasLikelyFuzzyOverlap(context, sourceKeys, targetKeys)) {
+      return EDuplicateDetectionStrategy.FUZZY;
+    } else {
+      return EDuplicateDetectionStrategy.NONE;
+    }
+  }
+
+  private boolean hasLikelyIdentifierOverlap(GtfsMergeContext context,
+      Collection<KEY> sourceKeys, Collection<KEY> targetKeys) {
 
     Set<KEY> commonKeys = new HashSet<KEY>();
     double elementOvelapScore = DuplicateScoringSupport.scoreElementOverlap(
@@ -129,6 +135,11 @@ public abstract class AbstractCollectionEntityMergeStrategy<KEY extends Serializ
   }
 
   protected abstract double scoreDuplicateKey(GtfsMergeContext context, KEY key);
+
+  private boolean hasLikelyFuzzyOverlap(GtfsMergeContext context,
+      Collection<KEY> sourceKeys, Collection<KEY> targetKeys) {
+    return false;
+  }
 
   @SuppressWarnings("unchecked")
   private KEY getIdentityDuplicate(GtfsMergeContext context, KEY key) {
@@ -175,5 +186,10 @@ public abstract class AbstractCollectionEntityMergeStrategy<KEY extends Serializ
     }
     throw new UnsupportedOperationException("uknown key type: "
         + key.getClass());
+  }
+
+  @Override
+  protected String getDescription() {
+    return _keyDescription;
   }
 }

@@ -16,9 +16,13 @@
 package org.onebusaway.gtfs_merge.strategies;
 
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractEntityMergeStrategy implements
     EntityMergeStrategy {
+
+  private static final Logger _log = LoggerFactory.getLogger(AbstractEntityMergeStrategy.class);
 
   /**
    * By default, we don't specify a default duplicate detection strategy, but
@@ -31,6 +35,8 @@ public abstract class AbstractEntityMergeStrategy implements
   protected double _minElementsInCommonScoreForAutoDetect = 0.5;
 
   protected double _minElementsDuplicateScoreForAutoDetect = 0.5;
+
+  protected double _minElementDuplicateScoreForFuzzyMatch = 0.5;
 
   protected ELogDuplicatesStrategy _logDuplicatesStrategy = ELogDuplicatesStrategy.NONE;
 
@@ -52,6 +58,8 @@ public abstract class AbstractEntityMergeStrategy implements
     EDuplicateDetectionStrategy resolvedDuplicateDetectionStrategy = context.getResolvedDuplicateDetectionStrategy();
     if (resolvedDuplicateDetectionStrategy == null) {
       resolvedDuplicateDetectionStrategy = pickBestDuplicateDetectionStrategy(context);
+      _log.info("best duplicate detection strategy for " + getDescription()
+          + " = " + resolvedDuplicateDetectionStrategy);
       context.setResolvedDuplicateDetectionStrategy(resolvedDuplicateDetectionStrategy);
     }
     return resolvedDuplicateDetectionStrategy;
@@ -59,4 +67,6 @@ public abstract class AbstractEntityMergeStrategy implements
 
   protected abstract EDuplicateDetectionStrategy pickBestDuplicateDetectionStrategy(
       GtfsMergeContext context);
+
+  protected abstract String getDescription();
 }

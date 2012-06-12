@@ -31,6 +31,7 @@ public class TripMergeStrategy extends
   public TripMergeStrategy() {
     super(Trip.class);
     _duplicateScoringStrategy.addPropertyMatch("route");
+    _duplicateScoringStrategy.addPropertyMatch("serviceId");
     _duplicateScoringStrategy.addStrategy(new TripStopsInCommonDuplicateScoringStrategy());
     _duplicateScoringStrategy.addStrategy(new TripScheduleOverlapDuplicateScoringStrategy());
   }

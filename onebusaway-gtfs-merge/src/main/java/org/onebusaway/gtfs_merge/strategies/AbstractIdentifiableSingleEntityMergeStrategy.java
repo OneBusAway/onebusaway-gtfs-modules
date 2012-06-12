@@ -31,8 +31,8 @@ import org.onebusaway.gtfs_merge.GtfsMergeContext;
 import org.onebusaway.gtfs_merge.strategies.scoring.AndDuplicateScoringStrategy;
 import org.onebusaway.gtfs_merge.strategies.scoring.DuplicateScoringSupport;
 
-public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends IdentityBean<?>> extends
-    AbstractSingleEntityMergeStrategy<T> {
+public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends IdentityBean<?>>
+    extends AbstractSingleEntityMergeStrategy<T> {
 
   protected AndDuplicateScoringStrategy<T> _duplicateScoringStrategy = new AndDuplicateScoringStrategy<T>();
 
@@ -42,28 +42,33 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
 
   protected EDuplicateDetectionStrategy pickBestDuplicateDetectionStrategy(
       GtfsMergeContext context) {
+
+    /**
+     * If there are currently no elements to be duplicated, then return the NONE
+     * strategy.
+     */
+    GtfsRelationalDao source = context.getSource();
+    GtfsMutableRelationalDao target = context.getTarget();
+    if (target.getAllEntitiesForType(_entityType).isEmpty()
+        || source.getAllEntitiesForType(_entityType).isEmpty()) {
+      return EDuplicateDetectionStrategy.NONE;
+    }
+
     if (hasLikelyIdentifierOverlap(context)) {
       return EDuplicateDetectionStrategy.IDENTITY;
-    } else {
+    } else if (hasLikelyFuzzyOverlap(context)) {
       return EDuplicateDetectionStrategy.FUZZY;
+    } else {
+      return EDuplicateDetectionStrategy.NONE;
     }
   }
 
+  @SuppressWarnings("unchecked")
   private boolean hasLikelyIdentifierOverlap(GtfsMergeContext context) {
     GtfsRelationalDao source = context.getSource();
     GtfsMutableRelationalDao target = context.getTarget();
-
-    @SuppressWarnings("unchecked")
     Collection<T> targetEntities = (Collection<T>) target.getAllEntitiesForType(_entityType);
-    @SuppressWarnings("unchecked")
     Collection<T> sourceEntities = (Collection<T>) source.getAllEntitiesForType(_entityType);
-
-    /**
-     * If there are no entities, then we can't have identifier overlap.
-     */
-    if (targetEntities.isEmpty() || sourceEntities.isEmpty()) {
-      return false;
-    }
 
     Map<Serializable, T> sourceById = MappingLibrary.mapToValue(targetEntities,
         "id");
@@ -87,6 +92,47 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
     }
     totalScore /= commonIds.size();
 
+    return totalScore > _minElementsDuplicateScoreForAutoDetect;
+  }
+
+  @SuppressWarnings("unchecked")
+  private boolean hasLikelyFuzzyOverlap(GtfsMergeContext context) {
+
+    GtfsRelationalDao source = context.getSource();
+    GtfsMutableRelationalDao target = context.getTarget();
+
+    Collection<T> targetEntities = (Collection<T>) target.getAllEntitiesForType(_entityType);
+    Collection<T> sourceEntities = (Collection<T>) source.getAllEntitiesForType(_entityType);
+
+    double duplicateElements = 0;
+    double totalScore = 0.0;
+
+    Set<T> remainingSourceEntities = new HashSet<T>(sourceEntities);
+    for (T targetEntity : targetEntities) {
+      Max<T> best = new Max<T>();
+      for (T sourceEntity : remainingSourceEntities) {
+        double score = _duplicateScoringStrategy.score(context, sourceEntity,
+            targetEntity);
+        if (score < _minElementDuplicateScoreForFuzzyMatch) {
+          continue;
+        }
+        best.add(score, sourceEntity);
+      }
+
+      if (best.getMaxElement() != null) {
+        duplicateElements++;
+        totalScore += best.getMaxValue();
+        remainingSourceEntities.remove(best.getMaxElement());
+      }
+    }
+
+    double elementsInCommon = (duplicateElements / targetEntities.size() + duplicateElements
+        / sourceEntities.size()) / 2;
+    if (elementsInCommon < _minElementsInCommonScoreForAutoDetect) {
+      return false;
+    }
+
+    totalScore /= duplicateElements;
     return totalScore > _minElementsDuplicateScoreForAutoDetect;
   }
 

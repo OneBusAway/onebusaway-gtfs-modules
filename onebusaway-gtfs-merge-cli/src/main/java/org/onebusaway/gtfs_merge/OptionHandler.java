@@ -23,8 +23,9 @@ import org.onebusaway.gtfs_merge.strategies.ELogDuplicatesStrategy;
 public class OptionHandler {
 
   public void handleOption(Option option, AbstractEntityMergeStrategy strategy) {
-    if (option.getOpt().equals(GtfsMergerMain.ARG_IDENTITY_DUPLICATES)) {
-      strategy.setDuplicateDetectionStrategy(EDuplicateDetectionStrategy.IDENTITY);
+    if (option.getOpt().equals(GtfsMergerMain.ARG_DUPLICATE_DETECTION)) {
+      String strategyName = option.getValue().toUpperCase();
+      strategy.setDuplicateDetectionStrategy(EDuplicateDetectionStrategy.valueOf(strategyName));
     } else if (option.getOpt().equals(GtfsMergerMain.ARG_FUZZY_DUPLICATES)) {
       strategy.setDuplicateDetectionStrategy(EDuplicateDetectionStrategy.FUZZY);
     } else if (option.getOpt().equals(GtfsMergerMain.ARG_LOG_DROPPED_DUPLICATES)) {

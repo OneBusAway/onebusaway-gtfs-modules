@@ -58,13 +58,6 @@ public abstract class AbstractSingleEntityMergeStrategy<T> extends
 
     resetGeneratedIds(context, entity);
 
-    if (entity instanceof Stop) {
-      Stop stop = (Stop) entity;
-      if (stop.getId().getId().equals("521")) {
-        System.out.println("here");
-      }
-    }
-
     IdentityBean<?> duplicate = getDuplicate(context, entity);
     if (duplicate != null) {
       logDuplicateEntity(entity.getId());
@@ -105,6 +98,8 @@ public abstract class AbstractSingleEntityMergeStrategy<T> extends
         return getIdentityDuplicate(context, entity);
       case FUZZY:
         return getFuzzyDuplicate(context, entity);
+      case NONE:
+        return null;
       default:
         throw new IllegalStateException(
             "unexpected duplicate detection strategy: "
@@ -126,5 +121,15 @@ public abstract class AbstractSingleEntityMergeStrategy<T> extends
   protected void save(GtfsMergeContext context, IdentityBean<?> entity) {
     GtfsMutableRelationalDao target = context.getTarget();
     target.saveEntity(entity);
+  }
+
+  @Override
+  protected String getDescription() {
+    String name = _entityType.getName();
+    int index = name.lastIndexOf('.');
+    if (index != -1) {
+      name = name.substring(index + 1);
+    }
+    return name;
   }
 }

@@ -58,6 +58,9 @@ public class ServiceDateUserType implements UserType {
 
   @Override
   public Object deepCopy(Object value) throws HibernateException {
+    if (value == null) {
+      return null;
+    }
     return new ServiceDate((ServiceDate) value);
   }
 

@@ -15,6 +15,8 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
+import java.util.List;
+
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.model.StopTime;
@@ -34,6 +36,30 @@ public class TripMergeStrategy extends
     _duplicateScoringStrategy.addPropertyMatch("serviceId");
     _duplicateScoringStrategy.addStrategy(new TripStopsInCommonDuplicateScoringStrategy());
     _duplicateScoringStrategy.addStrategy(new TripScheduleOverlapDuplicateScoringStrategy());
+  }
+
+  @Override
+  protected boolean rejectDuplicateOverDifferences(GtfsMergeContext context,
+      Trip sourceEntity, Trip targetDuplicate) {
+    GtfsRelationalDao source = context.getSource();
+    GtfsRelationalDao target = context.getTarget();
+    List<StopTime> sourceStopTimes = source.getStopTimesForTrip(sourceEntity);
+    List<StopTime> targetStopTimes = target.getStopTimesForTrip(targetDuplicate);
+    if (sourceStopTimes.size() != targetStopTimes.size()) {
+      return true;
+    }
+    for (int i = 0; i < sourceStopTimes.size(); ++i) {
+      StopTime sourceStopTime = sourceStopTimes.get(i);
+      StopTime targetStopTime = targetStopTimes.get(i);
+      if (sourceStopTime.getStop().equals(targetStopTime.getStop())) {
+        return true;
+      }
+      if (sourceStopTime.getArrivalTime() != targetStopTime.getArrivalTime()
+          || sourceStopTime.getDepartureTime() != targetStopTime.getDepartureTime()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override

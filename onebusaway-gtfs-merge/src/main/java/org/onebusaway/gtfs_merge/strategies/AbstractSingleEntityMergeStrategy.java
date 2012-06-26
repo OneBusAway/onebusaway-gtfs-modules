@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.util.Collection;
 
 import org.onebusaway.gtfs.model.IdentityBean;
-import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.serialization.DuplicateEntityException;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
@@ -58,15 +57,19 @@ public abstract class AbstractSingleEntityMergeStrategy<T> extends
 
     resetGeneratedIds(context, entity);
 
-    IdentityBean<?> duplicate = getDuplicate(context, entity);
+    T duplicate = (T) getDuplicate(context, entity);
     if (duplicate != null) {
+      
+    }
+    if (duplicate != null && ! rejectDuplicateOverDifferences(context, (T) entity, duplicate)) {
       logDuplicateEntity(entity.getId());
-      replaceDuplicateEntry(context, (T) entity, (T) duplicate);
+      replaceDuplicateEntry(context, (T) entity, duplicate);
       return;
     }
 
     save(context, entity);
   }
+
 
   private void logDuplicateEntity(Serializable id) {
     switch (_logDuplicatesStrategy) {
@@ -115,6 +118,11 @@ public abstract class AbstractSingleEntityMergeStrategy<T> extends
     return null;
   }
 
+  protected boolean rejectDuplicateOverDifferences(GtfsMergeContext context,
+      T sourceEntity, T targetDuplicate) {
+    return false;
+  }
+  
   protected abstract void replaceDuplicateEntry(GtfsMergeContext context,
       T oldEntity, T newEntity);
 

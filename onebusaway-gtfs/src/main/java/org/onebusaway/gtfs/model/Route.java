@@ -54,6 +54,9 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, defaultValue = "0")
   private int bikesAllowed = 0;
 
+  @CsvField(optional = true)
+  private String typeName;
+
   public Route() {
 
   }
@@ -117,6 +120,14 @@ public final class Route extends IdentityBean<AgencyAndId> {
 
   public void setType(int type) {
     this.type = type;
+  }
+
+  public String getTypeName() {
+    return typeName;
+  }
+
+  public void setTypeName(String typeName) {
+    this.typeName = typeName;
   }
 
   public String getUrl() {

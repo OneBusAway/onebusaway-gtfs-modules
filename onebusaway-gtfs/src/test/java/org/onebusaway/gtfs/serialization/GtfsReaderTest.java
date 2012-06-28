@@ -76,9 +76,9 @@ public class GtfsReaderTest {
         "S1,Stop,47.0,-122.0,description,123,N,1,1234,http://agency.gov/stop,1,Z");
     gtfs.putLines(
         "routes.txt",
-        "agency_id,route_id,route_short_name,route_long_name,route_type,route_desc,route_color,route_text_color,"
+        "agency_id,route_id,route_short_name,route_long_name,route_type,route_type_name,route_desc,route_color,route_text_color,"
             + "route_bikes_allowed,route_url",
-        "1,R1,10,The Ten,3,route desc,FF0000,0000FF,1,http://agency.gov/route");
+        "1,R1,10,The Ten,3,\"Magic Schoolbus\",route desc,FF0000,0000FF,1,http://agency.gov/route");
     gtfs.putLines(
         "trips.txt",
         "route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,block_id,shape_id,route_short_name,"
@@ -151,6 +151,7 @@ public class GtfsReaderTest {
     assertEquals("10", route.getShortName());
     assertEquals("The Ten", route.getLongName());
     assertEquals(3, route.getType());
+    assertEquals("Magic Schoolbus", route.getTypeName());
     assertEquals("route desc", route.getDesc());
     assertEquals("FF0000", route.getColor());
     assertEquals("0000FF", route.getTextColor());

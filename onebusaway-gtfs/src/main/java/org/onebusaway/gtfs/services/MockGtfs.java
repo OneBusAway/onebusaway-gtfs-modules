@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,7 +31,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
+import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.serialization.GtfsReader;
+import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 
 public class MockGtfs {
 
@@ -126,7 +129,7 @@ public class MockGtfs {
 
   public void putStops(int numberOfRows, String... columns) {
     TableBuilder b = new TableBuilder(numberOfRows);
-    b.addColumnSpec("stop_id", "r$0");
+    b.addColumnSpec("stop_id", "s$0");
     b.addColumnSpec("stop_name", "Stop $0");
 
     List<String> stopLats = new ArrayList<String>();
@@ -135,7 +138,7 @@ public class MockGtfs {
       double lat = 47.65383950857904 + 0.004 * i;
       double lon = -122.30782950811766;
       stopLats.add(Double.toString(lat));
-      stopLats.add(Double.toString(lon));
+      stopLons.add(Double.toString(lon));
     }
     b.addColumnSpec("stop_lat", stopLats);
     b.addColumnSpec("stop_lon", stopLons);
@@ -149,6 +152,51 @@ public class MockGtfs {
     putLines("stops.txt", "stop_id,stop_name,stop_lat,stop_lon",
         "100,The Stop,47.654403,-122.305211",
         "200,The Other Stop,47.656303,-122.315436");
+  }
+
+  public void putCalendars(int numberOfServiceIds, String... columns) {
+    TableBuilder b = new TableBuilder(numberOfServiceIds);
+    b.addColumnSpec("service_id", "sid$0");
+
+    Calendar c = Calendar.getInstance();
+    ServiceDate startDate = new ServiceDate(c);
+    b.addColumnSpec("start_date", startDate.getAsString());
+    c.add(Calendar.MONTH, 3);
+    ServiceDate endDate = new ServiceDate(c);
+    b.addColumnSpec("end_date", endDate.getAsString());
+    b.addColumnSpec("start_date", startDate.getAsString());
+
+    String[] days = {
+        "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
+        "sunday"};
+    for (String day : days) {
+      b.addColumnSpec(day, "1");
+    }
+
+    List<String> mask = new ArrayList<String>();
+    columns = b.removeColumn("mask", columns, mask);
+    if (!mask.isEmpty()) {
+      Map<String, List<String>> valuesByDay = new HashMap<String, List<String>>();
+
+      for (String day : days) {
+        valuesByDay.put(day, new ArrayList<String>());
+      }
+      for (String maskRow : mask) {
+        if (maskRow.length() != days.length) {
+          throw new IllegalArgumentException("invalid calendar.txt mask="
+              + maskRow);
+        }
+        for (int i = 0; i < maskRow.length(); ++i) {
+          String day = days[i];
+          valuesByDay.get(day).add(maskRow.substring(i, i + 1));
+        }
+      }
+      for (String day : days) {
+        b.addColumnSpec(day, valuesByDay.get(day));
+      }
+    }
+    b.addColumnSpecs(columns);
+    putFile("calendar.txt", b.build());
   }
 
   public void putDefaultCalendar() {
@@ -175,7 +223,52 @@ public class MockGtfs {
   }
 
   public void putStopTimes(String tripIds, String stopIds) {
+    List<String> tripIdColumn = new ArrayList<String>();
+    List<String> stopIdColumn = new ArrayList<String>();
+    List<String> arrivalTimeColumn = new ArrayList<String>();
+    List<String> departureTimeColumn = new ArrayList<String>();
+    List<String> stopSequenceColumn = new ArrayList<String>();
 
+    String[] expandedTripIds = tripIds.isEmpty() ? new String[0]
+        : tripIds.split(",");
+    List<List<String>> expandedStopIds = new ArrayList<List<String>>();
+    if (!stopIds.isEmpty()) {
+      for (String stopIdsEntry : stopIds.split("\\|")) {
+        expandedStopIds.add(Arrays.asList(stopIdsEntry.split(",")));
+      }
+    }
+    if (expandedStopIds.size() != 1
+        && expandedStopIds.size() != expandedTripIds.length) {
+      throw new IllegalArgumentException("given " + expandedTripIds.length
+          + " trip_id values, expected either 1 or " + expandedTripIds.length
+          + " stop_id lists, but instead found " + expandedStopIds.size());
+    }
+    int startTime = 9 * 60 * 60;
+    for (int i = 0; i < expandedTripIds.length; ++i) {
+      String tripId = expandedTripIds[i];
+      List<String> specificStopIds = expandedStopIds.get(expandedStopIds.size() == 1
+          ? 0 : i);
+      int t = startTime;
+      for (int stopSequence = 0; stopSequence < specificStopIds.size(); stopSequence++) {
+        String stopId = specificStopIds.get(stopSequence);
+        tripIdColumn.add(tripId);
+        stopIdColumn.add(stopId);
+        stopSequenceColumn.add(Integer.toString(stopSequence));
+        String timeString = StopTimeFieldMappingFactory.getSecondsAsString(t);
+        arrivalTimeColumn.add(timeString);
+        departureTimeColumn.add(timeString);
+        t += 5 * 60;
+      }
+      startTime += 30 * 60;
+    }
+
+    TableBuilder b = new TableBuilder(tripIdColumn.size());
+    b.addColumnSpec("trip_id", tripIdColumn);
+    b.addColumnSpec("stop_id", stopIdColumn);
+    b.addColumnSpec("arrival_time", arrivalTimeColumn);
+    b.addColumnSpec("departure_time", departureTimeColumn);
+    b.addColumnSpec("stop_sequence", stopSequenceColumn);
+    putFile("stop_times.txt", b.build());
   }
 
   public void putDefaultStopTimes() {
@@ -217,6 +310,10 @@ public class MockGtfs {
     }
 
     public void addColumnSpec(String columnName, List<String> values) {
+      if (values.size() != 1 && values.size() != _numberOfRows) {
+        throw new IllegalArgumentException("expected 1 or " + _numberOfRows
+            + " values but found " + values.size());
+      }
       _columnsAndValues.put(columnName, values);
     }
 
@@ -232,6 +329,27 @@ public class MockGtfs {
         }
         addColumnSpec(spec.substring(0, index), spec.substring(index + 1));
       }
+    }
+
+    public String[] removeColumn(String name, String[] columns,
+        List<String> values) {
+      List<String> filtered = new ArrayList<String>();
+      for (String columnSpec : columns) {
+        int index = columnSpec.indexOf('=');
+        if (index == -1) {
+          throw new IllegalArgumentException("invalid column spec="
+              + columnSpec);
+        }
+        String columnName = columnSpec.substring(0, index);
+        if (columnName.equals(name)) {
+          String columnValue = columnSpec.substring(index + 1);
+          values.clear();
+          values.addAll(expand(columnValue));
+        } else {
+          filtered.add(columnSpec);
+        }
+      }
+      return filtered.toArray(new String[filtered.size()]);
     }
 
     public String build() {

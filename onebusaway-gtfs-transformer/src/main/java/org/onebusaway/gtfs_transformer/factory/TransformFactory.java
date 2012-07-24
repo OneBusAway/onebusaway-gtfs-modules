@@ -230,6 +230,11 @@ public class TransformFactory {
       retainUp = json.getBoolean("retainUp");
 
     strategy.addRetention(match, retainUp);
+    
+    if (json.has("retainBlocks")) {
+      boolean retainBlocks = json.getBoolean("retainBlocks");
+      strategy.setRetainBlocks(retainBlocks);
+    }
   }
 
   private void handleTransformOperation(GtfsTransformer transformer,

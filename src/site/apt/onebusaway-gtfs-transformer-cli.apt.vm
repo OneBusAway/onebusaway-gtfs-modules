@@ -147,6 +147,19 @@ Types of Transforms
 {"op":"retain","match":{"class":"Route","shortName":"B15"}}
 +---+
 
+  By default, we retain across {{{https://developers.google.com/transit/gtfs/reference#trips_block_id_field}block_id}} values
+specified in trips.txt.  That means if a particular trip is retained (perhaps because its parent route is retained),
+and the trip specifies a block_id, then all the trips referencing that block_id will be retained as well, along with
+their own routes, stop times, and shapes.  This can potentially lead to unexpected results if you retain one route and
+suddenly see other routes included because they are linked by block_id.
+
+  You can disable this feature by specifying <<<retainBlocks: false>>> in the JSON transformer snippet.  Here is an
+example:
+
++---+
+{"op":"retain","match":{"class":"Route","shortName":"B15"},"retainBlocks":false}
++---+
+
 * Remove an Entity
 
   You can remove a specific entity from a feed.

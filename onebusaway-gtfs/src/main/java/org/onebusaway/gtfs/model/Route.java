@@ -31,10 +31,10 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @CsvField(name="agency_id", optional = true, mapping = RouteAgencyFieldMappingFactory.class, order = -1)
   private Agency agency;
 
-  @CsvField(optional = true)
+  @CsvField(optional = true, alwaysIncludeInOutput=true)
   private String shortName;
 
-  @CsvField(optional = true)
+  @CsvField(optional = true, alwaysIncludeInOutput=true)
   private String longName;
 
   private int type;

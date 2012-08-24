@@ -27,4 +27,37 @@
       <artifactId>slf4j-log4j12</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>jar-with-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+
+              <finalName>onebusaway-gtfs-merge-cli</finalName>
+
+              <archive>
+                <manifest>
+                  <mainClass>org.onebusaway.gtfs_merge.GtfsMergerMain</mainClass>
+                </manifest>
+              </archive>
+
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

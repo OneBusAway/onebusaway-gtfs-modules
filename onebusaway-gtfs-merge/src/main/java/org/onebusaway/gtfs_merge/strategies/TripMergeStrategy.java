@@ -76,12 +76,19 @@ public class TripMergeStrategy extends
 
   @Override
   protected void save(GtfsMergeContext context, IdentityBean<?> entity) {
-    super.save(context, entity);
-    Trip trip = (Trip) entity;
     GtfsRelationalDao source = context.getSource();
     GtfsMutableRelationalDao target = context.getTarget();
-    for (StopTime stopTime : source.getStopTimesForTrip(trip)) {
+
+    Trip trip = (Trip) entity;
+    
+    // save them out; when the trip is renamed stop time refs will be lost
+    List<StopTime> stopTimes = source.getStopTimesForTrip(trip);
+    
+    super.save(context, entity);
+    
+    for (StopTime stopTime : stopTimes) {
       stopTime.setId(0);
+      stopTime.setTrip(trip);
       target.saveEntity(stopTime);
     }
   }

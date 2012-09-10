@@ -51,7 +51,7 @@ public class TripMergeStrategy extends
     for (int i = 0; i < sourceStopTimes.size(); ++i) {
       StopTime sourceStopTime = sourceStopTimes.get(i);
       StopTime targetStopTime = targetStopTimes.get(i);
-      if (sourceStopTime.getStop().equals(targetStopTime.getStop())) {
+      if (!sourceStopTime.getStop().equals(targetStopTime.getStop())) {
         return true;
       }
       if (sourceStopTime.getArrivalTime() != targetStopTime.getArrivalTime()

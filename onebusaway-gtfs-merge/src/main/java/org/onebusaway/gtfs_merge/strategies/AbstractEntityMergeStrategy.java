@@ -44,6 +44,10 @@ public abstract class AbstractEntityMergeStrategy implements
       EDuplicateDetectionStrategy duplicateDetectionStrategy) {
     _duplicateDetectionStrategy = duplicateDetectionStrategy;
   }
+  
+  public EDuplicateDetectionStrategy getDuplicateDetectionStrategy () {
+    return _duplicateDetectionStrategy;
+  }
 
   public void setLogDuplicatesStrategy(
       ELogDuplicatesStrategy logDuplicatesStrategy) {

@@ -30,6 +30,14 @@ import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 import org.onebusaway.gtfs_merge.strategies.scoring.DuplicateScoringSupport;
 
+/**
+ * Entity merge strategy for handling {@link ServiceCalendar} and
+ * {@link ServiceCalendarDate} entities. We merge them at the same time since
+ * they are both part of a larger entity collection identified by a single
+ * {@code service_id} identifier.
+ * 
+ * @author bdferris
+ */
 public class ServiceCalendarMergeStrategy extends
     AbstractCollectionEntityMergeStrategy<AgencyAndId> {
 
@@ -42,6 +50,14 @@ public class ServiceCalendarMergeStrategy extends
     return dao.getAllServiceIds();
   }
 
+  /**
+   * We consider two service calendars to be duplicates if they share a lot of
+   * dates in common.
+   * 
+   * This doesn't actually do so well when merging two feeds with different
+   * service calendars (eg. before and after a schedule shakeup), which is a
+   * trickier problem to solve.
+   */
   @Override
   protected double scoreDuplicateKey(GtfsMergeContext context, AgencyAndId key) {
     Set<ServiceDate> sourceServiceDates = getServiceDatesForServiceId(
@@ -52,6 +68,12 @@ public class ServiceCalendarMergeStrategy extends
         targetServiceDates);
   }
 
+  /**
+   * 
+   * @param dao
+   * @param key
+   * @return the set of active service dates for the specified service_id
+   */
   private Set<ServiceDate> getServiceDatesForServiceId(GtfsRelationalDao dao,
       AgencyAndId key) {
     CalendarServiceDataFactoryImpl factory = new CalendarServiceDataFactoryImpl();
@@ -59,6 +81,11 @@ public class ServiceCalendarMergeStrategy extends
     return factory.getServiceDatesForServiceId(key, TimeZone.getDefault());
   }
 
+  /**
+   * Replaces all references to the specified old service_id with the new
+   * service_id for all {@link ServiceCalendar}, {@link ServiceCalendarDate},
+   * and {@link Trip} entities in the source feed.
+   */
   @Override
   protected void renameKey(GtfsMergeContext context, AgencyAndId oldId,
       AgencyAndId newId) {
@@ -75,6 +102,10 @@ public class ServiceCalendarMergeStrategy extends
     }
   }
 
+  /**
+   * Writes all {@link ServiceCalendar} and {@link ServiceCalendarDate} entities
+   * with the specified {@code service_id} to the merged output feed.
+   */
   @Override
   protected void saveElementsForKey(GtfsMergeContext context,
       AgencyAndId serviceId) {

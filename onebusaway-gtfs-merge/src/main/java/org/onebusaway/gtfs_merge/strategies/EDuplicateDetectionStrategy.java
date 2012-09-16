@@ -15,10 +15,18 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
+/**
+ * Defines different strategies for detecting duplicate entities for a
+ * particular GTFS entity type across feeds.
+ * 
+ * @author bdferris
+ * @see AbstractEntityMergeStrategy#setDuplicateDetectionStrategy(EDuplicateDetectionStrategy)
+ */
 public enum EDuplicateDetectionStrategy {
 
   /**
-   * Never attempt to look for duplicates.
+   * Entities will never be considered duplicates, even if they have the same
+   * id.
    */
   NONE,
 

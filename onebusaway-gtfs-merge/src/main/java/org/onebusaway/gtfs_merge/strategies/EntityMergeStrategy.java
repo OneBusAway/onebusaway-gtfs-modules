@@ -16,7 +16,24 @@
 package org.onebusaway.gtfs_merge.strategies;
 
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
+import org.onebusaway.gtfs_merge.GtfsMerger;
 
+/**
+ * Defines an interface for performing a merge operation on entities of
+ * particular type from a source GTFS feed into a merged GTFS feed. Typically,
+ * each GTFS entity type (stops vs routes vs trips vs ...) will define its own
+ * EntityMergeStrategy.
+ * 
+ * @author bdferris
+ */
 public interface EntityMergeStrategy {
+
+  /**
+   * Perform a merge operation for the entities specified in the
+   * {@link GtfsMergeContext}. This method will be called repeated by the
+   * {@link GtfsMerger}, once for each input feed.
+   * 
+   * @param context the merge state for the current merge operation
+   */
   public void merge(GtfsMergeContext context);
 }

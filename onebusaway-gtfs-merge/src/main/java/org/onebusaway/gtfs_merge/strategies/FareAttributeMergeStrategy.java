@@ -20,6 +20,11 @@ import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
+/**
+ * Entity merge strategy for handling {@link FareAttribute} entities.
+ * 
+ * @author bdferris
+ */
 public class FareAttributeMergeStrategy extends
     AbstractIdentifiableSingleEntityMergeStrategy<FareAttribute> {
 

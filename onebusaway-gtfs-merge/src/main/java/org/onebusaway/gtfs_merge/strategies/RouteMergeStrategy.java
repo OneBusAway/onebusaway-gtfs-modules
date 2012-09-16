@@ -21,6 +21,11 @@ import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 import org.onebusaway.gtfs_merge.strategies.scoring.RouteStopsInCommonDuplicateScoringStrategy;
 
+/**
+ * Entity merge strategy for handling {@link Route} entities.
+ * 
+ * @author bdferris
+ */
 public class RouteMergeStrategy extends
     AbstractIdentifiableSingleEntityMergeStrategy<Route> {
 

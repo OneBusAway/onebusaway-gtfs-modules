@@ -24,6 +24,13 @@ import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
+/**
+ * Entity merge strategy for handling {@link ShapePoint} entities. Shape points
+ * are an example of an entity collection, since multiple shape point entities
+ * are linked by a sinlge {@code shape_id}.
+ * 
+ * @author bdferris
+ */
 public class ShapePointMergeStrategy extends
     AbstractCollectionEntityMergeStrategy<AgencyAndId> {
 

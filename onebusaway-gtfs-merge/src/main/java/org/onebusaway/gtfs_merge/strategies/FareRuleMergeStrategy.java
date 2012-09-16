@@ -17,6 +17,11 @@ package org.onebusaway.gtfs_merge.strategies;
 
 import org.onebusaway.gtfs.model.FareRule;
 
+/**
+ * Entity merge strategy for handling {@link FareRule} entities.
+ * 
+ * @author bdferris
+ */
 public class FareRuleMergeStrategy extends
     AbstractNonIdentifiableSingleEntityMergeStrategy<FareRule> {
 

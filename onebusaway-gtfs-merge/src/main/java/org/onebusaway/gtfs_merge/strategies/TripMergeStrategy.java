@@ -27,6 +27,12 @@ import org.onebusaway.gtfs_merge.GtfsMergeContext;
 import org.onebusaway.gtfs_merge.strategies.scoring.TripScheduleOverlapDuplicateScoringStrategy;
 import org.onebusaway.gtfs_merge.strategies.scoring.TripStopsInCommonDuplicateScoringStrategy;
 
+/**
+ * Entity merge strategy for handling {@link Trip} entities. This strategy also
+ * handles merging the {@link StopTime} entities associated with each trip.
+ * 
+ * @author bdferris
+ */
 public class TripMergeStrategy extends
     AbstractIdentifiableSingleEntityMergeStrategy<Trip> {
 
@@ -38,6 +44,16 @@ public class TripMergeStrategy extends
     _duplicateScoringStrategy.addStrategy(new TripScheduleOverlapDuplicateScoringStrategy());
   }
 
+  /**
+   * Even if we have detected that two trips are duplicates, they might have
+   * slight differences that prevent them from being represented as one merged
+   * trip. For example, if a trip in a subsequent feed adds, removes, or
+   * modifies a stop time, we might avoid merging the two trips such that the
+   * schedule is correct in the merged feed.
+   * 
+   * TODO: Think about how this should be applied in relation to the service
+   * calendars of the two trips.
+   */
   @Override
   protected boolean rejectDuplicateOverDifferences(GtfsMergeContext context,
       Trip sourceEntity, Trip targetDuplicate) {

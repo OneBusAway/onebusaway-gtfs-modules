@@ -17,6 +17,11 @@ package org.onebusaway.gtfs_merge.strategies;
 
 import org.onebusaway.gtfs.model.Transfer;
 
+/**
+ * Entity merge strategy for handling {@link Transfer} entities.
+ * 
+ * @author bdferris
+ */
 public class TransferMergeStrategy extends
     AbstractNonIdentifiableSingleEntityMergeStrategy<Transfer> {
 

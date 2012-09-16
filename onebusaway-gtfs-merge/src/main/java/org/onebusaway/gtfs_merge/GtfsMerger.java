@@ -1,17 +1,17 @@
 /**
  * Copyright (C) 2012 Google, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.onebusaway.gtfs_merge;
 
@@ -120,6 +120,15 @@ public class GtfsMerger {
     List<EntityMergeStrategy> strategies = new ArrayList<EntityMergeStrategy>();
     buildStrategies(strategies);
 
+    /**
+     * For each entity merge strategy, we keep track of a mapping from raw GTFS
+     * ids to entities, if the particular entity type has an identifier. This
+     * will be used to detect id conflicts between subsequent runs of each merge
+     * strategy on different feeds. We can't use the AgencyAndId ids in the DAO
+     * because it might be possible for two entities with the same id but
+     * different agency prefixes to sneak in. Since we ultimately serialize the
+     * data to a GTFS feed with no agency prefixes, we need to track the raw id.
+     */
     Map<EntityMergeStrategy, Map<String, Object>> rawEntityIdMapsByMergeStrategy = new HashMap<EntityMergeStrategy, Map<String, Object>>();
     for (EntityMergeStrategy strategy : strategies) {
       rawEntityIdMapsByMergeStrategy.put(strategy,

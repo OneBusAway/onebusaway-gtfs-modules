@@ -15,6 +15,26 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
+/**
+ * Defines different logging behaviors to take when a duplicate entity is
+ * detected between two GTFS feeds.
+ * 
+ * @see AbstractEntityMergeStrategy#setLogDuplicatesStrategy(ELogDuplicatesStrategy)
+ */
 public enum ELogDuplicatesStrategy {
-  NONE, WARNING, ERROR
+  /**
+   * Nothing is logged when a duplicate is detected.
+   */
+  NONE,
+
+  /**
+   * A warning is logged to the console if a duplicate is detected.
+   */
+  WARNING,
+
+  /**
+   * An exception is thrown if a duplicate is detected, halting the merge
+   * operation.
+   */
+  ERROR
 }

@@ -24,6 +24,11 @@ import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
+/**
+ * Entity merge strategy for handling {@link Agency} entities.
+ * 
+ * @author bdferris
+ */
 public class AgencyMergeStrategy extends
     AbstractIdentifiableSingleEntityMergeStrategy<Agency> {
 

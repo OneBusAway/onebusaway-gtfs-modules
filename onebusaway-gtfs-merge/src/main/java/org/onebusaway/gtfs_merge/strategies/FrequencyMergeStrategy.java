@@ -17,6 +17,11 @@ package org.onebusaway.gtfs_merge.strategies;
 
 import org.onebusaway.gtfs.model.Frequency;
 
+/**
+ * Entity merge strategy for handling {@link Frequency} entities.
+ * 
+ * @author bdferris
+ */
 public class FrequencyMergeStrategy extends
     AbstractNonIdentifiableSingleEntityMergeStrategy<Frequency> {
 

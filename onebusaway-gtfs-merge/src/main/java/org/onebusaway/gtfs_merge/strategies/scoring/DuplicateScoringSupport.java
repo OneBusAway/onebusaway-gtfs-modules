@@ -21,10 +21,30 @@ import java.util.Set;
 
 public class DuplicateScoringSupport {
 
+  /**
+   * Computes a numeric score that captures how much overlap there is between
+   * the elements in two collections, given their set of overlapping elements.
+   * The score is [0.0, 1.0], where a score of 0.0 indicates absolutely no
+   * overlap and 1.0 indicate the two collections are the same.
+   * 
+   * @param a
+   * @param b
+   * @return the numeric overlap score
+   */
   public static <T> double scoreElementOverlap(Collection<T> a, Collection<T> b) {
     return scoreElementOverlap(a, b, new HashSet<T>());
   }
 
+  /**
+   * Same as {@link #scoreElementOverlap(Collection, Collection)} with the
+   * exception that overlapping elements between the two collections are
+   * automatically added to the 'common' set.
+   * 
+   * @param a
+   * @param b
+   * @param common
+   * @return the numeric overlap score
+   */
   public static <T> double scoreElementOverlap(Collection<T> a,
       Collection<T> b, Set<T> common) {
     if (a.isEmpty() || b.isEmpty()) {

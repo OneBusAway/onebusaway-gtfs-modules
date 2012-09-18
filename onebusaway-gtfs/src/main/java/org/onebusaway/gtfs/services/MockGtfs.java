@@ -94,6 +94,14 @@ public class MockGtfs {
     return dao;
   }
 
+  public void putMinimal() {
+    putAgencies(1);
+    putStops(0);
+    putRoutes(0);
+    putTrips(0, "", "");
+    putStopTimes("", "");
+  }
+
   public void putAgencies(int numberOfRows, String... columns) {
     TableBuilder b = new TableBuilder(numberOfRows);
     b.addColumnSpec("agency_id", "a$0");
@@ -204,6 +212,36 @@ public class MockGtfs {
         "calendars.txt",
         "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date",
         "WEEK,1,1,1,1,1,0,0,20110101,20111231");
+  }
+
+  public void putCalendarDates(String... specs) {
+    List<String> serviceIds = new ArrayList<String>();
+    List<String> serviceDates = new ArrayList<String>();
+    List<String> exceptionTypes = new ArrayList<String>();
+    for (String spec : specs) {
+      int index = spec.indexOf('=');
+      if (index == -1) {
+        throw new IllegalArgumentException("invalid calendar date spec=" + spec);
+      }
+      String serviceId = spec.substring(0, index);
+      String dates = spec.substring(index + 1);
+      for (String date : dates.split(",")) {
+        int exceptionType = 1;
+        if (date.startsWith("-")) {
+          exceptionType = 2;
+          date = date.substring(1);
+        }
+        serviceIds.add(serviceId);
+        serviceDates.add(date);
+        exceptionTypes.add(Integer.toString(exceptionType));
+      }
+    }
+    TableBuilder b = new TableBuilder(serviceIds.size());
+    b.addColumnSpec("service_id", serviceIds);
+    b.addColumnSpec("date", serviceDates);
+    b.addColumnSpec("exception_type", exceptionTypes);
+    putFile("calendar_dates.txt", b.build());
+
   }
 
   public void putTrips(int numberOfRows, String routeIds, String serviceIds,

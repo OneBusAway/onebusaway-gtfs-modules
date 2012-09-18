@@ -39,35 +39,35 @@ import org.onebusaway.gtfs.services.calendar.CalendarService;
 
 public class CalendarSimplicationLibrary {
 
-	private CalendarService _calendarService;
+  private CalendarService _calendarService;
 
-	private double _minNumberOfWeeksForCalendarEntry = 3;
+  private double _minNumberOfWeeksForCalendarEntry = 3;
 
-	private double _dayOfTheWeekInclusionRatio = 0.5;
+  private double _dayOfTheWeekInclusionRatio = 0.5;
 
-	public void setCalendarService(CalendarService calendarService) {
-		_calendarService = calendarService;
-	}
+  public void setCalendarService(CalendarService calendarService) {
+    _calendarService = calendarService;
+  }
 
-	public void setMinNumberOfWeeksForCalendarEntry(
-			int minNumberOfWeeksForCalendarEntry) {
-		_minNumberOfWeeksForCalendarEntry = minNumberOfWeeksForCalendarEntry;
-	}
+  public void setMinNumberOfWeeksForCalendarEntry(
+      int minNumberOfWeeksForCalendarEntry) {
+    _minNumberOfWeeksForCalendarEntry = minNumberOfWeeksForCalendarEntry;
+  }
 
-	public void setDayOfTheWeekInclusionRatio(double dayOfTheWeekInclusionRatio) {
-		_dayOfTheWeekInclusionRatio = dayOfTheWeekInclusionRatio;
-	}
+  public void setDayOfTheWeekInclusionRatio(double dayOfTheWeekInclusionRatio) {
+    _dayOfTheWeekInclusionRatio = dayOfTheWeekInclusionRatio;
+  }
 
-	public static CalendarServiceImpl createCalendarService(
-			GtfsMutableRelationalDao dao) {
-		CalendarServiceDataFactoryImpl factory = new CalendarServiceDataFactoryImpl();
-		factory.setGtfsDao(dao);
+  public static CalendarServiceImpl createCalendarService(
+      GtfsMutableRelationalDao dao) {
+    CalendarServiceDataFactoryImpl factory = new CalendarServiceDataFactoryImpl();
+    factory.setGtfsDao(dao);
 
-		CalendarServiceImpl calendarService = new CalendarServiceImpl();
-		calendarService.setDataFactory(factory);
-		return calendarService;
-	}
-	
+    CalendarServiceImpl calendarService = new CalendarServiceImpl();
+    calendarService.setDataFactory(factory);
+    return calendarService;
+  }
+
   public Map<Set<AgencyAndId>, List<TripKey>> groupTripKeysByServiceIds(
       Map<TripKey, List<Trip>> tripsByKey) {
 
@@ -86,129 +86,128 @@ public class CalendarSimplicationLibrary {
     return tripKeysByServiceIds;
   }
 
-	public void computeSimplifiedCalendar(Set<AgencyAndId> serviceIds,
-			AgencyAndId updatedServiceId, List<ServiceCalendar> calendarsToAdd,
-			List<ServiceCalendarDate> calendarDatesToAdd) {
+  public void computeSimplifiedCalendar(Set<AgencyAndId> serviceIds,
+      AgencyAndId updatedServiceId, List<ServiceCalendar> calendarsToAdd,
+      List<ServiceCalendarDate> calendarDatesToAdd) {
 
-		Calendar c = Calendar.getInstance();
-		TimeZone tz = TimeZone.getDefault();
+    Calendar c = Calendar.getInstance();
+    TimeZone tz = TimeZone.getDefault();
 
-		Set<ServiceDate> allServiceDates = new HashSet<ServiceDate>();
-		for (AgencyAndId serviceId : serviceIds) {
-			Set<ServiceDate> serviceDates = _calendarService
-					.getServiceDatesForServiceId(serviceId);
-			allServiceDates.addAll(serviceDates);
-		}
+    Set<ServiceDate> allServiceDates = new HashSet<ServiceDate>();
+    for (AgencyAndId serviceId : serviceIds) {
+      Set<ServiceDate> serviceDates = _calendarService.getServiceDatesForServiceId(serviceId);
+      allServiceDates.addAll(serviceDates);
+    }
 
-		List<ServiceDate> serviceDatesInOrder = new ArrayList<ServiceDate>(
-				allServiceDates);
-		Collections.sort(serviceDatesInOrder);
+    if (allServiceDates.isEmpty()) {
+      return;
+    }
 
-		Counter<Integer> daysOfTheWeekCounts = new Counter<Integer>();
-		for (ServiceDate serviceDate : allServiceDates) {
-			c.setTime(serviceDate.getAsDate());
-			int dayOfTheWeek = c.get(Calendar.DAY_OF_WEEK);
-			daysOfTheWeekCounts.increment(dayOfTheWeek);
-		}
+    List<ServiceDate> serviceDatesInOrder = new ArrayList<ServiceDate>(
+        allServiceDates);
+    Collections.sort(serviceDatesInOrder);
 
-		Set<Integer> daysOfTheWeekToUse = new HashSet<Integer>();
-		Integer maxKey = daysOfTheWeekCounts.getMax();
-		int maxCount = daysOfTheWeekCounts.getCount(maxKey);
+    Counter<Integer> daysOfTheWeekCounts = new Counter<Integer>();
+    for (ServiceDate serviceDate : allServiceDates) {
+      c.setTime(serviceDate.getAsDate());
+      int dayOfTheWeek = c.get(Calendar.DAY_OF_WEEK);
+      daysOfTheWeekCounts.increment(dayOfTheWeek);
+    }
 
-		for (Integer dayOfTheWeek : daysOfTheWeekCounts.getKeys()) {
-			int count = daysOfTheWeekCounts.getCount(dayOfTheWeek);
-			if (count < maxCount * _dayOfTheWeekInclusionRatio)
-				continue;
-			daysOfTheWeekToUse.add(dayOfTheWeek);
-		}
+    Set<Integer> daysOfTheWeekToUse = new HashSet<Integer>();
+    Integer maxKey = daysOfTheWeekCounts.getMax();
+    int maxCount = daysOfTheWeekCounts.getCount(maxKey);
 
-		ServiceDate fromDate = serviceDatesInOrder.get(0);
-		ServiceDate toDate = serviceDatesInOrder
-				.get(serviceDatesInOrder.size() - 1);
+    for (Integer dayOfTheWeek : daysOfTheWeekCounts.getKeys()) {
+      int count = daysOfTheWeekCounts.getCount(dayOfTheWeek);
+      if (count < maxCount * _dayOfTheWeekInclusionRatio)
+        continue;
+      daysOfTheWeekToUse.add(dayOfTheWeek);
+    }
 
-		boolean useDateRange = maxCount >= _minNumberOfWeeksForCalendarEntry;
+    ServiceDate fromDate = serviceDatesInOrder.get(0);
+    ServiceDate toDate = serviceDatesInOrder.get(serviceDatesInOrder.size() - 1);
 
-		if (useDateRange) {
-			ServiceCalendar sc = createServiceCalendar(updatedServiceId,
-					daysOfTheWeekToUse, fromDate, toDate);
-			calendarsToAdd.add(sc);
-		}
+    boolean useDateRange = maxCount >= _minNumberOfWeeksForCalendarEntry;
 
-		for (ServiceDate serviceDate = fromDate; serviceDate.compareTo(toDate) <= 0; serviceDate = serviceDate
-				.next(tz)) {
+    if (useDateRange) {
+      ServiceCalendar sc = createServiceCalendar(updatedServiceId,
+          daysOfTheWeekToUse, fromDate, toDate);
+      calendarsToAdd.add(sc);
+    }
 
-			boolean isActive = allServiceDates.contains(serviceDate);
+    for (ServiceDate serviceDate = fromDate; serviceDate.compareTo(toDate) <= 0; serviceDate = serviceDate.next(tz)) {
 
-			Calendar serviceDateAsCalendar = serviceDate.getAsCalendar(tz);
-			if (useDateRange) {
-				int dayOfWeek = serviceDateAsCalendar.get(Calendar.DAY_OF_WEEK);
-				boolean dateRangeIncludesServiceDate = daysOfTheWeekToUse
-						.contains(dayOfWeek);
-				if (isActive && !dateRangeIncludesServiceDate) {
-					ServiceCalendarDate scd = new ServiceCalendarDate();
-					scd.setDate(serviceDate);
-					scd.setExceptionType(ServiceCalendarDate.EXCEPTION_TYPE_ADD);
-					scd.setServiceId(updatedServiceId);
-					calendarDatesToAdd.add(scd);
-				}
-				if (!isActive && dateRangeIncludesServiceDate) {
-					ServiceCalendarDate scd = new ServiceCalendarDate();
-					scd.setDate(serviceDate);
-					scd.setExceptionType(ServiceCalendarDate.EXCEPTION_TYPE_REMOVE);
-					scd.setServiceId(updatedServiceId);
-					calendarDatesToAdd.add(scd);
-				}
-			} else {
-				if (isActive) {
-					ServiceCalendarDate scd = new ServiceCalendarDate();
-					scd.setDate(serviceDate);
-					scd.setExceptionType(ServiceCalendarDate.EXCEPTION_TYPE_ADD);
-					scd.setServiceId(updatedServiceId);
-					calendarDatesToAdd.add(scd);
-				}
-			}
-		}
-	}
+      boolean isActive = allServiceDates.contains(serviceDate);
 
-	public void saveUpdatedCalendarEntities(GtfsMutableRelationalDao dao,
-			List<ServiceCalendar> calendarsToAdd,
-			List<ServiceCalendarDate> calendarDatesToAdd) {
-		dao.clearAllEntitiesForType(ServiceCalendar.class);
-		dao.clearAllEntitiesForType(ServiceCalendarDate.class);
+      Calendar serviceDateAsCalendar = serviceDate.getAsCalendar(tz);
+      if (useDateRange) {
+        int dayOfWeek = serviceDateAsCalendar.get(Calendar.DAY_OF_WEEK);
+        boolean dateRangeIncludesServiceDate = daysOfTheWeekToUse.contains(dayOfWeek);
+        if (isActive && !dateRangeIncludesServiceDate) {
+          ServiceCalendarDate scd = new ServiceCalendarDate();
+          scd.setDate(serviceDate);
+          scd.setExceptionType(ServiceCalendarDate.EXCEPTION_TYPE_ADD);
+          scd.setServiceId(updatedServiceId);
+          calendarDatesToAdd.add(scd);
+        }
+        if (!isActive && dateRangeIncludesServiceDate) {
+          ServiceCalendarDate scd = new ServiceCalendarDate();
+          scd.setDate(serviceDate);
+          scd.setExceptionType(ServiceCalendarDate.EXCEPTION_TYPE_REMOVE);
+          scd.setServiceId(updatedServiceId);
+          calendarDatesToAdd.add(scd);
+        }
+      } else {
+        if (isActive) {
+          ServiceCalendarDate scd = new ServiceCalendarDate();
+          scd.setDate(serviceDate);
+          scd.setExceptionType(ServiceCalendarDate.EXCEPTION_TYPE_ADD);
+          scd.setServiceId(updatedServiceId);
+          calendarDatesToAdd.add(scd);
+        }
+      }
+    }
+  }
 
-		for (ServiceCalendar sc : calendarsToAdd)
-			dao.saveEntity(sc);
-		for (ServiceCalendarDate scd : calendarDatesToAdd)
-			dao.saveEntity(scd);
+  public void saveUpdatedCalendarEntities(GtfsMutableRelationalDao dao,
+      List<ServiceCalendar> calendarsToAdd,
+      List<ServiceCalendarDate> calendarDatesToAdd) {
+    dao.clearAllEntitiesForType(ServiceCalendar.class);
+    dao.clearAllEntitiesForType(ServiceCalendarDate.class);
 
-		UpdateLibrary.clearDaoCache(dao);
-	}
+    for (ServiceCalendar sc : calendarsToAdd)
+      dao.saveEntity(sc);
+    for (ServiceCalendarDate scd : calendarDatesToAdd)
+      dao.saveEntity(scd);
 
-	private ServiceCalendar createServiceCalendar(AgencyAndId updatedServiceId,
-			Set<Integer> daysOfTheWeekToUse, ServiceDate fromDate,
-			ServiceDate toDate) {
+    UpdateLibrary.clearDaoCache(dao);
+  }
 
-		ServiceCalendar sc = new ServiceCalendar();
+  private ServiceCalendar createServiceCalendar(AgencyAndId updatedServiceId,
+      Set<Integer> daysOfTheWeekToUse, ServiceDate fromDate, ServiceDate toDate) {
 
-		sc.setServiceId(updatedServiceId);
+    ServiceCalendar sc = new ServiceCalendar();
 
-		sc.setStartDate(fromDate);
-		sc.setEndDate(toDate);
+    sc.setServiceId(updatedServiceId);
 
-		if (daysOfTheWeekToUse.contains(Calendar.MONDAY))
-			sc.setMonday(1);
-		if (daysOfTheWeekToUse.contains(Calendar.TUESDAY))
-			sc.setTuesday(1);
-		if (daysOfTheWeekToUse.contains(Calendar.WEDNESDAY))
-			sc.setWednesday(1);
-		if (daysOfTheWeekToUse.contains(Calendar.THURSDAY))
-			sc.setThursday(1);
-		if (daysOfTheWeekToUse.contains(Calendar.FRIDAY))
-			sc.setFriday(1);
-		if (daysOfTheWeekToUse.contains(Calendar.SATURDAY))
-			sc.setSaturday(1);
-		if (daysOfTheWeekToUse.contains(Calendar.SUNDAY))
-			sc.setSunday(1);
-		return sc;
-	}
+    sc.setStartDate(fromDate);
+    sc.setEndDate(toDate);
+
+    if (daysOfTheWeekToUse.contains(Calendar.MONDAY))
+      sc.setMonday(1);
+    if (daysOfTheWeekToUse.contains(Calendar.TUESDAY))
+      sc.setTuesday(1);
+    if (daysOfTheWeekToUse.contains(Calendar.WEDNESDAY))
+      sc.setWednesday(1);
+    if (daysOfTheWeekToUse.contains(Calendar.THURSDAY))
+      sc.setThursday(1);
+    if (daysOfTheWeekToUse.contains(Calendar.FRIDAY))
+      sc.setFriday(1);
+    if (daysOfTheWeekToUse.contains(Calendar.SATURDAY))
+      sc.setSaturday(1);
+    if (daysOfTheWeekToUse.contains(Calendar.SUNDAY))
+      sc.setSunday(1);
+    return sc;
+  }
 }

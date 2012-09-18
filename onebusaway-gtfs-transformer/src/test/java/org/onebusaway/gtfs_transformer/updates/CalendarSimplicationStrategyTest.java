@@ -1,0 +1,61 @@
+package org.onebusaway.gtfs_transformer.updates;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.ServiceCalendar;
+import org.onebusaway.gtfs.model.ServiceCalendarDate;
+import org.onebusaway.gtfs.model.calendar.ServiceDate;
+import org.onebusaway.gtfs.services.GtfsRelationalDao;
+import org.onebusaway.gtfs_transformer.AbstractTestSupport;
+
+public class CalendarSimplicationStrategyTest extends AbstractTestSupport {
+
+  @Before
+  public void setup() {
+    _transformer.addTransform(new CalendarSimplicationStrategy());
+  }
+
+  @Test
+  public void testBasicSimplification() {
+    _gtfs.putAgencies(1);
+    _gtfs.putStops(1);
+    _gtfs.putRoutes(1);
+    _gtfs.putTrips(1, "r0", "sid0");
+    _gtfs.putStopTimes("t0", "s0");
+    _gtfs.putCalendars(1, "start_date=20120903", "end_date=20120916");
+    _gtfs.putCalendarDates("sid0=20120917,20120918,20120919,20120920,20120921,20120922,20120923");
+
+    GtfsRelationalDao dao = transform();
+
+    AgencyAndId serviceId = new AgencyAndId("a0", "sid0");
+    ServiceCalendar c = dao.getCalendarForServiceId(serviceId);
+    assertEquals(new ServiceDate(2012, 9, 3), c.getStartDate());
+    assertEquals(new ServiceDate(2012, 9, 23), c.getEndDate());
+    List<ServiceCalendarDate> serviceDates = dao.getCalendarDatesForServiceId(serviceId);
+    assertEquals(0, serviceDates.size());
+  }
+
+  @Test
+  public void testEmptyServiceDate() {
+    _gtfs.putAgencies(1);
+    _gtfs.putStops(1);
+    _gtfs.putRoutes(1);
+    _gtfs.putTrips(1, "r0", "sid0");
+    _gtfs.putStopTimes("t0", "s0");
+
+    GtfsRelationalDao dao = transform();
+
+    AgencyAndId serviceId = new AgencyAndId("a0", "sid0");
+    ServiceCalendar c = dao.getCalendarForServiceId(serviceId);
+    assertNull(c);
+    List<ServiceCalendarDate> serviceDates = dao.getCalendarDatesForServiceId(serviceId);
+    assertEquals(0, serviceDates.size());
+  }
+
+}

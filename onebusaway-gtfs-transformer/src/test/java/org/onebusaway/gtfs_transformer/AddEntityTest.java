@@ -31,15 +31,19 @@ public class AddEntityTest extends AbstractTestSupport {
 
   @Test
   public void test() throws IOException {
-    _gtfs.putDefaultStopTimes();
-    addModification("{'op':'add','obj':{'class':'Frequency','trip':'T10-0','startTime':'08:00:00','endTime':'10:00:00','headwaySecs':600}}");
+    _gtfs.putAgencies(1);
+    _gtfs.putStops(1);
+    _gtfs.putRoutes(1);
+    _gtfs.putTrips(1, "r0", "sid0");
+    _gtfs.putStopTimes("t0", "s0");
+    addModification("{'op':'add','obj':{'class':'Frequency','trip':'t0','startTime':'08:00:00','endTime':'10:00:00','headwaySecs':600}}");
     GtfsRelationalDao dao = transform();
 
     Collection<Frequency> frequencies = dao.getAllFrequencies();
     assertEquals(1, frequencies.size());
 
     Frequency frequency = frequencies.iterator().next();
-    assertSame(dao.getTripForId(new AgencyAndId("1", "T10-0")),
+    assertSame(dao.getTripForId(new AgencyAndId("a0", "t0")),
         frequency.getTrip());
     assertEquals(StopTimeFieldMappingFactory.getStringAsSeconds("08:00:00"),
         frequency.getStartTime());

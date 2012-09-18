@@ -23,11 +23,12 @@ import org.junit.Before;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
+import org.onebusaway.gtfs.services.MockGtfs;
 import org.onebusaway.gtfs_transformer.factory.TransformFactory;
 
 public class AbstractTestSupport {
 
-  private GtfsTransformer _transformer = new GtfsTransformer();
+  protected GtfsTransformer _transformer = new GtfsTransformer();
 
   protected MockGtfs _gtfs;
 

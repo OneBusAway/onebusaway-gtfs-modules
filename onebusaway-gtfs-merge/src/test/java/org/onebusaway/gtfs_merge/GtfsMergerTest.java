@@ -67,7 +67,7 @@ public class GtfsMergerTest {
     _newGtfs.putRoutes(1);
     _newGtfs.putStops(3);
     _newGtfs.putCalendars(1, "mask=1111100", "start_date=20120601",
-        "end_date=20120601");
+        "end_date=201206");
     _newGtfs.putTrips(1, "r0", "sid0");
     _newGtfs.putStopTimes("t0", "s0,s1");
 

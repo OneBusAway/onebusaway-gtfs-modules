@@ -39,6 +39,11 @@ public class ShapePointMergeStrategy extends
   }
 
   @Override
+  public void getEntityTypes(Collection<Class<?>> entityTypes) {
+    entityTypes.add(ShapePoint.class);
+  }
+
+  @Override
   protected Collection<AgencyAndId> getKeys(GtfsRelationalDao dao) {
     return dao.getAllShapeIds();
   }

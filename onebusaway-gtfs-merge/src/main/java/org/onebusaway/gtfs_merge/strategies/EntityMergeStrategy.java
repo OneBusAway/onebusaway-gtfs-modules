@@ -15,6 +15,8 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
+import java.util.Collection;
+
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 import org.onebusaway.gtfs_merge.GtfsMerger;
 
@@ -27,6 +29,14 @@ import org.onebusaway.gtfs_merge.GtfsMerger;
  * @author bdferris
  */
 public interface EntityMergeStrategy {
+
+  /**
+   * Determine the list of entity types handled by this merge strategy.
+   * 
+   * @param entityTypes the handled types should be added to this output
+   *          collection.
+   */
+  public void getEntityTypes(Collection<Class<?>> entityTypes);
 
   /**
    * Perform a merge operation for the entities specified in the

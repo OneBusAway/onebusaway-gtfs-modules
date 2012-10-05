@@ -20,6 +20,8 @@ import java.util.Collection;
 
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.IdentityBean;
+import org.onebusaway.gtfs.model.Stop;
+import org.onebusaway.gtfs.model.Transfer;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.serialization.DuplicateEntityException;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -58,6 +60,11 @@ public abstract class AbstractSingleEntityMergeStrategy<T> extends
 
   public AbstractSingleEntityMergeStrategy(Class<T> entityType) {
     _entityType = entityType;
+  }
+
+  @Override
+  public void getEntityTypes(Collection<Class<?>> entityTypes) {
+    entityTypes.add(_entityType);
   }
 
   @Override

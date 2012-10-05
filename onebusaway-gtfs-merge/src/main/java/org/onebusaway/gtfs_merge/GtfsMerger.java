@@ -21,8 +21,10 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.serialization.GtfsReader;
@@ -109,6 +111,20 @@ public class GtfsMerger {
 
   public void setFareRuleStrategy(EntityMergeStrategy fareRuleStrategy) {
     _fareRuleStrategy = fareRuleStrategy;
+  }
+
+  public EntityMergeStrategy getEntityMergeStrategyForEntityType(
+      Class<?> entityType) {
+    List<EntityMergeStrategy> strategies = new ArrayList<EntityMergeStrategy>();
+    buildStrategies(strategies);
+    for (EntityMergeStrategy strategy : strategies) {
+      Set<Class<?>> entityTypes = new HashSet<Class<?>>();
+      strategy.getEntityTypes(entityTypes);
+      if (entityTypes.contains(entityType)) {
+        return strategy;
+      }
+    }
+    return null;
   }
 
   public void run(List<File> inputPaths, File outputPath) throws IOException {

@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,10 +47,6 @@ public class GtfsMergerMain {
 
   public static final String ARG_DUPLICATE_DETECTION = "duplicateDetection";
 
-  public static final String ARG_FUZZY_DUPLICATES = "fuzzyDuplicates";
-
-  public static final String ARG_RENAME_DUPLICATES = "renameDuplicates";
-
   public static final String ARG_LOG_DROPPED_DUPLICATES = "logDroppedDuplicates";
 
   public static final String ARG_ERROR_ON_DROPPED_DUPLICATES = "errorOnDroppedDuplicates";
@@ -64,8 +59,15 @@ public class GtfsMergerMain {
 
   private Options _options = new Options();
 
+  /**
+   * Mapping from GTFS file name to the entity type handled by that class.
+   */
   private Map<String, Class<?>> _entityClassesByFilename = new HashMap<String, Class<?>>();
 
+  /**
+   * If we ever need to register a custom option handler for a specific entity
+   * type, we would do it here.
+   */
   private Map<Class<?>, OptionHandler> _optionHandlersByEntityClass = new HashMap<Class<?>, OptionHandler>();
 
   public static void main(String[] args) throws IOException {
@@ -120,9 +122,6 @@ public class GtfsMergerMain {
     options.addOption(ARG_FILE, true, "GTFS file name");
     options.addOption(ARG_DUPLICATE_DETECTION, true,
         "duplicate detection strategy");
-    options.addOption(ARG_FUZZY_DUPLICATES, false,
-        "attempt fuzzy duplicate detection");
-    options.addOption(ARG_RENAME_DUPLICATES, false, "rename duplicate entities");
     options.addOption(ARG_LOG_DROPPED_DUPLICATES, false,
         "log dropped duplicates");
     options.addOption(ARG_ERROR_ON_DROPPED_DUPLICATES, false,
@@ -204,7 +203,7 @@ public class GtfsMergerMain {
         if (entityClass == null) {
           throw new IllegalStateException("unknown GTFS filename: " + filename);
         }
-        mergeStrategy = registerMergeStrategyForEntityClass(entityClass, merger);
+        mergeStrategy = getMergeStrategyForEntityClass(entityClass, merger);
         currentOptionHandler = getOptionHandlerForEntityClass(entityClass);
       } else {
         if (currentOptionHandler == null) {
@@ -216,27 +215,14 @@ public class GtfsMergerMain {
     }
   }
 
-  private AbstractEntityMergeStrategy registerMergeStrategyForEntityClass(
+  private AbstractEntityMergeStrategy getMergeStrategyForEntityClass(
       Class<?> entityClass, GtfsMerger merger) {
-    try {
-      String name = entityClass.getName();
-      int index = name.lastIndexOf('.');
-      if (index != -1) {
-        name = name.substring(index + 1);
-      }
-      String mergeStrategyClassName = "org.onebusaway.gtfs_merge.strategies."
-          + name + "MergeStrategy";
-      Class<?> mergeStrategyClass = Class.forName(mergeStrategyClassName);
-      AbstractEntityMergeStrategy strategy = (AbstractEntityMergeStrategy) mergeStrategyClass.newInstance();
-
-      Method setMethod = merger.getClass().getMethod("set" + name + "Strategy",
-          EntityMergeStrategy.class);
-      setMethod.invoke(merger, strategy);
-      return strategy;
-    } catch (Exception ex) {
-      throw new IllegalStateException(
-          "error creating merge strategy for entity class " + entityClass, ex);
+    EntityMergeStrategy strategy = merger.getEntityMergeStrategyForEntityType(entityClass);
+    if (strategy == null) {
+      throw new IllegalStateException("no merge strategy found for entityType="
+          + entityClass);
     }
+    return (AbstractEntityMergeStrategy) strategy;
   }
 
   private OptionHandler getOptionHandlerForEntityClass(Class<?> entityClass) {

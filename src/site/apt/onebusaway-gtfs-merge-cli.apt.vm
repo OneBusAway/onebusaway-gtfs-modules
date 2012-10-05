@@ -38,7 +38,7 @@ general pattern is to specify options for each type of file in a GTFS feed using
 specific options for each file type after the <<<--file>>> option.  Here's a quick example:
 
 +---+
---file=routes.txt --fuzzyDuplicates --file=calendar.txt --renameDuplicates ...
+--file=routes.txt --duplicateDetection=identity --file=calendar.txt --logDroppedDuplicates ...
 +---+
 
   The merge application supports merging the following files:
@@ -49,15 +49,9 @@ specific options for each file type after the <<<--file>>> option.  Here's a qui
   
   * <<<routes.txt>>>
   
-  * <<<trips.txt>>>
+  * <<<trips.txt>>> and <<<stop_times.txt>>>
   
-  * <<<stop_times.txt>>>
-  
-  * <<<calendar.txt>>>
-  
-  * <<<calendar_dates.txt>>>
-  
-  * <<<shapes.txt>>>
+  * <<<calendar.txt>>> and <<<calendar_dates.txt>>> 
   
   * <<<shapes.txt>>>
   
@@ -71,8 +65,9 @@ specific options for each file type after the <<<--file>>> option.  Here's a qui
  
   []
    
-  You can specify merge options for each of these files using the <<<--file=gtfs_file.txt>>> option.  For details on
-options you might specify, read on.
+  You can specify merge options for each of these files using the <<<--file=gtfs_file.txt>>> option.  File types listed
+together (eg. <<<trips.txt>> and <<<stop_times.txt>>>) are handled by the same merge strategy, so specifying options for
+either will have the same effect.  For details on options you might specify, read on.
 
 Handling Duplicates
 
@@ -81,25 +76,30 @@ including how to identify duplicates and what to do with duplicates when they ar
 
 * Identifying Duplicates
 
-  We support a couple of methods for determining when entries from two different feeds are actually duplicates:
+  We support a couple of methods for determining when entries from two different feeds are actually duplicates.  By default,
+the merge tool will attempt to automatically determine the best merge strategy to use.  You can also control the specific
+strategy used on a per-file basis using the <<<--duplicateDetection>>> argument.  You can specify any of the following
+strategies for duplicate detection.
   
-  * Identity - If two entries have the same id (eg. stop id, route id, trip id), then they are considered the same.
-    This is the more strict matching policy.  This is the default policy.
+  * <<<--duplicateDetection=identity>>> - If two entries have the same id (eg. stop id, route id, trip id), then they are
+    considered the same.  This is the more strict matching policy.
   
-  * Fuzzy  - If two entries have common elements (eg. stop name or location, route short name, trip stop sequence),
-    then they are considered the same.  This is the more lenient matching policy, and is highly dependent on the type
-    of GTFS entry being matched.  You can specify this policy with the <<<--fuzzyDuplicates>>> command-line option.
+  * <<<--duplicateDetection=fuzzy>>> - If two entries have common elements (eg. stop name or location, route short name,
+    trip stop sequence), then they are considered the same.  This is the more lenient matching policy, and is highly
+    dependent on the type of GTFS entry being matched.
+    
+  * <<<--duplicateDetection=none>>> - Entries between two feeds are never considered to be duplicates, even if they have
+    the same id or similar properties.
 
-* What To Do With Duplicates
+* Logging Duplicates
+
+ Sometimes your feed might have unexpected duplicates.  You can tell the merge tool to log duplicates it finds or even
+immediately exit with the following arguments:
+
+  * <<<--logDroppedDuplicates>>> - log a message when a duplicate is found
   
-  We support two policies for handling duplicate entries when detected in a second GTFS feed: 
-  
-  * Drop - drop the second duplicate entry from the merged feed, keeping only the entry from the first feed.  This is
-    the default policy.
-  
-  * Rename - rename the second duplicate entry, changing the entry's id and all references to the renamed entry.  You
-    can specify this policy with the <<<--renameDuplicates>>> command-line option.
-  
+  * <<<--errorOnDroppedDuplicates>> - throw an exception when a duplicate is found, stopping the program
+     
 Examples
 
 * Handling a Service Change

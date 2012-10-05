@@ -15,6 +15,7 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.onebusaway.gtfs.model.Frequency;
@@ -42,6 +43,16 @@ public class TripMergeStrategy extends
     _duplicateScoringStrategy.addPropertyMatch("serviceId");
     _duplicateScoringStrategy.addStrategy(new TripStopsInCommonDuplicateScoringStrategy());
     _duplicateScoringStrategy.addStrategy(new TripScheduleOverlapDuplicateScoringStrategy());
+  }
+
+  /**
+   * Recall that we handle {@link StopTime} entities in addition to {@link Trip}
+   * entities.
+   */
+  @Override
+  public void getEntityTypes(Collection<Class<?>> entityTypes) {
+    super.getEntityTypes(entityTypes);
+    entityTypes.add(StopTime.class);
   }
 
   /**

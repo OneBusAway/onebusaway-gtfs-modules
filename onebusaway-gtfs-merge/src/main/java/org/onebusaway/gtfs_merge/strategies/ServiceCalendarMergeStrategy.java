@@ -46,6 +46,12 @@ public class ServiceCalendarMergeStrategy extends
   }
 
   @Override
+  public void getEntityTypes(Collection<Class<?>> entityTypes) {
+    entityTypes.add(ServiceCalendar.class);
+    entityTypes.add(ServiceCalendarDate.class);
+  }
+
+  @Override
   protected Collection<AgencyAndId> getKeys(GtfsRelationalDao dao) {
     return dao.getAllServiceIds();
   }

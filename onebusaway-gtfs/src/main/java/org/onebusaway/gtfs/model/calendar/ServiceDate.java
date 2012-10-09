@@ -152,9 +152,9 @@ public class ServiceDate implements Serializable, Comparable<ServiceDate> {
     c.set(Calendar.YEAR, year);
     c.set(Calendar.MONTH, month - 1);
     c.set(Calendar.DAY_OF_MONTH, day);
-
+    
     moveCalendarToServiceDate(c);
-
+    
     return c;
   }
 
@@ -187,7 +187,9 @@ public class ServiceDate implements Serializable, Comparable<ServiceDate> {
    */
   public ServiceDate next(TimeZone timeZone) {
     Calendar c = getAsCalendar(timeZone);
-    c.add(Calendar.DAY_OF_YEAR, 1);
+    c.add(Calendar.HOUR_OF_DAY, 12);
+    c.set(Calendar.HOUR_OF_DAY, 0);
+    c.add(Calendar.DAY_OF_MONTH, 1);
     return new ServiceDate(c);
   }
 

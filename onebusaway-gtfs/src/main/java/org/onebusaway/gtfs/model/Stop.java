@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2012 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,6 +61,9 @@ public final class Stop extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true)
   private String direction;
 
+  @CsvField(optional = true)
+  private String timezone;
+
   public Stop() {
 
   }
@@ -77,6 +81,7 @@ public final class Stop extends IdentityBean<AgencyAndId> {
     this.parentStation = obj.parentStation;
     this.wheelchairBoarding = obj.wheelchairBoarding;
     this.direction = obj.direction;
+    this.timezone = obj.timezone;
   }
 
   public AgencyAndId getId() {
@@ -178,5 +183,13 @@ public final class Stop extends IdentityBean<AgencyAndId> {
 
   public void setDirection(String direction) {
     this.direction = direction;
+  }
+
+  public String getTimezone() {
+    return timezone;
+  }
+
+  public void setTimezone(String timezone) {
+    this.timezone = timezone;
   }
 }

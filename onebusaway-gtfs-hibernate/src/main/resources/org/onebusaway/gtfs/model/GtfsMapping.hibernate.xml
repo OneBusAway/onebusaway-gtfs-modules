@@ -182,6 +182,7 @@
         <property name="url" />
         <property name="locationType" />
         <property name="parentStation" />
+        <property name="timezone" />
         <property name="wheelchairBoarding" />
     </class>
 

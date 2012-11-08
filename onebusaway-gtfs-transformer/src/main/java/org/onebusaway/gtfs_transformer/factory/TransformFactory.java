@@ -147,7 +147,7 @@ public class TransformFactory {
           handleRetainOperation(transformer, line, json);
         } else if (opType.equals("subsection")) {
           handleSubsectionOperation(transformer, line, json);
-        } else if (opType.equals("trim")) {
+        } else if (opType.equals("trim_trip")) {
           handleTrimOperation(transformer, line, json);
         } else if (opType.equals("calendar_extension")) {
           handleTransformOperation(transformer, line, json,

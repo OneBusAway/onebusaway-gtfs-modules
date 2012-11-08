@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.onebusaway.gtfs_transformer.impl;
 
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.factory.PropertyMatches;
+import org.onebusaway.gtfs_transformer.match.EntityMatch;
 import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
@@ -26,9 +26,9 @@ public class MatchingEntityModificationStrategyWrapper extends
 
   private EntityTransformStrategy _strategy;
 
-  public MatchingEntityModificationStrategyWrapper(
-      PropertyMatches propertyMatches, EntityTransformStrategy strategy) {
-    super(propertyMatches);
+  public MatchingEntityModificationStrategyWrapper(EntityMatch match,
+      EntityTransformStrategy strategy) {
+    super(match);
     _strategy = strategy;
   }
 

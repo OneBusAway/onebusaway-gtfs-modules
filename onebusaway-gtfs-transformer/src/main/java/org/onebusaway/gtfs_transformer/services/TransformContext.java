@@ -18,9 +18,13 @@ package org.onebusaway.gtfs_transformer.services;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.onebusaway.gtfs.serialization.GtfsReader;
+
 public class TransformContext {
 
   private String _defaultAgencyId;
+
+  private GtfsReader _reader;
 
   private Map<String, Object> _parameters = new HashMap<String, Object>();
 
@@ -30,6 +34,14 @@ public class TransformContext {
 
   public String getDefaultAgencyId() {
     return _defaultAgencyId;
+  }
+
+  public GtfsReader getReader() {
+    return _reader;
+  }
+
+  public void setReader(GtfsReader reader) {
+    _reader = reader;
   }
 
   public void putParameter(String key, Object value) {

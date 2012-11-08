@@ -14,16 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs_transformer.factory;
+package org.onebusaway.gtfs_transformer.match;
 
 import java.util.Map;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
 import org.onebusaway.collections.PropertyPathExpression;
-import org.onebusaway.csv_entities.schema.BeanWrapper;
 
-public class PropertyMatches {
+public class PropertyMatches implements EntityMatch {
 
   private final Map<PropertyPathExpression, Object> _propertyMatches;
 
@@ -35,12 +34,12 @@ public class PropertyMatches {
     return _propertyMatches;
   }
 
-  public boolean isApplicableToObject(BeanWrapper wrapped) {
+  public boolean isApplicableToObject(Object object) {
 
     for (Map.Entry<PropertyPathExpression, Object> entry : _propertyMatches.entrySet()) {
       PropertyPathExpression expression = entry.getKey();
       Object expected = entry.getValue();
-      Object actual = expression.invoke(wrapped.getWrappedInstance(Object.class));
+      Object actual = expression.invoke(object);
 
       boolean nullA = expected == null;
       boolean nullB = actual == null;

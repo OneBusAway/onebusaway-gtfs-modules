@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2011 Google, Inc. 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.onebusaway.collections.FactoryMap;
-import org.onebusaway.gtfs.impl.calendar.CalendarServiceImpl;
+import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
@@ -34,6 +34,7 @@ import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsDao;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs.services.calendar.CalendarService;
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityLibrary;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
@@ -65,7 +66,7 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
 
     RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
 
-    CalendarServiceImpl calendarService = CalendarSimplicationLibrary.createCalendarService(dao);
+    CalendarService calendarService = CalendarServiceDataFactoryImpl.createService(dao);
     _library.setCalendarService(calendarService);
 
     Map<Set<AgencyAndId>, AgencyAndId> serviceIdsToUpdatedServiceId = new HashMap<Set<AgencyAndId>, AgencyAndId>();

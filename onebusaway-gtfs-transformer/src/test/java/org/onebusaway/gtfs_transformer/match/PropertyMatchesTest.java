@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs_transformer.factory;
+package org.onebusaway.gtfs_transformer.match;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -25,8 +25,6 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.onebusaway.collections.PropertyPathExpression;
-import org.onebusaway.csv_entities.schema.BeanWrapper;
-import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Route;
@@ -34,86 +32,85 @@ import org.onebusaway.gtfs_transformer.impl.converters.AgencyAndIdConverter;
 
 public class PropertyMatchesTest {
 
-  private BeanWrapper _agency;
-  
-  private BeanWrapper _route;
-  
+  private Agency _agency;
+
+  private Route _route;
+
   @Before
   public void before() {
-    Agency agency = new Agency();
-    agency.setId("metro");
-    agency.setName("Metro");
+    _agency = new Agency();
+    _agency.setId("metro");
+    _agency.setName("Metro");
 
-    Route route = new Route();
-    route.setAgency(agency);
-    route.setId(new AgencyAndId("metro", "r2"));
-    route.setShortName("2");
-    route.setLongName("The Two");
-
-    _agency = BeanWrapperFactory.wrap(agency);
-    _route = BeanWrapperFactory.wrap(route);
+    _route = new Route();
+    _route.setAgency(_agency);
+    _route.setId(new AgencyAndId("metro", "r2"));
+    _route.setShortName("2");
+    _route.setLongName("The Two");
   }
 
   @Test
   public void testSimpleProperty() {
 
     Map<PropertyPathExpression, Object> propertyPathsAndValues = new HashMap<PropertyPathExpression, Object>();
-    propertyPathsAndValues.put(new PropertyPathExpression("shortName"),"2");
-    
+    propertyPathsAndValues.put(new PropertyPathExpression("shortName"), "2");
+
     PropertyMatches m = new PropertyMatches(propertyPathsAndValues);
     assertTrue(m.isApplicableToObject(_route));
   }
-  
+
   @Test
   public void testMultipleProperties() {
 
     Map<PropertyPathExpression, Object> propertyPathsAndValues = new HashMap<PropertyPathExpression, Object>();
-    propertyPathsAndValues.put(new PropertyPathExpression("shortName"),"2");
-    propertyPathsAndValues.put(new PropertyPathExpression("longName"),"The Two");
-    
+    propertyPathsAndValues.put(new PropertyPathExpression("shortName"), "2");
+    propertyPathsAndValues.put(new PropertyPathExpression("longName"),
+        "The Two");
+
     PropertyMatches m = new PropertyMatches(propertyPathsAndValues);
     assertTrue(m.isApplicableToObject(_route));
   }
-  
+
   @Test
   public void testMultiplePropertiesMismatch() {
 
     Map<PropertyPathExpression, Object> propertyPathsAndValues = new HashMap<PropertyPathExpression, Object>();
-    propertyPathsAndValues.put(new PropertyPathExpression("shortName"),"2");
-    propertyPathsAndValues.put(new PropertyPathExpression("longName"),"The Three");
-    
+    propertyPathsAndValues.put(new PropertyPathExpression("shortName"), "2");
+    propertyPathsAndValues.put(new PropertyPathExpression("longName"),
+        "The Three");
+
     PropertyMatches m = new PropertyMatches(propertyPathsAndValues);
     assertFalse(m.isApplicableToObject(_route));
   }
-  
+
   @Test
   public void testNestedProperty() {
 
     Map<PropertyPathExpression, Object> propertyPathsAndValues = new HashMap<PropertyPathExpression, Object>();
-    propertyPathsAndValues.put(new PropertyPathExpression("id.id"),"2");
-    
+    propertyPathsAndValues.put(new PropertyPathExpression("id.id"), "2");
+
     PropertyMatches m = new PropertyMatches(propertyPathsAndValues);
     assertFalse(m.isApplicableToObject(_route));
   }
-  
+
   @Test
   public void testNonStringProperty() {
 
     Map<PropertyPathExpression, Object> propertyPathsAndValues = new HashMap<PropertyPathExpression, Object>();
-    propertyPathsAndValues.put(new PropertyPathExpression("agency"),_agency.getWrappedInstance(Agency.class));
-    
+    propertyPathsAndValues.put(new PropertyPathExpression("agency"), _agency);
+
     PropertyMatches m = new PropertyMatches(propertyPathsAndValues);
     assertTrue(m.isApplicableToObject(_route));
   }
-  
+
   @Test
   public void testPropertyTypeConversion() {
-    
+
     ConvertUtils.register(new AgencyAndIdConverter(), AgencyAndId.class);
 
     Map<PropertyPathExpression, Object> propertyPathsAndValues = new HashMap<PropertyPathExpression, Object>();
-    propertyPathsAndValues.put(new PropertyPathExpression("id"),"metro_r2");
-    
+    propertyPathsAndValues.put(new PropertyPathExpression("id"), "metro_r2");
+
     PropertyMatches m = new PropertyMatches(propertyPathsAndValues);
     assertTrue(m.isApplicableToObject(_route));
   }

@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2012 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,25 +23,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.onebusaway.csv_entities.schema.BeanWrapper;
-import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.match.TypedEntityMatch;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class RetainEntitiesTransformStrategy implements GtfsTransformStrategy {
 
   private Map<Class<?>, List<EntityRetention>> _retentionMatchesByType = new HashMap<Class<?>, List<EntityRetention>>();
-  
+
   private boolean _retainBlocks = true;
-  
+
   public void setRetainBlocks(boolean retainBlocks) {
     _retainBlocks = retainBlocks;
   }
 
-  public void addRetention(EntityMatch match, boolean retainUp) {
+  public void addRetention(TypedEntityMatch match, boolean retainUp) {
     List<EntityRetention> matches = _retentionMatchesByType.get(match.getType());
     if (matches == null) {
       matches = new ArrayList<EntityRetention>();
@@ -69,10 +69,9 @@ public class RetainEntitiesTransformStrategy implements GtfsTransformStrategy {
           dao.getAllEntitiesForType(entityType));
 
       for (Object object : entities) {
-        BeanWrapper wrapper = BeanWrapperFactory.wrap(object);
         for (EntityRetention retention : retentions) {
-          EntityMatch match = retention.getMatch();
-          if (match.isApplicableToObject(wrapper))
+          TypedEntityMatch match = retention.getMatch();
+          if (match.isApplicableToObject(object))
             graph.retain(object, retention.isRetainUp());
         }
       }
@@ -90,15 +89,15 @@ public class RetainEntitiesTransformStrategy implements GtfsTransformStrategy {
   }
 
   private static class EntityRetention {
-    private final EntityMatch match;
+    private final TypedEntityMatch match;
     private final boolean retainUp;
 
-    public EntityRetention(EntityMatch match, boolean retainUp) {
+    public EntityRetention(TypedEntityMatch match, boolean retainUp) {
       this.match = match;
       this.retainUp = retainUp;
     }
 
-    public EntityMatch getMatch() {
+    public TypedEntityMatch getMatch() {
       return match;
     }
 

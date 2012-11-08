@@ -183,6 +183,7 @@
         <property name="locationType" />
         <property name="parentStation" />
         <property name="timezone" />
+        <property name="vehicleType" />
         <property name="wheelchairBoarding" />
     </class>
 

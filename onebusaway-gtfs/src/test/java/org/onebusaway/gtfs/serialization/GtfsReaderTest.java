@@ -72,8 +72,8 @@ public class GtfsReaderTest {
     gtfs.putLines(
         "stops.txt",
         "stop_id,stop_name,stop_lat,stop_lon,stop_desc,stop_code,stop_direction,location_type,parent_station,"
-            + "stop_url,wheelchair_boarding,zone_id,stop_timezone",
-        "S1,Stop,47.0,-122.0,description,123,N,1,1234,http://agency.gov/stop,1,Z,America/New_York");
+            + "stop_url,wheelchair_boarding,zone_id,stop_timezone,vehicle_type",
+        "S1,Stop,47.0,-122.0,description,123,N,1,1234,http://agency.gov/stop,1,Z,America/New_York,2");
     gtfs.putLines(
         "routes.txt",
         "agency_id,route_id,route_short_name,route_long_name,route_type,route_desc,route_color,route_text_color,"
@@ -145,6 +145,7 @@ public class GtfsReaderTest {
     assertEquals(1, stop.getWheelchairBoarding());
     assertEquals("Z", stop.getZoneId());
     assertEquals("America/New_York", stop.getTimezone());
+    assertEquals(2, stop.getVehicleType());
 
     Route route = dao.getRouteForId(new AgencyAndId("1", "R1"));
     assertEquals(new AgencyAndId("1", "R1"), route.getId());

@@ -32,8 +32,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.transform.TransformerFactory;
-
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
 import org.json.JSONArray;
@@ -70,14 +68,10 @@ import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategyFactory;
 import org.onebusaway.gtfs_transformer.updates.CalendarExtensionStrategy;
 import org.onebusaway.gtfs_transformer.updates.SubsectionTripTransformStrategy;
 import org.onebusaway.gtfs_transformer.updates.SubsectionTripTransformStrategy.SubsectionOperation;
-import org.onebusaway.gtfs_transformer.updates.TrimTripTransformStrategy.TrimOperation;
 import org.onebusaway.gtfs_transformer.updates.TrimTripTransformStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.onebusaway.gtfs_transformer.updates.TrimTripTransformStrategy.TrimOperation;
 
 public class TransformFactory {
-
-  private static Logger _log = LoggerFactory.getLogger(TransformerFactory.class);
 
   private static Pattern _anyMatcher = Pattern.compile("^any\\((.*)\\)$");
 
@@ -155,7 +149,8 @@ public class TransformFactory {
         } else if (opType.equals("transform")) {
           handleTransformOperation(transformer, line, json);
         } else {
-          _log.warn("no strategy found for op: " + opType);
+          throw new IllegalArgumentException("no strategy found for op: "
+              + opType + " line: " + line);
         }
 
       } catch (JSONException ex) {

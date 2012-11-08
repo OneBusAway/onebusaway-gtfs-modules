@@ -98,7 +98,7 @@ immediately exit with the following arguments:
 
   * <<<--logDroppedDuplicates>>> - log a message when a duplicate is found
   
-  * <<<--errorOnDroppedDuplicates>> - throw an exception when a duplicate is found, stopping the program
+  * <<<--errorOnDroppedDuplicates>>> - throw an exception when a duplicate is found, stopping the program
      
 Examples
 

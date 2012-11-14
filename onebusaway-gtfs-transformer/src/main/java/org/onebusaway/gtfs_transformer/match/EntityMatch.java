@@ -13,22 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs_transformer.impl;
+package org.onebusaway.gtfs_transformer.match;
 
-import org.onebusaway.csv_entities.schema.BeanWrapper;
-import org.onebusaway.gtfs_transformer.match.EntityMatch;
-import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
-
-public abstract class AbstractEntityModificationStrategy implements
-    EntityTransformStrategy {
-
-  private EntityMatch _match;
-
-  public AbstractEntityModificationStrategy(EntityMatch match) {
-    _match = match;
-  }
-
-  protected boolean isModificationApplicable(BeanWrapper wrapped) {
-    return _match.isApplicableToObject(wrapped.getWrappedInstance(Object.class));
-  }
+public interface EntityMatch {
+  public boolean isApplicableToObject(Object object);
 }

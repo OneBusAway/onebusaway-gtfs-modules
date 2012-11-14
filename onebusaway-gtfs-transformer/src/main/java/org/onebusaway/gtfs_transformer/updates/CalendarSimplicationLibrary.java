@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2011 Google, Inc. 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.onebusaway.gtfs_transformer.updates;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,6 @@ import java.util.TimeZone;
 
 import org.onebusaway.collections.Counter;
 import org.onebusaway.collections.FactoryMap;
-import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
-import org.onebusaway.gtfs.impl.calendar.CalendarServiceImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
@@ -58,16 +57,6 @@ public class CalendarSimplicationLibrary {
     _dayOfTheWeekInclusionRatio = dayOfTheWeekInclusionRatio;
   }
 
-  public static CalendarServiceImpl createCalendarService(
-      GtfsMutableRelationalDao dao) {
-    CalendarServiceDataFactoryImpl factory = new CalendarServiceDataFactoryImpl();
-    factory.setGtfsDao(dao);
-
-    CalendarServiceImpl calendarService = new CalendarServiceImpl();
-    calendarService.setDataFactory(factory);
-    return calendarService;
-  }
-
   public Map<Set<AgencyAndId>, List<TripKey>> groupTripKeysByServiceIds(
       Map<TripKey, List<Trip>> tripsByKey) {
 
@@ -90,45 +79,18 @@ public class CalendarSimplicationLibrary {
       AgencyAndId updatedServiceId, List<ServiceCalendar> calendarsToAdd,
       List<ServiceCalendarDate> calendarDatesToAdd) {
 
-    Calendar c = Calendar.getInstance();
-    TimeZone tz = TimeZone.getDefault();
+    ServiceCalendarSummary summary = getSummaryForServiceIds(serviceIds);
+    List<ServiceDate> serviceDatesInOrder = summary.serviceDatesInOrder;
+    Set<Integer> daysOfTheWeekToUse = summary.daysOfTheWeekToUse;
 
-    Set<ServiceDate> allServiceDates = new HashSet<ServiceDate>();
-    for (AgencyAndId serviceId : serviceIds) {
-      Set<ServiceDate> serviceDates = _calendarService.getServiceDatesForServiceId(serviceId);
-      allServiceDates.addAll(serviceDates);
-    }
-
-    if (allServiceDates.isEmpty()) {
+    if (serviceDatesInOrder.isEmpty()) {
       return;
-    }
-
-    List<ServiceDate> serviceDatesInOrder = new ArrayList<ServiceDate>(
-        allServiceDates);
-    Collections.sort(serviceDatesInOrder);
-
-    Counter<Integer> daysOfTheWeekCounts = new Counter<Integer>();
-    for (ServiceDate serviceDate : allServiceDates) {
-      c.setTime(serviceDate.getAsDate());
-      int dayOfTheWeek = c.get(Calendar.DAY_OF_WEEK);
-      daysOfTheWeekCounts.increment(dayOfTheWeek);
-    }
-
-    Set<Integer> daysOfTheWeekToUse = new HashSet<Integer>();
-    Integer maxKey = daysOfTheWeekCounts.getMax();
-    int maxCount = daysOfTheWeekCounts.getCount(maxKey);
-
-    for (Integer dayOfTheWeek : daysOfTheWeekCounts.getKeys()) {
-      int count = daysOfTheWeekCounts.getCount(dayOfTheWeek);
-      if (count < maxCount * _dayOfTheWeekInclusionRatio)
-        continue;
-      daysOfTheWeekToUse.add(dayOfTheWeek);
     }
 
     ServiceDate fromDate = serviceDatesInOrder.get(0);
     ServiceDate toDate = serviceDatesInOrder.get(serviceDatesInOrder.size() - 1);
 
-    boolean useDateRange = maxCount >= _minNumberOfWeeksForCalendarEntry;
+    boolean useDateRange = summary.maxDayOfWeekCount >= _minNumberOfWeeksForCalendarEntry;
 
     if (useDateRange) {
       ServiceCalendar sc = createServiceCalendar(updatedServiceId,
@@ -136,9 +98,11 @@ public class CalendarSimplicationLibrary {
       calendarsToAdd.add(sc);
     }
 
+    TimeZone tz = TimeZone.getDefault();
+
     for (ServiceDate serviceDate = fromDate; serviceDate.compareTo(toDate) <= 0; serviceDate = serviceDate.next(tz)) {
 
-      boolean isActive = allServiceDates.contains(serviceDate);
+      boolean isActive = summary.allServiceDates.contains(serviceDate);
 
       Calendar serviceDateAsCalendar = serviceDate.getAsCalendar(tz);
       if (useDateRange) {
@@ -184,6 +148,55 @@ public class CalendarSimplicationLibrary {
     UpdateLibrary.clearDaoCache(dao);
   }
 
+  public ServiceCalendarSummary getSummaryForServiceId(AgencyAndId serviceId) {
+    Set<AgencyAndId> serviceIds = new HashSet<AgencyAndId>();
+    serviceIds.add(serviceId);
+    return getSummaryForServiceIds(serviceIds);
+  }
+
+  public ServiceCalendarSummary getSummaryForServiceIds(
+      Set<AgencyAndId> serviceIds) {
+    Calendar c = Calendar.getInstance();
+    ServiceCalendarSummary summary = new ServiceCalendarSummary();
+
+    for (AgencyAndId serviceId : serviceIds) {
+      Set<ServiceDate> serviceDates = _calendarService.getServiceDatesForServiceId(serviceId);
+      summary.allServiceDates.addAll(serviceDates);
+    }
+
+    summary.serviceDatesInOrder = new ArrayList<ServiceDate>(
+        summary.allServiceDates);
+    Collections.sort(summary.serviceDatesInOrder);
+
+    if (summary.serviceDatesInOrder.isEmpty()) {
+      return summary;
+    }
+
+    Counter<Integer> daysOfTheWeekCounts = new Counter<Integer>();
+    for (ServiceDate serviceDate : summary.serviceDatesInOrder) {
+      c.setTime(serviceDate.getAsDate());
+      // Move the service date to "noon" to avoid problems with DST and the
+      // day-of-the-week calculation.
+      c.add(Calendar.HOUR_OF_DAY, 12);
+      int dayOfTheWeek = c.get(Calendar.DAY_OF_WEEK);
+      daysOfTheWeekCounts.increment(dayOfTheWeek);
+      summary.mostRecentServiceDateByDayOfWeek.put(dayOfTheWeek, serviceDate);
+    }
+
+    Integer maxKey = daysOfTheWeekCounts.getMax();
+    summary.maxDayOfWeekCount = daysOfTheWeekCounts.getCount(maxKey);
+
+    for (Integer dayOfTheWeek : daysOfTheWeekCounts.getKeys()) {
+      int count = daysOfTheWeekCounts.getCount(dayOfTheWeek);
+      if (count < summary.maxDayOfWeekCount * _dayOfTheWeekInclusionRatio)
+        continue;
+      summary.daysOfTheWeekToUse.add(dayOfTheWeek);
+    }
+
+    return summary;
+
+  }
+
   private ServiceCalendar createServiceCalendar(AgencyAndId updatedServiceId,
       Set<Integer> daysOfTheWeekToUse, ServiceDate fromDate, ServiceDate toDate) {
 
@@ -209,5 +222,13 @@ public class CalendarSimplicationLibrary {
     if (daysOfTheWeekToUse.contains(Calendar.SUNDAY))
       sc.setSunday(1);
     return sc;
+  }
+
+  public static class ServiceCalendarSummary {
+    public int maxDayOfWeekCount;
+    public Set<ServiceDate> allServiceDates = new HashSet<ServiceDate>();
+    public List<ServiceDate> serviceDatesInOrder = new ArrayList<ServiceDate>();
+    public Set<Integer> daysOfTheWeekToUse = new HashSet<Integer>();
+    public Map<Integer, ServiceDate> mostRecentServiceDateByDayOfWeek = new HashMap<Integer, ServiceDate>();
   }
 }

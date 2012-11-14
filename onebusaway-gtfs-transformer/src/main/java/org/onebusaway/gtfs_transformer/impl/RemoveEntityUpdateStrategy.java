@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.factory.PropertyMatches;
+import org.onebusaway.gtfs_transformer.match.EntityMatch;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class RemoveEntityUpdateStrategy extends
@@ -31,8 +31,8 @@ public class RemoveEntityUpdateStrategy extends
 
   private RemoveEntityLibrary _library = new RemoveEntityLibrary();
 
-  public RemoveEntityUpdateStrategy(PropertyMatches propertyMatches) {
-    super(propertyMatches);
+  public RemoveEntityUpdateStrategy(EntityMatch match) {
+    super(match);
   }
 
   @Override

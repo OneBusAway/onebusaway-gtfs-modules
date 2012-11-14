@@ -33,9 +33,10 @@ import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
 import org.onebusaway.gtfs.services.GenericMutableDao;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.factory.PropertyMatches;
+import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_transformer.factory.TransformFactory;
 import org.onebusaway.gtfs_transformer.impl.converters.AgencyAndIdConverter;
+import org.onebusaway.gtfs_transformer.match.PropertyMatches;
 import org.onebusaway.gtfs_transformer.services.GtfsEntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.SchemaUpdateStrategy;
@@ -108,6 +109,10 @@ public class GtfsTransformer {
   public GtfsReader getReader() {
     return _reader;
   }
+  
+  public GtfsRelationalDao getDao() {
+    return _dao;
+  }
 
   public TransformFactory getTransformFactory() {
     return _transformFactory;
@@ -126,7 +131,8 @@ public class GtfsTransformer {
     readGtfs();
 
     _context.setDefaultAgencyId(_reader.getDefaultAgencyId());
-
+    _context.setReader(_reader);
+    
     udateGtfs();
     writeGtfs();
   }

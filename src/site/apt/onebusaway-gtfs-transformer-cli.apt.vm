@@ -168,7 +168,27 @@ example:
 {"op":"remove","match":{"class":"Stop","name":"DUMMY STOP"}}
 +---+
 
-  Note that this has a cascading effect.  If you remove a trip, all the stop times that depend on that trip will also be removed.  If you remove a route, all the trips and stop times for that route will be removed. 
+  Note that this has a cascading effect.  If you remove a trip, all the stop times that depend on that trip will also be removed.  If you remove a route, all the trips and stop times for that route will be removed.
+  
+* Trim a Trip
+
+  You can remove stop times from the beginning or end of a trip belonging to a particular route using the "trim_trip" operation.  Example:
+  
++---+
+{"op":"trim_trip", "routeId":"1", "fromStopId":"138S"}
++---+
+
+  For any trip belonging to the specified route and passing through the specified stop, all stop times from the specified stop onward will be removed from the trip.  You can also remove stop times from the beginning of the trip as well:
+
++---+
+{"op":"trim_trip", "routeId":"1", "toStopId":"138S"}
++---+
+
+  Or both:
+
++---+
+{"op":"trim_trip", "routeId":"1", "toStopId":"128S", "fromStopId":"138S"}
++---+
 
 * Arbitrary Transform
 

@@ -25,6 +25,8 @@ import org.onebusaway.gtfs.serialization.mappings.LatLonFieldMappingFactory;
 public final class Stop extends IdentityBean<AgencyAndId> {
 
   private static final long serialVersionUID = 1L;
+  
+  private static final int MISSING_VALUE = -999;
 
   @CsvField(mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
@@ -63,6 +65,9 @@ public final class Stop extends IdentityBean<AgencyAndId> {
 
   @CsvField(optional = true)
   private String timezone;
+  
+  @CsvField(name="vehicle_type", optional = true)
+  private int vehicleType = MISSING_VALUE;
 
   public Stop() {
 
@@ -82,6 +87,7 @@ public final class Stop extends IdentityBean<AgencyAndId> {
     this.wheelchairBoarding = obj.wheelchairBoarding;
     this.direction = obj.direction;
     this.timezone = obj.timezone;
+    this.vehicleType = obj.vehicleType;
   }
 
   public AgencyAndId getId() {
@@ -191,5 +197,21 @@ public final class Stop extends IdentityBean<AgencyAndId> {
 
   public void setTimezone(String timezone) {
     this.timezone = timezone;
+  }
+  
+  public boolean isVehicleTypeSet() {
+    return vehicleType != MISSING_VALUE;
+  }
+
+  public int getVehicleType() {
+    return vehicleType;
+  }
+
+  public void setVehicleType(int vehicleType) {
+    this.vehicleType = vehicleType;
+  }
+  
+  public void clearVehicleType() {
+    vehicleType = MISSING_VALUE;
   }
 }

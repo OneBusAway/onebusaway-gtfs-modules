@@ -33,6 +33,7 @@ import org.onebusaway.gtfs.model.calendar.CalendarServiceData;
 import org.onebusaway.gtfs.model.calendar.LocalizedServiceId;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
+import org.onebusaway.gtfs.services.calendar.CalendarService;
 import org.onebusaway.gtfs.services.calendar.CalendarServiceDataFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,12 @@ public class CalendarServiceDataFactoryImpl implements
   private GtfsRelationalDao _dao;
 
   private int _excludeFutureServiceDatesInDays;
+
+  public static CalendarService createService(GtfsRelationalDao dao) {
+    CalendarServiceDataFactoryImpl factory = new CalendarServiceDataFactoryImpl(
+        dao);
+    return new CalendarServiceImpl(factory.createData());
+  }
 
   public CalendarServiceDataFactoryImpl() {
 

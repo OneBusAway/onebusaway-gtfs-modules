@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,35 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 
- */
-package org.onebusaway.gtfs_transformer.factory;
+package org.onebusaway.gtfs_transformer.match;
 
-import java.util.Map;
-
-import org.onebusaway.collections.PropertyPathExpression;
-import org.onebusaway.csv_entities.schema.BeanWrapper;
-
-class EntityMatch {
+public class TypedEntityMatch implements EntityMatch {
   private Class<?> _type;
-  private PropertyMatches _propertyMatches;
+  private EntityMatch _match;
 
-  public EntityMatch(Class<?> type,
-      Map<PropertyPathExpression, Object> propertyMatches) {
+  public TypedEntityMatch(Class<?> type, EntityMatch match) {
     _type = type;
-    _propertyMatches = new PropertyMatches(propertyMatches);
+    _match = match;
   }
 
   public Class<?> getType() {
     return _type;
   }
 
-  public PropertyMatches getPropertyMatches() {
-    return _propertyMatches;
+  public EntityMatch getPropertyMatches() {
+    return _match;
   }
 
-  public boolean isApplicableToObject(BeanWrapper wrapped) {
-    return _propertyMatches.isApplicableToObject(wrapped);
+  public boolean isApplicableToObject(Object object) {
+    return _match.isApplicableToObject(object);
   }
 }

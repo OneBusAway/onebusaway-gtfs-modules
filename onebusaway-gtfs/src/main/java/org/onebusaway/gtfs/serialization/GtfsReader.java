@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2012 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,6 +132,10 @@ public class GtfsReader extends CsvEntityReader {
     _agencyIdMapping.put(fromAgencyId, toAgencyId);
   }
 
+  public GtfsReaderContext getGtfsReaderContext() {
+    return _context;
+  }
+  
   public GenericMutableDao getEntityStore() {
     return _entityStore;
   }

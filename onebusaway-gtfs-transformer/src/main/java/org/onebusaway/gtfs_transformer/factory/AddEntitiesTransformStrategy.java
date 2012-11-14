@@ -39,8 +39,11 @@ public class AddEntitiesTransformStrategy implements GtfsTransformStrategy {
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     // Additions
-    for (EntityFactory factory : _objectsToAdd)
-      dao.saveEntity(factory.create());
+    for (EntityFactory factory : _objectsToAdd) {
+      Object entity = factory.create();
+      context.getReader().injectEntity(entity);
+      //dao.saveEntity(entity);
+    }
   }
 
   public interface EntityFactory {

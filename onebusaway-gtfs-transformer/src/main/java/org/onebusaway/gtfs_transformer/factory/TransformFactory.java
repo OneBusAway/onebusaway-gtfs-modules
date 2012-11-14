@@ -29,11 +29,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.onebusaway.collections.PropertyPathCollectionExpression;
 import org.onebusaway.collections.PropertyPathExpression;
 import org.onebusaway.collections.tuple.Pair;
 import org.onebusaway.collections.tuple.Tuples;
@@ -51,12 +55,25 @@ import org.onebusaway.gtfs_transformer.impl.MatchingEntityModificationStrategyWr
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
 import org.onebusaway.gtfs_transformer.impl.SimpleModificationStrategy;
 import org.onebusaway.gtfs_transformer.impl.StringModificationStrategy;
+import org.onebusaway.gtfs_transformer.match.EntityMatch;
+import org.onebusaway.gtfs_transformer.match.EntityMatchCollection;
+import org.onebusaway.gtfs_transformer.match.PropertyAnyValueEntityMatch;
+import org.onebusaway.gtfs_transformer.match.PropertyMethodResolverImpl;
+import org.onebusaway.gtfs_transformer.match.PropertyValueEntityMatch;
+import org.onebusaway.gtfs_transformer.match.TypedEntityMatch;
 import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsEntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategyFactory;
+import org.onebusaway.gtfs_transformer.updates.CalendarExtensionStrategy;
+import org.onebusaway.gtfs_transformer.updates.SubsectionTripTransformStrategy;
+import org.onebusaway.gtfs_transformer.updates.SubsectionTripTransformStrategy.SubsectionOperation;
+import org.onebusaway.gtfs_transformer.updates.TrimTripTransformStrategy;
+import org.onebusaway.gtfs_transformer.updates.TrimTripTransformStrategy.TrimOperation;
 
 public class TransformFactory {
+
+  private static Pattern _anyMatcher = Pattern.compile("^any\\((.*)\\)$");
 
   static {
     ConvertUtils.register(new ServiceDateConverter(), ServiceDate.class);
@@ -122,8 +139,18 @@ public class TransformFactory {
           handleRemoveOperation(transformer, line, json);
         } else if (opType.equals("retain")) {
           handleRetainOperation(transformer, line, json);
+        } else if (opType.equals("subsection")) {
+          handleSubsectionOperation(transformer, line, json);
+        } else if (opType.equals("trim_trip")) {
+          handleTrimOperation(transformer, line, json);
+        } else if (opType.equals("calendar_extension")) {
+          handleTransformOperation(transformer, line, json,
+              new CalendarExtensionStrategy());
         } else if (opType.equals("transform")) {
           handleTransformOperation(transformer, line, json);
+        } else {
+          throw new IllegalArgumentException("no strategy found for op: "
+              + opType + " line: " + line);
         }
 
       } catch (JSONException ex) {
@@ -153,7 +180,7 @@ public class TransformFactory {
     ModifyEntitiesTransformStrategy strategy = getStrategy(transformer,
         ModifyEntitiesTransformStrategy.class);
 
-    EntityMatch match = getMatch(transformer, line, json);
+    TypedEntityMatch match = getMatch(transformer, line, json);
 
     if (json.has("factory")) {
       String value = json.getString("factory");
@@ -209,7 +236,7 @@ public class TransformFactory {
     ModifyEntitiesTransformStrategy strategy = getStrategy(transformer,
         ModifyEntitiesTransformStrategy.class);
 
-    EntityMatch match = getMatch(transformer, line, json);
+    TypedEntityMatch match = getMatch(transformer, line, json);
     RemoveEntityUpdateStrategy mod = new RemoveEntityUpdateStrategy(
         match.getPropertyMatches());
 
@@ -222,7 +249,7 @@ public class TransformFactory {
     RetainEntitiesTransformStrategy strategy = getStrategy(transformer,
         RetainEntitiesTransformStrategy.class);
 
-    EntityMatch match = getMatch(transformer, line, json);
+    TypedEntityMatch match = getMatch(transformer, line, json);
 
     boolean retainUp = true;
 
@@ -230,10 +257,44 @@ public class TransformFactory {
       retainUp = json.getBoolean("retainUp");
 
     strategy.addRetention(match, retainUp);
-    
+
     if (json.has("retainBlocks")) {
       boolean retainBlocks = json.getBoolean("retainBlocks");
       strategy.setRetainBlocks(retainBlocks);
+    }
+  }
+
+  private void handleSubsectionOperation(GtfsTransformer transformer,
+      String line, JSONObject json) throws JSONException {
+
+    SubsectionTripTransformStrategy strategy = getStrategy(transformer,
+        SubsectionTripTransformStrategy.class);
+
+    SubsectionOperation operation = new SubsectionTripTransformStrategy.SubsectionOperation();
+    setObjectPropertiesFromJson(operation, json);
+
+    try {
+      strategy.addOperation(operation);
+    } catch (IllegalArgumentException ex) {
+      throw new IllegalArgumentException(
+          "invalid subsection specification: line=" + line, ex);
+    }
+  }
+
+  private void handleTrimOperation(GtfsTransformer transformer, String line,
+      JSONObject json) throws JSONException {
+
+    TrimTripTransformStrategy strategy = getStrategy(transformer,
+        TrimTripTransformStrategy.class);
+
+    TrimOperation operation = new TrimTripTransformStrategy.TrimOperation();
+    setObjectPropertiesFromJson(operation, json);
+
+    try {
+      strategy.addOperation(operation);
+    } catch (IllegalArgumentException ex) {
+      throw new IllegalArgumentException(
+          "invalid subsection specification: line=" + line, ex);
     }
   }
 
@@ -246,44 +307,64 @@ public class TransformFactory {
 
     String value = json.getString("class");
 
+    Object factoryObj = null;
     try {
-
       Class<?> clazz = Class.forName(value);
-      Object factoryObj = clazz.newInstance();
-
-      BeanWrapper wrapped = BeanWrapperFactory.wrap(factoryObj);
-      for (Iterator<?> it = json.keys(); it.hasNext();) {
-        String key = (String) it.next();
-        if (key.equals("op") || key.equals("class"))
-          continue;
-        Object v = json.get(key);
-        wrapped.setPropertyValue(key, v);
-      }
-
-      boolean added = false;
-
-      if (factoryObj instanceof GtfsTransformStrategy) {
-        transformer.addTransform((GtfsTransformStrategy) factoryObj);
-        added = true;
-      }
-      if (factoryObj instanceof GtfsEntityTransformStrategy) {
-        transformer.addEntityTransform((GtfsEntityTransformStrategy) factoryObj);
-        added = true;
-      }
-      if (factoryObj instanceof GtfsTransformStrategyFactory) {
-        GtfsTransformStrategyFactory factory = (GtfsTransformStrategyFactory) factoryObj;
-        factory.createTransforms(transformer);
-        added = true;
-      }
-
-      if (!added) {
-        throw new IllegalArgumentException(
-            "factory object is not an instance of GtfsTransformStrategy, GtfsEntityTransformStrategy, or GtfsTransformStrategyFactory: "
-                + clazz.getName());
-      }
-
+      factoryObj = clazz.newInstance();
     } catch (Exception ex) {
       throw new IllegalStateException("error instantiating class: " + value, ex);
+    }
+    handleTransformOperation(transformer, line, json, factoryObj);
+  }
+
+  private void handleTransformOperation(GtfsTransformer transformer,
+      String line, JSONObject json, Object factoryObj) throws JSONException {
+
+    setObjectPropertiesFromJson(factoryObj, json);
+
+    boolean added = false;
+
+    if (factoryObj instanceof GtfsTransformStrategy) {
+      transformer.addTransform((GtfsTransformStrategy) factoryObj);
+      added = true;
+    }
+    if (factoryObj instanceof GtfsEntityTransformStrategy) {
+      transformer.addEntityTransform((GtfsEntityTransformStrategy) factoryObj);
+      added = true;
+    }
+    if (factoryObj instanceof GtfsTransformStrategyFactory) {
+      GtfsTransformStrategyFactory factory = (GtfsTransformStrategyFactory) factoryObj;
+      factory.createTransforms(transformer);
+      added = true;
+    }
+
+    if (!added) {
+      throw new IllegalArgumentException(
+          "factory object is not an instance of GtfsTransformStrategy, GtfsEntityTransformStrategy, or GtfsTransformStrategyFactory: "
+              + factoryObj.getClass().getName());
+    }
+  }
+
+  private void setObjectPropertiesFromJson(Object object, JSONObject json)
+      throws JSONException {
+    BeanWrapper wrapped = BeanWrapperFactory.wrap(object);
+    for (Iterator<?> it = json.keys(); it.hasNext();) {
+      String key = (String) it.next();
+      if (key.equals("op") || key.equals("class"))
+        continue;
+      Object v = json.get(key);
+      Class<?> propertyType = wrapped.getPropertyType(key);
+      if (v instanceof JSONArray) {
+        JSONArray array = (JSONArray) v;
+        List<Object> values = new ArrayList<Object>();
+        for (int i = 0; i < array.length(); ++i) {
+          values.add(array.get(i));
+        }
+        v = values;
+      } else if (v instanceof String && !propertyType.equals(String.class)) {
+        v = ConvertUtils.convert((String) v, propertyType);
+      }
+      wrapped.setPropertyValue(key, v);
     }
   }
 
@@ -311,7 +392,7 @@ public class TransformFactory {
     }
   }
 
-  private EntityMatch getMatch(GtfsTransformer transformer, String line,
+  private TypedEntityMatch getMatch(GtfsTransformer transformer, String line,
       JSONObject json) throws JSONException {
 
     JSONObject match = json.getJSONObject("match");
@@ -328,15 +409,27 @@ public class TransformFactory {
     Map<String, Object> propertyMatches = getEntityPropertiesAndValuesFromJsonObject(
         transformer, entityType, match);
 
-    Map<PropertyPathExpression, Object> propertyPathExpressionMatches = new HashMap<PropertyPathExpression, Object>();
+    List<EntityMatch> matches = new ArrayList<EntityMatch>();
+
+    PropertyMethodResolverImpl resolver = new PropertyMethodResolverImpl(
+        transformer.getDao());
 
     for (Map.Entry<String, Object> entry : propertyMatches.entrySet()) {
       String property = entry.getKey();
-      PropertyPathExpression expression = new PropertyPathExpression(property);
-      propertyPathExpressionMatches.put(expression, entry.getValue());
+      Matcher m = _anyMatcher.matcher(property);
+      if (m.matches()) {
+        PropertyPathCollectionExpression expression = new PropertyPathCollectionExpression(
+            m.group(1));
+        expression.setPropertyMethodResolver(resolver);
+        matches.add(new PropertyAnyValueEntityMatch(expression,
+            entry.getValue()));
+      } else {
+        PropertyPathExpression expression = new PropertyPathExpression(property);
+        matches.add(new PropertyValueEntityMatch(expression, entry.getValue()));
+      }
     }
 
-    return new EntityMatch(entityType, propertyPathExpressionMatches);
+    return new TypedEntityMatch(entityType, new EntityMatchCollection(matches));
   }
 
   @SuppressWarnings("unchecked")
@@ -356,7 +449,8 @@ public class TransformFactory {
 
       Class<?> fromType = value.getClass();
 
-      if (fromType.equals(String.class)) {
+      if (fromType.equals(String.class)
+          && !_anyMatcher.matcher(property).matches()) {
 
         PropertyPathExpression exp = new PropertyPathExpression(property);
         Class<?> toType = exp.initialize(entityType);

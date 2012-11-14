@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2012 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +54,10 @@ public class CalendarServiceImpl implements CalendarService {
 
   public CalendarServiceImpl(CalendarServiceDataFactory factory) {
     _factory = factory;
+  }
+
+  public CalendarServiceImpl(CalendarServiceData data) {
+    _data = data;
   }
 
   public void setDataFactory(CalendarServiceDataFactory factory) {

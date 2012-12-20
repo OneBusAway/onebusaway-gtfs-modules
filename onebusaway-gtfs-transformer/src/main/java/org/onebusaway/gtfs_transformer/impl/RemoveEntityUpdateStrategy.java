@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> 
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2012 Google, Inc. 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +20,8 @@ import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Route;
+import org.onebusaway.gtfs.model.ServiceCalendar;
+import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
@@ -55,9 +58,13 @@ public class RemoveEntityUpdateStrategy extends
       _library.removeStopTime(dao, (StopTime) obj);
     } else if (obj instanceof Frequency) {
       _library.removeFrequency(dao, (Frequency) obj);
+    } else if (obj instanceof ServiceCalendar) {
+      _library.removeServiceCalendar(dao, (ServiceCalendar) obj);
+    } else if (obj instanceof ServiceCalendarDate) {
+      _library.removeServiceCalendarDate(dao, (ServiceCalendarDate) obj);
     } else {
       throw new IllegalStateException("attempt to remove entity of type "
-          + entity.getClass());
+          + obj.getClass());
     }
   }
 }

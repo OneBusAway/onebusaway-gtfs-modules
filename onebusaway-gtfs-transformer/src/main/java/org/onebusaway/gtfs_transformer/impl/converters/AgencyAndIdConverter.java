@@ -17,6 +17,7 @@ package org.onebusaway.gtfs_transformer.impl.converters;
 
 import org.apache.commons.beanutils.Converter;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 /**
  * Apache bean-utils {@link Converter} for convertering between a
@@ -27,15 +28,26 @@ import org.onebusaway.gtfs.model.AgencyAndId;
  */
 public class AgencyAndIdConverter implements Converter {
 
+  private TransformContext _context;
+
+  public AgencyAndIdConverter(TransformContext context) {
+    _context = context;
+  }
+
   @Override
-  public Object convert(@SuppressWarnings("rawtypes") Class type, Object value) {
+  public Object convert(@SuppressWarnings("rawtypes")
+  Class type, Object value) {
 
     if (type == null || value == null)
       return null;
 
     if (type == AgencyAndId.class && value instanceof String) {
       String id = (String) value;
-      return AgencyAndId.convertFromString(id);
+      if (id.contains("_")) {
+        return AgencyAndId.convertFromString(id);
+      } else {
+        return new AgencyAndId(_context.getDefaultAgencyId(), id);
+      }
     } else if (type == String.class && value instanceof AgencyAndId) {
       AgencyAndId id = (AgencyAndId) value;
       return AgencyAndId.convertToString(id);

@@ -18,6 +18,7 @@ package org.onebusaway.gtfs_transformer.impl;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.apache.commons.beanutils.ConvertUtils;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -45,8 +46,11 @@ public class SimpleModificationStrategy extends
       String property = entry.getKey();
       Object value = entry.getValue();
       Class<?> propertyType = entity.getPropertyType(property);
-      if (IdentityBean.class.isAssignableFrom(propertyType))
+      if (IdentityBean.class.isAssignableFrom(propertyType)) {
         value = dao.getEntityForId(propertyType, (Serializable) value);
+      } else if (value instanceof String && !propertyType.equals(String.class)) {
+        value = ConvertUtils.convert((String) value, propertyType);
+      }
       entity.setPropertyValue(property, value);
     }
   }

@@ -29,6 +29,7 @@ import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs_transformer.impl.converters.AgencyAndIdConverter;
+import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class PropertyMatchesTest {
 
@@ -106,7 +107,9 @@ public class PropertyMatchesTest {
   @Test
   public void testPropertyTypeConversion() {
 
-    ConvertUtils.register(new AgencyAndIdConverter(), AgencyAndId.class);
+    TransformContext context = new TransformContext();
+
+    ConvertUtils.register(new AgencyAndIdConverter(context), AgencyAndId.class);
 
     Map<PropertyPathExpression, Object> propertyPathsAndValues = new HashMap<PropertyPathExpression, Object>();
     propertyPathsAndValues.put(new PropertyPathExpression("id"), "metro_r2");

@@ -153,7 +153,7 @@ public class GtfsTransformer {
    * sure to call the parent method in your sub-class.
    */
   protected void registerConverters() {
-    ConvertUtils.register(new AgencyAndIdConverter(), AgencyAndId.class);
+    ConvertUtils.register(new AgencyAndIdConverter(_context), AgencyAndId.class);
   }
 
   /****

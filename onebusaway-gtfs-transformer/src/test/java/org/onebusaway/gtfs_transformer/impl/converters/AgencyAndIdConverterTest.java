@@ -18,31 +18,40 @@ package org.onebusaway.gtfs_transformer.impl.converters;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class AgencyAndIdConverterTest {
 
+  private TransformContext _context = new TransformContext();
+  private AgencyAndIdConverter _converter;
+
+  @Before
+  public void before() {
+    _context.setDefaultAgencyId("1");
+    _converter = new AgencyAndIdConverter(_context);
+  }
+
   @Test
   public void testConvertFromString() {
-    AgencyAndIdConverter converter = new AgencyAndIdConverter();
-    AgencyAndId id = (AgencyAndId) converter.convert(AgencyAndId.class, "a_b");
+
+    AgencyAndId id = (AgencyAndId) _converter.convert(AgencyAndId.class, "a_b");
     assertEquals("a", id.getAgencyId());
     assertEquals("b", id.getId());
   }
 
   @Test
   public void testConvertToString() {
-    AgencyAndIdConverter converter = new AgencyAndIdConverter();
     AgencyAndId id = new AgencyAndId("a", "b");
-    String value = (String) converter.convert(String.class, id);
+    String value = (String) _converter.convert(String.class, id);
     assertEquals("a_b", value);
   }
 
   @Test
   public void testNull() {
-    AgencyAndIdConverter converter = new AgencyAndIdConverter();
-    Object value = converter.convert(AgencyAndId.class, null);
+    Object value = _converter.convert(AgencyAndId.class, null);
     assertNull(value);
   }
 }

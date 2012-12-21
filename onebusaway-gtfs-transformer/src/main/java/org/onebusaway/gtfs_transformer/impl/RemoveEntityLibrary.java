@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2012 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +19,8 @@ package org.onebusaway.gtfs_transformer.impl;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Route;
+import org.onebusaway.gtfs.model.ServiceCalendar;
+import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
@@ -57,5 +60,13 @@ public class RemoveEntityLibrary {
 
   public void removeStopTime(GtfsMutableRelationalDao dao, StopTime stopTime) {
     dao.removeEntity(stopTime);
+  }
+  
+  public void removeServiceCalendar(GtfsMutableRelationalDao dao, ServiceCalendar calendar) {
+    dao.removeEntity(calendar);
+  }
+  
+  public void removeServiceCalendarDate(GtfsMutableRelationalDao dao, ServiceCalendarDate calendarDate) {
+    dao.removeEntity(calendarDate);
   }
 }

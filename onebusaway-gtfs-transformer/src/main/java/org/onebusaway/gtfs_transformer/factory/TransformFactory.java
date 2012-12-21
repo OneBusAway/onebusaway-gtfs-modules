@@ -37,6 +37,7 @@ import org.apache.commons.beanutils.Converter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.onebusaway.collections.PropertyMethodResolver;
 import org.onebusaway.collections.PropertyPathCollectionExpression;
 import org.onebusaway.collections.PropertyPathExpression;
 import org.onebusaway.collections.tuple.Pair;
@@ -209,8 +210,11 @@ public class TransformFactory {
 
       JSONObject update = json.getJSONObject("update");
 
+      PropertyMethodResolverImpl resolver = new PropertyMethodResolverImpl(
+          transformer.getDao());
+
       Map<String, Object> propertyUpdates = getEntityPropertiesAndValuesFromJsonObject(
-          transformer, match.getType(), update);
+          transformer, match.getType(), update, resolver);
       SimpleModificationStrategy mod = new SimpleModificationStrategy(
           match.getPropertyMatches(), propertyUpdates);
 
@@ -406,13 +410,13 @@ public class TransformFactory {
           "modification match must have \"class\" argument: line=" + line);
     Class<?> entityType = getEntityTypeForName(entityTypeString);
 
-    Map<String, Object> propertyMatches = getEntityPropertiesAndValuesFromJsonObject(
-        transformer, entityType, match);
-
-    List<EntityMatch> matches = new ArrayList<EntityMatch>();
-
     PropertyMethodResolverImpl resolver = new PropertyMethodResolverImpl(
         transformer.getDao());
+
+    Map<String, Object> propertyMatches = getEntityPropertiesAndValuesFromJsonObject(
+        transformer, entityType, match, resolver);
+
+    List<EntityMatch> matches = new ArrayList<EntityMatch>();
 
     for (Map.Entry<String, Object> entry : propertyMatches.entrySet()) {
       String property = entry.getKey();
@@ -425,6 +429,7 @@ public class TransformFactory {
             entry.getValue()));
       } else {
         PropertyPathExpression expression = new PropertyPathExpression(property);
+        expression.setPropertyMethodResolver(resolver);
         matches.add(new PropertyValueEntityMatch(expression, entry.getValue()));
       }
     }
@@ -434,8 +439,8 @@ public class TransformFactory {
 
   @SuppressWarnings("unchecked")
   private Map<String, Object> getEntityPropertiesAndValuesFromJsonObject(
-      GtfsTransformer transformer, Class<?> entityType, JSONObject obj)
-      throws JSONException {
+      GtfsTransformer transformer, Class<?> entityType, JSONObject obj,
+      PropertyMethodResolver resolver) throws JSONException {
 
     Map<String, Object> map = new HashMap<String, Object>();
 
@@ -453,6 +458,7 @@ public class TransformFactory {
           && !_anyMatcher.matcher(property).matches()) {
 
         PropertyPathExpression exp = new PropertyPathExpression(property);
+        exp.setPropertyMethodResolver(resolver);
         Class<?> toType = exp.initialize(entityType);
         Class<?> parentType = exp.getParentType(entityType);
         String lastProperty = exp.getLastProperty();
@@ -568,7 +574,7 @@ public class TransformFactory {
         Object instance = instantiate(entityClass);
 
         Map<String, Object> here = getEntityPropertiesAndValuesFromJsonObject(
-            _transformer, entityClass, properties);
+            _transformer, entityClass, properties, null);
 
         BeanWrapper wrapper = BeanWrapperFactory.wrap(instance);
         for (Map.Entry<String, Object> entry : here.entrySet())

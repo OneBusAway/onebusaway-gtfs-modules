@@ -16,9 +16,11 @@
 package org.onebusaway.gtfs_transformer.match;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import org.onebusaway.collections.PropertyMethod;
 import org.onebusaway.collections.PropertyMethodResolver;
+import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 
@@ -36,6 +38,8 @@ public class PropertyMethodResolverImpl implements PropertyMethodResolver {
     if (targetType.equals(Trip.class)) {
       if (propertyName.equals("stopTimes")) {
         return new StopTimesForTripPropertyMethod(_dao);
+      } else if (propertyName.equals("calendar")) {
+        return new ServiceCalendarForTripPropertyMethod(_dao);
       }
     }
     return null;
@@ -53,6 +57,32 @@ public class PropertyMethodResolverImpl implements PropertyMethodResolver {
     public Object invoke(Object value) throws IllegalArgumentException,
         IllegalAccessException, InvocationTargetException {
       return _dao.getStopTimesForTrip((Trip) value);
+    }
+
+    @Override
+    public Class<?> getReturnType() {
+      return List.class;
+    }
+  }
+
+  private static class ServiceCalendarForTripPropertyMethod implements
+      PropertyMethod {
+
+    private final GtfsRelationalDao _dao;
+
+    public ServiceCalendarForTripPropertyMethod(GtfsRelationalDao dao) {
+      _dao = dao;
+    }
+
+    @Override
+    public Object invoke(Object value) throws IllegalArgumentException,
+        IllegalAccessException, InvocationTargetException {
+      return _dao.getCalendarForServiceId(((Trip) value).getServiceId());
+    }
+
+    @Override
+    public Class<?> getReturnType() {
+      return ServiceCalendar.class;
     }
   }
 }

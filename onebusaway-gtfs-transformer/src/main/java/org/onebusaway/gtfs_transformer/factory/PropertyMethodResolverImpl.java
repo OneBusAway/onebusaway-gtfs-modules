@@ -16,10 +16,15 @@
 package org.onebusaway.gtfs_transformer.factory;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.onebusaway.collections.beans.DefaultPropertyMethodResolver;
 import org.onebusaway.collections.beans.PropertyMethod;
+import org.onebusaway.csv_entities.schema.EntitySchema;
+import org.onebusaway.csv_entities.schema.FieldMapping;
+import org.onebusaway.csv_entities.schema.SingleFieldMapping;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
@@ -29,11 +34,33 @@ class PropertyMethodResolverImpl extends DefaultPropertyMethodResolver {
   private GtfsRelationalDao _dao;
 
   /**
+   * Mapping from CSV field names to
+   */
+  private Map<Class<?>, Map<String, String>> _entityTypesAndcsvFieldNamesToObjectFieldNames = new HashMap<Class<?>, Map<String, String>>();
+
+  /**
    * 
    * @param dao
    */
   public PropertyMethodResolverImpl(GtfsRelationalDao dao) {
     _dao = dao;
+  }
+
+  public void addCsvFieldMappings(EntitySchema schema) {
+    Map<String, String> csvFieldNamesToObjectFieldNames = _entityTypesAndcsvFieldNamesToObjectFieldNames.get(schema.getEntityClass());
+    if (csvFieldNamesToObjectFieldNames == null) {
+      csvFieldNamesToObjectFieldNames = new HashMap<String, String>();
+      _entityTypesAndcsvFieldNamesToObjectFieldNames.put(
+          schema.getEntityClass(), csvFieldNamesToObjectFieldNames);
+    }
+    for (FieldMapping fieldMapping : schema.getFields()) {
+      if (fieldMapping instanceof SingleFieldMapping) {
+        SingleFieldMapping singleFieldMapping = (SingleFieldMapping) fieldMapping;
+        csvFieldNamesToObjectFieldNames.put(
+            singleFieldMapping.getCsvFieldName(),
+            singleFieldMapping.getObjFieldName());
+      }
+    }
   }
 
   @Override
@@ -45,6 +72,13 @@ class PropertyMethodResolverImpl extends DefaultPropertyMethodResolver {
         return new StopTimesForTripPropertyMethod(_dao);
       } else if (propertyName.equals("calendar")) {
         return new ServiceCalendarForTripPropertyMethod(_dao);
+      }
+    }
+    Map<String, String> csvFieldNamesToObjectFieldNames = _entityTypesAndcsvFieldNamesToObjectFieldNames.get(targetType);
+    if (csvFieldNamesToObjectFieldNames != null) {
+      String objectFieldName = csvFieldNamesToObjectFieldNames.get(propertyName);
+      if (objectFieldName != null) {
+        propertyName = objectFieldName;
       }
     }
     return super.getPropertyMethod(targetType, propertyName);

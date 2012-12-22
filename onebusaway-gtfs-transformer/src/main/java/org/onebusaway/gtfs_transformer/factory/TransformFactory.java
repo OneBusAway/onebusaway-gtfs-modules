@@ -446,6 +446,9 @@ public class TransformFactory {
 
     PropertyMethodResolverImpl resolver = new PropertyMethodResolverImpl(
         transformer.getDao());
+    if (schema != null) {
+      resolver.addCsvFieldMappings(schema);
+    }
 
     Map<String, Object> propertyMatches = getEntityPropertiesAndValuesFromJsonObject(
         transformer, entityType, match, resolver);

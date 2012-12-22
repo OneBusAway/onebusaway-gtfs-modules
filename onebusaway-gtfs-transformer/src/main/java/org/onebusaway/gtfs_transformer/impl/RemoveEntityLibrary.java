@@ -17,6 +17,7 @@
 package org.onebusaway.gtfs_transformer.impl;
 
 import org.onebusaway.gtfs.model.Agency;
+import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
@@ -61,12 +62,27 @@ public class RemoveEntityLibrary {
   public void removeStopTime(GtfsMutableRelationalDao dao, StopTime stopTime) {
     dao.removeEntity(stopTime);
   }
-  
-  public void removeServiceCalendar(GtfsMutableRelationalDao dao, ServiceCalendar calendar) {
+
+  public void removeServiceCalendar(GtfsMutableRelationalDao dao,
+      ServiceCalendar calendar) {
     dao.removeEntity(calendar);
   }
-  
-  public void removeServiceCalendarDate(GtfsMutableRelationalDao dao, ServiceCalendarDate calendarDate) {
+
+  public void removeServiceCalendarDate(GtfsMutableRelationalDao dao,
+      ServiceCalendarDate calendarDate) {
     dao.removeEntity(calendarDate);
+  }
+
+  public void removeCalendar(GtfsMutableRelationalDao dao, AgencyAndId serviceId) {
+    ServiceCalendar calendar = dao.getCalendarForServiceId(serviceId);
+    if (calendar != null) {
+      removeServiceCalendar(dao, calendar);
+    }
+    for (ServiceCalendarDate calendarDate : dao.getCalendarDatesForServiceId(serviceId)) {
+      removeServiceCalendarDate(dao, calendarDate);
+    }
+    for (Trip trip : dao.getTripsForServiceId(serviceId)) {
+      removeTrip(dao, trip);
+    }
   }
 }

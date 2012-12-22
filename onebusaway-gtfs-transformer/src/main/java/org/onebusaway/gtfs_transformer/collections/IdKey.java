@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2012 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs_transformer.services;
+package org.onebusaway.gtfs_transformer.collections;
 
-import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs.model.AgencyAndId;
 
-public interface EntityTransformStrategy {
+public abstract class IdKey {
 
-  public void run(TransformContext context, GtfsMutableRelationalDao dao,
-      Object entity);
+  protected AgencyAndId _id;
+
+  public IdKey(AgencyAndId id) {
+    _id = id;
+  }
+
+  public AgencyAndId getId() {
+    return _id;
+  }
+  
+  @Override
+  public int hashCode() {
+    return _id.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    IdKey other = (IdKey) obj;
+    return _id.equals(other._id);
+  }
 }

@@ -56,8 +56,12 @@ import org.onebusaway.gtfs.serialization.mappings.ConverterFactory;
 import org.onebusaway.gtfs_transformer.GtfsTransformer;
 import org.onebusaway.gtfs_transformer.TransformSpecificationException;
 import org.onebusaway.gtfs_transformer.TransformSpecificationMissingArgumentException;
-import org.onebusaway.gtfs_transformer.impl.MatchingEntityModificationStrategyWrapper;
+import org.onebusaway.gtfs_transformer.collections.ServiceIdKey;
+import org.onebusaway.gtfs_transformer.collections.ServiceIdKeyMatch;
+import org.onebusaway.gtfs_transformer.collections.ShapeIdKey;
+import org.onebusaway.gtfs_transformer.collections.ShapeIdKeyMatch;
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
+import org.onebusaway.gtfs_transformer.impl.ServiceIdTransformStrategyImpl;
 import org.onebusaway.gtfs_transformer.impl.SimpleModificationStrategy;
 import org.onebusaway.gtfs_transformer.impl.StringModificationStrategy;
 import org.onebusaway.gtfs_transformer.match.EntityMatch;
@@ -77,15 +81,27 @@ import org.onebusaway.gtfs_transformer.updates.TrimTripTransformStrategy.TrimOpe
 
 public class TransformFactory {
 
+  private static final String ARG_UPDATE = "update";
+
+  private static final String ARG_SHAPE_ID = "shape_id";
+
+  private static final String ARG_SHAPE = "shape";
+
+  private static final String ARG_SERVICE_ID = "service_id";
+
+  private static final String ARG_CALENDAR = "calendar";
+
   private static Pattern _anyMatcher = Pattern.compile("^any\\((.*)\\)$");
 
   private static final String ARG_OP = "op";
 
   private static final String ARG_MATCH = "match";
 
+  private static final String ARG_FILE = "file";
+
   private static final String ARG_CLASS = "class";
 
-  private static final String ARG_FILE = "file";
+  private static final String ARG_COLLECTION = "collection";
 
   static {
     ConvertUtils.register(new ServiceDateConverter(), ServiceDate.class);
@@ -155,7 +171,7 @@ public class TransformFactory {
 
         if (opType.equals("add")) {
           handleAddOperation(transformer, line, json);
-        } else if (opType.equals("update") || opType.equals("change")
+        } else if (opType.equals(ARG_UPDATE) || opType.equals("change")
             || opType.equals("modify")) {
           handleUpdateOperation(transformer, line, json);
         } else if (opType.equals("remove") || opType.equals("delete")) {
@@ -200,28 +216,22 @@ public class TransformFactory {
   private void handleUpdateOperation(GtfsTransformer transformer, String line,
       JSONObject json) throws JSONException, TransformSpecificationException {
 
-    ModifyEntitiesTransformStrategy strategy = getStrategy(transformer,
-        ModifyEntitiesTransformStrategy.class);
+    EntitiesTransformStrategy strategy = getStrategy(transformer,
+        EntitiesTransformStrategy.class);
 
     TypedEntityMatch match = getMatch(transformer, line, json);
 
     if (json.has("factory")) {
-      String value = json.getString("factory");
+      String factoryType = json.getString("factory");
       try {
-        Class<?> clazz = Class.forName(value);
+        Class<?> clazz = Class.forName(factoryType);
         Object factoryObj = clazz.newInstance();
         if (!(factoryObj instanceof EntityTransformStrategy)) {
           throw new TransformSpecificationException(
               "factory object is not an instance of EntityTransformStrategy: "
                   + clazz.getName(), line);
         }
-
-        strategy.addModification(
-            match.getType(),
-            new MatchingEntityModificationStrategyWrapper(
-                match.getPropertyMatches(),
-                (EntityTransformStrategy) factoryObj));
-
+        strategy.addModification(match, (EntityTransformStrategy) factoryObj);
       } catch (Throwable ex) {
         throw new TransformSpecificationException(
             "error creating factory ModificationStrategy instance", ex, line);
@@ -229,19 +239,14 @@ public class TransformFactory {
       return;
     }
 
-    if (json.has("update")) {
+    if (json.has(ARG_UPDATE)) {
 
-      JSONObject update = json.getJSONObject("update");
+      JSONObject update = json.getJSONObject(ARG_UPDATE);
 
-      PropertyMethodResolver resolver = new PropertyMethodResolverImpl(
-          transformer.getDao());
+      EntityTransformStrategy mod = getUpdateEntityTransformStrategy(
+          transformer, line, match, update);
 
-      Map<String, Object> propertyUpdates = getEntityPropertiesAndValuesFromJsonObject(
-          transformer, match.getType(), update, resolver);
-      SimpleModificationStrategy mod = new SimpleModificationStrategy(
-          match.getPropertyMatches(), propertyUpdates);
-
-      strategy.addModification(match.getType(), mod);
+      strategy.addModification(match, mod);
     }
 
     if (json.has("strings")) {
@@ -251,23 +256,40 @@ public class TransformFactory {
       Map<String, Pair<String>> replacements = getEntityPropertiesAndStringReplacementsFromJsonObject(
           match.getType(), strings);
       StringModificationStrategy mod = new StringModificationStrategy(
-          match.getPropertyMatches(), replacements);
+          replacements);
 
-      strategy.addModification(match.getType(), mod);
+      strategy.addModification(match, mod);
+    }
+  }
+
+  private EntityTransformStrategy getUpdateEntityTransformStrategy(
+      GtfsTransformer transformer, String line, TypedEntityMatch match,
+      JSONObject update) throws JSONException, TransformSpecificationException {
+    if (ServiceIdKey.class.isAssignableFrom(match.getType())) {
+      String oldServiceId = ((ServiceIdKeyMatch) match.getPropertyMatches()).getRawId();
+      if (!update.has(ARG_SERVICE_ID)) {
+        throw new TransformSpecificationMissingArgumentException(line,
+            ARG_SERVICE_ID, ARG_UPDATE);
+      }
+      String newServiceId = update.getString(ARG_SERVICE_ID);
+      return new ServiceIdTransformStrategyImpl(oldServiceId, newServiceId);
+    } else {
+      PropertyMethodResolver resolver = new PropertyMethodResolverImpl(
+          transformer.getDao());
+      Map<String, Object> propertyUpdates = getEntityPropertiesAndValuesFromJsonObject(
+          transformer, match.getType(), update, resolver);
+      return new SimpleModificationStrategy(propertyUpdates);
     }
   }
 
   private void handleRemoveOperation(GtfsTransformer transformer, String line,
       JSONObject json) throws JSONException, TransformSpecificationException {
-
-    ModifyEntitiesTransformStrategy strategy = getStrategy(transformer,
-        ModifyEntitiesTransformStrategy.class);
-
     TypedEntityMatch match = getMatch(transformer, line, json);
-    RemoveEntityUpdateStrategy mod = new RemoveEntityUpdateStrategy(
-        match.getPropertyMatches());
 
-    strategy.addModification(match.getType(), mod);
+    EntitiesTransformStrategy strategy = getStrategy(transformer,
+        EntitiesTransformStrategy.class);
+    RemoveEntityUpdateStrategy mod = new RemoveEntityUpdateStrategy();
+    strategy.addModification(match, mod);
   }
 
   private void handleRetainOperation(GtfsTransformer transformer, String line,
@@ -425,6 +447,11 @@ public class TransformFactory {
     }
     JSONObject match = json.getJSONObject(ARG_MATCH);
 
+    if (match.has(ARG_COLLECTION)) {
+      return getCollectionMatch(line, match.getString(ARG_COLLECTION), match,
+          transformer.getReader());
+    }
+
     Class<?> entityType = null;
     EntitySchema schema = null;
     if (match.has(ARG_FILE)) {
@@ -472,6 +499,31 @@ public class TransformFactory {
     }
 
     return new TypedEntityMatch(entityType, new EntityMatchCollection(matches));
+  }
+
+  private TypedEntityMatch getCollectionMatch(String line,
+      String collectionType, JSONObject match, GtfsReader reader)
+      throws TransformSpecificationException, JSONException {
+    if (collectionType.equals(ARG_CALENDAR)) {
+      if (!match.has(ARG_SERVICE_ID)) {
+        throw new TransformSpecificationMissingArgumentException(line,
+            ARG_SERVICE_ID, ARG_MATCH);
+      }
+      String serviceId = match.getString(ARG_SERVICE_ID);
+      return new TypedEntityMatch(ServiceIdKey.class, new ServiceIdKeyMatch(
+          reader, serviceId));
+    } else if (collectionType.equals(ARG_SHAPE)) {
+      if (!match.has(ARG_SHAPE_ID)) {
+        throw new TransformSpecificationMissingArgumentException(line,
+            ARG_SHAPE_ID, ARG_MATCH);
+      }
+      String shapeId = match.getString(ARG_SHAPE_ID);
+      return new TypedEntityMatch(ShapeIdKey.class, new ShapeIdKeyMatch(reader,
+          shapeId));
+    } else {
+      throw new TransformSpecificationException("unknown collection type: \""
+          + collectionType + "\"", line);
+    }
   }
 
   @SuppressWarnings("unchecked")

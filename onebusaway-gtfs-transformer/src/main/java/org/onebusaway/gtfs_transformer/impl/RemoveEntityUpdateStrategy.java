@@ -16,7 +16,6 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Route;
@@ -26,26 +25,18 @@ import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.match.EntityMatch;
+import org.onebusaway.gtfs_transformer.collections.ServiceIdKey;
+import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
-public class RemoveEntityUpdateStrategy extends
-    AbstractEntityModificationStrategy {
+public class RemoveEntityUpdateStrategy implements EntityTransformStrategy {
 
   private RemoveEntityLibrary _library = new RemoveEntityLibrary();
 
-  public RemoveEntityUpdateStrategy(EntityMatch match) {
-    super(match);
-  }
-
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao,
-      BeanWrapper entity) {
+      Object obj) {
 
-    if (!isModificationApplicable(entity))
-      return;
-
-    Object obj = entity.getWrappedInstance(Object.class);
     if (obj instanceof Agency) {
       _library.removeAgency(dao, (Agency) obj);
     } else if (obj instanceof Route) {
@@ -62,8 +53,10 @@ public class RemoveEntityUpdateStrategy extends
       _library.removeServiceCalendar(dao, (ServiceCalendar) obj);
     } else if (obj instanceof ServiceCalendarDate) {
       _library.removeServiceCalendarDate(dao, (ServiceCalendarDate) obj);
+    } else if (obj instanceof ServiceIdKey) {
+      _library.removeCalendar(dao, ((ServiceIdKey) obj).getId());
     } else {
-      throw new IllegalStateException("attempt to remove entity of type "
+      throw new NoSuchMethodError("attempt to remove entity of type "
           + obj.getClass());
     }
   }

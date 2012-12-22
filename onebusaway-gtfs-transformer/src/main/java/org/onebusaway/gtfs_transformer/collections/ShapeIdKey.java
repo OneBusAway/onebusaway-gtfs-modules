@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2012 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs_transformer.services;
+package org.onebusaway.gtfs_transformer.collections;
 
-import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs.model.AgencyAndId;
 
-public interface EntityTransformStrategy {
+public class ShapeIdKey extends IdKey {
+  public ShapeIdKey(AgencyAndId id) {
+    super(id);
+  }
 
-  public void run(TransformContext context, GtfsMutableRelationalDao dao,
-      Object entity);
+  @Override
+  public String toString() {
+    return "ShapeIdKey(id=" + _id + ")";
+  }
 }

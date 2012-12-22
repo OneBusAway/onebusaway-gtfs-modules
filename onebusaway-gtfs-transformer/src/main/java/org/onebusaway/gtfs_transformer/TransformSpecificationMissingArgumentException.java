@@ -23,8 +23,32 @@ public class TransformSpecificationMissingArgumentException extends
   public TransformSpecificationMissingArgumentException(String line, String name) {
     super("missing required argument: \"" + name + "\"", line);
   }
-  
-  public TransformSpecificationMissingArgumentException(String line, String name, String parent) {
-    super("missing required argument: \"" + name + "\" in parent \"" + parent +"\" section", line);
+
+  public TransformSpecificationMissingArgumentException(String line,
+      String name, String parent) {
+    super("missing required argument: \"" + name + "\" in parent \"" + parent
+        + "\" section", line);
+  }
+
+  public TransformSpecificationMissingArgumentException(String line,
+      String[] names, String parent) {
+    super("missing required argument: " + join(names) + " in parent \""
+        + parent + "\" section", line);
+  }
+
+  private static String join(String[] args) {
+    StringBuilder b = new StringBuilder();
+    for (int i = 0; i < args.length; ++i) {
+      if (i > 0) {
+        if (args.length > 2) {
+          b.append(",");
+        }
+        b.append(" ");
+        if (i + 1 == args.length) {
+          b.append("or ");
+        }
+      }
+    }
+    return b.toString();
   }
 }

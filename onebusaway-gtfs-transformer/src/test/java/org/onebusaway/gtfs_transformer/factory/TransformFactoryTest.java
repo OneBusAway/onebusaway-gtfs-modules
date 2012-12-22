@@ -55,4 +55,16 @@ public class TransformFactoryTest {
     route.setShortName("10");
     assertTrue(match.isApplicableToObject(route));
   }
+
+  @Test
+  public void testFileMatch() throws IOException,
+      TransformSpecificationException {
+    _factory.addModificationsFromString(_transformer,
+        "{'op':'remove', 'match':{'file':'routes.txt', 'shortName':'10'}}");
+    GtfsTransformStrategy transform = _transformer.getLastTransform();
+    assertEquals(ModifyEntitiesTransformStrategy.class, transform.getClass());
+    ModifyEntitiesTransformStrategy strategy = (ModifyEntitiesTransformStrategy) transform;
+    List<EntityTransformStrategy> transforms = strategy.getEntityTransformsForType(Route.class);
+    assertEquals(1, transforms.size());
+  }
 }

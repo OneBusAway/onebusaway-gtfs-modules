@@ -44,11 +44,13 @@ import org.onebusaway.collections.tuple.Pair;
 import org.onebusaway.collections.tuple.Tuples;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
+import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.EntitySchema;
 import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.FieldMapping;
 import org.onebusaway.csv_entities.schema.SingleFieldMapping;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
+import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.mappings.ConverterFactory;
 import org.onebusaway.gtfs_transformer.GtfsTransformer;
@@ -82,14 +84,28 @@ public class TransformFactory {
 
   private static final String ARG_MATCH = "match";
 
+  private static final String ARG_CLASS = "class";
+
+  private static final String ARG_FILE = "file";
+
   static {
     ConvertUtils.register(new ServiceDateConverter(), ServiceDate.class);
   }
 
   private List<String> _entityPackages = new ArrayList<String>();
 
+  private Map<String, EntitySchema> _entitySchemasByFileName = new HashMap<String, EntitySchema>();
+
+  private Map<Class<?>, EntitySchema> _entitySchemasByEntityType = new HashMap<Class<?>, EntitySchema>();
+
   public TransformFactory() {
     addEntityPackage("org.onebusaway.gtfs.model");
+    DefaultEntitySchemaFactory factory = GtfsEntitySchemaFactory.createEntitySchemaFactory();
+    for (Class<?> entityType : GtfsEntitySchemaFactory.getEntityClasses()) {
+      EntitySchema schema = factory.getSchema(entityType);
+      _entitySchemasByFileName.put(schema.getFilename(), schema);
+      _entitySchemasByEntityType.put(entityType, schema);
+    }
   }
 
   public void addEntityPackage(String entityPackage) {
@@ -310,11 +326,10 @@ public class TransformFactory {
       String line, JSONObject json) throws JSONException,
       TransformSpecificationException {
 
-    if (!json.has("class")) {
-      throw new TransformSpecificationMissingArgumentException(line, "class");
+    if (!json.has(ARG_CLASS)) {
+      throw new TransformSpecificationMissingArgumentException(line, ARG_CLASS);
     }
-
-    String value = json.getString("class");
+    String value = json.getString(ARG_CLASS);
 
     Object factoryObj = null;
     try {
@@ -361,7 +376,7 @@ public class TransformFactory {
     BeanWrapper wrapped = BeanWrapperFactory.wrap(object);
     for (Iterator<?> it = json.keys(); it.hasNext();) {
       String key = (String) it.next();
-      if (key.equals(ARG_OP) || key.equals("class"))
+      if (key.equals(ARG_OP) || key.equals(ARG_CLASS))
         continue;
       Object v = json.get(key);
       Class<?> propertyType = wrapped.getPropertyType(key);
@@ -411,12 +426,24 @@ public class TransformFactory {
     }
     JSONObject match = json.getJSONObject(ARG_MATCH);
 
-    if (!match.has("class")) {
-      throw new TransformSpecificationMissingArgumentException(line, "class",
-          ARG_MATCH);
+    Class<?> entityType = null;
+    EntitySchema schema = null;
+    if (match.has(ARG_FILE)) {
+      String fileName = match.getString(ARG_FILE);
+      schema = _entitySchemasByFileName.get(fileName);
+      if (schema == null) {
+        throw new TransformSpecificationException("unknown file type: "
+            + fileName, line);
+      }
+      entityType = schema.getEntityClass();
+    } else if (match.has(ARG_CLASS)) {
+      String entityTypeString = match.getString(ARG_CLASS);
+      entityType = getEntityTypeForName(entityTypeString);
+      schema = _entitySchemasByEntityType.get(entityType);
+    } else {
+      throw new TransformSpecificationMissingArgumentException(line,
+          new String[] {ARG_FILE, ARG_CLASS}, ARG_MATCH);
     }
-    String entityTypeString = match.getString("class");
-    Class<?> entityType = getEntityTypeForName(entityTypeString);
 
     PropertyMethodResolverImpl resolver = new PropertyMethodResolverImpl(
         transformer.getDao());
@@ -457,8 +484,9 @@ public class TransformFactory {
       String property = it.next();
       Object value = obj.get(property);
 
-      if (property.equals("class"))
+      if (property.equals(ARG_CLASS) || property.equals(ARG_FILE)) {
         continue;
+      }
 
       Class<?> fromType = value.getClass();
 
@@ -578,7 +606,7 @@ public class TransformFactory {
       try {
         JSONObject properties = _json.getJSONObject("obj");
 
-        Class<?> entityClass = getEntityTypeForName(properties.getString("class"));
+        Class<?> entityClass = getEntityTypeForName(properties.getString(ARG_CLASS));
         Object instance = instantiate(entityClass);
 
         Map<String, Object> here = getEntityPropertiesAndValuesFromJsonObject(

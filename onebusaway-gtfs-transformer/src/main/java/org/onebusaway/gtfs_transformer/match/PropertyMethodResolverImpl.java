@@ -16,9 +16,11 @@
 package org.onebusaway.gtfs_transformer.match;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import org.onebusaway.collections.PropertyMethod;
 import org.onebusaway.collections.PropertyMethodResolver;
+import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 
@@ -53,6 +55,11 @@ public class PropertyMethodResolverImpl implements PropertyMethodResolver {
     public Object invoke(Object value) throws IllegalArgumentException,
         IllegalAccessException, InvocationTargetException {
       return _dao.getStopTimesForTrip((Trip) value);
+    }
+
+    @Override
+    public Class<?> getReturnType() {
+        return List.class;
     }
   }
 }

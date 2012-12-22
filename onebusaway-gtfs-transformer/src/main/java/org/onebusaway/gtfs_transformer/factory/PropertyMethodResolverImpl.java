@@ -13,21 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs_transformer.match;
+package org.onebusaway.gtfs_transformer.factory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.onebusaway.collections.PropertyMethod;
-import org.onebusaway.collections.PropertyMethodResolver;
+import org.onebusaway.collections.beans.DefaultPropertyMethodResolver;
+import org.onebusaway.collections.beans.PropertyMethod;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 
-public class PropertyMethodResolverImpl implements PropertyMethodResolver {
+class PropertyMethodResolverImpl extends DefaultPropertyMethodResolver {
 
   private GtfsRelationalDao _dao;
 
+  /**
+   * 
+   * @param dao
+   */
   public PropertyMethodResolverImpl(GtfsRelationalDao dao) {
     _dao = dao;
   }
@@ -35,6 +39,7 @@ public class PropertyMethodResolverImpl implements PropertyMethodResolver {
   @Override
   public PropertyMethod getPropertyMethod(Class<?> targetType,
       String propertyName) {
+
     if (targetType.equals(Trip.class)) {
       if (propertyName.equals("stopTimes")) {
         return new StopTimesForTripPropertyMethod(_dao);
@@ -42,7 +47,7 @@ public class PropertyMethodResolverImpl implements PropertyMethodResolver {
         return new ServiceCalendarForTripPropertyMethod(_dao);
       }
     }
-    return null;
+    return super.getPropertyMethod(targetType, propertyName);
   }
 
   private static class StopTimesForTripPropertyMethod implements PropertyMethod {

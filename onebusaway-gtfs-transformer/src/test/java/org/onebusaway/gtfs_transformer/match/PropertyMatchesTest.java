@@ -24,7 +24,7 @@ import java.util.Map;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.onebusaway.collections.PropertyPathExpression;
+import org.onebusaway.collections.beans.PropertyPathExpression;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Route;

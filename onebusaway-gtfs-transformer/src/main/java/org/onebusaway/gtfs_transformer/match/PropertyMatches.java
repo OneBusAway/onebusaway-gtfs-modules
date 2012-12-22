@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
-import org.onebusaway.collections.PropertyPathExpression;
+import org.onebusaway.collections.beans.PropertyPathExpression;
 
 public class PropertyMatches implements EntityMatch {
 

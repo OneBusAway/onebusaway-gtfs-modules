@@ -18,7 +18,7 @@ package org.onebusaway.gtfs_transformer.match;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
-import org.onebusaway.collections.PropertyPathExpression;
+import org.onebusaway.collections.beans.PropertyPathExpression;
 
 public class PropertyValueEntityMatch implements EntityMatch {
 

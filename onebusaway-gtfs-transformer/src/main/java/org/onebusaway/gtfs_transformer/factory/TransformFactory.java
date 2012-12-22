@@ -37,9 +37,9 @@ import org.apache.commons.beanutils.Converter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.onebusaway.collections.PropertyMethodResolver;
-import org.onebusaway.collections.PropertyPathCollectionExpression;
-import org.onebusaway.collections.PropertyPathExpression;
+import org.onebusaway.collections.beans.PropertyMethodResolver;
+import org.onebusaway.collections.beans.PropertyPathCollectionExpression;
+import org.onebusaway.collections.beans.PropertyPathExpression;
 import org.onebusaway.collections.tuple.Pair;
 import org.onebusaway.collections.tuple.Tuples;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
@@ -63,7 +63,6 @@ import org.onebusaway.gtfs_transformer.impl.StringModificationStrategy;
 import org.onebusaway.gtfs_transformer.match.EntityMatch;
 import org.onebusaway.gtfs_transformer.match.EntityMatchCollection;
 import org.onebusaway.gtfs_transformer.match.PropertyAnyValueEntityMatch;
-import org.onebusaway.gtfs_transformer.match.PropertyMethodResolverImpl;
 import org.onebusaway.gtfs_transformer.match.PropertyValueEntityMatch;
 import org.onebusaway.gtfs_transformer.match.TypedEntityMatch;
 import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
@@ -234,7 +233,7 @@ public class TransformFactory {
 
       JSONObject update = json.getJSONObject("update");
 
-      PropertyMethodResolverImpl resolver = new PropertyMethodResolverImpl(
+      PropertyMethodResolver resolver = new PropertyMethodResolverImpl(
           transformer.getDao());
 
       Map<String, Object> propertyUpdates = getEntityPropertiesAndValuesFromJsonObject(
@@ -494,7 +493,9 @@ public class TransformFactory {
           && !_anyMatcher.matcher(property).matches()) {
 
         PropertyPathExpression exp = new PropertyPathExpression(property);
-        exp.setPropertyMethodResolver(resolver);
+        if (resolver != null) {
+          exp.setPropertyMethodResolver(resolver);
+        }
         Class<?> toType = exp.initialize(entityType);
         Class<?> parentType = exp.getParentType(entityType);
         String lastProperty = exp.getLastProperty();

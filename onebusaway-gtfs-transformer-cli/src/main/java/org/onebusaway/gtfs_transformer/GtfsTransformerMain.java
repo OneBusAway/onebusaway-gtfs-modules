@@ -105,6 +105,9 @@ public class GtfsTransformerMain {
     } catch (ParseException ex) {
       System.err.println(ex.getMessage());
       printHelp();
+    } catch (TransformSpecificationException ex) {
+      System.err.println("error with transform line: " + ex.getLine());
+      System.err.println(ex.getMessage());
     } catch (Exception ex) {
       ex.printStackTrace();
     }

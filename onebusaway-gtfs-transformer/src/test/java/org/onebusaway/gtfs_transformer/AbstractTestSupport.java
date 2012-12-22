@@ -55,7 +55,7 @@ public class AbstractTestSupport {
     try {
       TransformFactory factory = _transformer.getTransformFactory();
       factory.addModificationsFromString(_transformer, modification);
-    } catch (IOException ex) {
+    } catch (Throwable ex) {
       throw new IllegalStateException(ex);
     }
   }

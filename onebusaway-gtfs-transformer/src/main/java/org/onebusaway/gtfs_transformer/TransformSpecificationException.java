@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2012 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs_transformer.factory;
+package org.onebusaway.gtfs_transformer;
 
-public class RemoveEntitiesTransformStrategy extends
-    AbstractEntitiesTransformStrategy {
+public class TransformSpecificationException extends Exception {
 
+  private static final long serialVersionUID = 1L;
+
+  private final String line;
+
+  public TransformSpecificationException(String message, String line) {
+    super(message);
+    this.line = line;
+  }
+
+  public TransformSpecificationException(String message, Throwable ex,
+      String line) {
+    super(message, ex);
+    this.line = line;
+  }
+
+  public String getLine() {
+    return line;
+  }
 }

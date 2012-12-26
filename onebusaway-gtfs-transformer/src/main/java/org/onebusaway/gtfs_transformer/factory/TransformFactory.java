@@ -37,6 +37,7 @@ import org.apache.commons.beanutils.Converter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.onebusaway.collections.PropertyMethodResolver;
 import org.onebusaway.collections.PropertyPathCollectionExpression;
 import org.onebusaway.collections.PropertyPathExpression;
 import org.onebusaway.collections.tuple.Pair;
@@ -51,6 +52,8 @@ import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.mappings.ConverterFactory;
 import org.onebusaway.gtfs_transformer.GtfsTransformer;
+import org.onebusaway.gtfs_transformer.TransformSpecificationException;
+import org.onebusaway.gtfs_transformer.TransformSpecificationMissingArgumentException;
 import org.onebusaway.gtfs_transformer.impl.MatchingEntityModificationStrategyWrapper;
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
 import org.onebusaway.gtfs_transformer.impl.SimpleModificationStrategy;
@@ -75,6 +78,10 @@ public class TransformFactory {
 
   private static Pattern _anyMatcher = Pattern.compile("^any\\((.*)\\)$");
 
+  private static final String ARG_OP = "op";
+
+  private static final String ARG_MATCH = "match";
+
   static {
     ConvertUtils.register(new ServiceDateConverter(), ServiceDate.class);
   }
@@ -90,26 +97,27 @@ public class TransformFactory {
   }
 
   public void addModificationsFromFile(GtfsTransformer updater, File path)
-      throws IOException {
+      throws IOException, TransformSpecificationException {
     BufferedReader reader = new BufferedReader(new FileReader(path));
     addModificationsFromReader(updater, reader);
   }
 
   public void addModificationsFromString(GtfsTransformer updater, String value)
-      throws IOException {
+      throws IOException, TransformSpecificationException {
     addModificationsFromReader(updater, new BufferedReader(new StringReader(
         value)));
   }
 
   public void addModificationsFromUrl(GtfsTransformer updater, URL url)
-      throws IOException {
+      throws IOException, TransformSpecificationException {
     InputStream in = url.openStream();
     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
     addModificationsFromReader(updater, reader);
   }
 
   public void addModificationsFromReader(GtfsTransformer transformer,
-      BufferedReader reader) throws IOException {
+      BufferedReader reader) throws IOException,
+      TransformSpecificationException {
 
     String line = null;
 
@@ -125,10 +133,10 @@ public class TransformFactory {
 
         JSONObject json = new JSONObject(line);
 
-        String opType = json.getString("op");
-        if (opType == null)
-          throw new IllegalStateException(
-              "must specify an \"op\" argument: line=" + line);
+        if (!json.has(ARG_OP)) {
+          throw new TransformSpecificationMissingArgumentException(line, ARG_OP);
+        }
+        String opType = json.getString(ARG_OP);
 
         if (opType.equals("add")) {
           handleAddOperation(transformer, line, json);
@@ -149,13 +157,13 @@ public class TransformFactory {
         } else if (opType.equals("transform")) {
           handleTransformOperation(transformer, line, json);
         } else {
-          throw new IllegalArgumentException("no strategy found for op: "
-              + opType + " line: " + line);
+          throw new TransformSpecificationException("unknown transform op \""
+              + opType + "\"", line);
         }
 
       } catch (JSONException ex) {
-        throw new IllegalStateException("error parsing json for line=" + line,
-            ex);
+        throw new TransformSpecificationException("error parsing json", ex,
+            line);
       }
     }
   }
@@ -175,7 +183,7 @@ public class TransformFactory {
   }
 
   private void handleUpdateOperation(GtfsTransformer transformer, String line,
-      JSONObject json) throws JSONException {
+      JSONObject json) throws JSONException, TransformSpecificationException {
 
     ModifyEntitiesTransformStrategy strategy = getStrategy(transformer,
         ModifyEntitiesTransformStrategy.class);
@@ -187,10 +195,11 @@ public class TransformFactory {
       try {
         Class<?> clazz = Class.forName(value);
         Object factoryObj = clazz.newInstance();
-        if (!(factoryObj instanceof EntityTransformStrategy))
-          throw new IllegalArgumentException(
+        if (!(factoryObj instanceof EntityTransformStrategy)) {
+          throw new TransformSpecificationException(
               "factory object is not an instance of EntityTransformStrategy: "
-                  + clazz.getName());
+                  + clazz.getName(), line);
+        }
 
         strategy.addModification(
             match.getType(),
@@ -199,8 +208,8 @@ public class TransformFactory {
                 (EntityTransformStrategy) factoryObj));
 
       } catch (Throwable ex) {
-        throw new IllegalStateException(
-            "error creating factory ModificationStrategy instance", ex);
+        throw new TransformSpecificationException(
+            "error creating factory ModificationStrategy instance", ex, line);
       }
       return;
     }
@@ -209,8 +218,11 @@ public class TransformFactory {
 
       JSONObject update = json.getJSONObject("update");
 
+      PropertyMethodResolverImpl resolver = new PropertyMethodResolverImpl(
+          transformer.getDao());
+
       Map<String, Object> propertyUpdates = getEntityPropertiesAndValuesFromJsonObject(
-          transformer, match.getType(), update);
+          transformer, match.getType(), update, resolver);
       SimpleModificationStrategy mod = new SimpleModificationStrategy(
           match.getPropertyMatches(), propertyUpdates);
 
@@ -231,7 +243,7 @@ public class TransformFactory {
   }
 
   private void handleRemoveOperation(GtfsTransformer transformer, String line,
-      JSONObject json) throws JSONException {
+      JSONObject json) throws JSONException, TransformSpecificationException {
 
     ModifyEntitiesTransformStrategy strategy = getStrategy(transformer,
         ModifyEntitiesTransformStrategy.class);
@@ -244,7 +256,7 @@ public class TransformFactory {
   }
 
   private void handleRetainOperation(GtfsTransformer transformer, String line,
-      JSONObject json) throws JSONException {
+      JSONObject json) throws JSONException, TransformSpecificationException {
 
     RetainEntitiesTransformStrategy strategy = getStrategy(transformer,
         RetainEntitiesTransformStrategy.class);
@@ -265,7 +277,8 @@ public class TransformFactory {
   }
 
   private void handleSubsectionOperation(GtfsTransformer transformer,
-      String line, JSONObject json) throws JSONException {
+      String line, JSONObject json) throws JSONException,
+      TransformSpecificationException {
 
     SubsectionTripTransformStrategy strategy = getStrategy(transformer,
         SubsectionTripTransformStrategy.class);
@@ -273,12 +286,12 @@ public class TransformFactory {
     SubsectionOperation operation = new SubsectionTripTransformStrategy.SubsectionOperation();
     setObjectPropertiesFromJson(operation, json);
 
-    try {
-      strategy.addOperation(operation);
-    } catch (IllegalArgumentException ex) {
-      throw new IllegalArgumentException(
-          "invalid subsection specification: line=" + line, ex);
+    if (operation.getFromStopId() == null && operation.getToStopId() == null) {
+      throw new TransformSpecificationException(
+          "must specify at least fromStopId or toStopId in subsection op", line);
     }
+
+    strategy.addOperation(operation);
   }
 
   private void handleTrimOperation(GtfsTransformer transformer, String line,
@@ -290,20 +303,16 @@ public class TransformFactory {
     TrimOperation operation = new TrimTripTransformStrategy.TrimOperation();
     setObjectPropertiesFromJson(operation, json);
 
-    try {
-      strategy.addOperation(operation);
-    } catch (IllegalArgumentException ex) {
-      throw new IllegalArgumentException(
-          "invalid subsection specification: line=" + line, ex);
-    }
+    strategy.addOperation(operation);
   }
 
   private void handleTransformOperation(GtfsTransformer transformer,
-      String line, JSONObject json) throws JSONException {
+      String line, JSONObject json) throws JSONException,
+      TransformSpecificationException {
 
-    if (!json.has("class"))
-      throw new IllegalArgumentException("transform does not specify a class: "
-          + line);
+    if (!json.has("class")) {
+      throw new TransformSpecificationMissingArgumentException(line, "class");
+    }
 
     String value = json.getString("class");
 
@@ -312,13 +321,15 @@ public class TransformFactory {
       Class<?> clazz = Class.forName(value);
       factoryObj = clazz.newInstance();
     } catch (Exception ex) {
-      throw new IllegalStateException("error instantiating class: " + value, ex);
+      throw new TransformSpecificationException("error instantiating class: "
+          + value, ex, line);
     }
     handleTransformOperation(transformer, line, json, factoryObj);
   }
 
   private void handleTransformOperation(GtfsTransformer transformer,
-      String line, JSONObject json, Object factoryObj) throws JSONException {
+      String line, JSONObject json, Object factoryObj) throws JSONException,
+      TransformSpecificationException {
 
     setObjectPropertiesFromJson(factoryObj, json);
 
@@ -339,9 +350,9 @@ public class TransformFactory {
     }
 
     if (!added) {
-      throw new IllegalArgumentException(
+      throw new TransformSpecificationException(
           "factory object is not an instance of GtfsTransformStrategy, GtfsEntityTransformStrategy, or GtfsTransformStrategyFactory: "
-              + factoryObj.getClass().getName());
+              + factoryObj.getClass().getName(), line);
     }
   }
 
@@ -350,7 +361,7 @@ public class TransformFactory {
     BeanWrapper wrapped = BeanWrapperFactory.wrap(object);
     for (Iterator<?> it = json.keys(); it.hasNext();) {
       String key = (String) it.next();
-      if (key.equals("op") || key.equals("class"))
+      if (key.equals(ARG_OP) || key.equals("class"))
         continue;
       Object v = json.get(key);
       Class<?> propertyType = wrapped.getPropertyType(key);
@@ -393,26 +404,27 @@ public class TransformFactory {
   }
 
   private TypedEntityMatch getMatch(GtfsTransformer transformer, String line,
-      JSONObject json) throws JSONException {
+      JSONObject json) throws JSONException, TransformSpecificationException {
 
-    JSONObject match = json.getJSONObject("match");
-    if (match == null)
-      throw new IllegalArgumentException(
-          "modification must have \"match\" argument: line=" + line);
+    if (!json.has(ARG_MATCH)) {
+      throw new TransformSpecificationMissingArgumentException(line, ARG_MATCH);
+    }
+    JSONObject match = json.getJSONObject(ARG_MATCH);
 
+    if (!match.has("class")) {
+      throw new TransformSpecificationMissingArgumentException(line, "class",
+          ARG_MATCH);
+    }
     String entityTypeString = match.getString("class");
-    if (entityTypeString == null)
-      throw new IllegalArgumentException(
-          "modification match must have \"class\" argument: line=" + line);
     Class<?> entityType = getEntityTypeForName(entityTypeString);
-
-    Map<String, Object> propertyMatches = getEntityPropertiesAndValuesFromJsonObject(
-        transformer, entityType, match);
-
-    List<EntityMatch> matches = new ArrayList<EntityMatch>();
 
     PropertyMethodResolverImpl resolver = new PropertyMethodResolverImpl(
         transformer.getDao());
+
+    Map<String, Object> propertyMatches = getEntityPropertiesAndValuesFromJsonObject(
+        transformer, entityType, match, resolver);
+
+    List<EntityMatch> matches = new ArrayList<EntityMatch>();
 
     for (Map.Entry<String, Object> entry : propertyMatches.entrySet()) {
       String property = entry.getKey();
@@ -425,6 +437,7 @@ public class TransformFactory {
             entry.getValue()));
       } else {
         PropertyPathExpression expression = new PropertyPathExpression(property);
+        expression.setPropertyMethodResolver(resolver);
         matches.add(new PropertyValueEntityMatch(expression, entry.getValue()));
       }
     }
@@ -434,8 +447,8 @@ public class TransformFactory {
 
   @SuppressWarnings("unchecked")
   private Map<String, Object> getEntityPropertiesAndValuesFromJsonObject(
-      GtfsTransformer transformer, Class<?> entityType, JSONObject obj)
-      throws JSONException {
+      GtfsTransformer transformer, Class<?> entityType, JSONObject obj,
+      PropertyMethodResolver resolver) throws JSONException {
 
     Map<String, Object> map = new HashMap<String, Object>();
 
@@ -453,6 +466,7 @@ public class TransformFactory {
           && !_anyMatcher.matcher(property).matches()) {
 
         PropertyPathExpression exp = new PropertyPathExpression(property);
+        exp.setPropertyMethodResolver(resolver);
         Class<?> toType = exp.initialize(entityType);
         Class<?> parentType = exp.getParentType(entityType);
         String lastProperty = exp.getLastProperty();
@@ -568,7 +582,7 @@ public class TransformFactory {
         Object instance = instantiate(entityClass);
 
         Map<String, Object> here = getEntityPropertiesAndValuesFromJsonObject(
-            _transformer, entityClass, properties);
+            _transformer, entityClass, properties, null);
 
         BeanWrapper wrapper = BeanWrapperFactory.wrap(instance);
         for (Map.Entry<String, Object> entry : here.entrySet())

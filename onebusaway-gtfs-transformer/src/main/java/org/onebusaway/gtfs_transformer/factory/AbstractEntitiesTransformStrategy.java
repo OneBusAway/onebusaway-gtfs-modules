@@ -17,6 +17,7 @@ package org.onebusaway.gtfs_transformer.factory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,14 @@ public abstract class AbstractEntitiesTransformStrategy implements
     List<EntityTransformStrategy> modifications = getModificationsForType(type,
         _modificationsByType);
     modifications.add(modification);
+  }
+  
+  public List<EntityTransformStrategy> getEntityTransformsForType(Class<?> entityType) {
+    List<EntityTransformStrategy> transforms = _modificationsByType.get(entityType);
+    if (transforms == null) {
+      return Collections.emptyList();
+    }
+    return transforms;
   }
 
   @Override

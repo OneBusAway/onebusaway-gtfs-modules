@@ -24,7 +24,7 @@ import org.onebusaway.gtfs_transformer.factory.TransformFactory;
 public class GtfsTransformerLibrary {
 
   public static void configureTransformation(GtfsTransformer updater,
-      String path) {
+      String path) throws TransformSpecificationException {
 
     TransformFactory factory = updater.getTransformFactory();
 
@@ -37,6 +37,8 @@ public class GtfsTransformerLibrary {
       } else if (path.startsWith("json:")) {
         factory.addModificationsFromString(updater,
             path.substring("json:".length()));
+      } else if (path.startsWith("{")) {
+        factory.addModificationsFromString(updater, path);
       } else {
         factory.addModificationsFromFile(updater, new File(path));
       }

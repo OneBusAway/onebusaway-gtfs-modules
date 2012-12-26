@@ -126,6 +126,10 @@ public class EntityRetentionGraph {
       retainStopTime((StopTime) object, retainUp);
     else if (object instanceof Stop)
       retainStop((Stop) object, retainUp);
+    else if (object instanceof ServiceCalendar)
+      retainServiceCalendar((ServiceCalendar) object, retainUp);
+    else if (object instanceof ServiceCalendarDate)
+      retainServiceCalendarDate((ServiceCalendarDate) object, retainUp);
     else if (object instanceof ServiceIdKey)
       retainServiceId(((ServiceIdKey) object).getId(), retainUp);
     else if (object instanceof ShapeIdKey)
@@ -230,10 +234,32 @@ public class EntityRetentionGraph {
     }
   }
 
+  private void retainServiceCalendar(ServiceCalendar calendar, boolean retainUp) {
+    if (retainUp) {
+      // Retain up: retain things that depend on the target object
+      retainUp(new ServiceIdKey(calendar.getServiceId()));      
+    } else {
+      // Retain down: retain things that the target object depends on
+    }
+  }
+  
+  private void retainServiceCalendarDate(ServiceCalendarDate calendarDate, boolean retainUp) {
+    if (retainUp) {
+      // Retain up: retain things that depend on the target object
+      retainUp(new ServiceIdKey(calendarDate.getServiceId()));      
+    } else {
+      // Retain down: retain things that the target object depends on
+    }
+  }
+
   private void retainServiceId(AgencyAndId serviceId, boolean retainUp) {
     if (retainUp) {
-
+      // Retain up: retain things that depend on the target object
+      for (Trip trip : _dao.getTripsForServiceId(serviceId)) {
+        retainUp(trip);
+      }
     } else {
+      // Retain down: retain things that the target object depends on
       ServiceCalendar calendar = _dao.getCalendarForServiceId(serviceId);
       if (calendar != null)
         retainDown(calendar);

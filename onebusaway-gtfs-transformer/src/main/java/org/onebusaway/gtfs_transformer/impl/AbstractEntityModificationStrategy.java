@@ -27,6 +27,10 @@ public abstract class AbstractEntityModificationStrategy implements
   public AbstractEntityModificationStrategy(EntityMatch match) {
     _match = match;
   }
+  
+  public EntityMatch getMatch() {
+    return _match;
+  }
 
   protected boolean isModificationApplicable(BeanWrapper wrapped) {
     return _match.isApplicableToObject(wrapped.getWrappedInstance(Object.class));

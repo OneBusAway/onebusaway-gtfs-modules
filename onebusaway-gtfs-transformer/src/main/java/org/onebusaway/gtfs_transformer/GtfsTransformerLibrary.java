@@ -33,14 +33,13 @@ public class GtfsTransformerLibrary {
 
     try {
       if (path.startsWith("http")) {
-        factory.addModificationsFromUrl(updater, new URL(path));
+        factory.addModificationsFromUrl(new URL(path));
       } else if (path.startsWith("json:")) {
-        factory.addModificationsFromString(updater,
-            path.substring("json:".length()));
+        factory.addModificationsFromString(path.substring("json:".length()));
       } else if (path.startsWith("{")) {
-        factory.addModificationsFromString(updater, path);
+        factory.addModificationsFromString(path);
       } else {
-        factory.addModificationsFromFile(updater, new File(path));
+        factory.addModificationsFromFile(new File(path));
       }
     } catch (IOException ex) {
       throw new IllegalStateException(ex);

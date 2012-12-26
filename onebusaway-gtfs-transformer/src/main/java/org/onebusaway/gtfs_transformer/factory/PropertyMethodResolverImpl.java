@@ -22,106 +22,102 @@ import java.util.Map;
 
 import org.onebusaway.collections.beans.DefaultPropertyMethodResolver;
 import org.onebusaway.collections.beans.PropertyMethod;
-import org.onebusaway.csv_entities.schema.EntitySchema;
-import org.onebusaway.csv_entities.schema.FieldMapping;
+import org.onebusaway.collections.tuple.T2;
+import org.onebusaway.collections.tuple.Tuples;
 import org.onebusaway.csv_entities.schema.SingleFieldMapping;
-import org.onebusaway.gtfs.model.ServiceCalendar;
+import org.onebusaway.gtfs.model.Agency;
+import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
+import org.onebusaway.gtfs_transformer.impl.EntitySchemaCache;
 
 class PropertyMethodResolverImpl extends DefaultPropertyMethodResolver {
 
-  private GtfsRelationalDao _dao;
+  private final GtfsRelationalDao _dao;
 
-  /**
-   * Mapping from CSV field names to
-   */
-  private Map<Class<?>, Map<String, String>> _entityTypesAndcsvFieldNamesToObjectFieldNames = new HashMap<Class<?>, Map<String, String>>();
+  private final EntitySchemaCache _schemaCache;
+
+  @SuppressWarnings("rawtypes")
+  private Map<T2<Class, String>, PropertyMethod> _virtualPropertyMethods = new HashMap<T2<Class, String>, PropertyMethod>();
 
   /**
    * 
    * @param dao
+   * @param schemaCache
    */
-  public PropertyMethodResolverImpl(GtfsRelationalDao dao) {
+  public PropertyMethodResolverImpl(GtfsRelationalDao dao,
+      EntitySchemaCache schemaCache) {
     _dao = dao;
-  }
-
-  public void addCsvFieldMappings(EntitySchema schema) {
-    Map<String, String> csvFieldNamesToObjectFieldNames = _entityTypesAndcsvFieldNamesToObjectFieldNames.get(schema.getEntityClass());
-    if (csvFieldNamesToObjectFieldNames == null) {
-      csvFieldNamesToObjectFieldNames = new HashMap<String, String>();
-      _entityTypesAndcsvFieldNamesToObjectFieldNames.put(
-          schema.getEntityClass(), csvFieldNamesToObjectFieldNames);
-    }
-    for (FieldMapping fieldMapping : schema.getFields()) {
-      if (fieldMapping instanceof SingleFieldMapping) {
-        SingleFieldMapping singleFieldMapping = (SingleFieldMapping) fieldMapping;
-        csvFieldNamesToObjectFieldNames.put(
-            singleFieldMapping.getCsvFieldName(),
-            singleFieldMapping.getObjFieldName());
-      }
-    }
+    _schemaCache = schemaCache;
+    addVirtualProperty(Agency.class, "routes",
+        new RoutesForAgencyPropertyMethod());
+    addVirtualProperty(Route.class, "trips", new TripsForRoutePropertyMethod());
+    addVirtualProperty(Trip.class, "stopTimes",
+        new StopTimesForTripPropertyMethod());
+    addVirtualProperty(Trip.class, "calendar",
+        new ServiceCalendarForTripPropertyMethod());
   }
 
   @Override
   public PropertyMethod getPropertyMethod(Class<?> targetType,
       String propertyName) {
-
-    if (targetType.equals(Trip.class)) {
-      if (propertyName.equals("stopTimes")) {
-        return new StopTimesForTripPropertyMethod(_dao);
-      } else if (propertyName.equals("calendar")) {
-        return new ServiceCalendarForTripPropertyMethod(_dao);
-      }
+    @SuppressWarnings("rawtypes")
+    PropertyMethod method = _virtualPropertyMethods.get(Tuples.tuple(
+        (Class) targetType, propertyName));
+    if (method != null) {
+      return method;
     }
-    Map<String, String> csvFieldNamesToObjectFieldNames = _entityTypesAndcsvFieldNamesToObjectFieldNames.get(targetType);
-    if (csvFieldNamesToObjectFieldNames != null) {
-      String objectFieldName = csvFieldNamesToObjectFieldNames.get(propertyName);
-      if (objectFieldName != null) {
-        propertyName = objectFieldName;
-      }
+    SingleFieldMapping mapping = _schemaCache.getFieldMappingForCsvFieldName(
+        targetType, propertyName);
+    if (mapping != null) {
+      propertyName = mapping.getObjFieldName();
     }
     return super.getPropertyMethod(targetType, propertyName);
   }
 
-  private static class StopTimesForTripPropertyMethod implements PropertyMethod {
+  @SuppressWarnings("rawtypes")
+  private void addVirtualProperty(Class entityType, String propertyName,
+      PropertyMethod method) {
+    T2<Class, String> key = Tuples.tuple(entityType, propertyName);
+    _virtualPropertyMethods.put(key, method);
+  }
 
-    private final GtfsRelationalDao _dao;
-
-    private StopTimesForTripPropertyMethod(GtfsRelationalDao dao) {
-      _dao = dao;
-    }
-
-    @Override
-    public Object invoke(Object value) throws IllegalArgumentException,
-        IllegalAccessException, InvocationTargetException {
-      return _dao.getStopTimesForTrip((Trip) value);
-    }
-
+  private abstract class ListPropertyMethod implements PropertyMethod {
     @Override
     public Class<?> getReturnType() {
       return List.class;
     }
   }
 
-  private static class ServiceCalendarForTripPropertyMethod implements
-      PropertyMethod {
-
-    private final GtfsRelationalDao _dao;
-
-    public ServiceCalendarForTripPropertyMethod(GtfsRelationalDao dao) {
-      _dao = dao;
+  private class RoutesForAgencyPropertyMethod extends ListPropertyMethod {
+    @Override
+    public Object invoke(Object value) throws IllegalArgumentException,
+        IllegalAccessException, InvocationTargetException {
+      return _dao.getRoutesForAgency((Agency) value);
     }
+  }
 
+  private class TripsForRoutePropertyMethod extends ListPropertyMethod {
+    @Override
+    public Object invoke(Object value) throws IllegalArgumentException,
+        IllegalAccessException, InvocationTargetException {
+      return _dao.getTripsForRoute((Route) value);
+    }
+  }
+
+  private class StopTimesForTripPropertyMethod extends ListPropertyMethod {
+    @Override
+    public Object invoke(Object value) throws IllegalArgumentException,
+        IllegalAccessException, InvocationTargetException {
+      return _dao.getStopTimesForTrip((Trip) value);
+    }
+  }
+
+  private class ServiceCalendarForTripPropertyMethod extends ListPropertyMethod {
     @Override
     public Object invoke(Object value) throws IllegalArgumentException,
         IllegalAccessException, InvocationTargetException {
       return _dao.getCalendarForServiceId(((Trip) value).getServiceId());
-    }
-
-    @Override
-    public Class<?> getReturnType() {
-      return ServiceCalendar.class;
     }
   }
 }

@@ -34,14 +34,13 @@ import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 
 public class TransformFactoryTest {
 
-  private TransformFactory _factory = new TransformFactory();
-
   private GtfsTransformer _transformer = new GtfsTransformer();
+
+  private TransformFactory _factory = new TransformFactory(_transformer);
 
   @Test
   public void test() throws IOException, TransformSpecificationException {
-    _factory.addModificationsFromString(_transformer,
-        "{'op':'remove', 'match':{'class':'Route', 'shortName':'10'}}");
+    _factory.addModificationsFromString("{'op':'remove', 'match':{'class':'Route', 'shortName':'10'}}");
     GtfsTransformStrategy transform = _transformer.getLastTransform();
     assertEquals(EntitiesTransformStrategy.class, transform.getClass());
     EntitiesTransformStrategy strategy = (EntitiesTransformStrategy) transform;
@@ -60,8 +59,7 @@ public class TransformFactoryTest {
   @Test
   public void testFileMatch() throws IOException,
       TransformSpecificationException {
-    _factory.addModificationsFromString(_transformer,
-        "{'op':'remove', 'match':{'file':'routes.txt', 'shortName':'10'}}");
+    _factory.addModificationsFromString("{'op':'remove', 'match':{'file':'routes.txt', 'shortName':'10'}}");
     GtfsTransformStrategy transform = _transformer.getLastTransform();
     assertEquals(EntitiesTransformStrategy.class, transform.getClass());
     EntitiesTransformStrategy strategy = (EntitiesTransformStrategy) transform;

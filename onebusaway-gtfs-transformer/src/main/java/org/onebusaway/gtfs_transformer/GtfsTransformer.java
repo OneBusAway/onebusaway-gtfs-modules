@@ -22,12 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.Converter;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.impl.GenericMutableDaoWrapper;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
-import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
@@ -35,8 +32,6 @@ import org.onebusaway.gtfs.services.GenericMutableDao;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_transformer.factory.TransformFactory;
-import org.onebusaway.gtfs_transformer.impl.converters.AgencyAndIdConverter;
-import org.onebusaway.gtfs_transformer.match.PropertyMatches;
 import org.onebusaway.gtfs_transformer.services.GtfsEntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.SchemaUpdateStrategy;
@@ -66,7 +61,7 @@ public class GtfsTransformer {
 
   private String _agencyId;
 
-  private TransformFactory _transformFactory = new TransformFactory();
+  private TransformFactory _transformFactory = new TransformFactory(this);
 
   public void setGtfsInputDirectory(File gtfsInputDirectory) {
     setGtfsInputDirectories(Arrays.asList(gtfsInputDirectory));
@@ -109,7 +104,7 @@ public class GtfsTransformer {
   public GtfsReader getReader() {
     return _reader;
   }
-  
+
   public GtfsRelationalDao getDao() {
     return _dao;
   }
@@ -120,19 +115,15 @@ public class GtfsTransformer {
 
   public void run() throws Exception {
 
-    registerConverters();
-
-    if (!_outputDirectory.exists()
+    if (_outputDirectory != null && !_outputDirectory.exists()
         && !_outputDirectory.getName().endsWith(".zip"))
       _outputDirectory.mkdirs();
-
-    System.out.println("Output Directory=" + _outputDirectory);
 
     readGtfs();
 
     _context.setDefaultAgencyId(_reader.getDefaultAgencyId());
     _context.setReader(_reader);
-    
+
     udateGtfs();
     writeGtfs();
   }
@@ -140,21 +131,6 @@ public class GtfsTransformer {
   /****
    * Protected Methods
    ****/
-
-  /**
-   * Internally, we use {@link Converter} objects, as registered with
-   * {@link ConvertUtils#register(Converter, Class)}, to handle conversion from
-   * String values to other types when doing property matching and assignment.
-   * See {@link PropertyMatches} for additional details.
-   * 
-   * If you wish to register your OWN converters, you can simply call
-   * {@link ConvertUtils#register(Converter, Class)} before running the
-   * transformer. You can also override this method, but you should still be
-   * sure to call the parent method in your sub-class.
-   */
-  protected void registerConverters() {
-    ConvertUtils.register(new AgencyAndIdConverter(_context), AgencyAndId.class);
-  }
 
   /****
    * Private Methods
@@ -183,6 +159,9 @@ public class GtfsTransformer {
   }
 
   private void writeGtfs() throws IOException {
+    if (_outputDirectory == null) {
+      return;
+    }
     GtfsWriter writer = new GtfsWriter();
     writer.setOutputLocation(_outputDirectory);
 

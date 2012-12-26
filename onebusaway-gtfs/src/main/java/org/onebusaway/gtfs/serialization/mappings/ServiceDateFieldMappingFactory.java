@@ -19,6 +19,8 @@ package org.onebusaway.gtfs.serialization.mappings;
 import java.text.ParseException;
 import java.util.Map;
 
+import org.apache.commons.beanutils.ConversionException;
+import org.apache.commons.beanutils.Converter;
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.exceptions.InvalidValueEntityException;
 import org.onebusaway.csv_entities.schema.AbstractFieldMapping;
@@ -37,7 +39,8 @@ public class ServiceDateFieldMappingFactory implements FieldMappingFactory {
         required);
   }
 
-  private static class FieldMappingImpl extends AbstractFieldMapping {
+  private static class FieldMappingImpl extends AbstractFieldMapping implements
+      Converter {
 
     public FieldMappingImpl(Class<?> entityType, String csvFieldName,
         String objFieldName, boolean required) {
@@ -67,6 +70,21 @@ public class ServiceDateFieldMappingFactory implements FieldMappingFactory {
       ServiceDate date = (ServiceDate) object.getPropertyValue(_objFieldName);
       String value = date.getAsString();
       csvValues.put(_csvFieldName, value);
+    }
+
+    @Override
+    public Object convert(@SuppressWarnings("rawtypes")
+    Class type, Object value) {
+      if (type == ServiceDate.class) {
+        try {
+          return ServiceDate.parseString(value.toString());
+        } catch (ParseException ex) {
+          throw new InvalidValueEntityException(_entityType, _csvFieldName,
+              value.toString());
+        }
+      }
+      throw new ConversionException("Could not convert " + value + " of type "
+          + value.getClass() + " to " + type);
     }
   }
 

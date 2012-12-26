@@ -103,7 +103,7 @@ public class PropertyMethodResolverImplTest {
     stopTime.setTrip(trip);
     stopTime.setStop(new Stop());
     _dao.saveEntity(stopTime);
-    PropertyMethod method = _resolver.getPropertyMethod(Trip.class, "stopTimes");
+    PropertyMethod method = _resolver.getPropertyMethod(Trip.class, "stop_times");
     assertEquals(Arrays.asList(stopTime), method.invoke(trip));
   }
 

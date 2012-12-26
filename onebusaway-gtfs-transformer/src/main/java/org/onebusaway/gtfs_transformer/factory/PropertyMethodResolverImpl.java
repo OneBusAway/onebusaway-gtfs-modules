@@ -52,7 +52,7 @@ class PropertyMethodResolverImpl extends DefaultPropertyMethodResolver {
     addVirtualProperty(Agency.class, "routes",
         new RoutesForAgencyPropertyMethod());
     addVirtualProperty(Route.class, "trips", new TripsForRoutePropertyMethod());
-    addVirtualProperty(Trip.class, "stopTimes",
+    addVirtualProperty(Trip.class, "stop_times",
         new StopTimesForTripPropertyMethod());
     addVirtualProperty(Trip.class, "calendar",
         new ServiceCalendarForTripPropertyMethod());

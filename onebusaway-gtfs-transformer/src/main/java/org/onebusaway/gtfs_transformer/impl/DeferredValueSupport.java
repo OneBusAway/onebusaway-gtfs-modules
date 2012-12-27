@@ -52,8 +52,12 @@ public class DeferredValueSupport {
 
   public Converter resolveConverter(Class<?> parentEntityType,
       String propertyName, Class<?> expectedValueType) {
-    SingleFieldMapping mapping = _schemaCache.getFieldMappingForObjectFieldName(
+    SingleFieldMapping mapping = _schemaCache.getFieldMappingForCsvFieldName(
         parentEntityType, propertyName);
+    if (mapping == null) {
+      mapping = _schemaCache.getFieldMappingForObjectFieldName(
+          parentEntityType, propertyName);
+    }
     if (mapping != null) {
       if (mapping instanceof ConverterFactory) {
         ConverterFactory factory = (ConverterFactory) mapping;

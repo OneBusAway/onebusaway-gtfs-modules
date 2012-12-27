@@ -221,6 +221,19 @@ stop onward will be removed from the trip.  You can also remove stop times from 
 {"op":"trim_trip", "match":{"file":"trips.txt", "route_id":"R10"}, "to_stop_id":"125S", "from_stop_id":"138S"}
 +---+
 
+* Generate Stop Times
+
+  You can generate stop time entries for a trip.  Example:
+  
++---+
+{"op":"stop_times_factory", "trip_id":"TRIP01", "start_time":"06:00:00", "end_time":"06:20:00", "stop_ids":["S01", "S02", "S03"]}
++---+
+
+  A series of entries in `stop_times.txt` will be generated for the specified trip, traveling along the specified sequence of
+stops.  The departure time for the first stop will be set from the `start_time` field, the arrival time for the last stop will
+be set from the `end_time` field, and the times for intermediate stops will be interpolated based on their distance along the
+trip.
+
 * Arbitrary Transform
 
   We also allow you to specify arbitrary transformations as well.  Here, you specify your transformation class and we will
@@ -235,7 +248,7 @@ specified in the JSON snippet, we will attempt to set that Java bean property va
 See for example:
 
 +---+
-{"op":"transform", "class":"org.onebusaway.gtfs_transformer.updates.ShapeTransformStrategy", "shapeId":"6010031", \
+{"op":"transform", "class":"org.onebusaway.gtfs_transformer.updates.ShapeTransformStrategy", "shape_id":"6010031", \
 "shape":"wjb~G|abmVpAz]v_@@?wNE_GDaFs@?@dFX`GGjN__@A"}
 +--+
 
@@ -244,7 +257,7 @@ transformer to your needs.
 
 Additional Examples
 
-* How to reduce your GTFS
+* How to Reduce your GTFS
 
   We can apply a modification that retains certain GTFS entities and all other entities required directly or indirectly by
 those entities.  For example, create a file with the following contents (call it modifications.txt, as an example):
@@ -266,6 +279,26 @@ java -jar onebusaway-gtfs-transformer-cli.jar --transform=modifications.txt sour
 
   The resulting GTFS will have the retained only the routes with the matching short names and all other entities required
 to support those routes.
+
+* Add a Full Schedule to an Existing Feed
+
+  Consider an existing feed with a number of routes and stops.  We can add an entirely new route, with trips and stop-times
+and frequency-based service, using the transform.  This can be handy to add temporary service to an existing feed.
+  
++---+
+{"op":"add", "obj":{"file":"routes.txt", "route_id":"r0", "route_long_name":"Temporary Shuttle", "route_type":3}}
+
+{"op":"add", "obj":{"file":"calendar.txt", "service_id":"WEEKDAY", "start_date":"20120601", "end_date":"20130630", "monday":1, "tuesday":1, "wednesday":1, "thursday":1, "friday":1}}
+
+{"op":"add", "obj":{"file":"trips.txt", "trip_id":"t0", "route_id":"r0", "service_id":"WEEKDAY", "trip_headsign":"Inbound"}}
+{"op":"add", "obj":{"file":"trips.txt", "trip_id":"t1", "route_id":"r0", "service_id":"WEEKDAY", "trip_headsign":"Outbound"}}
+
+{"op":"add","obj":{"file":"frequencies.txt","trip_id":"t0","start_time":"06:00:00","end_time":"22:00:00","headway_secs":900}}
+{"op":"add","obj":{"file":"frequencies.txt","trip_id":"t1","start_time":"06:00:00","end_time":"22:00:00","headway_secs":900}}
+
+{"op":"stop_times_factory", "trip_id":"t0", "start_time":"06:00:00", "end_time":"06:20:00", "stop_ids":["s0", "s1", "s2", "s3"]}
+{"op":"stop_times_factory", "trip_id":"t1", "start_time":"06:00:00", "end_time":"06:20:00", "stop_ids":["s3", "s2", "s1", "s0"]}
++---+
   
 * Merge Trips and Refactor Calendar Entries
 

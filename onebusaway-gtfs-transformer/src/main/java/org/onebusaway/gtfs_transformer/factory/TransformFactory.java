@@ -36,7 +36,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.beanutils.ConvertUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,9 +43,14 @@ import org.onebusaway.collections.beans.PropertyPathCollectionExpression;
 import org.onebusaway.collections.beans.PropertyPathExpression;
 import org.onebusaway.collections.tuple.Pair;
 import org.onebusaway.collections.tuple.Tuples;
+import org.onebusaway.csv_entities.CsvEntityContext;
+import org.onebusaway.csv_entities.CsvEntityContextImpl;
+import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.csv_entities.schema.EntitySchema;
+import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
+import org.onebusaway.csv_entities.schema.FieldMapping;
 import org.onebusaway.csv_entities.schema.SingleFieldMapping;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs_transformer.GtfsTransformer;
@@ -73,6 +77,7 @@ import org.onebusaway.gtfs_transformer.services.GtfsEntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategyFactory;
 import org.onebusaway.gtfs_transformer.updates.CalendarExtensionStrategy;
+import org.onebusaway.gtfs_transformer.updates.StopTimesFactoryStrategy;
 import org.onebusaway.gtfs_transformer.updates.SubsectionTripTransformStrategy;
 import org.onebusaway.gtfs_transformer.updates.SubsectionTripTransformStrategy.SubsectionOperation;
 import org.onebusaway.gtfs_transformer.updates.TrimTripTransformStrategy;
@@ -183,6 +188,8 @@ public class TransformFactory {
           handleSubsectionOperation(line, json);
         } else if (opType.equals("trim_trip")) {
           handleTrimOperation(line, json);
+        } else if (opType.equals("stop_times_factory")) {
+          handleStopTimesOperation(line, json);
         } else if (opType.equals("calendar_extension")) {
           handleTransformOperation(line, json, new CalendarExtensionStrategy());
         } else if (opType.equals("transform")) {
@@ -325,7 +332,7 @@ public class TransformFactory {
     SubsectionTripTransformStrategy strategy = getStrategy(SubsectionTripTransformStrategy.class);
 
     SubsectionOperation operation = new SubsectionTripTransformStrategy.SubsectionOperation();
-    setObjectPropertiesFromJson(operation, json);
+    setObjectPropertiesFromJsonUsingCsvFields(operation, json, line);
 
     if (operation.getFromStopId() == null && operation.getToStopId() == null) {
       throw new TransformSpecificationException(
@@ -362,6 +369,13 @@ public class TransformFactory {
     strategy.addOperation(operation);
   }
 
+  private void handleStopTimesOperation(String line, JSONObject json)
+      throws JSONException, TransformSpecificationException {
+    StopTimesFactoryStrategy strategy = new StopTimesFactoryStrategy();
+    setObjectPropertiesFromJsonUsingCsvFields(strategy, json, line);
+    _transformer.addTransform(strategy);
+  }
+
   private void handleTransformOperation(String line, JSONObject json)
       throws JSONException, TransformSpecificationException {
 
@@ -384,7 +398,7 @@ public class TransformFactory {
   private void handleTransformOperation(String line, JSONObject json,
       Object factoryObj) throws JSONException, TransformSpecificationException {
 
-    setObjectPropertiesFromJson(factoryObj, json);
+    setObjectPropertiesFromJsonUsingCsvFields(factoryObj, json, line);
 
     boolean added = false;
 
@@ -409,26 +423,34 @@ public class TransformFactory {
     }
   }
 
-  private void setObjectPropertiesFromJson(Object object, JSONObject json)
-      throws JSONException {
+  private void setObjectPropertiesFromJsonUsingCsvFields(Object object,
+      JSONObject json, String line) throws JSONException,
+      TransformSpecificationMissingArgumentException {
+    EntitySchemaFactory entitySchemaFactory = _transformer.getReader().getEntitySchemaFactory();
+    EntitySchema schema = entitySchemaFactory.getSchema(object.getClass());
     BeanWrapper wrapped = BeanWrapperFactory.wrap(object);
+    Map<String, Object> values = new HashMap<String, Object>();
     for (Iterator<?> it = json.keys(); it.hasNext();) {
       String key = (String) it.next();
-      if (key.equals(ARG_OP) || key.equals(ARG_CLASS))
-        continue;
       Object v = json.get(key);
-      Class<?> propertyType = wrapped.getPropertyType(key);
       if (v instanceof JSONArray) {
         JSONArray array = (JSONArray) v;
-        List<Object> values = new ArrayList<Object>();
+        List<Object> asList = new ArrayList<Object>();
         for (int i = 0; i < array.length(); ++i) {
-          values.add(array.get(i));
+          asList.add(array.get(i));
         }
-        v = values;
-      } else if (v instanceof String && !propertyType.equals(String.class)) {
-        v = ConvertUtils.convert((String) v, propertyType);
+        v = asList;
       }
-      wrapped.setPropertyValue(key, v);
+      values.put(key, v);
+    }
+    CsvEntityContext context = new CsvEntityContextImpl();
+    for (FieldMapping mapping : schema.getFields()) {
+      try {
+        mapping.translateFromCSVToObject(context, values, wrapped);
+      } catch (MissingRequiredFieldException ex) {
+        throw new TransformSpecificationMissingArgumentException(line,
+            ex.getFieldName());
+      }
     }
   }
 

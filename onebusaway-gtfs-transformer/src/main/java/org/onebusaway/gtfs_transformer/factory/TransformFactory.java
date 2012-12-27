@@ -48,6 +48,7 @@ import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.csv_entities.schema.EntitySchema;
 import org.onebusaway.csv_entities.schema.SingleFieldMapping;
+import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs_transformer.GtfsTransformer;
 import org.onebusaway.gtfs_transformer.TransformSpecificationException;
 import org.onebusaway.gtfs_transformer.TransformSpecificationMissingArgumentException;
@@ -335,12 +336,28 @@ public class TransformFactory {
   }
 
   private void handleTrimOperation(String line, JSONObject json)
-      throws JSONException {
+      throws JSONException, TransformSpecificationException {
+
+    TypedEntityMatch match = getMatch(line, json);
+    if (match.getType() != Trip.class) {
+      throw new TransformSpecificationException(
+          "the trim_trip op only supports matching against trips", line);
+    }
 
     TrimTripTransformStrategy strategy = getStrategy(TrimTripTransformStrategy.class);
 
     TrimOperation operation = new TrimTripTransformStrategy.TrimOperation();
-    setObjectPropertiesFromJson(operation, json);
+    operation.setMatch(match);
+    if (json.has("to_stop_id")) {
+      operation.setToStopId(json.getString("to_stop_id"));
+    }
+    if (json.has("from_stop_id")) {
+      operation.setFromStopId(json.getString("from_stop_id"));
+    }
+    if (operation.getToStopId() == null && operation.getFromStopId() == null) {
+      throw new TransformSpecificationMissingArgumentException(line,
+          new String[] {"to_stop_id", "from_stop_id"});
+    }
 
     strategy.addOperation(operation);
   }

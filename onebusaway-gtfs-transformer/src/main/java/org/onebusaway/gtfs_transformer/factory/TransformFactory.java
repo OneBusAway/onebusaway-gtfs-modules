@@ -102,7 +102,7 @@ public class TransformFactory {
   private static final String ARG_COLLECTION = "collection";
 
   private static final Set<String> _excludeForObjectSpec = new HashSet<String>(
-      Arrays.asList(ARG_CLASS));
+      Arrays.asList(ARG_FILE, ARG_CLASS));
 
   private static final Set<String> _excludeForMatchSpec = new HashSet<String>(
       Arrays.asList(ARG_FILE, ARG_CLASS, ARG_COLLECTION));
@@ -209,14 +209,14 @@ public class TransformFactory {
       throw new TransformSpecificationMissingArgumentException(line, ARG_OBJ);
     }
     JSONObject objectSpec = json.getJSONObject(ARG_OBJ);
-    if (!objectSpec.has(ARG_CLASS)) {
-      throw new TransformSpecificationMissingArgumentException(line, ARG_CLASS,
-          ARG_OBJ);
+    Class<?> entityType = getEntityClassFromJsonSpec(line, objectSpec);
+    if (entityType == null) {
+      throw new TransformSpecificationMissingArgumentException(line,
+          new String[] {ARG_CLASS, ARG_FILE}, ARG_OBJ);
     }
-    Class<?> entityClass = getEntityTypeForName(objectSpec.getString(ARG_CLASS));
     Map<String, DeferredValueSetter> propertyUpdates = getPropertyValueSettersFromJsonObject(
-        entityClass, objectSpec, _excludeForObjectSpec);
-    EntitySourceImpl source = new EntitySourceImpl(entityClass, propertyUpdates);
+        entityType, objectSpec, _excludeForObjectSpec);
+    EntitySourceImpl source = new EntitySourceImpl(entityType, propertyUpdates);
     AddEntitiesTransformStrategy strategy = getStrategy(AddEntitiesTransformStrategy.class);
     strategy.addEntityFactory(source);
 
@@ -415,7 +415,25 @@ public class TransformFactory {
     }
   }
 
-  private Class<?> getEntityTypeForName(String name) {
+  private Class<?> getEntityClassFromJsonSpec(String line, JSONObject objectSpec)
+      throws JSONException, TransformSpecificationException,
+      TransformSpecificationMissingArgumentException {
+    if (objectSpec.has(ARG_FILE)) {
+      String fileName = objectSpec.getString(ARG_FILE);
+      EntitySchema schema = _schemaCache.getSchemaForFileName(fileName);
+      if (schema == null) {
+        throw new TransformSpecificationException("unknown file type: "
+            + fileName, line);
+      }
+      return schema.getEntityClass();
+    } else if (objectSpec.has(ARG_CLASS)) {
+      return getEntityTypeForName(line, objectSpec.getString(ARG_CLASS));
+    }
+    return null;
+  }
+
+  private Class<?> getEntityTypeForName(String line, String name)
+      throws TransformSpecificationException {
 
     Class<?> type = getClassForName(name);
 
@@ -428,7 +446,7 @@ public class TransformFactory {
         return type;
     }
 
-    throw new IllegalArgumentException("class not found: " + name);
+    throw new TransformSpecificationException("unknown class: " + name, line);
   }
 
   private Class<?> getClassForName(String className) {
@@ -451,20 +469,8 @@ public class TransformFactory {
       return getCollectionMatch(line, match.getString(ARG_COLLECTION), match);
     }
 
-    Class<?> entityType = null;
-
-    if (match.has(ARG_FILE)) {
-      String fileName = match.getString(ARG_FILE);
-      EntitySchema schema = _schemaCache.getSchemaForFileName(fileName);
-      if (schema == null) {
-        throw new TransformSpecificationException("unknown file type: "
-            + fileName, line);
-      }
-      entityType = schema.getEntityClass();
-    } else if (match.has(ARG_CLASS)) {
-      String entityTypeString = match.getString(ARG_CLASS);
-      entityType = getEntityTypeForName(entityTypeString);
-    } else {
+    Class<?> entityType = getEntityClassFromJsonSpec(line, match);
+    if (entityType == null) {
       throw new TransformSpecificationMissingArgumentException(line,
           new String[] {ARG_FILE, ARG_CLASS}, ARG_MATCH);
     }

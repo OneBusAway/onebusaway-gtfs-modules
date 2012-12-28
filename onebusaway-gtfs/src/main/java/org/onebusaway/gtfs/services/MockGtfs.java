@@ -85,7 +85,7 @@ public class MockGtfs {
     putFile(fileName, b.toString());
   }
 
-  public GtfsRelationalDao read() throws IOException {
+  public GtfsMutableRelationalDao read() throws IOException {
     GtfsReader reader = new GtfsReader();
     reader.setInputLocation(_path);
     GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();

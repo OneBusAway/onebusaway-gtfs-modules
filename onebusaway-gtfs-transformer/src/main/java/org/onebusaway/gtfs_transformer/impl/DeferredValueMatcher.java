@@ -19,8 +19,9 @@ import org.apache.commons.beanutils.Converter;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.serialization.GtfsReader;
+import org.onebusaway.gtfs_transformer.match.ValueMatcher;
 
-public class DeferredValueMatcher {
+public class DeferredValueMatcher implements ValueMatcher {
 
   private final DeferredValueSupport _support;
 

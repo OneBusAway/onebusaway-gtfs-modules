@@ -18,16 +18,15 @@ package org.onebusaway.gtfs_transformer.match;
 
 import org.onebusaway.collections.beans.PropertyInvocationResult;
 import org.onebusaway.collections.beans.PropertyPathExpression;
-import org.onebusaway.gtfs_transformer.impl.DeferredValueMatcher;
 
 public class PropertyValueEntityMatch implements EntityMatch {
 
   private final PropertyPathExpression _expression;
 
-  private final DeferredValueMatcher _matcher;
+  private final ValueMatcher _matcher;
 
   public PropertyValueEntityMatch(PropertyPathExpression expression,
-      DeferredValueMatcher matcher) {
+      ValueMatcher matcher) {
     _expression = expression;
     _matcher = matcher;
   }

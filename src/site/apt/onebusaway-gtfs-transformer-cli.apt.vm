@@ -234,6 +234,42 @@ stops.  The departure time for the first stop will be set from the `start_time` 
 be set from the `end_time` field, and the times for intermediate stops will be interpolated based on their distance along the
 trip.
 
+* Extend Service Calendars
+
+  Sometimes you need to extend the service dates in a GTFS feed, perhaps in order to temporarily extend an expired feed.  Extending
+the feed by hand can be a tedious task, especially when the feed uses a complex combination of `calendar.txt` and `calendar_dates.txt`
+entries.  Fortunately, the GTFS tranformer tool supports a `calendar_extension` operation that can help simplify the work.  Example:
+
++---+
+{"op":"calendar_extension", "end_date":"20130331"}
++---+
+
+  The operation requires just one argument by default: `end_date` to specify the new end-date for the feed.  The operation does
+its best to intelligently extend each service calendar, as identified by a `service_id` in `calendar.txt` or `calendar_dates.txt`.
+There are a few wrinkles to be aware of, however.
+
+  Extending a `calendar.txt` entry is usually just a matter of setting a new `end_date` value in the feed.  Extending a service
+calendar represented only through `calendar_dates.txt` entries is a bit more complex.  For such a service calendar, we attempt to
+determine which days of the week are typically active for the calendar and extend only those.  For example, is the calendar is
+always active on Saturday but has one or two Sunday entries, we will only add entries for Saturday when extending the calendar.
+
+  Also note that we will not extend "inactive" service calendars.  A service calendar is considered inactive if its last active
+service date is already in the past.  By default, any calendar that's been expired for more than two weeks is considered inactive.
+This helps handle feeds that have merged two service periods in one feed.  For example, one calendar active from June 1 - July 31
+and a second calendar active from August 1 to September 31.  If it's the last week of September and you are extending the feed,
+you typically only mean to extend the second service calendar.  You can control this inactive calendar cutoff with an optional
+argument:
+
++---+
+{"op":"calendar_extension", "end_date":"20130331", "inactive_calendar_cutoff":"20121031"}
++---+
+
+  Calendars that have expired before the specified date will be considered inactive and won't be extended.
+
+  <<Note>>: We don't make any effort to extend canceled service dates, as specified in `calendar_dates.txt` for holidays and
+other special events.  It's too tricky to automatically determine how they should be handled.  You may need to still handle
+those manually. 
+
 * Arbitrary Transform
 
   We also allow you to specify arbitrary transformations as well.  Here, you specify your transformation class and we will

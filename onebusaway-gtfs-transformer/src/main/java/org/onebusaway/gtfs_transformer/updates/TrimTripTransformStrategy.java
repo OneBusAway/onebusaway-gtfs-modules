@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.model.Stop;
@@ -124,7 +123,7 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
       dao.saveEntity(stopTime);
     }
 
-    ((GtfsRelationalDaoImpl) dao).clearAllCaches();
+    UpdateLibrary.clearDaoCache(dao);
     Set<AgencyAndId> shapeIds = new HashSet<AgencyAndId>(dao.getAllShapeIds());
     for (Trip trip : dao.getAllTrips()) {
       shapeIds.remove(trip.getShapeId());
@@ -134,7 +133,6 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
         dao.removeEntity(point);
       }
     }
-    UpdateLibrary.clearDaoCache(dao);
   }
 
   private List<TrimOperation> getMatchingOperations(Trip trip) {

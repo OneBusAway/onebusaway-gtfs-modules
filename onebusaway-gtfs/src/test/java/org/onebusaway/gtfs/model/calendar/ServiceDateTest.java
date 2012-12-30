@@ -89,6 +89,8 @@ public class ServiceDateTest {
         new ServiceDate(2012, 03, 05).shift(10));
     assertEquals(new ServiceDate(2012, 03, 05),
         new ServiceDate(2012, 03, 15).shift(-10));
+    assertEquals(new ServiceDate(2012, 03, 12),
+        new ServiceDate(2012, 03, 11).shift(1));
   }
 
   @Test

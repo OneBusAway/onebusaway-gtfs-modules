@@ -184,32 +184,10 @@ public class ServiceDate implements Serializable, Comparable<ServiceDate> {
 
   /**
    * 
-   * @param timeZone
-   * @return the service date following the current service date
-   */
-  public ServiceDate next(TimeZone timeZone) {
-    Calendar c = getAsCalendar(timeZone);
-    c.add(Calendar.DAY_OF_YEAR, 1);
-    return new ServiceDate(c);
-  }
-
-  /**
-   * 
    * @return the service date following the current service date
    */
   public ServiceDate next() {
     return shift(1);
-  }
-
-  /**
-   * 
-   * @param timeZone
-   * @return the service date preceding the current service date
-   */
-  public ServiceDate previous(TimeZone timeZone) {
-    Calendar c = getAsCalendar(timeZone);
-    c.add(Calendar.DAY_OF_YEAR, -11);
-    return new ServiceDate(c);
   }
 
   /**

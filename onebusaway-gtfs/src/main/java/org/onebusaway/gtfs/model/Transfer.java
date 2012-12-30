@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2012 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +33,20 @@ public final class Transfer extends IdentityBean<Integer> {
   @CsvField(name = "from_stop_id", mapping = EntityFieldMappingFactory.class)
   private Stop fromStop;
 
+  @CsvField(name = "from_route_id", mapping = EntityFieldMappingFactory.class, optional = true)
+  private Route fromRoute;
+
+  @CsvField(name = "from_trip_id", mapping = EntityFieldMappingFactory.class, optional = true)
+  private Trip fromTrip;
+
   @CsvField(name = "to_stop_id", mapping = EntityFieldMappingFactory.class)
   private Stop toStop;
+
+  @CsvField(name = "to_route_id", mapping = EntityFieldMappingFactory.class, optional = true)
+  private Route toRoute;
+
+  @CsvField(name = "to_trip_id", mapping = EntityFieldMappingFactory.class, optional = true)
+  private Trip toTrip;
 
   private int transferType;
 
@@ -47,7 +60,11 @@ public final class Transfer extends IdentityBean<Integer> {
   public Transfer(Transfer obj) {
     this.id = obj.id;
     this.fromStop = obj.fromStop;
+    this.fromRoute = obj.fromRoute;
+    this.fromTrip = obj.fromTrip;
     this.toStop = obj.toStop;
+    this.toRoute = obj.toRoute;
+    this.toTrip = obj.toTrip;
     this.transferType = obj.transferType;
     this.minTransferTime = obj.minTransferTime;
   }
@@ -70,12 +87,44 @@ public final class Transfer extends IdentityBean<Integer> {
     this.fromStop = fromStop;
   }
 
+  public Route getFromRoute() {
+    return fromRoute;
+  }
+
+  public void setFromRoute(Route fromRoute) {
+    this.fromRoute = fromRoute;
+  }
+
+  public Trip getFromTrip() {
+    return fromTrip;
+  }
+
+  public void setFromTrip(Trip fromTrip) {
+    this.fromTrip = fromTrip;
+  }
+
   public Stop getToStop() {
     return toStop;
   }
 
   public void setToStop(Stop toStop) {
     this.toStop = toStop;
+  }
+
+  public Route getToRoute() {
+    return toRoute;
+  }
+
+  public void setToRoute(Route toRoute) {
+    this.toRoute = toRoute;
+  }
+
+  public Trip getToTrip() {
+    return toTrip;
+  }
+
+  public void setToTrip(Trip toTrip) {
+    this.toTrip = toTrip;
   }
 
   public int getTransferType() {

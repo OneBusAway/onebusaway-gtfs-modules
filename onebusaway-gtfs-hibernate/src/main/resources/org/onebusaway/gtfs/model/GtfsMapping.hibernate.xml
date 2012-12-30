@@ -219,9 +219,25 @@
             <column name="fromStop_agencyId" length="50" />
             <column name="fromStop_id" />
         </many-to-one>
+        <many-to-one name="fromRoute" not-null="true">
+            <column name="fromRoute_agencyId" length="50" />
+            <column name="fromRoute_id" />
+        </many-to-one>
+        <many-to-one name="fromTrip" not-null="true">
+            <column name="fromTrip_agencyId" length="50" />
+            <column name="fromTrip_id" />
+        </many-to-one>
         <many-to-one name="toStop" not-null="true">
             <column name="toStop_agencyId" length="50" />
             <column name="toStop_id" />
+        </many-to-one>
+        <many-to-one name="toRoute" not-null="true">
+            <column name="toRoute_agencyId" length="50" />
+            <column name="toRoute_id" />
+        </many-to-one>
+        <many-to-one name="toTrip" not-null="true">
+            <column name="toTrip_agencyId" length="50" />
+            <column name="toTrip_id" />
         </many-to-one>
         <property name="transferType" />
         <property name="minTransferTime" />

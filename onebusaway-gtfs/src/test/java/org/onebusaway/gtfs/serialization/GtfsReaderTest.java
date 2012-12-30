@@ -111,8 +111,10 @@ public class GtfsReaderTest {
     gtfs.putLines("frequencies.txt",
         "trip_id,start_time,end_time,headway_secs,exact_times,label_only",
         "T1,09:01:30,10:20:02,300,1,1");
-    gtfs.putLines("transfers.txt",
-        "from_stop_id,to_stop_id,transfer_type,min_transfer_time", "S1,S1,2,60");
+    gtfs.putLines(
+        "transfers.txt",
+        "from_stop_id,from_route_id,from_trip_id,to_stop_id,to_route_id,to_trip_id,transfer_type,min_transfer_time",
+        "S1,R1,T1,S1,R1,T1,2,60");
     gtfs.putLines(
         "feed_info.txt",
         "feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version",
@@ -245,7 +247,11 @@ public class GtfsReaderTest {
 
     Transfer transfer = dao.getAllTransfers().iterator().next();
     assertEquals(stop, transfer.getFromStop());
+    assertEquals(route, transfer.getFromRoute());
+    assertEquals(trip, transfer.getFromTrip());
     assertEquals(stop, transfer.getToStop());
+    assertEquals(route, transfer.getToRoute());
+    assertEquals(trip, transfer.getToTrip());
     assertEquals(2, transfer.getTransferType(), 1);
     assertEquals(60, transfer.getMinTransferTime());
 

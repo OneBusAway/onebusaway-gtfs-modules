@@ -87,10 +87,18 @@ public class MockGtfs {
 
   public GtfsMutableRelationalDao read() throws IOException {
     GtfsReader reader = new GtfsReader();
+    return read(reader);
+  }
+
+  public GtfsMutableRelationalDao read(GtfsReader reader) throws IOException {
     reader.setInputLocation(_path);
     GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();
     reader.setEntityStore(dao);
-    reader.run();
+    try {
+      reader.run();
+    } finally {
+      reader.close();
+    }
     return dao;
   }
 

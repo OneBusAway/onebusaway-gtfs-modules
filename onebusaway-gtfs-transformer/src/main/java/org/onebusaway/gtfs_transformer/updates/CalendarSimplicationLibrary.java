@@ -97,10 +97,10 @@ public class CalendarSimplicationLibrary {
           daysOfTheWeekToUse, fromDate, toDate);
       calendarsToAdd.add(sc);
     }
+    
+    TimeZone tz = TimeZone.getTimeZone("UTC");
 
-    TimeZone tz = TimeZone.getDefault();
-
-    for (ServiceDate serviceDate = fromDate; serviceDate.compareTo(toDate) <= 0; serviceDate = serviceDate.next(tz)) {
+    for (ServiceDate serviceDate = fromDate; serviceDate.compareTo(toDate) <= 0; serviceDate = serviceDate.next()) {
 
       boolean isActive = summary.allServiceDates.contains(serviceDate);
 

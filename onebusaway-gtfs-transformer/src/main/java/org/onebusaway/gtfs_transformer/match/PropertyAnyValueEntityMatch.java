@@ -18,31 +18,28 @@ package org.onebusaway.gtfs_transformer.match;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.onebusaway.collections.PropertyPathCollectionExpression;
-import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.collections.beans.PropertyInvocationResult;
+import org.onebusaway.collections.beans.PropertyPathCollectionExpression;
+import org.onebusaway.gtfs_transformer.impl.DeferredValueMatcher;
 
 public class PropertyAnyValueEntityMatch implements EntityMatch {
 
   private final PropertyPathCollectionExpression _expression;
 
-  private final Object _value;
+  private final DeferredValueMatcher _matcher;
 
   public PropertyAnyValueEntityMatch(
-      PropertyPathCollectionExpression expression, Object value) {
+      PropertyPathCollectionExpression expression, DeferredValueMatcher matcher) {
     _expression = expression;
-    _value = value;
+    _matcher = matcher;
   }
 
   public boolean isApplicableToObject(Object object) {
-    if (object instanceof Trip
-        && ((Trip) object).getId().getId().equals(
-            "A20120610WKD_102400_5..N31R-213N")) {
-      System.out.println("here");
-    }
-    List<Object> values = new ArrayList<Object>();
-    _expression.invoke(object, values);
-    for (Object childValue : values) {
-      if (ObjectEquality.objectsAreEqual(_value, childValue)) {
+    List<PropertyInvocationResult> results = new ArrayList<PropertyInvocationResult>();
+    _expression.invokeReturningFullResult(object, results);
+    for (PropertyInvocationResult result : results) {
+      if (_matcher.matches(result.parent.getClass(), result.propertyName,
+          result.value)) {
         return true;
       }
     }

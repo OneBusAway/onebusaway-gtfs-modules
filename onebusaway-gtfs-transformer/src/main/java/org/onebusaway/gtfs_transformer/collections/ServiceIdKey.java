@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2012 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs_transformer.factory;
+package org.onebusaway.gtfs_transformer.collections;
 
-public class ModifyEntitiesTransformStrategy extends
-    AbstractEntitiesTransformStrategy {
+import org.onebusaway.gtfs.model.AgencyAndId;
 
+public class ServiceIdKey extends IdKey {
+  public ServiceIdKey(AgencyAndId id) {
+    super(id);
+  }
+
+  @Override
+  public String toString() {
+    return "ServiceIdKey(id=" + _id + ")";
+  }
 }

@@ -16,54 +16,24 @@
  */
 package org.onebusaway.gtfs_transformer.match;
 
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.Converter;
-import org.onebusaway.collections.PropertyPathExpression;
+import org.onebusaway.collections.beans.PropertyInvocationResult;
+import org.onebusaway.collections.beans.PropertyPathExpression;
 
 public class PropertyValueEntityMatch implements EntityMatch {
 
   private final PropertyPathExpression _expression;
 
-  private final Object _value;
+  private final ValueMatcher _matcher;
 
   public PropertyValueEntityMatch(PropertyPathExpression expression,
-      Object value) {
+      ValueMatcher matcher) {
     _expression = expression;
-    _value = value;
+    _matcher = matcher;
   }
 
   public boolean isApplicableToObject(Object object) {
-
-    Object actual = _expression.invoke(object);
-    Object expected = _value;
-    boolean nullA = expected == null;
-    boolean nullB = actual == null;
-
-    if (nullA && nullB)
-      return true;
-    if (nullA ^ nullB)
-      return false;
-
-    Class<?> expectedType = expected.getClass();
-    Class<?> actualType = actual.getClass();
-
-    /**
-     * Implementation note: This conversion theoretically will happen over and
-     * over with the same value. Is there some way to cache it?
-     */
-    if (!actualType.isAssignableFrom(expectedType)
-        && expectedType == String.class) {
-
-      Converter converter = ConvertUtils.lookup(actualType);
-
-      if (converter != null) {
-        Object converted = converter.convert(actualType, expected);
-        if (converted != null)
-          expected = converted;
-      }
-    }
-
-    return (expected == null && actual == null)
-        || (expected != null && expected.equals(actual));
+    PropertyInvocationResult result = _expression.invokeReturningFullResult(object);
+    return _matcher.matches(result.parent.getClass(), result.propertyName,
+        result.value);
   }
 }

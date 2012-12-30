@@ -26,6 +26,9 @@ import java.util.Map;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.collections.IdKey;
+import org.onebusaway.gtfs_transformer.collections.IdKeyMatch;
+import org.onebusaway.gtfs_transformer.match.EntityMatch;
 import org.onebusaway.gtfs_transformer.match.TypedEntityMatch;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
@@ -65,14 +68,23 @@ public class RetainEntitiesTransformStrategy implements GtfsTransformStrategy {
       Class<?> entityType = entry.getKey();
       List<EntityRetention> retentions = entry.getValue();
 
-      Collection<Object> entities = new ArrayList<Object>(
-          dao.getAllEntitiesForType(entityType));
-
-      for (Object object : entities) {
+      if (IdKey.class.isAssignableFrom(entityType)) {
         for (EntityRetention retention : retentions) {
-          TypedEntityMatch match = retention.getMatch();
-          if (match.isApplicableToObject(object))
-            graph.retain(object, retention.isRetainUp());
+          TypedEntityMatch typedMatch = retention.getMatch();
+          IdKeyMatch match = (IdKeyMatch) typedMatch.getPropertyMatches();
+          graph.retain(match.getKey(), retention.isRetainUp());
+        }
+      } else {
+
+        Collection<Object> entities = new ArrayList<Object>(
+            dao.getAllEntitiesForType(entityType));
+
+        for (Object object : entities) {
+          for (EntityRetention retention : retentions) {
+            EntityMatch match = retention.getMatch();
+            if (match.isApplicableToObject(object))
+              graph.retain(object, retention.isRetainUp());
+          }
         }
       }
     }

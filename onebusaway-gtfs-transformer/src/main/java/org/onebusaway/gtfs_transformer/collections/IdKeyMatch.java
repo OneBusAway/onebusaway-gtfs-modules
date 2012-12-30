@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2012 Google, Inc. 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs_transformer.services;
+package org.onebusaway.gtfs_transformer.collections;
 
-import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.match.EntityMatch;
+import org.onebusaway.gtfs_transformer.match.ObjectEquality;
 
-public interface EntityTransformStrategy {
+public abstract class IdKeyMatch implements EntityMatch {
 
-  public void run(TransformContext context, GtfsMutableRelationalDao dao,
-      Object entity);
+  private IdKey _key = null;
+
+  public IdKey getKey() {
+    if (_key == null) {
+      _key = resolveKey();
+    }
+    return _key;
+  }
+
+  @Override
+  public boolean isApplicableToObject(Object object) {
+    return ObjectEquality.objectsAreEqual(getKey(), object);
+  }
+
+  protected abstract IdKey resolveKey();
 }

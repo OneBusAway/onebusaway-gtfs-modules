@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2012 Google, Inc. 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs_transformer.services;
+package org.onebusaway.gtfs_transformer.match;
 
-import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+public class AlwaysMatch implements EntityMatch {
 
-public interface EntityTransformStrategy {
-
-  public void run(TransformContext context, GtfsMutableRelationalDao dao,
-      Object entity);
+  @Override
+  public boolean isApplicableToObject(Object object) {
+    return true;
+  }
 }

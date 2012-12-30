@@ -18,6 +18,7 @@ package org.onebusaway.gtfs_transformer.services;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 
 public class TransformContext {
@@ -34,6 +35,10 @@ public class TransformContext {
 
   public String getDefaultAgencyId() {
     return _defaultAgencyId;
+  }
+
+  public AgencyAndId resolveId(Class<?> entityType, String rawId) {
+    return new AgencyAndId(_reader.getDefaultAgencyId(), rawId);
   }
 
   public GtfsReader getReader() {

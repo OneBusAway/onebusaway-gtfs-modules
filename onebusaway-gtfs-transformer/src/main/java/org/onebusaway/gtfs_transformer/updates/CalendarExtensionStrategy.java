@@ -16,18 +16,19 @@
 package org.onebusaway.gtfs_transformer.updates;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
-import org.onebusaway.collections.tuple.Pair;
-import org.onebusaway.collections.tuple.Tuples;
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
+import org.onebusaway.gtfs.serialization.mappings.ServiceDateFieldMappingFactory;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
@@ -36,9 +37,13 @@ import org.onebusaway.gtfs_transformer.updates.CalendarSimplicationLibrary.Servi
 
 public class CalendarExtensionStrategy implements GtfsTransformStrategy {
 
+  private static final TimeZone _utcTimeZone = TimeZone.getTimeZone("UTC");
+
+  @CsvField(mapping = ServiceDateFieldMappingFactory.class)
   private ServiceDate endDate;
 
-  private int buffer = 14;
+  @CsvField(mapping = ServiceDateFieldMappingFactory.class, optional = true)
+  private ServiceDate inactiveCalendarCutoff = new ServiceDate(new Date()).shift(-14);
 
   public ServiceDate getEndDate() {
     return endDate;
@@ -48,16 +53,20 @@ public class CalendarExtensionStrategy implements GtfsTransformStrategy {
     this.endDate = endDate;
   }
 
+  public ServiceDate getInactiveCalendarCutoff() {
+    return inactiveCalendarCutoff;
+  }
+
+  public void setInactiveCalendarCutoff(ServiceDate inactiveCalendarCutoff) {
+    this.inactiveCalendarCutoff = inactiveCalendarCutoff;
+  }
+
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     CalendarService service = CalendarServiceDataFactoryImpl.createService(dao);
     CalendarSimplicationLibrary simplication = new CalendarSimplicationLibrary();
     simplication.setCalendarService(service);
-
-    TimeZone tz = TimeZone.getDefault();
-
-    Pair<ServiceDate> range = getServiceDateRange(service);
 
     for (AgencyAndId serviceId : dao.getAllServiceIds()) {
 
@@ -72,15 +81,24 @@ public class CalendarExtensionStrategy implements GtfsTransformStrategy {
       ServiceCalendar calendar = dao.getCalendarForServiceId(serviceId);
       if (calendar == null) {
 
-        Set<Integer> daysOfTheWeekToUse = getDaysOfTheWeekToUse(summary,
-            range.getSecond());
-
         ServiceDate lastDate = summary.serviceDatesInOrder.get(summary.serviceDatesInOrder.size() - 1);
-        ServiceDate firstMissingDate = lastDate.next(tz);
+        if (lastDate.compareTo(inactiveCalendarCutoff) < 0) {
+          continue;
+        }
 
-        for (ServiceDate serviceDate = firstMissingDate; serviceDate.compareTo(endDate) <= 0; serviceDate = serviceDate.next(tz)) {
-          Calendar serviceDateAsCalendar = serviceDate.getAsCalendar(TimeZone.getDefault());
+        /**
+         * We only want days of the week that are in service past our stale
+         * calendar cutoff.
+         */
+        Set<Integer> daysOfTheWeekToUse = getDaysOfTheWeekToUse(summary);
+        if (daysOfTheWeekToUse.isEmpty()) {
+          continue;
+        }
+        ServiceDate firstMissingDate = lastDate.next();
+        for (ServiceDate serviceDate = firstMissingDate; serviceDate.compareTo(endDate) <= 0; serviceDate = serviceDate.next()) {
+          Calendar serviceDateAsCalendar = serviceDate.getAsCalendar(_utcTimeZone);
           // Move the calendar forward to "noon" to mitigate the effects of DST
+          // (though the shouldn't be a problem for UTC?)
           serviceDateAsCalendar.add(Calendar.HOUR_OF_DAY, 12);
           int dayOfWeek = serviceDateAsCalendar.get(Calendar.DAY_OF_WEEK);
           if (daysOfTheWeekToUse.contains(dayOfWeek)) {
@@ -92,37 +110,25 @@ public class CalendarExtensionStrategy implements GtfsTransformStrategy {
           }
         }
       } else {
-        calendar.setEndDate(endDate);
-      }
-
-    }
-  }
-
-  private Pair<ServiceDate> getServiceDateRange(CalendarService service) {
-    ServiceDate min = null;
-    ServiceDate max = null;
-    for (AgencyAndId serviceId : service.getServiceIds()) {
-      for (ServiceDate serviceDate : service.getServiceDatesForServiceId(serviceId)) {
-        if (min == null || serviceDate.compareTo(min) < 0) {
-          min = serviceDate;
-        }
-        if (max == null || max.compareTo(serviceDate) < 0) {
-          max = serviceDate;
+        if (calendar.getEndDate().compareTo(inactiveCalendarCutoff) >= 0) {
+          calendar.setEndDate(endDate);
         }
       }
     }
-    if (min == null) {
-      return null;
-    }
-    return Tuples.pair(min, max);
+    UpdateLibrary.clearDaoCache(dao);
   }
 
-  private HashSet<Integer> getDaysOfTheWeekToUse(
-      ServiceCalendarSummary summary, ServiceDate lastServiceDate) {
+  /**
+   * Compute the set of days of the week that are active past our stale calendar
+   * cutoff.
+   * 
+   * @param summary
+   * @return the set of active days of the week
+   */
+  private HashSet<Integer> getDaysOfTheWeekToUse(ServiceCalendarSummary summary) {
     HashSet<Integer> days = new HashSet<Integer>(summary.daysOfTheWeekToUse);
     for (Map.Entry<Integer, ServiceDate> entry : summary.mostRecentServiceDateByDayOfWeek.entrySet()) {
-      int daysToEnd = (int) ((lastServiceDate.getAsDate().getTime() - entry.getValue().getAsDate().getTime()) / (24 * 60 * 60 * 1000));
-      if (daysToEnd > buffer) {
+      if (entry.getValue().compareTo(inactiveCalendarCutoff) < 0) {
         days.remove(entry.getKey());
       }
     }

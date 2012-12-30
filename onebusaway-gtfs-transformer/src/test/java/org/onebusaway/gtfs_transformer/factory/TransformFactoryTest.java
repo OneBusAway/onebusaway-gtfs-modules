@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs_transformer.GtfsTransformer;
 import org.onebusaway.gtfs_transformer.TransformSpecificationException;
+import org.onebusaway.gtfs_transformer.factory.EntitiesTransformStrategy.MatchAndTransform;
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
 import org.onebusaway.gtfs_transformer.match.EntityMatch;
 import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
@@ -33,26 +34,36 @@ import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 
 public class TransformFactoryTest {
 
-  private TransformFactory _factory = new TransformFactory();
-
   private GtfsTransformer _transformer = new GtfsTransformer();
+
+  private TransformFactory _factory = new TransformFactory(_transformer);
 
   @Test
   public void test() throws IOException, TransformSpecificationException {
-    _factory.addModificationsFromString(_transformer,
-        "{'op':'remove', 'match':{'class':'Route', 'shortName':'10'}}");
+    _factory.addModificationsFromString("{'op':'remove', 'match':{'class':'Route', 'shortName':'10'}}");
     GtfsTransformStrategy transform = _transformer.getLastTransform();
-    assertEquals(ModifyEntitiesTransformStrategy.class, transform.getClass());
-    ModifyEntitiesTransformStrategy strategy = (ModifyEntitiesTransformStrategy) transform;
-    List<EntityTransformStrategy> transforms = strategy.getEntityTransformsForType(Route.class);
+    assertEquals(EntitiesTransformStrategy.class, transform.getClass());
+    EntitiesTransformStrategy strategy = (EntitiesTransformStrategy) transform;
+    List<MatchAndTransform> transforms = strategy.getTransformsForType(Route.class);
     assertEquals(1, transforms.size());
-    EntityTransformStrategy entityTransform = transforms.get(0);
-    assertEquals(RemoveEntityUpdateStrategy.class, entityTransform.getClass());
-    RemoveEntityUpdateStrategy removeEntity = (RemoveEntityUpdateStrategy) entityTransform;
-    EntityMatch match = removeEntity.getMatch();
+    MatchAndTransform pair = transforms.get(0);
+    EntityMatch match = pair.getMatch();
     Route route = new Route();
     assertFalse(match.isApplicableToObject(route));
     route.setShortName("10");
     assertTrue(match.isApplicableToObject(route));
+    EntityTransformStrategy entityTransform = pair.getTransform();
+    assertEquals(RemoveEntityUpdateStrategy.class, entityTransform.getClass());
+  }
+
+  @Test
+  public void testFileMatch() throws IOException,
+      TransformSpecificationException {
+    _factory.addModificationsFromString("{'op':'remove', 'match':{'file':'routes.txt', 'shortName':'10'}}");
+    GtfsTransformStrategy transform = _transformer.getLastTransform();
+    assertEquals(EntitiesTransformStrategy.class, transform.getClass());
+    EntitiesTransformStrategy strategy = (EntitiesTransformStrategy) transform;
+    List<MatchAndTransform> transforms = strategy.getTransformsForType(Route.class);
+    assertEquals(1, transforms.size());
   }
 }

@@ -29,6 +29,9 @@ import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
+import org.onebusaway.gtfs_transformer.collections.IdKey;
+import org.onebusaway.gtfs_transformer.collections.ServiceIdKey;
+import org.onebusaway.gtfs_transformer.collections.ShapeIdKey;
 
 /**
  * We have the concept of retaining up and retaining down.
@@ -314,58 +317,6 @@ public class EntityRetentionGraph {
 
     } else {
       retainDown(frequency.getTrip());
-    }
-  }
-
-  private static abstract class IdKey {
-
-    protected AgencyAndId _id;
-
-    public IdKey(AgencyAndId id) {
-      _id = id;
-    }
-
-    public AgencyAndId getId() {
-      return _id;
-    }
-
-    @Override
-    public int hashCode() {
-      return _id.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (this == obj)
-        return true;
-      if (obj == null)
-        return false;
-      if (getClass() != obj.getClass())
-        return false;
-      IdKey other = (IdKey) obj;
-      return _id.equals(other._id);
-    }
-  }
-
-  private static class ServiceIdKey extends IdKey {
-    public ServiceIdKey(AgencyAndId id) {
-      super(id);
-    }
-
-    @Override
-    public String toString() {
-      return "ServiceIdKey(id=" + _id + ")";
-    }
-  }
-
-  private static class ShapeIdKey extends IdKey {
-    public ShapeIdKey(AgencyAndId id) {
-      super(id);
-    }
-
-    @Override
-    public String toString() {
-      return "ShapeIdKey(id=" + _id + ")";
     }
   }
 

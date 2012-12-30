@@ -19,36 +19,31 @@ import java.util.Map;
 
 import org.onebusaway.collections.tuple.Pair;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
+import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.match.EntityMatch;
+import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
-public class StringModificationStrategy extends
-    AbstractEntityModificationStrategy {
+public class StringModificationStrategy implements EntityTransformStrategy {
 
   private Map<String, Pair<String>> _propertyUpdates;
 
-  public StringModificationStrategy(EntityMatch match,
-      Map<String, Pair<String>> propertyUpdates) {
-    super(match);
+  public StringModificationStrategy(Map<String, Pair<String>> propertyUpdates) {
     _propertyUpdates = propertyUpdates;
   }
 
   public void run(TransformContext context, GtfsMutableRelationalDao dao,
-      BeanWrapper entity) {
-
-    if (!isModificationApplicable(entity))
-      return;
-
+      Object entity) {
+    BeanWrapper wrapper = BeanWrapperFactory.wrap(entity);
     for (Map.Entry<String, Pair<String>> entry : _propertyUpdates.entrySet()) {
       String property = entry.getKey();
       Pair<String> value = entry.getValue();
-      Object propertyValue = entity.getPropertyValue(property);
+      Object propertyValue = wrapper.getPropertyValue(property);
       if (propertyValue != null) {
         String propertyStringValue = propertyValue.toString();
         propertyStringValue = propertyStringValue.replaceAll(value.getFirst(),
             value.getSecond());
-        entity.setPropertyValue(property, propertyStringValue);
+        wrapper.setPropertyValue(property, propertyStringValue);
       }
     }
   }

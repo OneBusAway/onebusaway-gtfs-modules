@@ -15,43 +15,31 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import java.io.Serializable;
 import java.util.Map;
 
-import org.apache.commons.beanutils.ConvertUtils;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
-import org.onebusaway.gtfs.model.IdentityBean;
+import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.match.EntityMatch;
+import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
-public class SimpleModificationStrategy extends
-    AbstractEntityModificationStrategy {
+public class SimpleModificationStrategy implements EntityTransformStrategy {
 
-  private Map<String, Object> _propertyUpdates;
+  private Map<String, DeferredValueSetter> _propertyUpdates;
 
-  public SimpleModificationStrategy(EntityMatch matches,
-      Map<String, Object> propertyUpdates) {
-    super(matches);
+  public SimpleModificationStrategy(
+      Map<String, DeferredValueSetter> propertyUpdates) {
     _propertyUpdates = propertyUpdates;
   }
 
   public void run(TransformContext context, GtfsMutableRelationalDao dao,
-      BeanWrapper entity) {
+      Object entity) {
 
-    if (!isModificationApplicable(entity))
-      return;
-
-    for (Map.Entry<String, Object> entry : _propertyUpdates.entrySet()) {
-      String property = entry.getKey();
-      Object value = entry.getValue();
-      Class<?> propertyType = entity.getPropertyType(property);
-      if (IdentityBean.class.isAssignableFrom(propertyType)) {
-        value = dao.getEntityForId(propertyType, (Serializable) value);
-      } else if (value instanceof String && !propertyType.equals(String.class)) {
-        value = ConvertUtils.convert((String) value, propertyType);
-      }
-      entity.setPropertyValue(property, value);
+    BeanWrapper wrapper = BeanWrapperFactory.wrap(entity);
+    for (Map.Entry<String, DeferredValueSetter> entry : _propertyUpdates.entrySet()) {
+      String propertyName = entry.getKey();
+      DeferredValueSetter setter = entry.getValue();
+      setter.setValue(wrapper, propertyName);
     }
   }
 }

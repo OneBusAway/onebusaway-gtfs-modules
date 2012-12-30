@@ -84,6 +84,26 @@ public class ServiceDateTest {
   }
 
   @Test
+  public void testShift() {
+    assertEquals(new ServiceDate(2012, 03, 15),
+        new ServiceDate(2012, 03, 05).shift(10));
+    assertEquals(new ServiceDate(2012, 03, 05),
+        new ServiceDate(2012, 03, 15).shift(-10));
+  }
+
+  @Test
+  public void testDifference() {
+    assertEquals(2,
+        new ServiceDate(2012, 03, 05).difference(new ServiceDate(2012, 03, 07)));
+    assertEquals(-2,
+        new ServiceDate(2012, 03, 07).difference(new ServiceDate(2012, 03, 05)));
+    assertEquals(10,
+        new ServiceDate(2012, 03, 05).difference(new ServiceDate(2012, 03, 15)));
+    assertEquals(38,
+        new ServiceDate(2012, 03, 05).difference(new ServiceDate(2012, 04, 12)));
+  }
+
+  @Test
   public void testEqualityAndComparable() {
 
     ServiceDate dateA = new ServiceDate(2010, 02, 11);

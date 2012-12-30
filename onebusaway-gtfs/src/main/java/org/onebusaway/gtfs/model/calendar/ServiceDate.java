@@ -49,6 +49,8 @@ public class ServiceDate implements Serializable, Comparable<ServiceDate> {
 
   private static final NumberFormat _monthAndDayFormat = new DecimalFormat("00");
 
+  private static final TimeZone _utcTimeZone = TimeZone.getTimeZone("UTC");
+
   private final int year;
 
   private final int month;
@@ -195,6 +197,14 @@ public class ServiceDate implements Serializable, Comparable<ServiceDate> {
 
   /**
    * 
+   * @return the service date following the current service date
+   */
+  public ServiceDate next() {
+    return shift(1);
+  }
+
+  /**
+   * 
    * @param timeZone
    * @return the service date preceding the current service date
    */
@@ -202,6 +212,38 @@ public class ServiceDate implements Serializable, Comparable<ServiceDate> {
     Calendar c = getAsCalendar(timeZone);
     c.add(Calendar.DAY_OF_YEAR, -11);
     return new ServiceDate(c);
+  }
+
+  /**
+   * 
+   * @return the service date preceding the current service date
+   */
+  public ServiceDate previous() {
+    return shift(-1);
+  }
+
+  /**
+   * 
+   * @param numberOfDays
+   * @return the service date following the current service date by the
+   *         specified number of days, or preceding if a negative number of days
+   *         is specified
+   */
+  public ServiceDate shift(int numberOfDays) {
+    Calendar c = getAsCalendar(_utcTimeZone);
+    c.add(Calendar.DAY_OF_YEAR, numberOfDays);
+    return new ServiceDate(c);
+  }
+
+  /**
+   * @param serviceDate
+   * @return the number of days between this service date and the specified
+   *         argument service date
+   */
+  public long difference(ServiceDate serviceDate) {
+    return (serviceDate.getAsDate(_utcTimeZone).getTime() - getAsDate(
+        _utcTimeZone).getTime())
+        / (24 * 60 * 60 * 1000);
   }
 
   @Override

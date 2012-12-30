@@ -15,7 +15,6 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -27,14 +26,12 @@ public class PierceTransitTripHeadsignCleanupModStrategy implements
 
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao,
-      BeanWrapper entity) {
+      Object entity) {
 
-    Object obj = entity.getWrappedInstance(Object.class);
-
-    if (!(obj instanceof Trip))
+    if (!(entity instanceof Trip))
       return;
 
-    Trip trip = (Trip) obj;
+    Trip trip = (Trip) entity;
     String headsign = trip.getTripHeadsign();
 
     Route route = trip.getRoute();

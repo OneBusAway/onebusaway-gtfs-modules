@@ -22,27 +22,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.match.TypedEntityMatch;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class TrimTripTransformStrategy implements GtfsTransformStrategy {
 
-  private Map<String, List<TrimOperation>> _operationsByRouteId = new HashMap<String, List<TrimOperation>>();
+  private List<TrimOperation> _operations = new ArrayList<TrimOperation>();
 
   public void addOperation(TrimOperation operation) {
-    List<TrimOperation> operations = _operationsByRouteId.get(operation.getRouteId());
-    if (operations == null) {
-      operations = new ArrayList<TrimOperation>();
-      _operationsByRouteId.put(operation.getRouteId(), operations);
-    }
-    operations.add(operation);
+    _operations.add(operation);
   }
 
   @Override
@@ -55,9 +50,8 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
     Set<AgencyAndId> newShapeIds = new HashSet<AgencyAndId>();
 
     for (Trip trip : dao.getAllTrips()) {
-      String routeId = trip.getRoute().getId().getId();
-      List<TrimOperation> operations = _operationsByRouteId.get(routeId);
-      if (operations == null) {
+      List<TrimOperation> operations = getMatchingOperations(trip);
+      if (operations.isEmpty()) {
         continue;
       }
       List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
@@ -72,11 +66,11 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
         removeOriginalTrip = true;
         Trip newTrip = new Trip(trip);
         String id = newTrip.getId().getId();
-        if (postIndex != null) {
-          id += "-" + operation.getFromStopId();
-        }
         if (preIndex != null) {
           id += "-" + operation.getToStopId();
+        }
+        if (postIndex != null) {
+          id += "-" + operation.getFromStopId();
         }
 
         if (preIndex == null) {
@@ -90,7 +84,7 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
           postIndex--;
         }
 
-        newTrip.setId(new AgencyAndId("1", id));
+        newTrip.setId(new AgencyAndId(trip.getId().getAgencyId(), id));
 
         List<StopTime> newStopTimes = new ArrayList<StopTime>();
         for (int i = preIndex; i <= postIndex; ++i) {
@@ -129,7 +123,7 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
       dao.saveEntity(stopTime);
     }
 
-    ((GtfsRelationalDaoImpl) dao).clearAllCaches();
+    UpdateLibrary.clearDaoCache(dao);
     Set<AgencyAndId> shapeIds = new HashSet<AgencyAndId>(dao.getAllShapeIds());
     for (Trip trip : dao.getAllTrips()) {
       shapeIds.remove(trip.getShapeId());
@@ -139,6 +133,16 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
         dao.removeEntity(point);
       }
     }
+  }
+
+  private List<TrimOperation> getMatchingOperations(Trip trip) {
+    List<TrimOperation> matching = new ArrayList<TrimOperation>();
+    for (TrimOperation operation : _operations) {
+      if (operation.getMatch().isApplicableToObject(trip)) {
+        matching.add(operation);
+      }
+    }
+    return matching;
   }
 
   private void updateShape(GtfsMutableRelationalDao dao, Trip trip,
@@ -160,7 +164,7 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
     Stop lastStop = stopTimes.get(stopTimes.size() - 1).getStop();
     String id = shapeId.getId() + "-" + firstStop.getId().getId() + "-"
         + lastStop.getId().getId();
-    AgencyAndId newShapeId = new AgencyAndId("1", id);
+    AgencyAndId newShapeId = new AgencyAndId(shapeId.getAgencyId(), id);
     trip.setShapeId(newShapeId);
 
     if (!newShapeIds.add(newShapeId)) {
@@ -208,11 +212,19 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
 
   public static class TrimOperation {
 
+    private TypedEntityMatch match;
+
     private String fromStopId;
 
     private String toStopId;
 
-    private String routeId;
+    public TypedEntityMatch getMatch() {
+      return match;
+    }
+
+    public void setMatch(TypedEntityMatch match) {
+      this.match = match;
+    }
 
     public String getFromStopId() {
       return fromStopId;
@@ -228,14 +240,6 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
 
     public void setToStopId(String toStopId) {
       this.toStopId = toStopId;
-    }
-
-    public String getRouteId() {
-      return routeId;
-    }
-
-    public void setRouteId(String routeId) {
-      this.routeId = routeId;
     }
   }
 }

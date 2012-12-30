@@ -56,7 +56,9 @@ import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Transfer;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
+import org.onebusaway.gtfs.serialization.mappings.AgencyNotFoundForRouteException;
 import org.onebusaway.gtfs.services.GtfsDao;
+import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs.services.MockGtfs;
 
@@ -807,15 +809,60 @@ public class GtfsReaderTest {
   }
 
   @Test
+  public void testDefaultAgencyForRoutes() throws IOException {
+
+    MockGtfs gtfs = MockGtfs.create();
+    gtfs.putAgencies(1);
+    gtfs.putRoutes(1);
+    gtfs.putTrips(1, "r0", "sid0");
+    gtfs.putStops(1);
+    gtfs.putStopTimes("t0", "s0");
+
+    {
+      GtfsMutableRelationalDao dao = gtfs.read(newReader("tacos"));
+      assertNotNull(dao.getRouteForId(new AgencyAndId("a0", "r0")));
+    }
+
+    {
+      gtfs.putAgencies(2);
+      try {
+        gtfs.read(newReader("tacos"));
+        fail();
+      } catch (CsvEntityIOException e) {
+        MissingRequiredFieldException ex = (MissingRequiredFieldException) e.getCause();
+        assertEquals("agency_id", ex.getFieldName());
+        assertEquals(Route.class, ex.getEntityType());
+      }
+    }
+
+    {
+      gtfs.putAgencies(2);
+      gtfs.putRoutes(1, "agency_id=a1");
+      GtfsMutableRelationalDao dao = gtfs.read(newReader("tacos"));
+      assertNotNull(dao.getRouteForId(new AgencyAndId("a1", "r0")));
+    }
+
+    {
+      gtfs.putAgencies(2);
+      gtfs.putRoutes(1, "agency_id=a2");
+      try {
+        gtfs.read(newReader("tacos"));
+        fail();
+      } catch (CsvEntityIOException e) {
+        assertTrue(e.getCause() instanceof AgencyNotFoundForRouteException);
+      }
+    }
+  }
+
+  @Test
   public void testCsvParser() throws CsvEntityIOException, IOException {
     GtfsReader reader = new GtfsReader();
     reader.setDefaultAgencyId("1");
-    
-    
+
     Agency agency = new Agency();
     agency.setId("1");
     reader.setAgencies(Arrays.asList(agency));
-    
+
     StringBuilder b = new StringBuilder();
     b.append("agency_id,route_id,route_short_name,route_long_name,route_type\n");
     b.append("        1,    R-10,              10,   \"Ten, Ten\",3\n");
@@ -854,5 +901,11 @@ public class GtfsReaderTest {
         return shapePoint;
     }
     return null;
+  }
+
+  private GtfsReader newReader(String defaultAgencyId) {
+    GtfsReader reader = new GtfsReader();
+    reader.setDefaultAgencyId(defaultAgencyId);
+    return reader;
   }
 }

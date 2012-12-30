@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2012 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +16,11 @@
  */
 package org.onebusaway.gtfs.serialization.mappings;
 
+import java.util.List;
 import java.util.Map;
 
 import org.onebusaway.csv_entities.CsvEntityContext;
+import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
 import org.onebusaway.csv_entities.schema.AbstractFieldMapping;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
@@ -58,22 +61,30 @@ public class RouteAgencyFieldMappingFactory implements FieldMappingFactory {
       GtfsReaderContext ctx = (GtfsReaderContext) context.get(GtfsReader.KEY_CONTEXT);
       String agencyId = (String) csvValues.get(_csvFieldName);
 
-      if (isMissing(csvValues))
-        agencyId = ctx.getDefaultAgencyId();
-
-      agencyId = ctx.getTranslatedAgencyId(agencyId);
-
       Agency agency = null;
 
-      for (Agency testAgency : ctx.getAgencies()) {
-        if (testAgency.getId().equals(agencyId)) {
-          agency = testAgency;
-          break;
+      if (isMissing(csvValues)) {
+        List<Agency> agencies = ctx.getAgencies();
+        if (agencies.isEmpty()) {
+          throw new AgencyNotFoundForRouteException(Route.class,
+              object.getWrappedInstance(Route.class));
+        } else if (agencies.size() > 1) {
+          throw new MissingRequiredFieldException(_entityType, _csvFieldName);
         }
+        agency = agencies.get(0);
+      } else {
+        agencyId = ctx.getTranslatedAgencyId(agencyId);
+
+        for (Agency testAgency : ctx.getAgencies()) {
+          if (testAgency.getId().equals(agencyId)) {
+            agency = testAgency;
+            break;
+          }
+        }
+        if (agency == null)
+          throw new AgencyNotFoundForRouteException(Route.class,
+              object.getWrappedInstance(Route.class), agencyId);
       }
-      if (agency == null)
-        throw new AgencyNotFoundForRouteException(Route.class,
-            object.getWrappedInstance(Route.class), agencyId);
 
       object.setPropertyValue(_objFieldName, agency);
     }

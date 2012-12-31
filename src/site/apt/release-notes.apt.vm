@@ -2,17 +2,35 @@ Release Notes
 
 * ${currentVersion}
 
-  * Support for more natural field order in header when writing CSV file - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/2}issue}}
+  * Support for <<<stops.txt>>> <<<stop_timezone>>> field - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/21}issue}}
   
-  * Support for excluding optional columns when no values are specified - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/3}issue}}
+  * Support trip-2-trip transfers extension to transfers.txt - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/24}issue}}
+
+  * Reduced memory consumption for ShapePoints and StopTimes - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/7}issue}}
   
-  * Fix for Daylight Saving Time service calendar computation bug - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/1}issue}}
+  * Always include <<<route_short_name>>> and <<<route_long_name>>> in <<<routes.txt>>> output - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/12}issue}}
   
-  * Fix for bogus-timezone bug - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/6}issue}}
+  * onebusaway-gtfs-transformer-cli:
   
-  * Support for week-long stop_times.txt values - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/pull/5}issue}}
+    * Use GTFS file and field names instead of OBA Java object and property names in matchers and updaters.
+    
+    * Support for "any(...)" matches.
+    
+    * New transforms: "trim_trip", "stop_times_factory", "calendar_extension", and "calendar_simplification".
+
+  * onebusaway-gtfs-merge-cli:
   
-  * More flexible CSV parsing support from {{${site_base_url}/onebusaway-csv-entities/1.1.0/}}
+  	* Introduce a new OneBusAway GTFS merge tool for combining GTFS feeds.
+  	
+  * Bug fixes:
+  
+    * NPE in ServiceDateUserType - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/9}issue}}
+    
+    * Better handling of <<<routes.txt>>> agency resolution - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/18}issue}}
+
+    * Crash with calendar simplification transform for <<<service_id>>> with no active dates - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/20}issue}}
+    
+    * More useful file name when throwing CsvEntityIOException -{{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/23}issue}}    
 
   * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
   

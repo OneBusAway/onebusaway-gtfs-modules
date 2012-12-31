@@ -2,6 +2,10 @@ Release Notes
 
 * ${currentVersion}
 
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
+
+* 1.3.1
+
   * Support for <<<stops.txt>>> <<<stop_timezone>>> field - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/21}issue}}
   
   * Support trip-2-trip transfers extension to transfers.txt - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/24}issue}}
@@ -32,7 +36,7 @@ Release Notes
     
     * More useful file name when throwing CsvEntityIOException -{{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/23}issue}}    
 
-  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/1.3.1/}}
   
 * 1.3.0
 

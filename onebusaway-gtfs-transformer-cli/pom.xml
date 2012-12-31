@@ -13,9 +13,9 @@
   </parent>
 
   <properties>
-    <!-- We don't want to deploy the packaged jar to main maven repo, since it includes all the project dependencies and 
+    <!-- We don't always want to deploy the packaged jar to main maven repo, since it includes all the project dependencies and 
       is quite large -->
-    <skip-deploy-onebusaway-gtfs-transformer-cli-jar>true</skip-deploy-onebusaway-gtfs-transformer-cli-jar>
+    <skip-deploy-onebusaway-gtfs-transformer-cli-jar>false</skip-deploy-onebusaway-gtfs-transformer-cli-jar>
   </properties>
 
   <dependencies>
@@ -74,10 +74,9 @@
 
   <profiles>
     <profile>
-      <id>oba-distribution</id>
+      <id>oss-distribution</id>
       <properties>
-        <!-- Ok, for local deployment, we DO allow deployment of the JAR -->
-        <skip-deploy-onebusaway-gtfs-transformer-cli-jar>false</skip-deploy-onebusaway-gtfs-transformer-cli-jar>
+        <skip-deploy-onebusaway-gtfs-transformer-cli-jar>true</skip-deploy-onebusaway-gtfs-transformer-cli-jar>
       </properties>
     </profile>
   </profiles>

@@ -15,8 +15,8 @@
   <url>https://github.com/OneBusAway/onebusaway-gtfs-modules/wiki/</url>
 
   <properties>
-    <onebusaway_csv_entities_version>1.1.1-SNAPSHOT</onebusaway_csv_entities_version>
-    <onebusaway_collections_version>1.2.0-SNAPSHOT</onebusaway_collections_version>
+    <onebusaway_csv_entities_version>1.1.1</onebusaway_csv_entities_version>
+    <onebusaway_collections_version>1.2.0</onebusaway_collections_version>
   </properties>
 
   <repositories>

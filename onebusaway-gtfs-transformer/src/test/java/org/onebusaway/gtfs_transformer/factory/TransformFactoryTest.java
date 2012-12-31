@@ -31,6 +31,7 @@ import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
 import org.onebusaway.gtfs_transformer.match.EntityMatch;
 import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
+import org.onebusaway.gtfs_transformer.updates.CalendarSimplicationStrategy;
 
 public class TransformFactoryTest {
 
@@ -65,5 +66,29 @@ public class TransformFactoryTest {
     EntitiesTransformStrategy strategy = (EntitiesTransformStrategy) transform;
     List<MatchAndTransform> transforms = strategy.getTransformsForType(Route.class);
     assertEquals(1, transforms.size());
+  }
+
+  @Test
+  public void testCalendarSimplification() throws IOException,
+      TransformSpecificationException {
+    _factory.addModificationsFromString("{'op':'calendar_simplification'}");
+    GtfsTransformStrategy transform = _transformer.getLastTransform();
+    assertEquals(CalendarSimplicationStrategy.class, transform.getClass());
+    CalendarSimplicationStrategy simplification = (CalendarSimplicationStrategy) transform;
+    assertFalse(simplification.isUndoGoogleTransitDataFeedMergeTool());
+
+    _factory.addModificationsFromString("{'op':'calendar_simplification', 'min_number_of_weeks_for_calendar_entry':10}");
+    simplification = (CalendarSimplicationStrategy) _transformer.getLastTransform();
+    assertEquals(10,
+        simplification.getLibrary().getMinNumberOfWeeksForCalendarEntry());
+
+    _factory.addModificationsFromString("{'op':'calendar_simplification', 'day_of_the_week_inclusion_ratio':0.1}");
+    simplification = (CalendarSimplicationStrategy) _transformer.getLastTransform();
+    assertEquals(0.1,
+        simplification.getLibrary().getDayOfTheWeekInclusionRatio(), 0.0);
+
+    _factory.addModificationsFromString("{'op':'calendar_simplification', 'undo_google_transit_data_feed_merge_tool':true}");
+    simplification = (CalendarSimplicationStrategy) _transformer.getLastTransform();
+    assertTrue(simplification.isUndoGoogleTransitDataFeedMergeTool());
   }
 }

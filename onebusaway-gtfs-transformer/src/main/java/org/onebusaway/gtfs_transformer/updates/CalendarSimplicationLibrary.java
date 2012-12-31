@@ -40,7 +40,7 @@ public class CalendarSimplicationLibrary {
 
   private CalendarService _calendarService;
 
-  private double _minNumberOfWeeksForCalendarEntry = 3;
+  private int _minNumberOfWeeksForCalendarEntry = 3;
 
   private double _dayOfTheWeekInclusionRatio = 0.5;
 
@@ -53,8 +53,16 @@ public class CalendarSimplicationLibrary {
     _minNumberOfWeeksForCalendarEntry = minNumberOfWeeksForCalendarEntry;
   }
 
+  public int getMinNumberOfWeeksForCalendarEntry() {
+    return _minNumberOfWeeksForCalendarEntry;
+  }
+
   public void setDayOfTheWeekInclusionRatio(double dayOfTheWeekInclusionRatio) {
     _dayOfTheWeekInclusionRatio = dayOfTheWeekInclusionRatio;
+  }
+
+  public double getDayOfTheWeekInclusionRatio() {
+    return _dayOfTheWeekInclusionRatio;
   }
 
   public Map<Set<AgencyAndId>, List<TripKey>> groupTripKeysByServiceIds(
@@ -97,7 +105,7 @@ public class CalendarSimplicationLibrary {
           daysOfTheWeekToUse, fromDate, toDate);
       calendarsToAdd.add(sc);
     }
-    
+
     TimeZone tz = TimeZone.getTimeZone("UTC");
 
     for (ServiceDate serviceDate = fromDate; serviceDate.compareTo(toDate) <= 0; serviceDate = serviceDate.next()) {

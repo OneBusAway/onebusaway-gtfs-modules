@@ -9,7 +9,9 @@ Brian Ferris
 Introduction
 
   The <<<onebusaway-gtfs-transformer-cli>>> command-line application is a simple command-line tool for transforming
-{{{https://developers.google.com/transit/gtfs}GTFS}} feeds. 
+{{{https://developers.google.com/transit/gtfs}GTFS}} feeds.
+
+%{toc} 
 
 Getting the Application
 
@@ -270,6 +272,44 @@ argument:
 other special events.  It's too tricky to automatically determine how they should be handled.  You may need to still handle
 those manually. 
 
+  
+* Merge Trips and Simplify Calendar Entries
+
+  Some agencies model their transit schedule favoring multiple entries in calendar_dates.txt as opposed to a more concise
+entry in calendar.txt.  A smaller number of agencies take this scheme even further, creating trips.txt entries for each
+service date, even when the underlying trips are exactly the same.  This can cause the size of the GTFS to grow dramatically
+as trips and stop times are duplicated.
+
+  We provide a simple transformer that can attempt to detect these duplicate trips, remove them, and simplify the underlying
+calendar entries to match.  To run it, apply the following transform:
+
++---+
+{"op":"calendar_simplification"}
++---+
+
+  The transform takes additional optional arguments to control its behavior:
+  
+  * min_number_of_weeks_for_calendar_entry - how many weeks does a service id need to
+    span before it gets its own entry in calendar.txt (default=3)
+
+  * day_of_the_week_inclusion_ratio - if a service id is being modeled with a
+    calendar.txt entry, how frequent does a day of the week need to before it's
+    modeled positively in calendar.txt with any negative exceptions noted in
+    calendar_dates.txt, vs making no entry for that day of the week in
+    calendar.txt and instead noting any positive exceptions in
+    calendar_dates.txt.  This is useful for filtering out a calendar that is
+    always active on Sunday, but has one or two Mondays for a holiday.
+    Frequency is defined as how often the target day of the week occurs vs the
+    count for day of the week appearing MOST frequently for the service id
+    (default=0.5)
+  
+  * undo_google_transit_data_feed_merge_tool - set to true to indicate that merged trip ids,
+    as produced by the {{{http://code.google.com/p/googletransitdatafeed/wiki/Merge}GoogleTransitDataFeedMergeTool}},
+    should be un-mangled where possible.  Merged trip ids will often have the form
+    <<<OriginalTripId_merged_1234567>>>.  We attempt to set the trip id back to <<<OrginalTripId>>>
+    where appropriate.
+    
+
 * Arbitrary Transform
 
   We also allow you to specify arbitrary transformations as well.  Here, you specify your transformation class and we will
@@ -335,37 +375,5 @@ and frequency-based service, using the transform.  This can be handy to add temp
 {"op":"stop_times_factory", "trip_id":"t0", "start_time":"06:00:00", "end_time":"06:20:00", "stop_ids":["s0", "s1", "s2", "s3"]}
 {"op":"stop_times_factory", "trip_id":"t1", "start_time":"06:00:00", "end_time":"06:20:00", "stop_ids":["s3", "s2", "s1", "s0"]}
 +---+
-  
-* Merge Trips and Refactor Calendar Entries
 
-  Some agencies model their transit schedule favoring multiple entries in
-calendar_dates.txt as opposed to a more concise entry in calendar.txt.
-A smaller number of agencies take this scheme even further, creating trips.txt
-entries for each service date, even when the underlying trips are exactly the
-same.  This can cause the size of the GTFS to grow dramatically as trips and
-stop times are duplicated.
-
-  We provide a simple transformer that can attempt to detect these duplicate
-trips, remove them, and simplify the underlying calendar entries to match.  To
-run it, apply the following transform:
-
-+---+
-{"op":"transform", "class":"org.onebusaway.gtfs_transformer.updates.CalendarSimplicationStrategy"}
-+---+
-
-  The transform optionally takes two additional arguments:
-  
-  * minNumberOfWeeksForCalendarEntry - how many weeks does a service id need to
-    span before it gets its own entry in calendar.txt (default=3)
-
-  * dayOfTheWeekInclusionRatio - if a service id is being modeled with a
-    calendar.txt entry, how frequent does a day of the week need to before it's
-    modeled positively in calendar.txt with any negative exceptions noted in
-    calendar_dates.txt, vs making no entry for that day of the week in
-    calendar.txt and instead noting any positive exceptions in
-    calendar_dates.txt.  This is useful for filtering out a calendar that is
-    always active on Sunday, but has one or two Mondays for a holiday.
-    Frequency is defined as how often the target day of the week occurs vs the
-    count for day of the week appearing MOST frequently for the service id
-    (default=0.5)
      

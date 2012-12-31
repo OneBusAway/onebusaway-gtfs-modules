@@ -26,6 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.onebusaway.collections.FactoryMap;
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Route;
@@ -43,9 +44,21 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
 
   private static Pattern _mergedIdPattern = Pattern.compile("^(.*)_merged_(.*)$");
 
+  @CsvField(ignore = true)
   private CalendarSimplicationLibrary _library = new CalendarSimplicationLibrary();
 
-  private boolean _undoGoogleTransitDataFeedMergeTool = false;
+  // This is only really here so that TransformFactory will detect it as a
+  // user-specified argument.
+  @CsvField(optional = true)
+  private int minNumberOfWeeksForCalendarEntry;
+
+  // This is only really here so that TransformFactory will detect it as a
+  // user-specified argument.
+  @CsvField(optional = true)
+  private double dayOfTheWeekInclusionRatio;
+
+  @CsvField(optional = true)
+  private boolean undoGoogleTransitDataFeedMergeTool = false;
 
   public void setMinNumberOfWeeksForCalendarEntry(
       int minNumberOfWeeksForCalendarEntry) {
@@ -58,7 +71,15 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
 
   public void setUndoGoogleTransitDataFeedMergeTool(
       boolean undoGoogleTransitDataFeedMergeTool) {
-    _undoGoogleTransitDataFeedMergeTool = undoGoogleTransitDataFeedMergeTool;
+    this.undoGoogleTransitDataFeedMergeTool = undoGoogleTransitDataFeedMergeTool;
+  }
+
+  public boolean isUndoGoogleTransitDataFeedMergeTool() {
+    return undoGoogleTransitDataFeedMergeTool;
+  }
+
+  public CalendarSimplicationLibrary getLibrary() {
+    return _library;
   }
 
   @Override
@@ -92,7 +113,7 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
             removeEntityLibrary.removeTrip(dao, trip);
           }
 
-          if (_undoGoogleTransitDataFeedMergeTool) {
+          if (undoGoogleTransitDataFeedMergeTool) {
             AgencyAndId updatedTripId = computeUpdatedTripIdForMergedTripsIfApplicable(
                 mergeToolIdMapping, tripsForKey);
             if (updatedTripId != null) {
@@ -151,7 +172,7 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
   private Map<AgencyAndId, List<AgencyAndId>> computeMergeToolIdMapping(
       GtfsDao dao) {
 
-    if (!_undoGoogleTransitDataFeedMergeTool)
+    if (!undoGoogleTransitDataFeedMergeTool)
       return Collections.emptyMap();
 
     Map<AgencyAndId, List<AgencyAndId>> mergedIdMapping = new FactoryMap<AgencyAndId, List<AgencyAndId>>(

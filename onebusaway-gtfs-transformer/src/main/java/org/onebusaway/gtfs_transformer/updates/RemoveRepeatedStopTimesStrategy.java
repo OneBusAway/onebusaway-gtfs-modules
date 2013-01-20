@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 public class RemoveRepeatedStopTimesStrategy implements GtfsTransformStrategy {
 
-  private Logger _log = LoggerFactory.getLogger(RemoveRepeatedStopTimesStrategy.class);
+  private static Logger _log = LoggerFactory.getLogger(RemoveRepeatedStopTimesStrategy.class);
 
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {

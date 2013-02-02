@@ -35,26 +35,21 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
+          <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
         <executions>
           <execution>
-            <id>jar-with-dependencies</id>
             <phase>package</phase>
             <goals>
-              <goal>single</goal>
+              <goal>shade</goal>
             </goals>
             <configuration>
-              <descriptorRefs>
-                <descriptorRef>jar-with-dependencies</descriptorRef>
-              </descriptorRefs>
-              <finalName>onebusaway-gtfs-hibernate-cli</finalName>
-              <archive>
-                <manifest>
-                  <mainClass>org.onebusaway.GtfsDatabaseLoaderMain</mainClass>
-                </manifest>
-              </archive>
+              <shadedClassifierName>withAllDependencies</shadedClassifierName>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>org.onebusaway.gtfs.GtfsDatabaseLoaderMain</mainClass>
+                </transformer>
+              </transformers>
             </configuration>
           </execution>
         </executions>

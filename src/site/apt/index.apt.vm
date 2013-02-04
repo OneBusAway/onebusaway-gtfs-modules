@@ -10,7 +10,9 @@ onebusaway-gtfs-modules
   
   * <<<onebusaway-gtfs>>> - The core library for reading and writing GTFS
   
-  * <<<onebusaway-gtfs-hibernate>>> - Support for {{{http://www.hibernate.org/}Hibernate}} database persistence of GTFS data 
+  * <<<onebusaway-gtfs-hibernate>>> - Support for {{{http://www.hibernate.org/}Hibernate}} database persistence of GTFS data
+  
+  * <<<onebusaway-gtfs-hibernate-cli>>> - Command-line utilty for loading GTFS feeds into a database - see {{{./onebusaway-gtfs-hibernate-cli.html}the full documentation}}. 
   
   * <<<onebusaway-gtfs-transformer>>> - Tools for transforming GTFS data
   

@@ -9,6 +9,7 @@
       <item name="GitHub Project" href="http://github.com/OneBusAway/onebusaway-gtfs-modules/" />
       <item name="Release Notes" href="/release-notes.html" />
       <item name="API Javadoc" href="/apidocs/index.html" />
+      <item name="GTFS Database Loader" href="/onebusaway-gtfs-hibernate-cli.html" />
       <item name="GTFS Transformer" href="/onebusaway-gtfs-transformer-cli.html" />
       <item name="GTFS Merge" href="/onebusaway-gtfs-merge-cli.html" />
     </menu>

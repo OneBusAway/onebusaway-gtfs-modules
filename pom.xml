@@ -47,6 +47,7 @@
   <modules>
     <module>onebusaway-gtfs</module>
     <module>onebusaway-gtfs-hibernate</module>
+    <module>onebusaway-gtfs-hibernate-cli</module>
     <module>onebusaway-gtfs-transformer</module>
     <module>onebusaway-gtfs-transformer-cli</module>
     <module>onebusaway-gtfs-merge</module>

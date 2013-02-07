@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 public class RemoveDuplicateTripsStrategy implements GtfsTransformStrategy {
 
-  private Logger _log = LoggerFactory.getLogger(RemoveDuplicateTripsStrategy.class);
+  private static Logger _log = LoggerFactory.getLogger(RemoveDuplicateTripsStrategy.class);
 
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {

@@ -31,6 +31,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
+import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
@@ -323,6 +324,15 @@ public class MockGtfs {
     putLines("stop_times.txt",
         "trip_id,stop_id,stop_sequence,arrival_time,departure_time",
         "T10-0,100,0,08:00:00,08:00:00", "T10-0,200,1,09:00:00,09:00:00");
+  }
+
+  /**
+   * 
+   * @param id
+   * @return a full id with the default agency id ("a0") for the feed.
+   */
+  public AgencyAndId id(String id) {
+    return new AgencyAndId("a0", id);
   }
 
   private void updateZipFile() {

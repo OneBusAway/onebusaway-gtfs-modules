@@ -33,20 +33,12 @@ import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
-import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs.services.calendar.CalendarService;
 
 public class CalendarSimplicationLibrary {
-
-  private CalendarService _calendarService;
 
   private int _minNumberOfWeeksForCalendarEntry = 3;
 
   private double _dayOfTheWeekInclusionRatio = 0.5;
-
-  public void setCalendarService(CalendarService calendarService) {
-    _calendarService = calendarService;
-  }
 
   public void setMinNumberOfWeeksForCalendarEntry(
       int minNumberOfWeeksForCalendarEntry) {
@@ -83,11 +75,8 @@ public class CalendarSimplicationLibrary {
     return tripKeysByServiceIds;
   }
 
-  public void computeSimplifiedCalendar(Set<AgencyAndId> serviceIds,
-      AgencyAndId updatedServiceId, List<ServiceCalendar> calendarsToAdd,
-      List<ServiceCalendarDate> calendarDatesToAdd) {
-
-    ServiceCalendarSummary summary = getSummaryForServiceIds(serviceIds);
+  public void computeSimplifiedCalendar(AgencyAndId updatedServiceId,
+      ServiceCalendarSummary summary, List<Object> newEntities) {
     List<ServiceDate> serviceDatesInOrder = summary.serviceDatesInOrder;
     Set<Integer> daysOfTheWeekToUse = summary.daysOfTheWeekToUse;
 
@@ -103,7 +92,7 @@ public class CalendarSimplicationLibrary {
     if (useDateRange) {
       ServiceCalendar sc = createServiceCalendar(updatedServiceId,
           daysOfTheWeekToUse, fromDate, toDate);
-      calendarsToAdd.add(sc);
+      newEntities.add(sc);
     }
 
     TimeZone tz = TimeZone.getTimeZone("UTC");
@@ -121,14 +110,14 @@ public class CalendarSimplicationLibrary {
           scd.setDate(serviceDate);
           scd.setExceptionType(ServiceCalendarDate.EXCEPTION_TYPE_ADD);
           scd.setServiceId(updatedServiceId);
-          calendarDatesToAdd.add(scd);
+          newEntities.add(scd);
         }
         if (!isActive && dateRangeIncludesServiceDate) {
           ServiceCalendarDate scd = new ServiceCalendarDate();
           scd.setDate(serviceDate);
           scd.setExceptionType(ServiceCalendarDate.EXCEPTION_TYPE_REMOVE);
           scd.setServiceId(updatedServiceId);
-          calendarDatesToAdd.add(scd);
+          newEntities.add(scd);
         }
       } else {
         if (isActive) {
@@ -136,42 +125,16 @@ public class CalendarSimplicationLibrary {
           scd.setDate(serviceDate);
           scd.setExceptionType(ServiceCalendarDate.EXCEPTION_TYPE_ADD);
           scd.setServiceId(updatedServiceId);
-          calendarDatesToAdd.add(scd);
+          newEntities.add(scd);
         }
       }
     }
   }
 
-  public void saveUpdatedCalendarEntities(GtfsMutableRelationalDao dao,
-      List<ServiceCalendar> calendarsToAdd,
-      List<ServiceCalendarDate> calendarDatesToAdd) {
-    dao.clearAllEntitiesForType(ServiceCalendar.class);
-    dao.clearAllEntitiesForType(ServiceCalendarDate.class);
-
-    for (ServiceCalendar sc : calendarsToAdd)
-      dao.saveEntity(sc);
-    for (ServiceCalendarDate scd : calendarDatesToAdd)
-      dao.saveEntity(scd);
-
-    UpdateLibrary.clearDaoCache(dao);
-  }
-
-  public ServiceCalendarSummary getSummaryForServiceId(AgencyAndId serviceId) {
-    Set<AgencyAndId> serviceIds = new HashSet<AgencyAndId>();
-    serviceIds.add(serviceId);
-    return getSummaryForServiceIds(serviceIds);
-  }
-
-  public ServiceCalendarSummary getSummaryForServiceIds(
-      Set<AgencyAndId> serviceIds) {
-    Calendar c = Calendar.getInstance();
+  public ServiceCalendarSummary getSummaryForServiceDates(
+      Set<ServiceDate> allServiceDates) {
     ServiceCalendarSummary summary = new ServiceCalendarSummary();
-
-    for (AgencyAndId serviceId : serviceIds) {
-      Set<ServiceDate> serviceDates = _calendarService.getServiceDatesForServiceId(serviceId);
-      summary.allServiceDates.addAll(serviceDates);
-    }
-
+    summary.allServiceDates = allServiceDates;
     summary.serviceDatesInOrder = new ArrayList<ServiceDate>(
         summary.allServiceDates);
     Collections.sort(summary.serviceDatesInOrder);
@@ -180,6 +143,7 @@ public class CalendarSimplicationLibrary {
       return summary;
     }
 
+    Calendar c = Calendar.getInstance();
     Counter<Integer> daysOfTheWeekCounts = new Counter<Integer>();
     for (ServiceDate serviceDate : summary.serviceDatesInOrder) {
       c.setTime(serviceDate.getAsDate());
@@ -202,7 +166,6 @@ public class CalendarSimplicationLibrary {
     }
 
     return summary;
-
   }
 
   private ServiceCalendar createServiceCalendar(AgencyAndId updatedServiceId,
@@ -233,7 +196,12 @@ public class CalendarSimplicationLibrary {
   }
 
   public static class ServiceCalendarSummary {
+    /**
+     * The number of times a service date uses the most frequently used
+     * day-of-the-week across all service dates.
+     */
     public int maxDayOfWeekCount;
+
     public Set<ServiceDate> allServiceDates = new HashSet<ServiceDate>();
     public List<ServiceDate> serviceDatesInOrder = new ArrayList<ServiceDate>();
     public Set<Integer> daysOfTheWeekToUse = new HashSet<Integer>();

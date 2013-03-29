@@ -66,11 +66,11 @@ public class CalendarExtensionStrategy implements GtfsTransformStrategy {
 
     CalendarService service = CalendarServiceDataFactoryImpl.createService(dao);
     CalendarSimplicationLibrary simplication = new CalendarSimplicationLibrary();
-    simplication.setCalendarService(service);
 
     for (AgencyAndId serviceId : dao.getAllServiceIds()) {
 
-      ServiceCalendarSummary summary = simplication.getSummaryForServiceId(serviceId);
+      ServiceCalendarSummary summary = simplication.getSummaryForServiceDates(service.getServiceDatesForServiceId(serviceId));
+
       /**
        * If a service id has no active dates at all, we don't extend it.
        */

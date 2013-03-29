@@ -33,12 +33,14 @@ import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsDao;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityLibrary;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
+import org.onebusaway.gtfs_transformer.updates.CalendarSimplicationLibrary.ServiceCalendarSummary;
 
 public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
 
@@ -87,9 +89,6 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
 
     RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
 
-    CalendarService calendarService = CalendarServiceDataFactoryImpl.createService(dao);
-    _library.setCalendarService(calendarService);
-
     Map<Set<AgencyAndId>, AgencyAndId> serviceIdsToUpdatedServiceId = new HashMap<Set<AgencyAndId>, AgencyAndId>();
 
     Map<AgencyAndId, List<AgencyAndId>> mergeToolIdMapping = computeMergeToolIdMapping(dao);
@@ -124,22 +123,15 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
       }
     }
 
-    List<ServiceCalendar> allCalendarsToAdd = new ArrayList<ServiceCalendar>();
-    List<ServiceCalendarDate> allCalendarDatesToAdd = new ArrayList<ServiceCalendarDate>();
-
+    CalendarService calendarService = CalendarServiceDataFactoryImpl.createService(dao);
+    List<Object> newEntities = new ArrayList<Object>();
     for (Map.Entry<Set<AgencyAndId>, AgencyAndId> entry : serviceIdsToUpdatedServiceId.entrySet()) {
-      Set<AgencyAndId> serviceIds = entry.getKey();
-      AgencyAndId updatedServiceId = entry.getValue();
-      List<ServiceCalendar> calendarsToAdd = new ArrayList<ServiceCalendar>();
-      List<ServiceCalendarDate> calendarDatesToAdd = new ArrayList<ServiceCalendarDate>();
-      _library.computeSimplifiedCalendar(serviceIds, updatedServiceId,
-          calendarsToAdd, calendarDatesToAdd);
-      allCalendarsToAdd.addAll(calendarsToAdd);
-      allCalendarDatesToAdd.addAll(calendarDatesToAdd);
+      Set<ServiceDate> allServiceDates = getServiceDatesForServiceIds(
+          calendarService, entry.getKey());
+      ServiceCalendarSummary summary = _library.getSummaryForServiceDates(allServiceDates);
+      _library.computeSimplifiedCalendar(entry.getValue(), summary, newEntities);
     }
-
-    _library.saveUpdatedCalendarEntities(dao, allCalendarsToAdd,
-        allCalendarDatesToAdd);
+    saveUpdatedCalendarEntities(dao, newEntities);
   }
 
   private AgencyAndId createUpdatedServiceId(
@@ -230,5 +222,25 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
     } else {
       return tripId;
     }
+  }
+
+  private Set<ServiceDate> getServiceDatesForServiceIds(
+      CalendarService calendarService, Set<AgencyAndId> serviceIds) {
+    Set<ServiceDate> allServiceDates = new HashSet<ServiceDate>();
+    for (AgencyAndId serviceId : serviceIds) {
+      Set<ServiceDate> serviceDates = calendarService.getServiceDatesForServiceId(serviceId);
+      allServiceDates.addAll(serviceDates);
+    }
+    return allServiceDates;
+  }
+
+  private void saveUpdatedCalendarEntities(GtfsMutableRelationalDao dao,
+      List<Object> newEntities) {
+    dao.clearAllEntitiesForType(ServiceCalendar.class);
+    dao.clearAllEntitiesForType(ServiceCalendarDate.class);
+    for (Object entity : newEntities) {
+      dao.saveEntity(entity);
+    }
+    UpdateLibrary.clearDaoCache(dao);
   }
 }

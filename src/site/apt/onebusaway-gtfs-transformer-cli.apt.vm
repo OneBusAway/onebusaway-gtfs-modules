@@ -308,7 +308,31 @@ calendar entries to match.  To run it, apply the following transform:
     should be un-mangled where possible.  Merged trip ids will often have the form
     <<<OriginalTripId_merged_1234567>>>.  We attempt to set the trip id back to <<<OrginalTripId>>>
     where appropriate.
+  
+  []    
     
+* Shift Negative Stop Times
+
+  Some agencies have trips that they model as starting BEFORE midnight on a given service date.  For these agencies, it
+would be convenient to represent these trips with negative arrival and departure times in stop_times.txt.  The GTFS spec and
+many GTFS consumers do not support negative stop times, however.
+
+  To help these agencies, we provide a transform to "fix" GTFS feeds with negative stop times by identifying such trips,
+shifting the arrival and departure times to make them positive, and updating the service calendar entries for these trips
+such that the resulting schedule is semantically the same.
+
+  To run it, apply the following transform:
+
++---+
+{"op":"shift_negative_stop_times"}
++---+
+    
+  <<A note on negative stop times:>> When writing negative stop times, the negative value ONLY applies to the hour portion
+  of the time.  Here are a few examples:
+  
+  * "-01:45:00" => "23:45:00" on the previous day
+  
+  * "-05:13:32" => "19:13:32" on the previou day 
 
 * Arbitrary Transform
 

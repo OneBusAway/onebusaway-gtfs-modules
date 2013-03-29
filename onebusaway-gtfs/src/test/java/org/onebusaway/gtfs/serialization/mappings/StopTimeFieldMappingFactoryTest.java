@@ -66,13 +66,16 @@ public class StopTimeFieldMappingFactoryTest {
     assertEquals(0, getStringAsSeconds("-00:00:00"));
 
     assertEquals(60, getStringAsSeconds("00:01:00"));
-    assertEquals(-60, getStringAsSeconds("-00:01:00"));
+    assertEquals(60, getStringAsSeconds("-00:01:00"));
+
+    assertEquals(3660, getStringAsSeconds("01:01:00"));
+    assertEquals(-3540, getStringAsSeconds("-01:01:00"));
 
     assertEquals(37230, getStringAsSeconds("10:20:30"));
-    assertEquals(-37230, getStringAsSeconds("-10:20:30"));
+    assertEquals(-34770, getStringAsSeconds("-10:20:30"));
 
     assertEquals(360913, getStringAsSeconds("100:15:13"));
-    assertEquals(-360913, getStringAsSeconds("-100:15:13"));
+    assertEquals(-359087, getStringAsSeconds("-100:15:13"));
 
     try {
       getStringAsSeconds("");
@@ -107,11 +110,13 @@ public class StopTimeFieldMappingFactoryTest {
   public void getGetSecondsAsString() {
     assertEquals("00:00:00", getSecondsAsString(0));
     assertEquals("00:01:00", getSecondsAsString(60));
-    assertEquals("-00:01:00", getSecondsAsString(-60));
+    assertEquals("-01:59:00", getSecondsAsString(-60));
+    assertEquals("01:01:00", getSecondsAsString(3660));
+    assertEquals("-01:01:00", getSecondsAsString(-3540));
     assertEquals("10:20:30", getSecondsAsString(37230));
-    assertEquals("-10:20:30", getSecondsAsString(-37230));
+    assertEquals("-10:20:30", getSecondsAsString(-34770));
     assertEquals("100:15:13", getSecondsAsString(360913));
-    assertEquals("-100:15:13", getSecondsAsString(-360913));
+    assertEquals("-100:15:13", getSecondsAsString(-359087));
   }
 
   public static class Dummy {

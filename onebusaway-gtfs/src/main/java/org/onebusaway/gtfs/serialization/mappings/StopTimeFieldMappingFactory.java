@@ -34,7 +34,7 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
 
   private static DecimalFormat _format = new DecimalFormat("00");
 
-  private static Pattern _pattern = Pattern.compile("^(\\d+):(\\d{2}):(\\d{2})$");
+  private static Pattern _pattern = Pattern.compile("^(-{0,1})(\\d+):(\\d{2}):(\\d{2})$");
 
   public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
       Class<?> entityType, String csvFieldName, String objFieldName,
@@ -44,27 +44,37 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
   }
 
   public static String getSecondsAsString(int t) {
+    boolean negative = t < 0;
+    t = Math.abs(t);
     int hours = t / (60 * 60);
     t = t - hours * (60 * 60);
     int minutes = t / 60;
     t = t - minutes * 60;
     int seconds = t;
 
-    String value = _format.format(hours) + ":" + _format.format(minutes) + ":"
-        + _format.format(seconds);
-    return value;
+    StringBuilder b = new StringBuilder();
+    if (negative) {
+      b.append("-");
+    }
+    b.append(_format.format(hours));
+    b.append(":");
+    b.append(_format.format(minutes));
+    b.append(":");
+    b.append(_format.format(seconds));
+    return b.toString();
   }
 
   public static int getStringAsSeconds(String value) {
     Matcher m = _pattern.matcher(value);
     if (!m.matches())
       throw new InvalidStopTimeException(value);
+    int multiplier = m.group(1).equals("-") ? -1 : 1;
     try {
-      int hours = Integer.parseInt(m.group(1));
-      int minutes = Integer.parseInt(m.group(2));
-      int seconds = Integer.parseInt(m.group(3));
+      int hours = Integer.parseInt(m.group(2));
+      int minutes = Integer.parseInt(m.group(3));
+      int seconds = Integer.parseInt(m.group(4));
 
-      return seconds + 60 * (minutes + 60 * hours);
+      return multiplier * (seconds + 60 * (minutes + 60 * hours));
     } catch (NumberFormatException ex) {
       throw new InvalidStopTimeException(value);
     }
@@ -105,7 +115,8 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
     }
 
     @Override
-    public Object convert(@SuppressWarnings("rawtypes") Class type, Object value) {
+    public Object convert(@SuppressWarnings("rawtypes")
+    Class type, Object value) {
       if (type == Integer.class || type == Integer.TYPE) {
         String stringValue = value.toString();
         return getStringAsSeconds(stringValue);

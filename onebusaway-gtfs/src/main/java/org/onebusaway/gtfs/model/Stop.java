@@ -69,6 +69,9 @@ public final class Stop extends IdentityBean<AgencyAndId> {
   @CsvField(name="vehicle_type", optional = true)
   private int vehicleType = MISSING_VALUE;
 
+  @CsvField(name="platform_code", optional = true)
+  private String platformCode;
+
   public Stop() {
 
   }
@@ -88,6 +91,7 @@ public final class Stop extends IdentityBean<AgencyAndId> {
     this.direction = obj.direction;
     this.timezone = obj.timezone;
     this.vehicleType = obj.vehicleType;
+    this.platformCode = obj.platformCode;
   }
 
   public AgencyAndId getId() {
@@ -213,5 +217,13 @@ public final class Stop extends IdentityBean<AgencyAndId> {
   
   public void clearVehicleType() {
     vehicleType = MISSING_VALUE;
+  }
+
+  public String getPlatformCode() {
+    return platformCode;
+  }
+
+  public void setPlatformCode(String platformCode) {
+    this.platformCode = platformCode;
   }
 }

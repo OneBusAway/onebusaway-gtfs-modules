@@ -2,6 +2,17 @@ Release Notes
 
 * ${currentVersion}
 
+  * Introduce <<<onebusaway-gtfs-hibernate-cli>>>, a utility for loading GTFS into a database - {{{./onebusaway-gtfs-hibernate-cli.html}details}}
+  
+  * Support for <<<stops.txt>>> <<<platform_code>>> field - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/pull/27}issue}}
+  
+  * Support for negative arrival and departure times in <<<stop_times.txt>>>, along with a "shift_negative_stop_times" GTFS transformer
+    operation for normalizing feeds with negative stop-times.
+    
+  * Fix workaround for Java timezone bug - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/pull/28}issue}}
+  
+  * Introduce <<<RemoveRepeatedStopTimesInSameTripStrategy>>>, a GTFS transformer strategy - {{{./apidocs/org/onebusaway/gtfs_transformer/updates/RemoveRepeatedStopTimesInSameTripStrategy.html}javadoc}}
+
   * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
 
 * 1.3.1

@@ -2,6 +2,10 @@ Release Notes
 
 * ${currentVersion}
 
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
+
+* 1.3.2
+
   * Introduce <<<onebusaway-gtfs-hibernate-cli>>>, a utility for loading GTFS into a database - {{{./onebusaway-gtfs-hibernate-cli.html}details}}
   
   * Support for <<<stops.txt>>> <<<platform_code>>> field - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/pull/27}issue}}
@@ -13,7 +17,7 @@ Release Notes
   
   * Introduce <<<RemoveRepeatedStopTimesInSameTripStrategy>>>, a GTFS transformer strategy - {{{./apidocs/org/onebusaway/gtfs_transformer/updates/RemoveRepeatedStopTimesInSameTripStrategy.html}javadoc}}
 
-  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/1.3.2/}}
 
 * 1.3.1
 

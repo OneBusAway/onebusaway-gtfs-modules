@@ -42,6 +42,9 @@ public final class FareRule extends IdentityBean<Integer> {
   @CsvField(optional = true)
   private String containsId;
 
+  @CsvField(name = "units_traveled", optional = true)
+  private float unitsTraveled;
+
   public FareRule() {
 
   }
@@ -53,6 +56,7 @@ public final class FareRule extends IdentityBean<Integer> {
     this.originId = fr.originId;
     this.destinationId = fr.destinationId;
     this.containsId = fr.containsId;
+    this.unitsTraveled = fr.unitsTraveled;
   }
 
   @Override
@@ -103,6 +107,14 @@ public final class FareRule extends IdentityBean<Integer> {
 
   public void setContainsId(String containsId) {
     this.containsId = containsId;
+  }
+
+  public float getUnitsTraveled() {
+    return unitsTraveled;
+  }
+
+  public void setUnitsTraveled(float unitsTraveled) {
+    this.unitsTraveled = unitsTraveled;
   }
 
   public String toString() {

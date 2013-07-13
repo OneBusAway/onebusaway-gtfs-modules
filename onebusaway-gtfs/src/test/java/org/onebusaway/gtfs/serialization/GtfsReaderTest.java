@@ -220,8 +220,8 @@ public class GtfsReaderTest {
     assertEquals(60, fareAttribute.getTransferDuration());
     assertEquals(61, fareAttribute.getJourneyDuration());
     assertEquals(1, fareAttribute.getDistanceMode());
-    assertEquals(2.00, fareAttribute.getDistanceUnitPrice());
-    assertEquals(3.0, fareAttribute.getDistanceUnitStartOffset());
+    assertEquals(2.00, fareAttribute.getDistanceUnitPrice(), 1.0);
+    assertEquals(3.0, fareAttribute.getDistanceUnitStartOffset(), 1.0);
 
     List<FareRule> rules = dao.getFareRulesForFareAttribute(fareAttribute);
     FareRule fareRule = rules.get(0);
@@ -230,7 +230,7 @@ public class GtfsReaderTest {
     assertEquals("Z1", fareRule.getOriginId());
     assertEquals("Z2", fareRule.getDestinationId());
     assertEquals("Z3", fareRule.getContainsId());
-    assertEquals(1.0, fareRule.getUnitsTraveled());
+    assertEquals(1.0, fareRule.getUnitsTraveled(), 1.0);
 
     List<ShapePoint> shapePoints = dao.getShapePointsForShapeId(new AgencyAndId(
         "1", "SHP1"));

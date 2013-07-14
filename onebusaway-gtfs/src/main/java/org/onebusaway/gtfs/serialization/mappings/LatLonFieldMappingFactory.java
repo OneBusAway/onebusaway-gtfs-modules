@@ -15,10 +15,16 @@
  */
 package org.onebusaway.gtfs.serialization.mappings;
 
+import java.util.Locale;
+
 import org.onebusaway.csv_entities.schema.DecimalFieldMappingFactory;
 
 public class LatLonFieldMappingFactory extends DecimalFieldMappingFactory {
   public LatLonFieldMappingFactory() {
-    super("0.000000");
+    /**
+     * We override the default locale to en_US so that we always use "." as the
+     * decimal separator, even in locales that default to using "," insteaad.
+     */
+    super("0.000000", Locale.US);
   }
 }

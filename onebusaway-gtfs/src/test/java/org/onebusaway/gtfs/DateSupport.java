@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2013 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +21,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class DateSupport {
 
   private static final DateFormat _format = new SimpleDateFormat(
-      "yyyy-MM-dd HH:mm zzzz");
+      "yyyy-MM-dd HH:mm zzzz", Locale.US);
 
   public static Date date(String source) {
     try {

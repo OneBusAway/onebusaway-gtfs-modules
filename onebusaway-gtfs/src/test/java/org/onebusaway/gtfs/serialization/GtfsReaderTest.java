@@ -89,8 +89,8 @@ public class GtfsReaderTest {
     gtfs.putLines(
         "stop_times.txt",
         "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_type,drop_off_type,"
-            + "shape_dist_traveled,route_short_name",
-        "T1,09:01:30,10:20:02,S1,2,head-sign,1,2,23.1,10X");
+            + "shape_dist_traveled,route_short_name,timepoint",
+        "T1,09:01:30,10:20:02,S1,2,head-sign,1,2,23.1,10X,1");
     gtfs.putLines(
         "calendar.txt",
         "service_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday",
@@ -189,6 +189,7 @@ public class GtfsReaderTest {
     assertEquals(2, stopTime.getDropOffType());
     assertEquals(23.1, stopTime.getShapeDistTraveled(), 0.0);
     assertEquals("10X", stopTime.getRouteShortName());
+    assertEquals(1, stopTime.getTimepoint());
 
     ServiceCalendar calendar = dao.getCalendarForServiceId(new AgencyAndId("1",
         "WEEK"));

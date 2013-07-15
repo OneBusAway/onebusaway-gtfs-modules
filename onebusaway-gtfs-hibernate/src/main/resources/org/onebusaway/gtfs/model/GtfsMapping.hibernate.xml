@@ -204,6 +204,7 @@
         <property name="stopSequence" />
         <property name="arrivalTime" />
         <property name="departureTime" />
+        <property name="timepoint"/>
         <property name="stopHeadsign" />
         <property name="routeShortName" />
         <property name="pickupType" />

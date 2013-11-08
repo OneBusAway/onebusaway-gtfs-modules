@@ -38,6 +38,8 @@ public class StopTimeArray extends AbstractList<StopTime> {
 
   private int[] departureTimes = new int[0];
 
+  private int[] timepoints = new int[0];
+
   private int[] stopSequences = new int[0];
 
   private String[] stopHeadsigns = new String[0];
@@ -67,6 +69,7 @@ public class StopTimeArray extends AbstractList<StopTime> {
     stops[index] = stopTime.getStop();
     arrivalTimes[index] = stopTime.getArrivalTime();
     departureTimes[index] = stopTime.getDepartureTime();
+    timepoints[index] = stopTime.getTimepoint();
     stopSequences[index] = stopTime.getStopSequence();
     stopHeadsigns[index] = stopTime.getStopHeadsign();
     routeShortNames[index] = stopTime.getRouteShortName();
@@ -118,6 +121,7 @@ public class StopTimeArray extends AbstractList<StopTime> {
     this.stops = Arrays.copyOf(this.stops, newLength);
     this.arrivalTimes = Arrays.copyOf(this.arrivalTimes, newLength);
     this.departureTimes = Arrays.copyOf(this.departureTimes, newLength);
+    this.timepoints = Arrays.copyOf(this.timepoints, newLength);
     this.stopSequences = Arrays.copyOf(this.stopSequences, newLength);
     this.stopHeadsigns = Arrays.copyOf(this.stopHeadsigns, newLength);
     this.routeShortNames = Arrays.copyOf(this.routeShortNames, newLength);
@@ -238,6 +242,16 @@ public class StopTimeArray extends AbstractList<StopTime> {
     @Override
     public void clearDepartureTime() {
       departureTimes[index] = StopTime.MISSING_VALUE;
+    }
+
+    @Override
+    public int getTimepoint() {
+      return timepoints[index];
+    }
+
+    @Override
+    public void setTimepoint(int timepoint) {
+      timepoints[index] = timepoint;
     }
 
     @Override

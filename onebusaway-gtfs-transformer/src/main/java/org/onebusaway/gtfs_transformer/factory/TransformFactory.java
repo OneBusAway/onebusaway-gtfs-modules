@@ -79,6 +79,7 @@ import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategyFactory;
 import org.onebusaway.gtfs_transformer.updates.CalendarExtensionStrategy;
 import org.onebusaway.gtfs_transformer.updates.CalendarSimplicationStrategy;
 import org.onebusaway.gtfs_transformer.updates.DeduplicateServiceIdsStrategy;
+import org.onebusaway.gtfs_transformer.updates.ShapeDirectionTransformStrategy;
 import org.onebusaway.gtfs_transformer.updates.ShiftNegativeStopTimesUpdateStrategy;
 import org.onebusaway.gtfs_transformer.updates.StopTimesFactoryStrategy;
 import org.onebusaway.gtfs_transformer.updates.SubsectionTripTransformStrategy;
@@ -201,6 +202,8 @@ public class TransformFactory {
           handleTransformOperation(line, json, new DeduplicateServiceIdsStrategy());
         } else if (opType.equals("shift_negative_stop_times")) {
           handleTransformOperation(line, json, new ShiftNegativeStopTimesUpdateStrategy());
+        } else if (opType.equals("shape_direction")) { 
+          handleTransformOperation(line, json, new ShapeDirectionTransformStrategy());
         } else if (opType.equals("transform")) {
           handleTransformOperation(line, json);
         } else {

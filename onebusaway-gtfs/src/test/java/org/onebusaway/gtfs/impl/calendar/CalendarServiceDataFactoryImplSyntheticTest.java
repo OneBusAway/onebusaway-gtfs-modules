@@ -1,6 +1,7 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  * Copyright (C) 2012 Google, Inc.
+ * Copyright (C) 2012 Codemass, Inc. <aaron@codemass.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -249,10 +250,24 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
 
     try {
       factory.createData();
-      fail();
+      fail("should detect that TimeZone ID is not valid");
     } catch (UnknownAgencyTimezoneException ex) {
 
     }
+  }
+
+  @Test
+  public void testGMTTimezone() throws IOException {
+    CalendarServiceDataFactoryImpl factory = new CalendarServiceDataFactoryImpl();
+
+    Agency agencyGMT = agency("G", "GMT");
+
+    GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();
+    factory.setGtfsDao(dao);
+
+    saveEntities(dao, agencyGMT);
+
+    factory.createData();
   }
 
   private Agency agency(String id, String timezone) {

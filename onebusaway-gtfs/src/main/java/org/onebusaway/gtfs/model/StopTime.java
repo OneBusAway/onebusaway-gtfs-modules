@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2013 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +43,9 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int departureTime = MISSING_VALUE;
+  
+  @CsvField(optional = true, defaultValue = "0")
+  private int timepoint = 0;
 
   private int stopSequence;
 
@@ -78,6 +82,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.stop = st.stop;
     this.stopHeadsign = st.stopHeadsign;
     this.stopSequence = st.stopSequence;
+    this.timepoint = st.timepoint;
     this.trip = st.trip;
   }
 
@@ -205,6 +210,26 @@ public final class StopTime extends IdentityBean<Integer> implements
       return;
     }
     this.departureTime = MISSING_VALUE;
+  }
+  
+  /**
+   * @return 1 if the stop-time is a timepoint location
+   */
+  @Override
+  public int getTimepoint() {
+    if (proxy != null) {
+      return proxy.getTimepoint();
+    }
+    return timepoint;
+  }
+
+  @Override
+  public void setTimepoint(int timepoint) {
+    if (proxy != null) {
+      proxy.setTimepoint(timepoint);
+      return;
+    }  
+    this.timepoint = timepoint;
   }
 
   public String getStopHeadsign() {

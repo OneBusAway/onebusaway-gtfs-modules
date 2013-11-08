@@ -74,8 +74,8 @@ public class GtfsReaderTest {
     gtfs.putLines(
         "stops.txt",
         "stop_id,stop_name,stop_lat,stop_lon,stop_desc,stop_code,stop_direction,location_type,parent_station,"
-            + "stop_url,wheelchair_boarding,zone_id,stop_timezone,vehicle_type",
-        "S1,Stop,47.0,-122.0,description,123,N,1,1234,http://agency.gov/stop,1,Z,America/New_York,2");
+            + "stop_url,wheelchair_boarding,zone_id,stop_timezone,vehicle_type,platform_code",
+        "S1,Stop,47.0,-122.0,description,123,N,1,1234,http://agency.gov/stop,1,Z,America/New_York,2,9 3/4");
     gtfs.putLines(
         "routes.txt",
         "agency_id,route_id,route_short_name,route_long_name,route_type,route_desc,route_color,route_text_color,"
@@ -89,8 +89,8 @@ public class GtfsReaderTest {
     gtfs.putLines(
         "stop_times.txt",
         "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_type,drop_off_type,"
-            + "shape_dist_traveled,route_short_name",
-        "T1,09:01:30,10:20:02,S1,2,head-sign,1,2,23.1,10X");
+            + "shape_dist_traveled,route_short_name,timepoint",
+        "T1,09:01:30,10:20:02,S1,2,head-sign,1,2,23.1,10X,1");
     gtfs.putLines(
         "calendar.txt",
         "service_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday",
@@ -150,6 +150,7 @@ public class GtfsReaderTest {
     assertEquals("Z", stop.getZoneId());
     assertEquals("America/New_York", stop.getTimezone());
     assertEquals(2, stop.getVehicleType());
+    assertEquals("9 3/4", stop.getPlatformCode());
 
     Route route = dao.getRouteForId(new AgencyAndId("1", "R1"));
     assertEquals(new AgencyAndId("1", "R1"), route.getId());
@@ -190,6 +191,7 @@ public class GtfsReaderTest {
     assertEquals(2, stopTime.getDropOffType());
     assertEquals(23.1, stopTime.getShapeDistTraveled(), 0.0);
     assertEquals("10X", stopTime.getRouteShortName());
+    assertEquals(1, stopTime.getTimepoint());
 
     ServiceCalendar calendar = dao.getCalendarForServiceId(new AgencyAndId("1",
         "WEEK"));

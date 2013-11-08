@@ -79,13 +79,13 @@ public class GtfsReaderTest {
     gtfs.putLines(
         "routes.txt",
         "agency_id,route_id,route_short_name,route_long_name,route_type,route_desc,route_color,route_text_color,"
-            + "route_bikes_allowed,route_url",
-        "1,R1,10,The Ten,3,route desc,FF0000,0000FF,1,http://agency.gov/route");
+            + "route_bikes_allowed,bikes_allowed,route_url",
+        "1,R1,10,The Ten,3,route desc,FF0000,0000FF,1,2,http://agency.gov/route");
     gtfs.putLines(
         "trips.txt",
         "route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,block_id,shape_id,route_short_name,"
-            + "trip_bikes_allowed,wheelchair_accessible",
-        "R1,WEEK,T1,head-sign,short-name,1,B1,SHP1,10X,1,1");
+            + "trip_bikes_allowed,bikes_allowed,wheelchair_accessible",
+        "R1,WEEK,T1,head-sign,short-name,1,B1,SHP1,10X,1,2,1");
     gtfs.putLines(
         "stop_times.txt",
         "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_type,drop_off_type,"
@@ -160,7 +160,8 @@ public class GtfsReaderTest {
     assertEquals("route desc", route.getDesc());
     assertEquals("FF0000", route.getColor());
     assertEquals("0000FF", route.getTextColor());
-    assertEquals(1, route.getBikesAllowed());
+    assertEquals(1, route.getRouteBikesAllowed());
+    assertEquals(2, route.getBikesAllowed());
     assertEquals("http://agency.gov/route", route.getUrl());
 
     Trip trip = dao.getTripForId(new AgencyAndId("1", "T1"));
@@ -174,6 +175,7 @@ public class GtfsReaderTest {
     assertEquals(new AgencyAndId("1", "SHP1"), trip.getShapeId());
     assertEquals("10X", trip.getRouteShortName());
     assertEquals(1, trip.getTripBikesAllowed());
+    assertEquals(2, trip.getBikesAllowed());
     assertEquals(1, trip.getWheelchairAccessible());
 
     List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);

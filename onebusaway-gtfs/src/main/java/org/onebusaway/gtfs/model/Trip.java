@@ -56,8 +56,15 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, defaultValue = "0")
   private int wheelchairAccessible = 0;
 
+  @Deprecated
   @CsvField(optional = true, defaultValue = "0")
   private int tripBikesAllowed = 0;
+
+  /**
+   * 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes NOT allowed
+   */
+  @CsvField(optional = true, defaultValue = "0")
+  private int bikesAllowed = 0;
 
   public Trip() {
 
@@ -75,6 +82,7 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.shapeId = obj.shapeId;
     this.wheelchairAccessible = obj.wheelchairAccessible;
     this.tripBikesAllowed = obj.tripBikesAllowed;
+    this.bikesAllowed = obj.bikesAllowed;
   }
 
   public AgencyAndId getId() {
@@ -157,12 +165,29 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     return wheelchairAccessible;
   }
 
+  @Deprecated
   public void setTripBikesAllowed(int tripBikesAllowed) {
     this.tripBikesAllowed = tripBikesAllowed;
   }
 
+  @Deprecated
   public int getTripBikesAllowed() {
     return tripBikesAllowed;
+  }
+
+  /**
+   * @return 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes NOT allowed
+   */
+  public int getBikesAllowed() {
+    return bikesAllowed;
+  }
+
+  /**
+   * @param bikesAllowed 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes
+   *          NOT allowed
+   */
+  public void setBikesAllowed(int bikesAllowed) {
+    this.bikesAllowed = bikesAllowed;
   }
 
   public String toString() {

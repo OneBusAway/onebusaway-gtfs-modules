@@ -28,13 +28,13 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @CsvField(mapping = RouteAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 
-  @CsvField(name="agency_id", optional = true, mapping = RouteAgencyFieldMappingFactory.class, order = -1)
+  @CsvField(name = "agency_id", optional = true, mapping = RouteAgencyFieldMappingFactory.class, order = -1)
   private Agency agency;
 
-  @CsvField(optional = true, alwaysIncludeInOutput=true)
+  @CsvField(optional = true, alwaysIncludeInOutput = true)
   private String shortName;
 
-  @CsvField(optional = true, alwaysIncludeInOutput=true)
+  @CsvField(optional = true, alwaysIncludeInOutput = true)
   private String longName;
 
   private int type;
@@ -50,8 +50,15 @@ public final class Route extends IdentityBean<AgencyAndId> {
 
   @CsvField(optional = true)
   private String textColor;
+  
+  @Deprecated
+  @CsvField(name="route_bikes_allowed", optional = true, defaultValue = "0")
+  private int routeBikesAllowed = 0;
 
-  @CsvField(optional = true, defaultValue = "0")
+  /**
+   * 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes NOT allowed
+   */
+  @CsvField(name="bikes_allowed", optional = true, defaultValue = "0")
   private int bikesAllowed = 0;
 
   public Route() {
@@ -142,11 +149,28 @@ public final class Route extends IdentityBean<AgencyAndId> {
   public void setTextColor(String textColor) {
     this.textColor = textColor;
   }
+  
+  @Deprecated
+  public int getRouteBikesAllowed() {
+    return routeBikesAllowed;
+  }
 
+  @Deprecated
+  public void setRouteBikesAllowed(int routeBikesAllowed) {
+    this.routeBikesAllowed = routeBikesAllowed;
+  }
+
+  /**
+   * @return 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes NOT allowed
+   */
   public int getBikesAllowed() {
     return bikesAllowed;
   }
 
+  /**
+   * @param bikesAllowed 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes
+   *          NOT allowed
+   */
   public void setBikesAllowed(int bikesAllowed) {
     this.bikesAllowed = bikesAllowed;
   }

@@ -2,6 +2,10 @@ Release Notes
 
 * ${currentVersion}
 
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
+
+* 1.3.3
+
   * Support for the proposed <<<timepoint>>> field in <<<stop_times.txt>>>.
 
   * Support for <<<bikes_allowed>>> field in both <<<routes.txt>>> and <<<trips.txt>>>,
@@ -16,7 +20,7 @@ Release Notes
 
   * Fix to properly handle using the library in non-English locales.  {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/29}issue}}
 
-  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
+  * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/1.3.3/}}
 
 * 1.3.2
 

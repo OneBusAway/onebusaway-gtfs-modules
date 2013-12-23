@@ -239,3 +239,51 @@ onebusaway-gtfs-hibernate/src/test/resources/org/onebusaway/gtfs/examples/hibern
 +---+
 
   Here you can configure the data source used for the database connection along with the Hibernate dialect.
+  
+* Reading Custom Fields
+
+  Does your GTFS feed have custom fields not defined by the core <<<onebusaway-gtfs>>> library?  It's possible
+to read and write this data without modify OBA source code using the "extensions" mechanism.  Consider a
+<<<stops.txt>>> file with a custom <<<extra_stop_info>>> field:
+
++---+
+stop_id,stop_name,stop_lat,stop_lon,extra_stop_info
+123,Some Station,47.0,-122.0,This is a cool transit station
++---+
+
+  The <<<extra_stop_info>>> field isn't included in the the {{{./apidocs/org/onebusaway/gtfs/model/Stop.html}Stop}} data
+model by default.  So instead, we define a special <<<StopExtension>>> Java bean type with the new field:
+
++---+
+public static class StopExtension {
+  @CsvField(optional = true)
+  private String extraStopInfo;
+
+  public String getExtraStopInfo() { ... }
+  public void setExtraStopInfo(String info) { ... }
+}
++---+
+
+  We can now register our class as an extension of the default stop data model:
+
++---+
+DefaultEntitySchemaFactory factory = GtfsEntitySchemaFactory.createEntitySchemaFactory();
+factory.addExtension(Stop.class, StopExtension.class);
+    
+GtfsReader reader = new GtfsReader();
+reader.setEntitySchemaFactory(factory);
++---+
+
+  Now when you read your GTFS feed with the <<<GtfsReader>>> instance, <<<StopExtension>>> objects
+will automatically be created, populated, and attached to stops as they are read:
+
++---+
+Stop stop = dao.getStopForId(...);
+StopExtension extension = stop.getExtension(StopExtension.class);
+System.out.println(extension.getExtraStopInfo());
++---+
+
+  For more information on defining the mapping from GTFS fields to Java beans, see documentation for
+the {{{https://github.com/OneBusAway/onebusaway-csv-entities}onebusaway-csv-entities}} project,
+including the {{{../../onebusaway-csv-entities/${onebusaway_csv_entities_version}/apidocs/org/onebusaway/csv_entities/schema/annotations/CsvField.html}@CsvField}}
+annotation documentation.    

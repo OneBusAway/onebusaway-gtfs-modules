@@ -272,6 +272,15 @@ argument:
 other special events.  It's too tricky to automatically determine how they should be handled.  You may need to still handle
 those manually. 
 
+* Deduplicate Calendar Entries
+
+  Finds GTFS service_ids that have the exact same set of active days and consolidates each set of duplicated
+ids to a single service_id entry.
+
++---+
+{"op":"deduplicate_service_ids"}
++---+
+
   
 * Merge Trips and Simplify Calendar Entries
 

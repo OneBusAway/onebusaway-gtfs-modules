@@ -86,6 +86,8 @@ import org.onebusaway.gtfs_transformer.updates.SubsectionTripTransformStrategy;
 import org.onebusaway.gtfs_transformer.updates.SubsectionTripTransformStrategy.SubsectionOperation;
 import org.onebusaway.gtfs_transformer.updates.TrimTripTransformStrategy;
 import org.onebusaway.gtfs_transformer.updates.TrimTripTransformStrategy.TrimOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TransformFactory {
 
@@ -127,6 +129,8 @@ public class TransformFactory {
 
   private final PropertyMethodResolverImpl _propertyMethodResolver;
 
+  private static Logger _log = LoggerFactory.getLogger(TransformFactory.class);
+  
   public TransformFactory(GtfsTransformer transformer) {
     _transformer = transformer;
     addEntityPackage("org.onebusaway.gtfs.model");
@@ -460,7 +464,10 @@ public class TransformFactory {
       try {
         mapping.translateFromCSVToObject(context, values, wrapped);
       } catch (MissingRequiredFieldException ex) {
-        throw new TransformSpecificationMissingArgumentException(line,
+        String verboseMessage = "line=" + line + ", context=" + context + ", json="
+            + json + ", object=" + object;
+        _log.error("missing required field; details:" + verboseMessage);
+        throw new TransformSpecificationMissingArgumentException(verboseMessage,
             ex.getFieldName());
       }
     }

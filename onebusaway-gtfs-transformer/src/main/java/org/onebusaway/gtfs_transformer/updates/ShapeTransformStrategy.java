@@ -27,63 +27,66 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ShapeTransformStrategy implements GtfsTransformStrategy {
+// there is something wrong with the configuration of the strategy
+// these changes clearly should not be necessary
+// (unless onebusaway-csv changes forced this?)
+// TODO FIXME
+  private String shapeId;
 
-  private Logger _log = LoggerFactory.getLogger(ShapeTransformStrategy.class);
+  private String shape;
 
-  private String _shapeId;
+  private boolean matchStart = true;
 
-  private String _shape;
+  private boolean matchEnd = true;
 
-  private boolean _matchStart = true;
-
-  private boolean _matchEnd = true;
-
-  public void setShapeId(String shapeId) {
-    _shapeId = shapeId;
+  public void setShapeId(String ashapeId) {
+    shapeId = ashapeId;
   }
 
-  public void setShape(String shape) {
-    _shape = shape;
+  public void setShape(String ashape) {
+    shape = ashape;
   }
 
-  public void setMatchStart(boolean matchStart) {
-    _matchStart = matchStart;
+  public void setMatchStart(boolean amatchStart) {
+    matchStart = amatchStart;
   }
 
-  public void setMatchEnd(boolean matchEnd) {
-    _matchEnd = matchEnd;
+  public void setMatchEnd(boolean amatchEnd) {
+    matchEnd = amatchEnd;
   }
 
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     String agencyId = context.getDefaultAgencyId();
-    AgencyAndId shapeId = new AgencyAndId(agencyId, _shapeId);
+    AgencyAndId ashapeId = new AgencyAndId(agencyId, shapeId);
 
-    List<ShapePoint> shapePoints = dao.getShapePointsForShapeId(shapeId);
+    List<ShapePoint> shapePoints = dao.getShapePointsForShapeId(ashapeId);
 
     if (shapePoints.isEmpty()) {
-      _log.warn("no points found for shape: " + shapeId);
+      // this cannot be a logger as it is BeanWrapped
+      System.err.println("no points found for shape: " + ashapeId);
       return;
     }
 
     // Duplicate the list into something we can modify
     shapePoints = new ArrayList<ShapePoint>(shapePoints);
 
-    List<ShapePoint> segment = decode(_shape);
+    List<ShapePoint> segment = decode(shape);
     ShapePoint from = segment.get(0);
     ShapePoint to = segment.get(segment.size() - 1);
 
     int fromIndex = 0;
     int toIndex = shapePoints.size() - 1;
 
-    if (_matchStart)
+    if (matchStart)
       fromIndex = closest(shapePoints, from, 0);
-    if (_matchEnd)
+    if (matchEnd)
       toIndex = closest(shapePoints, to, fromIndex);
 
     if (toIndex < fromIndex) {
-      _log.error("segment match is out of order: fromIndex=" + fromIndex
+      // this cannot be a logger as it is BeanWrapped
+      System.err.println("segment match is out of order: fromIndex=" + fromIndex
           + " toIndex=" + toIndex);
       return;
     }
@@ -98,7 +101,7 @@ public class ShapeTransformStrategy implements GtfsTransformStrategy {
     for (ShapePoint point : shapePoints) {
       point.setDistTraveled(ShapePoint.MISSING_VALUE);
       point.setSequence(index++);
-      point.setShapeId(shapeId);
+      point.setShapeId(ashapeId);
     }
 
     for (ShapePoint point : segment)

@@ -326,6 +326,11 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
         new ArrayList<V>().getClass());
   }
 
+  /*
+   * TODO: FIXME: Javac 1.6 can't infer the type correctly with previous definition
+   * of CIMPL (compiler bug).  So this method is named incorrectly until we de-support
+   * javac 1.6 should that ever happen
+   */
   @SuppressWarnings("unchecked")
   private static <K, V, CIMPL extends List<V>> Map<K, List<V>> mapToValueCollection(
       Iterable<V> values, String property, Class<K> keyType,

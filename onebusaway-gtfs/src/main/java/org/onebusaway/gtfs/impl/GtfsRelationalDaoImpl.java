@@ -327,17 +327,17 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   }
 
   @SuppressWarnings("unchecked")
-  private static <K, V, C extends Collection<V>, CIMPL extends C> Map<K, C> mapToValueCollection(
+  private static <K, V, CIMPL extends List<V>> Map<K, List<V>> mapToValueCollection(
       Iterable<V> values, String property, Class<K> keyType,
       Class<CIMPL> collectionType) {
 
-    Map<K, C> byKey = new HashMap<K, C>();
+    Map<K, List<V>> byKey = new HashMap<K, List<V>>();
     SimplePropertyQuery query = new SimplePropertyQuery(property);
 
     for (V value : values) {
 
       K key = (K) query.invoke(value);
-      C valuesForKey = byKey.get(key);
+      List<V> valuesForKey = byKey.get(key);
       if (valuesForKey == null) {
 
         try {

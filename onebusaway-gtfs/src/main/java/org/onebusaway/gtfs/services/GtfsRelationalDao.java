@@ -114,6 +114,8 @@ public interface GtfsRelationalDao extends GtfsDao {
   public List<AgencyAndId> getAllServiceIds();
 
   public ServiceCalendar getCalendarForServiceId(AgencyAndId serviceId);
+  
+  public ServiceCalendar getFirstCalendarForServiceId(AgencyAndId serviceId);
 
   /****
    * {@link ServiceCalendarDate} Methods

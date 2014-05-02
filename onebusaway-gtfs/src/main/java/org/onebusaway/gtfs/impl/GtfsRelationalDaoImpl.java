@@ -278,6 +278,21 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   }
 
   @Override
+  public ServiceCalendar getFirstCalendarForServiceId(AgencyAndId serviceId) {
+    ensureCalendarsByServiceIdRelation();
+    List<ServiceCalendar> calendars = list(_calendarsByServiceId.get(serviceId));
+    switch (calendars.size()) {
+      case 0:
+        return null;
+      case 1:
+        return calendars.get(0);
+      default:
+        return calendars.get(0);
+    }
+  }
+
+  
+  @Override
   public List<FareRule> getFareRulesForFareAttribute(FareAttribute fareAttribute) {
     if (_fareRulesByFareAttribute == null) {
       _fareRulesByFareAttribute = mapToValueList(getAllFareRules(), "fare",

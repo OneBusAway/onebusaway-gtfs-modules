@@ -164,7 +164,7 @@ public class GtfsReaderTest {
     assertEquals(1, route.getRouteBikesAllowed());
     assertEquals(2, route.getBikesAllowed());
     assertEquals("http://agency.gov/route", route.getUrl());
-    assertEquals("100", route.getSortOrder());
+    assertEquals(100, route.getSortOrder());
 
     Trip trip = dao.getTripForId(new AgencyAndId("1", "T1"));
     assertEquals(new AgencyAndId("1", "T1"), trip.getId());

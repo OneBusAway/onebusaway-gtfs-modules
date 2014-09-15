@@ -274,8 +274,7 @@ public class GtfsReaderTest {
     assertEquals(stop, pathway.getFromStop());
     assertEquals(stop, pathway.getToStop());
     assertEquals(60, pathway.getTraversalTime());
-    assertEquals(61, pathway.getWheelchairTraversalTime());
-        
+    assertEquals(61, pathway.getWheelchairTraversalTime());        
   }
 
   @Test

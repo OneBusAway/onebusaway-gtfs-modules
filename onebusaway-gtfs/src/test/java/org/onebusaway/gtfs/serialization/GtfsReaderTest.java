@@ -121,8 +121,8 @@ public class GtfsReaderTest {
         "Test,http://agency.gov/,en,20120110,20120217,2.0");
     gtfs.putLines(
         "pathways.txt",
-        "pathway_id,from_stop_id,to_stop_id,traversal_time,wheelchair_traversal_time",
-        "P1,S1,S1,60,61");
+        "pathway_id,pathway_type,from_stop_id,to_stop_id,traversal_time,wheelchair_traversal_time",
+        "P1,1,S1,S1,60,61");
 
     GtfsRelationalDao dao = processFeed(gtfs.getPath(), "1", false);
 
@@ -270,10 +270,11 @@ public class GtfsReaderTest {
 
     Pathway pathway = dao.getAllPathways().iterator().next();
     assertEquals(new AgencyAndId("1", "P1"), pathway.getId());
+    assertEquals(1, pathway.getPathwayType());
     assertEquals(stop, pathway.getFromStop());
     assertEquals(stop, pathway.getToStop());
     assertEquals(60, pathway.getTraversalTime());
-    assertEquals(61, pathway.getWheelchairTraversalTime());
+    assertEquals(61, pathway.getWheelchairTraversalTime());        
   }
 
   @Test

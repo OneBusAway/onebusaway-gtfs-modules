@@ -30,6 +30,8 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   @CsvField(name = "pathway_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 
+  private int pathwayType;
+
   @CsvField(name = "from_stop_id", mapping = EntityFieldMappingFactory.class)
   private Stop fromStop;
 
@@ -51,6 +53,14 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
     this.id = id;
   }
 
+  public void setPathwayType(int pathwayType) {
+    this.pathwayType = pathwayType;
+  }
+
+  public int getPathwayType() {
+    return pathwayType;
+  }
+  
   public void setFromStop(Stop fromStop) {
     this.fromStop = fromStop;
   }

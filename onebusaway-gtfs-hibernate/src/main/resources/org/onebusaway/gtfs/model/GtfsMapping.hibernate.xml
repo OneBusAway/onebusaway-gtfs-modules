@@ -103,6 +103,7 @@
             <column name="toStop_agencyId" length="50" />
             <column name="toStop_id" />
         </many-to-one>
+        <property name="pathwayType" />
         <property name="traversalTime" />
         <property name="wheelchairTraversalTime" />
     </class>

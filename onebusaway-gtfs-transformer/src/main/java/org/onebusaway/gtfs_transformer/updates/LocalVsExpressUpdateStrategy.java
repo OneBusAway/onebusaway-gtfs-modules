@@ -22,12 +22,16 @@ import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LocalVsExpressUpdateStrategy implements GtfsTransformStrategy {
+	
+  private static Logger _log = LoggerFactory.getLogger(LocalVsExpressUpdateStrategy.class);
 
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-
+	 _log.info("running");
     for (Route route : dao.getAllRoutes()) {
 
       List<Trip> trips = dao.getTripsForRoute(route);

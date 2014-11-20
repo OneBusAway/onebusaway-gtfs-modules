@@ -57,7 +57,7 @@ public class EnsureStopTimesIncreaseUpdateStrategy implements
                   - stopTime.getArrivalTime();
               maxDeviation = Math.max(maxDeviation, deviation);
               if (deviation > 60)
-                _log.info("out_of_order_stop_times: prev=" + prev + " next="
+                _log.debug("out_of_order_stop_times: prev=" + prev + " next="
                     + stopTime + " deviation=" + deviation);
               stopTime.setArrivalTime(prev.getDepartureTime());
               if (stopTime.getDepartureTime() < stopTime.getArrivalTime())

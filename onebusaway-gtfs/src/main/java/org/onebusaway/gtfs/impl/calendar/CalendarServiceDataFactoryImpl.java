@@ -136,7 +136,7 @@ public class CalendarServiceDataFactoryImpl implements
   public Set<ServiceDate> getServiceDatesForServiceId(AgencyAndId serviceId,
       TimeZone serviceIdTimeZone) {
     Set<ServiceDate> activeDates = new HashSet<ServiceDate>();
-    ServiceCalendar c = _dao.getCalendarForServiceId(serviceId);
+    ServiceCalendar c = _dao.getFirstCalendarForServiceId(serviceId);
 
     if (c != null) {
       addDatesFromCalendar(c, serviceIdTimeZone, activeDates);

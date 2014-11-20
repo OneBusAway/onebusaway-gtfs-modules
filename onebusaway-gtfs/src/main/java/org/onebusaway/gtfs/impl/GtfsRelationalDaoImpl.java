@@ -278,6 +278,21 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   }
 
   @Override
+  public ServiceCalendar getFirstCalendarForServiceId(AgencyAndId serviceId) {
+    ensureCalendarsByServiceIdRelation();
+    List<ServiceCalendar> calendars = list(_calendarsByServiceId.get(serviceId));
+    switch (calendars.size()) {
+      case 0:
+        return null;
+      case 1:
+        return calendars.get(0);
+      default:
+        return calendars.get(0);
+    }
+  }
+
+  
+  @Override
   public List<FareRule> getFareRulesForFareAttribute(FareAttribute fareAttribute) {
     if (_fareRulesByFareAttribute == null) {
       _fareRulesByFareAttribute = mapToValueList(getAllFareRules(), "fare",
@@ -326,18 +341,23 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
         new ArrayList<V>().getClass());
   }
 
+  /*
+   * TODO: FIXME: Javac 1.6 can't infer the type correctly with previous definition
+   * of CIMPL (compiler bug).  So this method is named incorrectly until we de-support
+   * javac 1.6 should that ever happen
+   */
   @SuppressWarnings("unchecked")
-  private static <K, V, C extends Collection<V>, CIMPL extends C> Map<K, C> mapToValueCollection(
+  private static <K, V, CIMPL extends List<V>> Map<K, List<V>> mapToValueCollection(
       Iterable<V> values, String property, Class<K> keyType,
       Class<CIMPL> collectionType) {
 
-    Map<K, C> byKey = new HashMap<K, C>();
+    Map<K, List<V>> byKey = new HashMap<K, List<V>>();
     SimplePropertyQuery query = new SimplePropertyQuery(property);
 
     for (V value : values) {
 
       K key = (K) query.invoke(value);
-      C valuesForKey = byKey.get(key);
+      List<V> valuesForKey = byKey.get(key);
       if (valuesForKey == null) {
 
         try {

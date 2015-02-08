@@ -44,8 +44,8 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int departureTime = MISSING_VALUE;
   
-  @CsvField(optional = true, defaultValue = "0")
-  private int timepoint = 0;
+  @CsvField(optional = true)
+  private int timepoint = MISSING_VALUE;
 
   private int stopSequence;
 
@@ -212,6 +212,14 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.departureTime = MISSING_VALUE;
   }
   
+  @Override
+  public boolean isTimepointSet() {
+    if (proxy != null) {
+      return proxy.isTimepointSet();
+    }
+    return timepoint != MISSING_VALUE;
+  }
+  
   /**
    * @return 1 if the stop-time is a timepoint location
    */
@@ -230,6 +238,15 @@ public final class StopTime extends IdentityBean<Integer> implements
       return;
     }  
     this.timepoint = timepoint;
+  }
+  
+  @Override
+  public void clearTimepoint() {
+    if (proxy != null) {
+      proxy.clearTimepoint();
+      return;
+    }
+    this.timepoint = MISSING_VALUE;
   }
 
   public String getStopHeadsign() {

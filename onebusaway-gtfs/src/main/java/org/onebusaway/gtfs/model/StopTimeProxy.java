@@ -55,9 +55,13 @@ public interface StopTimeProxy {
 
   public void clearDepartureTime();
   
+  public boolean isTimepointSet();
+  
   public int getTimepoint();
   
   public void setTimepoint(int timepoint);
+  
+  public void clearTimepoint();
 
   public String getStopHeadsign();
 

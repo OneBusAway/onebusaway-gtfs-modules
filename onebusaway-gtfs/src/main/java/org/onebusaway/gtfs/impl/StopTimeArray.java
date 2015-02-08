@@ -243,6 +243,11 @@ public class StopTimeArray extends AbstractList<StopTime> {
     public void clearDepartureTime() {
       departureTimes[index] = StopTime.MISSING_VALUE;
     }
+    
+    @Override
+    public boolean isTimepointSet() {
+      return timepoints[index] != StopTime.MISSING_VALUE;
+    }
 
     @Override
     public int getTimepoint() {
@@ -252,6 +257,11 @@ public class StopTimeArray extends AbstractList<StopTime> {
     @Override
     public void setTimepoint(int timepoint) {
       timepoints[index] = timepoint;
+    }
+
+    @Override
+    public void clearTimepoint() {
+      timepoints[index] = StopTime.MISSING_VALUE;
     }
 
     @Override

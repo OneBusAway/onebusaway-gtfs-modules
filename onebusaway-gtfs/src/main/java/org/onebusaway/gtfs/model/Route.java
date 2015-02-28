@@ -25,6 +25,8 @@ public final class Route extends IdentityBean<AgencyAndId> {
 
   private static final long serialVersionUID = 1L;
 
+  private static final int MISSING_VALUE = -999;
+
   @CsvField(mapping = RouteAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 
@@ -61,6 +63,9 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @CsvField(name="bikes_allowed", optional = true, defaultValue = "0")
   private int bikesAllowed = 0;
 
+  @CsvField(optional = true)
+  private int sortOrder = MISSING_VALUE;
+
   public Route() {
 
   }
@@ -76,6 +81,7 @@ public final class Route extends IdentityBean<AgencyAndId> {
     this.color = r.color;
     this.textColor = r.textColor;
     this.bikesAllowed = r.bikesAllowed;
+    this.sortOrder = r.sortOrder;
   }
 
   public AgencyAndId getId() {
@@ -173,6 +179,18 @@ public final class Route extends IdentityBean<AgencyAndId> {
    */
   public void setBikesAllowed(int bikesAllowed) {
     this.bikesAllowed = bikesAllowed;
+  }
+
+  public boolean isSortOrderSet() {
+    return sortOrder != MISSING_VALUE;
+  }
+
+  public int getSortOrder() {
+    return sortOrder;
+  }
+
+  public void setSortOrder(int sortOrder) {
+    this.sortOrder = sortOrder;
   }
 
   @Override

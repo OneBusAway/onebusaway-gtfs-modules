@@ -78,7 +78,7 @@ public class GtfsWriterTest {
     assertEquals("http://agency.com/", agency2.getUrl());
   }
 
-  private void deleteFileRecursively(File file) {
+  public static void deleteFileRecursively(File file) {
 
     if (!file.exists())
       return;

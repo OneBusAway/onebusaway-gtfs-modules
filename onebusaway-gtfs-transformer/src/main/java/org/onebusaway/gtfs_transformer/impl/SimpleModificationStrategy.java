@@ -25,20 +25,21 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class SimpleModificationStrategy implements EntityTransformStrategy {
 
-  private Map<String, DeferredValueSetter> _propertyUpdates;
+  private Map<String, ValueSetter> _propertyUpdates;
 
   public SimpleModificationStrategy(
-      Map<String, DeferredValueSetter> propertyUpdates) {
+      Map<String, ValueSetter> propertyUpdates) {
     _propertyUpdates = propertyUpdates;
   }
 
+  @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao,
       Object entity) {
 
     BeanWrapper wrapper = BeanWrapperFactory.wrap(entity);
-    for (Map.Entry<String, DeferredValueSetter> entry : _propertyUpdates.entrySet()) {
+    for (Map.Entry<String, ValueSetter> entry : _propertyUpdates.entrySet()) {
       String propertyName = entry.getKey();
-      DeferredValueSetter setter = entry.getValue();
+      ValueSetter setter = entry.getValue();
       setter.setValue(wrapper, propertyName);
     }
   }

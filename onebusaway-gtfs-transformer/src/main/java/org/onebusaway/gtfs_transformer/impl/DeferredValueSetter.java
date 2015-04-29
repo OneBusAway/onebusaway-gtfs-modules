@@ -26,7 +26,7 @@ import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsReaderContext;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 
-public class DeferredValueSetter {
+public class DeferredValueSetter implements ValueSetter {
 
   private final DeferredValueSupport _support;
 
@@ -41,6 +41,7 @@ public class DeferredValueSetter {
     _value = value;
   }
 
+  @Override
   public void setValue(BeanWrapper bean, String propertyName) {
     Class<?> expectedValueType = bean.getPropertyType(propertyName);
     Class<?> actualValueType = _value.getClass();

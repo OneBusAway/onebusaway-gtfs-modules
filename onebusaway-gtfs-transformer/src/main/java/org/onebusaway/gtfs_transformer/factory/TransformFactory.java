@@ -67,6 +67,7 @@ import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
 import org.onebusaway.gtfs_transformer.impl.ServiceIdTransformStrategyImpl;
 import org.onebusaway.gtfs_transformer.impl.SimpleModificationStrategy;
 import org.onebusaway.gtfs_transformer.impl.StringModificationStrategy;
+import org.onebusaway.gtfs_transformer.impl.ValueSetter;
 import org.onebusaway.gtfs_transformer.match.EntityMatch;
 import org.onebusaway.gtfs_transformer.match.EntityMatchCollection;
 import org.onebusaway.gtfs_transformer.match.PropertyAnyValueEntityMatch;
@@ -234,7 +235,7 @@ public class TransformFactory {
       throw new TransformSpecificationMissingArgumentException(line,
           new String[] {ARG_CLASS, ARG_FILE}, ARG_OBJ);
     }
-    Map<String, DeferredValueSetter> propertyUpdates = getPropertyValueSettersFromJsonObject(
+    Map<String, ValueSetter> propertyUpdates = getPropertyValueSettersFromJsonObject(
         entityType, objectSpec, _excludeForObjectSpec);
     EntitySourceImpl source = new EntitySourceImpl(entityType, propertyUpdates);
     AddEntitiesTransformStrategy strategy = getStrategy(AddEntitiesTransformStrategy.class);
@@ -303,7 +304,7 @@ public class TransformFactory {
       return new ServiceIdTransformStrategyImpl(oldServiceId, newServiceId);
     } else {
       Set<String> emptySet = Collections.emptySet();
-      Map<String, DeferredValueSetter> propertyUpdates = getPropertyValueSettersFromJsonObject(
+      Map<String, ValueSetter> propertyUpdates = getPropertyValueSettersFromJsonObject(
           match.getType(), update, emptySet);
       return new SimpleModificationStrategy(propertyUpdates);
     }
@@ -575,12 +576,12 @@ public class TransformFactory {
     }
   }
 
-  private Map<String, DeferredValueSetter> getPropertyValueSettersFromJsonObject(
+  private Map<String, ValueSetter> getPropertyValueSettersFromJsonObject(
       Class<?> entityType, JSONObject obj, Set<String> propertiesToExclude)
       throws JSONException {
     Map<String, Object> map = getPropertyValuesFromJsonObject(obj,
         propertiesToExclude);
-    Map<String, DeferredValueSetter> setters = new HashMap<String, DeferredValueSetter>();
+    Map<String, ValueSetter> setters = new HashMap<String, ValueSetter>();
     for (Map.Entry<String, Object> entry : map.entrySet()) {
       String propertyName = entry.getKey();
       SingleFieldMapping mapping = _schemaCache.getFieldMappingForCsvFieldName(
@@ -675,10 +676,10 @@ public class TransformFactory {
 
     private final Class<?> _entityType;
 
-    private final Map<String, DeferredValueSetter> _propertySetters;
+    private final Map<String, ValueSetter> _propertySetters;
 
     public EntitySourceImpl(Class<?> entityType,
-        Map<String, DeferredValueSetter> propertySetters) {
+        Map<String, ValueSetter> propertySetters) {
       _entityType = entityType;
       _propertySetters = propertySetters;
     }
@@ -687,9 +688,9 @@ public class TransformFactory {
     public Object create() {
       Object instance = instantiate(_entityType);
       BeanWrapper wrapper = BeanWrapperFactory.wrap(instance);
-      for (Map.Entry<String, DeferredValueSetter> entry : _propertySetters.entrySet()) {
+      for (Map.Entry<String, ValueSetter> entry : _propertySetters.entrySet()) {
         String propertyName = entry.getKey();
-        DeferredValueSetter setter = entry.getValue();
+        ValueSetter setter = entry.getValue();
         setter.setValue(wrapper, propertyName);
       }
       return instance;

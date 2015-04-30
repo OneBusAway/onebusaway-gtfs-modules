@@ -39,24 +39,41 @@ public class DeferredValueSupport {
     return _reader;
   }
 
-  public Object resolveAgencyAndId(BeanWrapper bean, String propertyName,
-      String stringValue) {
+  /**
+   * Returns a {@link AgencyAndId} with the specified new id value and the
+   * appropriate agency id prefix. By default, we use the GTFS reader's default
+   * agency id. However, if the specified bean+property has an existing
+   * {@link AgencyAndId} value, we use the agency-id specified there.
+   */
+  public AgencyAndId resolveAgencyAndId(BeanWrapper bean, String propertyName,
+      String newId) {
     GtfsReaderContext context = _reader.getGtfsReaderContext();
     String agencyId = context.getDefaultAgencyId();
     AgencyAndId existingId = (AgencyAndId) bean.getPropertyValue(propertyName);
     if (existingId != null) {
       agencyId = existingId.getAgencyId();
     }
-    return new AgencyAndId(agencyId, stringValue);
+    return new AgencyAndId(agencyId, newId);
   }
 
-  public Converter resolveConverter(Class<?> parentEntityType,
-      String propertyName, Class<?> expectedValueType) {
+  /**
+   * Returns a {@link Converter} that can convert values to the target value
+   * type. If the target entity type + property has a custom converter defined
+   * in the GTFS entity schema, we will use that as instead.
+   * 
+   * @param targetEntityType the target entity type whose property will be
+   *          updated.
+   * @param targetPropertyName the target property name for the property that
+   *          will be updated on the target entity.
+   * @param targetValueType the target value type we wish to convert to
+   */
+  public Converter resolveConverter(Class<?> targetEntityType,
+      String targetPropertyName, Class<?> targetValueType) {
     SingleFieldMapping mapping = _schemaCache.getFieldMappingForCsvFieldName(
-        parentEntityType, propertyName);
+        targetEntityType, targetPropertyName);
     if (mapping == null) {
       mapping = _schemaCache.getFieldMappingForObjectFieldName(
-          parentEntityType, propertyName);
+          targetEntityType, targetPropertyName);
     }
     if (mapping != null) {
       if (mapping instanceof ConverterFactory) {
@@ -67,6 +84,6 @@ public class DeferredValueSupport {
         return (Converter) mapping;
       }
     }
-    return ConvertUtils.lookup(expectedValueType);
+    return ConvertUtils.lookup(targetValueType);
   }
 }

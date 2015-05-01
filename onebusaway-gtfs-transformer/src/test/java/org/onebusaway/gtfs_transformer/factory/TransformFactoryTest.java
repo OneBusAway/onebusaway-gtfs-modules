@@ -74,7 +74,7 @@ public class TransformFactoryTest {
   }
 
   @Test
-  public void testEvalInUpdate() throws IOException,
+  public void testPathInUpdate() throws IOException,
       TransformSpecificationException {
     _factory.addModificationsFromString("{'op':'update', "
         + "'match':{'file':'trips.txt'}, "
@@ -94,6 +94,27 @@ public class TransformFactoryTest {
     
     assertEquals("long cat", trip.getTripHeadsign());
   }
+  
+  @Test
+  public void testReplaceValueInUpdate() throws IOException,
+      TransformSpecificationException {
+    _factory.addModificationsFromString("{'op':'update', "
+        + "'match':{'file':'trips.txt'}, "
+        + "'update':{'trip_headsign': 's/Downtown/Uptown/'}}");
+    GtfsTransformStrategy transform = _transformer.getLastTransform();
+    TransformContext context = new TransformContext();
+    GtfsMutableRelationalDao dao = new GtfsRelationalDaoImpl();
+    
+    Trip trip = new Trip();
+    trip.setId(new AgencyAndId("1", "1"));
+    trip.setTripHeadsign("Downtown Express");
+    dao.saveEntity(trip);
+    
+    transform.run(context, dao);
+    
+    assertEquals("Uptown Express", trip.getTripHeadsign());
+  }
+  
   @Test
   public void testCalendarSimplification() throws IOException,
       TransformSpecificationException {

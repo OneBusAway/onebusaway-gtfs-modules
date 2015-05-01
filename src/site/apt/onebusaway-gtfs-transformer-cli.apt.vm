@@ -168,10 +168,32 @@ Types of Transforms
 {"op":"update", "match":{"file":"routes.txt", "route_short_name":"574"}, "update":{"agency_id":"ST"}}
 +---+
 
-  Normally, update values are used as-is.  However, if you wrap the value in
-  <<<path(...)>>>, the expression will be treated as a compound Java bean properties
-  path expression.  This path expression will be evaluated against the target
-  entity to produce the update value.  Consider the following example:
+  Normally, update values are used as-is.  However, we support a number of
+  special update operations:
+  
+** Find/Replace
+
++---+
+{"op":"update", "match":{"file":"trips.txt"}, "update":{"trip_short_name":"s/North/N/"}}
++---+
+
+  By using <<<s/.../.../>>> syntax in the update value, the update will perform
+  a find-replace operation on the specified property value.  Consider the
+  following example:
+
++---+
+{"op":"update", "match":{"file":"trips.txt"}, "update":{"trip_short_name":"s/North/N/"}}
++---+
+  
+  Here, a trip with a headsign of <<<North Seattle>>> will be updated to
+  <<<N Seattle>>>.
+  
+** Path Expressions 
+
+  By using <<<path(...)>>> syntax in the update value, the expression will be
+  treated as a compound Java bean properties path expression.  This path
+  expression will be evaluated against the target entity to produce the update
+  value.  Consider the following example:
   
 +---+
 {"op":"update", "match":{"file":"trips.txt"}, "update":{"trip_short_name":"path(route.longName)"}}

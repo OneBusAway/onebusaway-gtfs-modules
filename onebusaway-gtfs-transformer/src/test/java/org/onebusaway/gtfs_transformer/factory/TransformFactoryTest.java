@@ -23,7 +23,11 @@ import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
+import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
+import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Route;
+import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.GtfsTransformer;
 import org.onebusaway.gtfs_transformer.TransformSpecificationException;
 import org.onebusaway.gtfs_transformer.factory.EntitiesTransformStrategy.MatchAndTransform;
@@ -31,6 +35,7 @@ import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
 import org.onebusaway.gtfs_transformer.match.EntityMatch;
 import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
+import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.onebusaway.gtfs_transformer.updates.CalendarSimplicationStrategy;
 
 public class TransformFactoryTest {
@@ -68,6 +73,27 @@ public class TransformFactoryTest {
     assertEquals(1, transforms.size());
   }
 
+  @Test
+  public void testEvalInUpdate() throws IOException,
+      TransformSpecificationException {
+    _factory.addModificationsFromString("{'op':'update', "
+        + "'match':{'file':'trips.txt'}, "
+        + "'update':{'trip_headsign': 'path(route.longName)'}}");
+    GtfsTransformStrategy transform = _transformer.getLastTransform();
+    TransformContext context = new TransformContext();
+    GtfsMutableRelationalDao dao = new GtfsRelationalDaoImpl();
+    
+    Route route = new Route();
+    route.setLongName("long cat");
+    Trip trip = new Trip();
+    trip.setId(new AgencyAndId("1", "1"));
+    trip.setRoute(route);
+    dao.saveEntity(trip);
+    
+    transform.run(context, dao);
+    
+    assertEquals("long cat", trip.getTripHeadsign());
+  }
   @Test
   public void testCalendarSimplification() throws IOException,
       TransformSpecificationException {

@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.onebusaway.collections.beans.PropertyInvocationResult;
 import org.onebusaway.collections.beans.PropertyPathCollectionExpression;
-import org.onebusaway.gtfs_transformer.impl.DeferredValueMatcher;
+import org.onebusaway.gtfs_transformer.deferred.DeferredValueMatcher;
 
 public class PropertyAnyValueEntityMatch implements EntityMatch {
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs_transformer.impl;
+package org.onebusaway.gtfs_transformer.deferred;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -26,31 +26,40 @@ import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsReaderContext;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 
-public class DeferredValueSetter {
+/**
+ * In {@lint ValueSetter} implementations, the source value is often a primitive
+ * string but the target value type is often something more complex: a numeric
+ * type, a {@link AgencyAndId}, a field with GTFS-specific formatting, or even a
+ * GTFS entity. Often, the value cannot be properly converted until the moment
+ * of assignment, as it must be resolved against existing and previously
+ * assigned values.
+ * 
+ *  This class provides methods for converting the input value into a resolved
+ * value appropriate for assignment.
+ */
+public class DeferredValueConverter {
 
   private final DeferredValueSupport _support;
 
   private final GtfsRelationalDao _dao;
 
-  private final Object _value;
-
-  public DeferredValueSetter(GtfsReader reader, EntitySchemaCache schemaCache,
-      GtfsRelationalDao dao, Object value) {
+  public DeferredValueConverter(GtfsReader reader,
+      EntitySchemaCache schemaCache, GtfsRelationalDao dao) {
     _support = new DeferredValueSupport(reader, schemaCache);
     _dao = dao;
-    _value = value;
   }
 
-  public void setValue(BeanWrapper bean, String propertyName) {
-    Class<?> expectedValueType = bean.getPropertyType(propertyName);
-    Class<?> actualValueType = _value.getClass();
-    Object resolvedValue = resolveValue(bean, propertyName, expectedValueType,
-        actualValueType);
-    bean.setPropertyValue(propertyName, resolvedValue);
-  }
-
-  private Object resolveValue(BeanWrapper bean, String propertyName,
-      Class<?> expectedValueType, Class<?> actualValueType) {
+  /**
+   * Converts the specified value as appropriate such that the resulting value
+   * can be assigned to the specified property of the specified bean.
+   */
+  public Object convertValue(BeanWrapper targetBean, String targetPropertyName,
+      Object value) {
+    if (value == null) {
+      return null;
+    }
+    Class<?> expectedValueType = targetBean.getPropertyType(targetPropertyName);
+    Class<?> actualValueType = value.getClass();    
 
     /**
      * When we introspect the "id" property of an IdentityBean instance, the
@@ -58,26 +67,26 @@ public class DeferredValueSetter {
      * AgencyAndId. This causes trouble with the "isAssignableFrom" check below,
      * so we do a first check here.
      */
-    Object parentObject = bean.getWrappedInstance(Object.class);
-    if (parentObject instanceof IdentityBean && propertyName.equals("id")) {
+    Object parentObject = targetBean.getWrappedInstance(Object.class);
+    if (parentObject instanceof IdentityBean && targetPropertyName.equals("id")) {
       Class<?> idType = getIdentityBeanIdType(parentObject);
       if (idType == AgencyAndId.class && actualValueType == String.class) {
-        return _support.resolveAgencyAndId(bean, propertyName, (String) _value);
+        return _support.resolveAgencyAndId(targetBean, targetPropertyName, (String) value);
       }
     }
 
     if (expectedValueType.isAssignableFrom(actualValueType)) {
-      return _value;
+      return value;
     }
 
     if (isPrimitiveAssignable(expectedValueType, actualValueType)) {
-      return _value;
+      return value;
     }
 
     if (actualValueType == String.class) {
-      String stringValue = (String) _value;
+      String stringValue = (String) value;
       if (AgencyAndId.class.isAssignableFrom(expectedValueType)) {
-        return _support.resolveAgencyAndId(bean, propertyName, stringValue);
+        return _support.resolveAgencyAndId(targetBean, targetPropertyName, stringValue);
       }
 
       if (IdentityBean.class.isAssignableFrom(expectedValueType)) {
@@ -97,9 +106,9 @@ public class DeferredValueSetter {
       }
       Class<?> parentEntityType = parentObject.getClass();
       Converter converter = _support.resolveConverter(parentEntityType,
-          propertyName, expectedValueType);
+          targetPropertyName, expectedValueType);
       if (converter != null) {
-        return converter.convert(expectedValueType, _value);
+        return converter.convert(expectedValueType, value);
       }
     }
 

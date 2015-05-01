@@ -36,7 +36,7 @@ import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.impl.EntitySchemaCache;
+import org.onebusaway.gtfs_transformer.deferred.EntitySchemaCache;
 
 public class PropertyMethodResolverImplTest {
 

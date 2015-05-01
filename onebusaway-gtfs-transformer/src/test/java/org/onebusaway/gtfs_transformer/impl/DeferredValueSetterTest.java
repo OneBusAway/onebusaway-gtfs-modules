@@ -43,23 +43,6 @@ public class DeferredValueSetterTest {
   @Before
   public void setup() {
     _schemaCache.addEntitySchemasFromGtfsReader(_reader);
-    _reader.setDefaultAgencyId("1");
-  }
-
-  @Test
-  public void testString() {
-    DeferredValueSetter setter = createSetter("Ze Stop");
-    Stop stop = new Stop();
-    setter.setValue(BeanWrapperFactory.wrap(stop), "name");
-    assertEquals("Ze Stop", stop.getName());
-  }
-
-  @Test
-  public void testDouble() {
-    DeferredValueSetter setter = createSetter(47.1);
-    Stop stop = new Stop();
-    setter.setValue(BeanWrapperFactory.wrap(stop), "lat");
-    assertEquals(47.1, stop.getLat(), 0.0);
   }
 
   @Test
@@ -68,62 +51,6 @@ public class DeferredValueSetterTest {
     Stop stop = new Stop();
     setter.setValue(BeanWrapperFactory.wrap(stop), "locationType");
     assertEquals(1, stop.getLocationType());
-  }
-
-  @Test
-  public void testCsvFieldMappingTime() {
-    DeferredValueSetter setter = createSetter("06:00:00");
-    StopTime stopTime = new StopTime();
-    setter.setValue(BeanWrapperFactory.wrap(stopTime), "arrivalTime");
-    assertEquals(6 * 60 * 60, stopTime.getArrivalTime());
-  }
-
-  @Test
-  public void testCsvFieldMappingServiceDate() {
-    DeferredValueSetter setter = createSetter("20130105");
-    ServiceCalendar calendar = new ServiceCalendar();
-    setter.setValue(BeanWrapperFactory.wrap(calendar), "startDate");
-    assertEquals(new ServiceDate(2013, 1, 5), calendar.getStartDate());
-  }
-
-  @Test
-  public void testAgencAndId_DefaultAgencyId() {
-    DeferredValueSetter setter = createSetter("123");
-    Stop stop = new Stop();
-    setter.setValue(BeanWrapperFactory.wrap(stop), "id");
-    assertEquals(new AgencyAndId("1", "123"), stop.getId());
-  }
-
-  @Test
-  public void testAgencAndId_ExistingAgencyId() {
-    DeferredValueSetter setter = createSetter("123");
-    Stop stop = new Stop();
-    stop.setId(new AgencyAndId("2", "456"));
-    setter.setValue(BeanWrapperFactory.wrap(stop), "id");
-    assertEquals(new AgencyAndId("2", "123"), stop.getId());
-  }
-
-  @Test
-  public void testEntity() {
-    Agency agency = new Agency();
-    agency.setId("1");
-    _dao.saveEntity(agency);
-    DeferredValueSetter setter = createSetter("1");
-    Route route = new Route();
-    setter.setValue(BeanWrapperFactory.wrap(route), "agency");
-    assertEquals(agency, route.getAgency());
-  }
-
-  @Test
-  public void testEntity_AgencyAndId() {
-    Route route = new Route();
-    route.setId(new AgencyAndId("1", "10"));
-    _reader.injectEntity(route);
-    _dao.saveEntity(route);
-    DeferredValueSetter setter = createSetter("10");
-    Trip trip = new Trip();
-    setter.setValue(BeanWrapperFactory.wrap(trip), "route");
-    assertEquals(route, trip.getRoute());
   }
 
   private DeferredValueSetter createSetter(Object value) {

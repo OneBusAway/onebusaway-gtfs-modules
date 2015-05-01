@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs_transformer.impl;
+package org.onebusaway.gtfs_transformer.deferred;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 import org.onebusaway.csv_entities.schema.DefaultFieldMapping;

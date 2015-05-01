@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Google, Inc.
+ * Copyright (C) 2012 Google, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,35 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs_transformer.impl;
+package org.onebusaway.gtfs_transformer.deferred;
 
-import org.onebusaway.collections.beans.PropertyPathExpression;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 
-/**
- * Implementation of {@link ValueSetter} that evaluates a
- * {@link PropertyPathExpression} on the target bean to determine the new value
- * used in setting.
- */
-public class PropertyPathExpressionValueSetter implements ValueSetter {
-  
+public class DeferredValueSetter implements ValueSetter {
+
   private final DeferredValueConverter _converter;
 
-  private final PropertyPathExpression _expression;
+  private final Object _value;
 
-  public PropertyPathExpressionValueSetter(GtfsReader reader,
-      EntitySchemaCache schemaCache, GtfsRelationalDao dao,
-      PropertyPathExpression expression) {
+  public DeferredValueSetter(GtfsReader reader, EntitySchemaCache schemaCache,
+      GtfsRelationalDao dao, Object value) {
     _converter = new DeferredValueConverter(reader, schemaCache, dao);
-    _expression = expression;
+    _value = value;
   }
 
   @Override
   public void setValue(BeanWrapper bean, String propertyName) {
-    Object result = _expression.invoke(bean.getWrappedInstance(Object.class));
-    Object resolvedValue = _converter.convertValue(bean, propertyName, result);
+    Object resolvedValue = _converter.convertValue(bean, propertyName, _value);
     bean.setPropertyValue(propertyName, resolvedValue);
   }
 }

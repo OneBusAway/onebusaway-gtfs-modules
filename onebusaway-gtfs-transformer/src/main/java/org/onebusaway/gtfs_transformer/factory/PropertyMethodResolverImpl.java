@@ -29,7 +29,7 @@ import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
-import org.onebusaway.gtfs_transformer.impl.EntitySchemaCache;
+import org.onebusaway.gtfs_transformer.deferred.EntitySchemaCache;
 
 class PropertyMethodResolverImpl extends DefaultPropertyMethodResolver {
 

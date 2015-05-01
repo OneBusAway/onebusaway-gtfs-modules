@@ -35,7 +35,7 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
 
   private int paymentMethod;
 
-  @CsvField(optional = true)
+  @CsvField(optional = true, alwaysIncludeInOutput = true)
   private int transfers = MISSING_VALUE;
 
   @CsvField(optional = true)

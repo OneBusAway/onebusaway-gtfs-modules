@@ -55,6 +55,9 @@ public class DeferredValueConverter {
    */
   public Object convertValue(BeanWrapper targetBean, String targetPropertyName,
       Object value) {
+    if (value == null) {
+      return null;
+    }
     Class<?> expectedValueType = targetBean.getPropertyType(targetPropertyName);
     Class<?> actualValueType = value.getClass();    
 

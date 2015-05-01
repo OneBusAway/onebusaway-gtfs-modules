@@ -44,6 +44,7 @@ import org.onebusaway.gtfs_transformer.deferred.DeferredValueMatcher;
 import org.onebusaway.gtfs_transformer.deferred.DeferredValueSetter;
 import org.onebusaway.gtfs_transformer.deferred.EntitySchemaCache;
 import org.onebusaway.gtfs_transformer.deferred.PropertyPathExpressionValueSetter;
+import org.onebusaway.gtfs_transformer.deferred.ReplaceValueSetter;
 import org.onebusaway.gtfs_transformer.deferred.ValueSetter;
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
 import org.onebusaway.gtfs_transformer.impl.ServiceIdTransformStrategyImpl;
@@ -122,6 +123,8 @@ public class TransformFactory {
   private static Pattern _anyMatcher = Pattern.compile("^any\\((.*)\\)$");
   
   private static Pattern _pathMatcher = Pattern.compile("^path\\((.*)\\)$");
+  
+  private static Pattern _replaceMatcher = Pattern.compile("^s/(.*)/(.*)/$");
 
   private final GtfsTransformer _transformer;
 
@@ -599,16 +602,21 @@ public class TransformFactory {
   }
 
   private ValueSetter createSetterForValue(Object value) {
-    Matcher m = _pathMatcher.matcher(value.toString());
-    if (m.matches()) {
+    String stringValue = value.toString();
+    Matcher pathMatcher = _pathMatcher.matcher(stringValue);
+    if (pathMatcher.matches()) {
       PropertyPathExpression expression = new PropertyPathExpression(
-          m.group(1));
+          pathMatcher.group(1));
       return new PropertyPathExpressionValueSetter(_transformer.getReader(),
           _schemaCache, _transformer.getDao(), expression);
-    } else {
-      return new DeferredValueSetter(_transformer.getReader(), _schemaCache,
-          _transformer.getDao(), value);
     }
+    Matcher replaceMatcher = _replaceMatcher.matcher(stringValue);
+    if (replaceMatcher.matches()) {
+      return new ReplaceValueSetter(replaceMatcher.group(1),
+          replaceMatcher.group(2));
+    }
+    return new DeferredValueSetter(_transformer.getReader(), _schemaCache,
+        _transformer.getDao(), value);
   }
 
   private Map<String, DeferredValueMatcher> getPropertyValueMatchersFromJsonObject(

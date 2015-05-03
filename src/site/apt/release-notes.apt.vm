@@ -11,6 +11,8 @@ Release Notes
 
   * Bug fix for default-value <<<timepoint>>> field in <<<stop_times.txt>>> - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/46}issue}}
 
+  * Bug fix to ensure fare_attributes.txt transfers column is always included in GTFS output - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/50}issue}}
+
   * Support for "<<<path(...)>>>" expressions in GTFS transformer <<<update>>> ops - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/48}issue}}
 
   * Support for "<<<s/.../.../>>>" expressions in GTFS transformer <<<update>>> ops - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/52}issue}}

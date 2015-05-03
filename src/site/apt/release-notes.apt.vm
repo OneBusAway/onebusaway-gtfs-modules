@@ -2,6 +2,19 @@ Release Notes
 
 * ${currentVersion}
 
+  * Support for "extensions", allowing users of the library to add new GTFS fields for existing files, for reading and writing, without
+    needing to modify OneBusAway source code.  For more details, see {{{./index.html#Reading_Custom_Fields}Reading Custom Fields}}.
+
+  * Support for the proposed <<<route_sort_order>>> field in <<<routes.txt>>>.
+
+  * Support for the <<<pathway_type>>> field in <<<pathways.txt>>>.
+
+  * Bug fix for default-value <<<timepoint>>> field in <<<stop_times.txt>>> - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/46}issue}}
+
+  * Support for "<<<path(...)>>>" expressions in GTFS transformer <<<update>>> ops - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/48}issue}}
+
+  * Support for "<<<s/.../.../>>>" expressions in GTFS transformer <<<update>>> ops - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/52}issue}}
+
   * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
 
 * 1.3.3

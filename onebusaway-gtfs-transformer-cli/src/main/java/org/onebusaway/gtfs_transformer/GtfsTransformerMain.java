@@ -97,23 +97,30 @@ public class GtfsTransformerMain {
     } catch (MissingOptionException ex) {
       System.err.println("Missing argument: " + ex.getMessage());
       printHelp();
+      System.exit(-2);
     } catch (MissingArgumentException ex) {
       System.err.println("Missing argument: " + ex.getMessage());
       printHelp();
+      System.exit(-2);
     } catch (UnrecognizedOptionException ex) {
       System.err.println("Unknown argument: " + ex.getMessage());
       printHelp();
+      System.exit(-2);
     } catch (AlreadySelectedException ex) {
       System.err.println("Argument already selected: " + ex.getMessage());
       printHelp();
+      System.exit(-2);
     } catch (ParseException ex) {
       System.err.println(ex.getMessage());
       printHelp();
+      System.exit(-2);
     } catch (TransformSpecificationException ex) {
       System.err.println("error with transform line: " + ex.getLine());
       System.err.println(ex.getMessage());
+      System.exit(-1);
     } catch (Exception ex) {
       ex.printStackTrace();
+      System.exit(-1);
     }
   }
 

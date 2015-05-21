@@ -178,7 +178,8 @@ public class GtfsTransformerMain {
     GtfsTransformer transformer = new GtfsTransformer();
     transformer.setGtfsInputDirectories(paths);
     transformer.setOutputDirectory(new File(args[args.length - 1]));
-
+    _log.info("output path: " + args[args.length - 1]);
+    
     Option[] options = getOptionsInCommandLineOrder(cli, originalArgs);
 
     for (Option option : options) {

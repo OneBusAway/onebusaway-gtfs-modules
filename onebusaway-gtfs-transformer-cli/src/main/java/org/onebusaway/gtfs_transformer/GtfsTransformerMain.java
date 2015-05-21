@@ -39,8 +39,12 @@ import org.onebusaway.gtfs_transformer.updates.EnsureStopTimesIncreaseUpdateStra
 import org.onebusaway.gtfs_transformer.updates.LocalVsExpressUpdateStrategy;
 import org.onebusaway.gtfs_transformer.updates.RemoveDuplicateTripsStrategy;
 import org.onebusaway.gtfs_transformer.updates.RemoveRepeatedStopTimesStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GtfsTransformerMain {
+  
+  private static Logger _log = LoggerFactory.getLogger(GtfsTransformerMain.class);
 
   /****
    * Generic Arguments
@@ -162,6 +166,7 @@ public class GtfsTransformerMain {
     List<File> paths = new ArrayList<File>();
     for (int i = 0; i < args.length - 1; ++i) {
       paths.add(new File(args[i]));
+      _log.info("input path: " + args[i]);
     }
     GtfsTransformer transformer = new GtfsTransformer();
     transformer.setGtfsInputDirectories(paths);

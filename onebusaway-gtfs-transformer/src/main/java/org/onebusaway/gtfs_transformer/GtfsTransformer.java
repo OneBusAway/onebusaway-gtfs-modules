@@ -36,8 +36,12 @@ import org.onebusaway.gtfs_transformer.services.GtfsEntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.SchemaUpdateStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GtfsTransformer {
+  
+  private static Logger _log = LoggerFactory.getLogger(GtfsTransformer.class);
 
   /*****************************************************************************
    * 
@@ -148,6 +152,7 @@ public class GtfsTransformer {
       _reader.setDefaultAgencyId(_agencyId);
 
     for (File path : _gtfsInputDirectories) {
+      _log.info("reading gtfs from " + path);
       _reader.setInputLocation(path);
       _reader.run();
     }

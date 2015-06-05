@@ -16,10 +16,15 @@
 package org.onebusaway.gtfs_merge.strategies;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.onebusaway.collections.MappingLibrary;
 import org.onebusaway.collections.Max;
@@ -30,6 +35,8 @@ import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 import org.onebusaway.gtfs_merge.strategies.scoring.AndDuplicateScoringStrategy;
 import org.onebusaway.gtfs_merge.strategies.scoring.DuplicateScoringSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract base class that defines common methods and properties for merging
@@ -41,7 +48,7 @@ import org.onebusaway.gtfs_merge.strategies.scoring.DuplicateScoringSupport;
  */
 public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends IdentityBean<?>>
     extends AbstractSingleEntityMergeStrategy<T> {
-
+  private static Logger _log = LoggerFactory.getLogger(AbstractIdentifiableSingleEntityMergeStrategy.class);
   /**
    * When comparing entities between two feeds to see if they are duplicates, we
    * use the specified scoring strategy to score the amount of duplication
@@ -159,24 +166,48 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
     /**
      * First we determine a rough set of potentially overlapping entities based
      * on a fuzzy match.
+     * 
+     * We break up the list of searches and spread it across available CPUs.
      */
-    Set<T> remainingSourceEntities = new HashSet<T>(sourceEntities);
-    for (T targetEntity : targetEntities) {
-      Max<T> best = new Max<T>();
-      for (T sourceEntity : remainingSourceEntities) {
-        double score = _duplicateScoringStrategy.score(context, sourceEntity,
-            targetEntity);
-        if (score < _minElementDuplicateScoreForFuzzyMatch) {
-          continue;
-        }
-        best.add(score, sourceEntity);
-      }
+    int cpus = Runtime.getRuntime().availableProcessors();
+    int start = 0;
+    int end = targetEntities.size() / cpus;
+    int increment = targetEntities.size() / cpus;
+    ExecutorService executorService = Executors.newFixedThreadPool(cpus);
+    List<Result> results = new ArrayList<Result>(cpus);
+    for (int i = 0; i < cpus; i++) {
+      Collection<T> t_targetEntities = (Collection<T>) target.getAllEntitiesForType(_entityType);
+      Collection<T> t_sourceEntities = (Collection<T>) source.getAllEntitiesForType(_entityType);
+      Set<T> t_remainingSourceEntities = new HashSet<T>(t_sourceEntities);
 
-      if (best.getMaxElement() != null) {
-        duplicateElements++;
-        totalScore += best.getMaxValue();
-        remainingSourceEntities.remove(best.getMaxElement());
+      Result result = new Result();
+      results.add(result);
+      executorService.submit(new ScoringTask<T>(context, _duplicateScoringStrategy, t_targetEntities, t_remainingSourceEntities, start, end, _minElementsInCommonScoreForAutoDetect, result));
+      start = end + 1;
+      end = end + increment;
+    }
+    
+    try {
+      // give the executor a chance to run
+      Thread.sleep(1 * 1000);
+    } catch (InterruptedException e1) {
+      return false;
+    }
+    
+    int i = 0;
+    for (Result result : results) {
+      while (!result.isDone()) {
+        try {
+          _log.info("waiting on thread[" + i + "] at " + (int)(result.getPercentComplete() * 100) + "% complete (" + _entityType + ")");
+          Thread.sleep(30 * 1000);
+        } catch (InterruptedException e) {
+          return false;
+        }
       }
+      duplicateElements += result.getDuplicateElements();
+      totalScore += result.getTotalScore();
+      i++;
+      // we no longer remove the best match to avoid concurrency issues
     }
 
     /**
@@ -289,5 +320,120 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
       agencyAndId = MergeSupport.renameAgencyAndId(context, agencyAndId);
       bean.setId(agencyAndId);
     }
+  }
+  
+  private static class Result {
+    private double duplicateElements = 0.0;
+    private double totalScore = 0.0;
+    private boolean done = false;
+    private double percentComplete = 0.0;
+    public Result() {
+    }
+    public double getDuplicateElements() {
+      return duplicateElements;
+    }
+    public void setDuplicateElements(double duplicateElements) {
+      this.duplicateElements = duplicateElements;
+    }
+    public double getTotalScore() {
+      return totalScore;
+    }
+    public void setTotalScore(double totalScore) {
+      this.totalScore = totalScore;
+    }
+    public void setDone() {
+      done = true;
+    }
+    public boolean isDone() {
+      return done;
+    }
+    public double getPercentComplete() {
+      return percentComplete;
+    }
+    public void setPercentComplete(double percentComplete) {
+      this.percentComplete = percentComplete;
+    }
+  }
+  
+  public static class ScoringTask<T> implements Runnable {
+    private GtfsMergeContext context; 
+    protected AndDuplicateScoringStrategy<T> duplicateScoringStrategy;
+    private Collection<T> targetEntities; 
+    private Collection<T> remainingSourceEntities; 
+    private int start; 
+    private int end;
+    private double min;
+    private Result result;
+
+    public Result getResult() {
+      return result;
+    }
+    
+    public ScoringTask(GtfsMergeContext context, 
+        AndDuplicateScoringStrategy<T> duplicateScoringStrategy,
+        Collection<T> targetEntities, 
+        Collection<T> remainingSourceEntities, 
+        int start, 
+        int end,
+        double min, Result result) {
+      this.context = context;
+      this.duplicateScoringStrategy = duplicateScoringStrategy;
+      this.targetEntities = targetEntities;
+      this.remainingSourceEntities = remainingSourceEntities;
+      this.start = start;
+      this.end = end;
+      this.result = result;
+    }
+
+    @Override
+    public void run() {
+      try {
+        score(context, duplicateScoringStrategy, targetEntities, remainingSourceEntities, start, end, min, result);
+      } catch (Throwable t) {
+        _log.error("scoring thread broke:", t);
+      } finally {
+        result.setDone();
+      }
+    }
+    
+    private void score(GtfsMergeContext context, 
+        AndDuplicateScoringStrategy<T> duplicateScoringStrategy,
+        Collection<T> targetEntities, 
+        Collection<T> remainingSourceEntities, 
+        int start, 
+        int end,
+        double min,
+        Result result) {
+      double duplicateElements = 0;
+      double totalScore = 0;
+      Iterator<T> iterator = targetEntities.iterator();
+      for (int i=0; i < start; i++) {
+        iterator.next();
+      }
+      for (int i = start; i< end; i++) {
+        if (i % 20 == 0) {
+          double percent = ((double)i-start) / (end - start);
+          result.setPercentComplete(percent);
+        }
+        T targetEntity = iterator.next();
+        Max<T> best = new Max<T>();
+        for (T sourceEntity : remainingSourceEntities) {
+          double score = duplicateScoringStrategy.score(context, sourceEntity,
+              targetEntity);
+          if (score < min) {
+            continue;
+          }
+          best.add(score, sourceEntity);
+        }
+
+        if (best.getMaxElement() != null) {
+          duplicateElements++;
+          totalScore += best.getMaxValue();
+        }
+      }
+      result.setDuplicateElements(duplicateElements);
+      result.setTotalScore(totalScore);
+    }
+
   }
 }

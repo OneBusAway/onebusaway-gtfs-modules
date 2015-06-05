@@ -15,7 +15,9 @@
  */
 package org.onebusaway.gtfs_merge.strategies.scoring;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.onebusaway.gtfs.model.Route;
@@ -37,8 +39,13 @@ public class RouteStopsInCommonDuplicateScoringStrategy implements
 
   private Set<Stop> getAllStopsForRoute(GtfsRelationalDao dao, Route route) {
     Set<Stop> stops = new HashSet<Stop>();
-    for (Trip trip : dao.getTripsForRoute(route)) {
-      for (StopTime stopTime : dao.getStopTimesForTrip(trip)) {
+    List<Trip> tripsForRoute = new ArrayList<Trip>();
+    // make this thread safe
+    tripsForRoute.addAll(dao.getTripsForRoute(route));
+    for (Trip trip : tripsForRoute) {
+      List<StopTime> stopTimesForTrip = new ArrayList<StopTime>();
+      stopTimesForTrip.addAll(dao.getStopTimesForTrip(trip));
+      for (StopTime stopTime : stopTimesForTrip) {
         stops.add(stopTime.getStop());
       }
     }

@@ -175,18 +175,25 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
     int increment = targetEntities.size() / cpus;
     ExecutorService executorService = Executors.newFixedThreadPool(cpus);
     List<Result> results = new ArrayList<Result>(cpus);
-    for (int i = 0; i < cpus; i++) {
-      Collection<T> t_targetEntities = (Collection<T>) target.getAllEntitiesForType(_entityType);
-      Collection<T> t_sourceEntities = (Collection<T>) source.getAllEntitiesForType(_entityType);
-      Set<T> t_remainingSourceEntities = new HashSet<T>(t_sourceEntities);
-
+    if (end < 10) {
+      // no need to segregate is set is small
+      Set<T> remainingSourceEntities = new HashSet<T>(sourceEntities);
       Result result = new Result();
       results.add(result);
-      executorService.submit(new ScoringTask<T>(context, _duplicateScoringStrategy, t_targetEntities, t_remainingSourceEntities, start, end, _minElementsInCommonScoreForAutoDetect, result));
-      start = end + 1;
-      end = end + increment;
-    }
-    
+      executorService.submit(new ScoringTask<T>(context, _duplicateScoringStrategy, targetEntities, remainingSourceEntities, 0, targetEntities.size(), _minElementsInCommonScoreForAutoDetect, result));
+    } else {
+      for (int i = 0; i < cpus; i++) {
+        Collection<T> t_targetEntities = (Collection<T>) target.getAllEntitiesForType(_entityType);
+        Collection<T> t_sourceEntities = (Collection<T>) source.getAllEntitiesForType(_entityType);
+        Set<T> t_remainingSourceEntities = new HashSet<T>(t_sourceEntities);
+  
+        Result result = new Result();
+        results.add(result);
+        executorService.submit(new ScoringTask<T>(context, _duplicateScoringStrategy, t_targetEntities, t_remainingSourceEntities, start, end, _minElementsInCommonScoreForAutoDetect, result));
+        start = end + 1;
+        end = end + increment;
+      }
+    }    
     try {
       // give the executor a chance to run
       Thread.sleep(1 * 1000);

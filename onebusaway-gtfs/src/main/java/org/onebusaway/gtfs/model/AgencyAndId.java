@@ -32,6 +32,22 @@ public class AgencyAndId implements Serializable, Comparable<AgencyAndId> {
 
   }
 
+  /**
+   * Single-argument constructor required for Jackson2/Gson de-serialization.
+   * 
+   * @param agencyAndId
+   * @throws {@link IllegalArgumentException} if {@code agencyAndId} is missing {@code ID_SEPARATOR}. 
+   */
+  public AgencyAndId(String agencyAndId) throws IllegalArgumentException {
+    String[] arr = agencyAndId.split(ID_SEPARATOR + "");
+    if (arr != null && arr.length == 2) {
+      this.agencyId = arr[0];
+      this.id = arr[1];
+    } else {
+      throw new IllegalArgumentException("invalid agency-and-id: " + agencyAndId+", expected ID_SEPARATOR '"+ID_SEPARATOR+"'");
+    }
+  }
+
   public AgencyAndId(String agencyId, String id) {
     this.agencyId = agencyId;
     this.id = id;

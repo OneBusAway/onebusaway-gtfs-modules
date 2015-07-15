@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
+ * Copyright (C) 2015 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,93 +16,63 @@
  */
 package org.onebusaway.gtfs_transformer.factory;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.collections.IdKey;
 import org.onebusaway.gtfs_transformer.collections.IdKeyMatch;
-import org.onebusaway.gtfs_transformer.match.EntityMatch;
 import org.onebusaway.gtfs_transformer.match.TypedEntityMatch;
 import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public class EntitiesTransformStrategy implements GtfsTransformStrategy {
 
-  private Map<Class<?>, List<MatchAndTransform>> _modificationsByType = new HashMap<Class<?>, List<MatchAndTransform>>();
-
+  private List<MatchAndTransform> _modifications = new ArrayList<MatchAndTransform>();
+  
+  public List<MatchAndTransform> getModifications() {
+    return _modifications;
+  }
+  
   public void addModification(TypedEntityMatch match,
       EntityTransformStrategy modification) {
-
-    List<MatchAndTransform> modifications = getModificationsForType(
-        match.getType(), _modificationsByType);
-    modifications.add(new MatchAndTransform(match.getPropertyMatches(),
-        modification));
-  }
-
-  public List<MatchAndTransform> getTransformsForType(Class<?> entityType) {
-    List<MatchAndTransform> transforms = _modificationsByType.get(entityType);
-    if (transforms == null) {
-      return Collections.emptyList();
-    }
-    return transforms;
+    _modifications.add(new MatchAndTransform(match, modification));
   }
 
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-    for (Map.Entry<Class<?>, List<MatchAndTransform>> entry : _modificationsByType.entrySet()) {
-
-      Class<?> entityType = entry.getKey();
-      List<MatchAndTransform> modifications = entry.getValue();
+    for (MatchAndTransform modification : _modifications) {
+      TypedEntityMatch match = modification.getMatch();
+      Class<?> entityType = match.getType();
+      EntityTransformStrategy transform = modification.getTransform();
       if (IdKey.class.isAssignableFrom(entityType)) {
-        for (MatchAndTransform pair : modifications) {
-          IdKeyMatch match = (IdKeyMatch) pair.match;
-          pair.transform.run(context, dao, match.getKey());
-        }
+        IdKeyMatch keyMatch = (IdKeyMatch) match.getPropertyMatches();
+        transform.run(context, dao, keyMatch.getKey());
       } else {
-        Collection<Object> entities = new ArrayList<Object>(
-            dao.getAllEntitiesForType(entityType));
+        Collection<Object> entities = new ArrayList<Object>(dao.getAllEntitiesForType(entityType));
         for (Object object : entities) {
-          for (MatchAndTransform pair : modifications) {
-            if (pair.match.isApplicableToObject(object)) {
-              pair.transform.run(context, dao, object);
-            }
+          if (match.isApplicableToObject(object)) {
+            transform.run(context, dao, object);
           }
         }
       }
     }
   }
 
-  private List<MatchAndTransform> getModificationsForType(Class<?> type,
-      Map<Class<?>, List<MatchAndTransform>> m) {
-
-    List<MatchAndTransform> modifications = m.get(type);
-
-    if (modifications == null) {
-      modifications = new ArrayList<MatchAndTransform>();
-      m.put(type, modifications);
-    }
-
-    return modifications;
-  }
-
   public static class MatchAndTransform {
-    private final EntityMatch match;
+    private final TypedEntityMatch match;
     private final EntityTransformStrategy transform;
 
-    public MatchAndTransform(EntityMatch match,
+    public MatchAndTransform(TypedEntityMatch match,
         EntityTransformStrategy transform) {
       this.match = match;
       this.transform = transform;
     }
 
-    public EntityMatch getMatch() {
+    public TypedEntityMatch getMatch() {
       return match;
     }
 

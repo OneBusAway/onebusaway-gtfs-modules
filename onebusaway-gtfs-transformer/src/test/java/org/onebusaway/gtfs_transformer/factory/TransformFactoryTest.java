@@ -50,7 +50,7 @@ public class TransformFactoryTest {
     GtfsTransformStrategy transform = _transformer.getLastTransform();
     assertEquals(EntitiesTransformStrategy.class, transform.getClass());
     EntitiesTransformStrategy strategy = (EntitiesTransformStrategy) transform;
-    List<MatchAndTransform> transforms = strategy.getTransformsForType(Route.class);
+    List<MatchAndTransform> transforms = strategy.getModifications();
     assertEquals(1, transforms.size());
     MatchAndTransform pair = transforms.get(0);
     EntityMatch match = pair.getMatch();
@@ -69,7 +69,7 @@ public class TransformFactoryTest {
     GtfsTransformStrategy transform = _transformer.getLastTransform();
     assertEquals(EntitiesTransformStrategy.class, transform.getClass());
     EntitiesTransformStrategy strategy = (EntitiesTransformStrategy) transform;
-    List<MatchAndTransform> transforms = strategy.getTransformsForType(Route.class);
+    List<MatchAndTransform> transforms = strategy.getModifications();
     assertEquals(1, transforms.size());
   }
 

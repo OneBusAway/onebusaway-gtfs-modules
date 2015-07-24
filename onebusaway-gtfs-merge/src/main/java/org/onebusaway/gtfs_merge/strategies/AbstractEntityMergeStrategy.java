@@ -94,6 +94,12 @@ public abstract class AbstractEntityMergeStrategy implements
   protected ELogDuplicatesStrategy _logDuplicatesStrategy = ELogDuplicatesStrategy.NONE;
 
   /**
+   * Conventions for renaming duplicates.  Default is CONTEXT, which appends
+   * an arbitrary character prefix to the id to enforce uniqueness.
+   */
+  private EDuplicateRenamingStrategy _duplicateRenamingStrategy = EDuplicateRenamingStrategy.CONTEXT;
+
+  /**
    * Set a duplicate detection strategy. By default, we attempt to auto-detect
    * an appropriate strategy.
    * 
@@ -109,6 +115,14 @@ public abstract class AbstractEntityMergeStrategy implements
     _logDuplicatesStrategy = logDuplicatesStrategy;
   }
 
+  public void setDuplicateRenamingStrategy(EDuplicateRenamingStrategy duplicateRenamingStrategy) {
+    _duplicateRenamingStrategy = duplicateRenamingStrategy;
+  }
+  
+  public EDuplicateRenamingStrategy getDuplicateRenamingStrategy() {
+    return _duplicateRenamingStrategy;
+  }
+  
   /**
    * Determines the best {@link EDuplicateDetectionStrategy} to use for the
    * current entity type and source feed. If a specific duplicate detection

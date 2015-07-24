@@ -15,11 +15,15 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
+import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
+import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 import org.onebusaway.gtfs_merge.strategies.scoring.StopDistanceDuplicateScoringStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Entity merge strategy for handling {@link Stop} entities.
@@ -29,9 +33,11 @@ import org.onebusaway.gtfs_merge.strategies.scoring.StopDistanceDuplicateScoring
 public class StopMergeStrategy extends
     AbstractIdentifiableSingleEntityMergeStrategy<Stop> {
 
+  private static Logger _log = LoggerFactory.getLogger(StopMergeStrategy.class);
+  
   public StopMergeStrategy() {
     super(Stop.class);
-    // _duplicateScoringStrategy.addPropertyMatch("name");
+    _duplicateScoringStrategy.addPropertyMatch("name");
     _duplicateScoringStrategy.addStrategy(new StopDistanceDuplicateScoringStrategy());
   }
 
@@ -46,5 +52,16 @@ public class StopMergeStrategy extends
         oldStop, newStop, "fromStop", "toStop");
     MergeSupport.bulkReplaceValueInProperties(source.getAllPathways(), oldStop,
         newStop, "fromStop", "toStop");
+  }
+
+  @Override
+  protected void save(GtfsMergeContext context, IdentityBean<?> entity) {
+    GtfsRelationalDao source = context.getSource();
+    GtfsMutableRelationalDao target = context.getTarget();
+    
+    Stop stop = (Stop) entity;
+    
+    super.save(context, entity);
+    
   }
 }

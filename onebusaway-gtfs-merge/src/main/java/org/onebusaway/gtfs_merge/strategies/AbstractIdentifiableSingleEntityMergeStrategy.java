@@ -324,8 +324,16 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
     if (id != null && id instanceof AgencyAndId) {
       IdentityBean<AgencyAndId> bean = (IdentityBean<AgencyAndId>) entity;
       AgencyAndId agencyAndId = bean.getId();
-      agencyAndId = MergeSupport.renameAgencyAndId(context, agencyAndId);
-      bean.setId(agencyAndId);
+      AgencyAndId newAgencyAndId;
+      if (this.getDuplicateRenamingStrategy() == EDuplicateRenamingStrategy.AGENCY) {
+        newAgencyAndId = MergeSupport.renameAgencyAndId(agencyAndId.getAgencyId()+"-", agencyAndId);
+        _log.info(agencyAndId.toString() + " renamed(1) to " + newAgencyAndId);
+      } else {
+        newAgencyAndId = MergeSupport.renameAgencyAndId(context, agencyAndId);
+        _log.info(agencyAndId.toString() + " renamed(2) to " + newAgencyAndId);
+      }
+      
+      bean.setId(newAgencyAndId);
     }
   }
   

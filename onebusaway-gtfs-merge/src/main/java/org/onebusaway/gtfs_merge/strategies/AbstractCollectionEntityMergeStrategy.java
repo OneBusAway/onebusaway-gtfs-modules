@@ -316,8 +316,14 @@ public abstract class AbstractCollectionEntityMergeStrategy<KEY extends Serializ
   @SuppressWarnings("unchecked")
   private KEY getRenamedKey(GtfsMergeContext context, KEY key) {
     if (key instanceof String) {
+      if (this.getDuplicateRenamingStrategy() == EDuplicateRenamingStrategy.AGENCY) {
+        _log.warn("rename with type String not supported for key=" + key);
+      }
       return (KEY) (context.getPrefix() + key);
     } else if (key instanceof AgencyAndId) {
+      if (this.getDuplicateRenamingStrategy() == EDuplicateRenamingStrategy.AGENCY) {
+        return (KEY) MergeSupport.renameAgencyAndId(((AgencyAndId) key).getAgencyId()+"-", (AgencyAndId) key);
+      }
       return (KEY) MergeSupport.renameAgencyAndId(context, (AgencyAndId) key);
     }
     throw new UnsupportedOperationException("uknown key type: "

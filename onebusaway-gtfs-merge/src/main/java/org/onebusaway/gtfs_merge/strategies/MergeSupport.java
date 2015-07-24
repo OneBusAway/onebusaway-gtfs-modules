@@ -38,7 +38,12 @@ public class MergeSupport {
 
   public static AgencyAndId renameAgencyAndId(GtfsMergeContext context,
       AgencyAndId id) {
-    return new AgencyAndId(id.getAgencyId(), context.getPrefix() + id.getId());
+    return renameAgencyAndId(context.getPrefix(), id);
+  }
+  
+  public static AgencyAndId renameAgencyAndId(String prefix,
+      AgencyAndId id) {
+    return new AgencyAndId(id.getAgencyId(), prefix + id.getId());
   }
 
   public static void clearCaches(GtfsRelationalDao source) {

@@ -60,6 +60,8 @@ public class GtfsTransformer {
   private TransformContext _context = new TransformContext();
 
   private GtfsReader _reader = new GtfsReader();
+  
+  private GtfsWriter _writer = new GtfsWriter();
 
   private GtfsMutableRelationalDao _dao = new GtfsRelationalDaoImpl();
 
@@ -107,6 +109,10 @@ public class GtfsTransformer {
 
   public GtfsReader getReader() {
     return _reader;
+  }
+  
+  public GtfsWriter getWriter() {
+    return _writer;
   }
 
   public GtfsRelationalDao getDao() {
@@ -167,8 +173,8 @@ public class GtfsTransformer {
     if (_outputDirectory == null) {
       return;
     }
-    GtfsWriter writer = new GtfsWriter();
-    writer.setOutputLocation(_outputDirectory);
+
+    _writer.setOutputLocation(_outputDirectory);
 
     DefaultEntitySchemaFactory schemaFactory = new DefaultEntitySchemaFactory();
     schemaFactory.addFactory(GtfsEntitySchemaFactory.createEntitySchemaFactory());
@@ -176,9 +182,9 @@ public class GtfsTransformer {
     for (SchemaUpdateStrategy strategy : _outputSchemaUpdates)
       strategy.updateSchema(schemaFactory);
 
-    writer.setEntitySchemaFactory(schemaFactory);
+    _writer.setEntitySchemaFactory(schemaFactory);
 
-    writer.run(_dao);
+    _writer.run(_dao);
   }
 
   private class DaoInterceptor extends GenericMutableDaoWrapper {

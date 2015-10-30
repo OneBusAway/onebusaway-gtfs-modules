@@ -342,7 +342,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.shapeDistTraveled = MISSING_VALUE;
   }
 
-  public String getFare_period_id() {
+  public String getFarePeriodId() {
     return fare_period_id;
   }
 

@@ -155,4 +155,8 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
     return fare_period_id;
   }
 
+  public void setFarePeriodId(String farePeriodId) {
+    this.fare_period_id = farePeriodId;
+  }
+  
 }

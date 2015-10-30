@@ -346,6 +346,10 @@ public final class StopTime extends IdentityBean<Integer> implements
     return fare_period_id;
   }
 
+  public void setFarePeriodId(String farePeriodId) {
+    this.fare_period_id = farePeriodId;
+  }
+
   public int compareTo(StopTime o) {
     return this.getStopSequence() - o.getStopSequence();
   }

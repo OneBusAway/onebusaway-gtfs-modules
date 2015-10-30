@@ -7,7 +7,7 @@
   </parent>
 
   <artifactId>onebusaway-gtfs-modules</artifactId>
-  <version>1.3.5-SNAPSHOT</version>
+  <version>1.3.5-conveyal-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>onebusaway-gtfs-modules</name>
@@ -46,12 +46,6 @@
 
   <modules>
     <module>onebusaway-gtfs</module>
-    <module>onebusaway-gtfs-hibernate</module>
-    <module>onebusaway-gtfs-hibernate-cli</module>
-    <module>onebusaway-gtfs-transformer</module>
-    <module>onebusaway-gtfs-transformer-cli</module>
-    <module>onebusaway-gtfs-merge</module>
-    <module>onebusaway-gtfs-merge-cli</module>
   </modules>
 
   <dependencyManagement>

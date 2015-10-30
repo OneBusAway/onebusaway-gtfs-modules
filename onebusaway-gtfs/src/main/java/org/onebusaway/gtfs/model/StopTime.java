@@ -69,7 +69,7 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   /** This is a Conveyal extension to the GTFS spec to support Seattle on/off peak fares. */
   @CsvField(optional = true)
-  private String fare_period_id;
+  private String farePeriodId;
 
   public StopTime() {
 
@@ -343,11 +343,11 @@ public final class StopTime extends IdentityBean<Integer> implements
   }
 
   public String getFarePeriodId() {
-    return fare_period_id;
+    return farePeriodId;
   }
 
   public void setFarePeriodId(String farePeriodId) {
-    this.fare_period_id = farePeriodId;
+    this.farePeriodId = farePeriodId;
   }
 
   public int compareTo(StopTime o) {

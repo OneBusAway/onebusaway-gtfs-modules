@@ -41,6 +41,10 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true)
   private int transferDuration = MISSING_VALUE;
 
+  /** This is a Conveyal extension to the GTFS spec to support Seattle on/off peak fares. */
+  @CsvField(optional = true)
+  private String fare_period_id;
+
   /**
    * This is a proposed extension to the GTFS spec
    */
@@ -146,4 +150,9 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
   public String toString() {
     return "<FareAttribute " + getId() + ">";
   }
+
+  public String getFare_period_id() {
+    return fare_period_id;
+  }
+
 }

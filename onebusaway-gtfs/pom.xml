@@ -34,17 +34,4 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>com.mycila.maven-license-plugin</groupId>
-        <artifactId>maven-license-plugin</artifactId>
-        <configuration>
-          <excludes combine.children="append">
-            <exclude>src/test/resources/org/onebusaway/gtfs/**</exclude>
-          </excludes>
-        </configuration>
-      </plugin>    
-    </plugins>
-  </build>
 </project>

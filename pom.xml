@@ -21,27 +21,34 @@
 
   <repositories>
     <repository>
+      <id>conveyal</id>
+      <name>Conveyal Maven Repository</name>
+      <url>http://maven.conveyal.com/</url>
+    </repository>
+    <repository>
       <id>public.onebusaway.org</id>
       <url>http://nexus.onebusaway.org/content/groups/public/</url>
     </repository>
   </repositories>
 
   <scm>
-    <connection>scm:git:https://github.com/OneBusAway/onebusaway-gtfs-modules.git</connection>
-    <developerConnection>scm:git:https://github.com/OneBusAway/onebusaway-gtfs-modules.git</developerConnection>
-    <url>https://github.com/OneBusAway/onebusaway-gtfs-modules</url>
+    <connection>scm:git:https://github.com/conveyal/onebusaway-gtfs-modules.git</connection>
+    <developerConnection>scm:git:https://github.com/conveyal/onebusaway-gtfs-modules.git</developerConnection>
+    <url>https://github.com/conveyal/onebusaway-gtfs-modules</url>
   </scm>
 
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/OneBusAway/onebusaway-gtfs-modules/issues</url>
-  </issueManagement>
-
   <distributionManagement>
-    <site>
-      <id>${site_id}</id>
-      <url>${site_deployment_base}/onebusaway-gtfs-modules/${project.version}</url>
-    </site>
+    <repository>
+      <id>conveyal-maven-repo</id>
+      <name>Conveyal Maven Repository</name>
+      <url>s3://maven.conveyal.com/</url>
+    </repository>
+    <snapshotRepository>
+      <!-- Also override snapshotRepository defined in parent POMs -->
+      <id>conveyal-maven-repo</id>
+      <name>Conveyal Maven Repository</name>
+      <url>s3://maven.conveyal.com/</url>
+    </snapshotRepository>
   </distributionManagement>
 
   <modules>
@@ -85,4 +92,29 @@
     </dependencies>
   </dependencyManagement>
 
+  <build>
+    <!-- "Wagon" necessary for uploading/deploying artifacts to the Conveyal Maven repo on Amazon S3. -->
+    <extensions>
+      <!--
+        The Spring S3 Wagon throws ResourceDoesNotExistException when it is asked to put a directory.
+        The site contains a lot of subdirectories, so use the kuali s3 wagon which handles directories.
+        This is only important if you're deploying the OTP site to an S3 bucket as a static web site,
+        which is not a bad idea.
+      -->
+      <extension>
+        <groupId>org.kuali.maven.wagons</groupId>
+        <artifactId>maven-s3-wagon</artifactId>
+        <version>1.2.1</version>
+      </extension>
+    </extensions>
+    <plugins>
+      <plugin>
+        <groupId>com.mycila.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

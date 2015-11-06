@@ -1,6 +1,7 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2015 University of South Florida (cagricetin@mail.usf.edu)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +19,7 @@ package org.onebusaway.gtfs.model;
 
 public final class Agency extends IdentityBean<String> {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   private String id;
 
@@ -33,6 +34,8 @@ public final class Agency extends IdentityBean<String> {
   private String phone;
 
   private String fareUrl;
+  
+  private String email;
 
   public Agency() {
 
@@ -45,6 +48,8 @@ public final class Agency extends IdentityBean<String> {
     this.timezone = a.timezone;
     this.lang = a.lang;
     this.phone = a.phone;
+    this.email = a.email;
+    this.fareUrl = a.fareUrl;
   }
 
   public String getId() {
@@ -101,6 +106,14 @@ public final class Agency extends IdentityBean<String> {
 
   public void setFareUrl(String fareUrl) {
     this.fareUrl = fareUrl;
+  }
+  
+  public String getEmail() {
+	return email;
+  }
+
+  public void setEmail(String email) {
+	this.email = email;
   }
 
   public String toString() {

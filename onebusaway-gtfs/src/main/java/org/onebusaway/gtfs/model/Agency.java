@@ -44,6 +44,7 @@ public final class Agency extends IdentityBean<String> {
   @CsvField(optional = true)
   private String fareUrl;
   
+  @CsvField(optional = true)
   private String email;
 
   public Agency() {

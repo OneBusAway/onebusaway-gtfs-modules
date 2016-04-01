@@ -25,7 +25,7 @@ import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 public final class StopTime extends IdentityBean<Integer> implements
     Comparable<StopTime>, StopTimeProxy {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID =2L;
 
   public static final int MISSING_VALUE = -999;
 
@@ -64,6 +64,9 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true)
   private double shapeDistTraveled = MISSING_VALUE;
 
+  @CsvField(optional = true)
+  private String farePeriodId;
+
   @CsvField(ignore = true)
   private transient StopTimeProxy proxy = null;
 
@@ -79,6 +82,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.pickupType = st.pickupType;
     this.routeShortName = st.routeShortName;
     this.shapeDistTraveled = st.shapeDistTraveled;
+    this.farePeriodId = st.farePeriodId;
     this.stop = st.stop;
     this.stopHeadsign = st.stopHeadsign;
     this.stopSequence = st.stopSequence;
@@ -336,6 +340,14 @@ public final class StopTime extends IdentityBean<Integer> implements
       return;
     }
     this.shapeDistTraveled = MISSING_VALUE;
+  }
+
+  public String getFarePeriodId() {
+    return farePeriodId;
+  }
+
+  public void setFarePeriodId(String farePeriodId) {
+    this.farePeriodId = farePeriodId;
   }
 
   public int compareTo(StopTime o) {

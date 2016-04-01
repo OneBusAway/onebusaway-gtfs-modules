@@ -24,7 +24,7 @@ import org.onebusaway.gtfs.serialization.mappings.TripAgencyIdFieldMappingFactor
 @CsvFields(filename = "trips.txt")
 public final class Trip extends IdentityBean<AgencyAndId> {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   @CsvField(name = "trip_id", mapping = TripAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
@@ -66,6 +66,10 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, defaultValue = "0")
   private int bikesAllowed = 0;
 
+  // Custom extension for KCM to specify a fare per-trip
+  @CsvField(optional = true)
+  private String fareId;
+  
   public Trip() {
 
   }
@@ -188,6 +192,14 @@ public final class Trip extends IdentityBean<AgencyAndId> {
    */
   public void setBikesAllowed(int bikesAllowed) {
     this.bikesAllowed = bikesAllowed;
+  }
+  
+  public void setFareId(String fareId) {
+	  this.fareId = fareId;
+  }
+  
+  public String getFareId() {
+	  return fareId;
   }
 
   public String toString() {

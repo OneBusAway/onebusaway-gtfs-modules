@@ -54,6 +54,7 @@ public class GtfsWriterTest {
     agency.setLang("en");
     agency.setName("Büs Operación");
     agency.setPhone("¡555!");
+    agency.setEmail("userå@example.com");
     agency.setTimezone("America/Los_Angeles");
     agency.setUrl("http://agency.com/");
 
@@ -74,6 +75,7 @@ public class GtfsWriterTest {
     assertEquals("en", agency2.getLang());
     assertEquals("Büs Operación", agency2.getName());
     assertEquals("¡555!", agency2.getPhone());
+    assertEquals("userå@example.com", agency2.getEmail());
     assertEquals("America/Los_Angeles", agency2.getTimezone());
     assertEquals("http://agency.com/", agency2.getUrl());
   }

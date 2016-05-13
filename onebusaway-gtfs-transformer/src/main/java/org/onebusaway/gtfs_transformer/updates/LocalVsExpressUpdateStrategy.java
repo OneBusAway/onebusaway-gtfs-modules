@@ -22,9 +22,13 @@ import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LocalVsExpressUpdateStrategy implements GtfsTransformStrategy {
 
+  private static Logger _log = LoggerFactory.getLogger(LocalVsExpressUpdateStrategy.class);
+  
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
@@ -57,6 +61,9 @@ public class LocalVsExpressUpdateStrategy implements GtfsTransformStrategy {
         boolean isExpress = trip.getTripShortName().equals("EXPRESS");
         if (isExpress) {
           trip.setRouteShortName(trip.getRoute().getShortName() + "E");
+          _log.info("route(" + trip.getRoute().getShortName() 
+              +") gets an E for trip "
+              + trip.getId());
           if (addLocalVsExpressToTripName) {
             String tripHeadsign = trip.getTripHeadsign();
             if (tripHeadsign != null)

@@ -42,10 +42,14 @@ public class EnsureStopTimesIncreaseUpdateStrategy implements
 
     for (List<Trip> trips : tripsByBlockId.values()) {
 
-      StopTime prev = null;
+      
 
       for (Trip trip : trips) {
-
+        /*
+         * here we only compare the stop times among the current trip -- we no longer
+         * compare the stop times of these trips to those of previous trips.
+         */
+        StopTime prev = null;
         List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
 
         for (StopTime stopTime : stopTimes) {

@@ -31,7 +31,7 @@ public class LocalVsExpressUpdateStrategy implements GtfsTransformStrategy {
   
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-
+    _log.info("running");
     for (Route route : dao.getAllRoutes()) {
 
       List<Trip> trips = dao.getTripsForRoute(route);
@@ -60,10 +60,8 @@ public class LocalVsExpressUpdateStrategy implements GtfsTransformStrategy {
       for (Trip trip : trips) {
         boolean isExpress = trip.getTripShortName().equals("EXPRESS");
         if (isExpress) {
+          _log.info("route(" + route.getShortName() + ") gets an E for trip " + trip.getId());
           trip.setRouteShortName(trip.getRoute().getShortName() + "E");
-          _log.info("route(" + trip.getRoute().getShortName() 
-              +") gets an E for trip "
-              + trip.getId());
           if (addLocalVsExpressToTripName) {
             String tripHeadsign = trip.getTripHeadsign();
             if (tripHeadsign != null)

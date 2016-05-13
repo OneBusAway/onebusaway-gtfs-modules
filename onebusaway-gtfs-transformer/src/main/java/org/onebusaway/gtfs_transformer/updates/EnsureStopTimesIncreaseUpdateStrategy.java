@@ -45,15 +45,20 @@ public class EnsureStopTimesIncreaseUpdateStrategy implements
       
 
       for (Trip trip : trips) {
+
         /*
-         * here we only compare the stop times among the current trip -- we no longer
-         * compare the stop times of these trips to those of previous trips.
+         * we've moved prev variable inside of trips loop,
+         * thus we've stopped comparing trips against each other, but
+         * simply compare stop times specific to a trip.
          */
         StopTime prev = null;
+
         List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
 
+        int stopTimePosition = -1;
         for (StopTime stopTime : stopTimes) {
           total++;
+          stopTimePosition++;
           if (prev != null) {
             if (prev.getDepartureTime() > stopTime.getArrivalTime()) {
               hits++;
@@ -61,8 +66,9 @@ public class EnsureStopTimesIncreaseUpdateStrategy implements
                   - stopTime.getArrivalTime();
               maxDeviation = Math.max(maxDeviation, deviation);
               if (deviation > 60)
-                _log.info("out_of_order_stop_times: prev=" + prev + " next="
-                    + stopTime + " deviation=" + deviation);
+                _log.info("out_of_order_stop_times: prev=" + prev.getDepartureTime() + " stop="
+                    + stopTime.getArrivalTime() + " deviation=" + deviation + " for stopTime " 
+                    + stopTime + " of trip" + trip + " at " + stopTimePosition + "/" + stopTimes.size());
               stopTime.setArrivalTime(prev.getDepartureTime());
               if (stopTime.getDepartureTime() < stopTime.getArrivalTime())
                 stopTime.setDepartureTime(stopTime.getArrivalTime());

@@ -32,6 +32,7 @@ import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.impl.GtfsDaoImpl;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.Block;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
@@ -76,6 +77,7 @@ public class GtfsReader extends CsvEntityReader {
   public GtfsReader() {
 
     _entityClasses.add(Agency.class);
+    _entityClasses.add(Block.class);
     _entityClasses.add(ShapePoint.class);
     _entityClasses.add(Route.class);
     _entityClasses.add(Stop.class);

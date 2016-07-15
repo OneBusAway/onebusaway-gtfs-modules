@@ -66,6 +66,10 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, defaultValue = "0")
   private int bikesAllowed = 0;
 
+  // Custom extension for KCM to specify a fare per-trip
+  @CsvField(optional = true)
+  private String fareId;
+  
   public Trip() {
 
   }
@@ -83,6 +87,7 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.wheelchairAccessible = obj.wheelchairAccessible;
     this.tripBikesAllowed = obj.tripBikesAllowed;
     this.bikesAllowed = obj.bikesAllowed;
+    this.fareId = obj.fareId;
   }
 
   public AgencyAndId getId() {
@@ -192,6 +197,14 @@ public final class Trip extends IdentityBean<AgencyAndId> {
 
   public String toString() {
     return "<Trip " + getId() + ">";
+  }
+  
+  public String getFareId() {
+	  return fareId;
+  }
+  
+  public void setFareId(String fareId) {
+	  this.fareId = fareId;
   }
 
 }

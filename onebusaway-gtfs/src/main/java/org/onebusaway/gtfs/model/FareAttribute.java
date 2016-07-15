@@ -41,23 +41,17 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true)
   private int transferDuration = MISSING_VALUE;
 
-  /** This is a Conveyal extension to the GTFS spec to support Seattle on/off peak fares. */
-  @CsvField(optional = true)
-  private String farePeriodId;
-
-  /** The following are extensions to the GTFS spec to support Seattle fare types. */
+  /** youthPrice is an extension to the GTFS spec to support Seattle fare types. */
   @CsvField(optional = true)
   private float youthPrice;
-  
+
+  /** seniorPrice is an extension to the GTFS spec to support Seattle fare types. */
   @CsvField(optional = true)
   private float seniorPrice;
   
-  /**
-   * This is a proposed extension to the GTFS spec
-   */
+  /** This is a proposed extension to the GTFS spec */
   @CsvField(optional = true)
   private int journeyDuration = MISSING_VALUE;
-
   
   public FareAttribute() {
 
@@ -157,14 +151,6 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
 
   public String toString() {
     return "<FareAttribute " + getId() + ">";
-  }
-
-  public String getFarePeriodId() {
-    return farePeriodId;
-  }
-
-  public void setFarePeriodId(String farePeriodId) {
-    this.farePeriodId = farePeriodId;
   }
 
   public float getYouthPrice() {

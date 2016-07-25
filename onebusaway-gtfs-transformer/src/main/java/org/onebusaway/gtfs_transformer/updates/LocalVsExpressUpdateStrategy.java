@@ -43,11 +43,15 @@ public class LocalVsExpressUpdateStrategy implements GtfsTransformStrategy {
       int expressCount = 0;
 
       for (Trip trip : trips) {
-        boolean isExpress = trip.getTripShortName().equals("EXPRESS");
-        if (isExpress)
-          expressCount++;
-        else
+        if (trip.getTripShortName() != null) {
+          boolean isExpress = trip.getTripShortName().equals("EXPRESS");
+          if (isExpress)
+            expressCount++;
+          else
+            localCount++;
+        } else {
           localCount++;
+        }
       }
 
       /**
@@ -58,6 +62,7 @@ public class LocalVsExpressUpdateStrategy implements GtfsTransformStrategy {
       boolean addLocalVsExpressToTripName = localCount > 0 && expressCount > 0;
 
       for (Trip trip : trips) {
+        if (trip == null || trip.getTripShortName() == null) continue;
         boolean isExpress = trip.getTripShortName().equals("EXPRESS");
         if (isExpress) {
           _log.info("route(" + route.getShortName() + ") gets an E for trip " + trip.getId());

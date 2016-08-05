@@ -41,6 +41,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.stream.StreamSource;
 
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
@@ -68,12 +69,23 @@ public class WSFBlockResolutionStrategy implements GtfsTransformStrategy {
   private static final Logger _log = LoggerFactory.getLogger(
       WSFBlockResolutionStrategy.class);
 
-  GtfsMutableRelationalDao _dao;
-  String _agencyId;
-  TimeZone _agencyTimeZone;
-  WSFTripResolutionService _tripResolutionService;
-  WSFScheduleService _scheduleService;
-  String _apiAccessCode = "";
+  @CsvField(ignore=true)
+  private GtfsMutableRelationalDao _dao;
+  
+  @CsvField(ignore=true)
+  private String _agencyId;
+  
+  @CsvField(ignore=true)
+  private TimeZone _agencyTimeZone;
+  
+  @CsvField(ignore=true)
+  private WSFTripResolutionService _tripResolutionService;
+  
+  @CsvField(ignore=true)
+  private WSFScheduleService _scheduleService;
+  
+  private String apiAccessCode = "";
+  
 
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
@@ -87,7 +99,7 @@ public class WSFBlockResolutionStrategy implements GtfsTransformStrategy {
         _agencyTimeZone);
 
     try {
-      _scheduleService = new WSFScheduleService(_apiAccessCode);
+      _scheduleService = new WSFScheduleService(apiAccessCode);
       setAllBlockIds();
     } catch (Exception e) {
       _log.error("Error initializing WSFBlockResolutionStrategy: " + e);
@@ -97,7 +109,7 @@ public class WSFBlockResolutionStrategy implements GtfsTransformStrategy {
   }
 
   public void setApiAccessCode(String apiAccessCode) {
-    _apiAccessCode = apiAccessCode;
+    this.apiAccessCode = apiAccessCode;
   }
 
   private void setAllBlockIds() throws InterruptedException {

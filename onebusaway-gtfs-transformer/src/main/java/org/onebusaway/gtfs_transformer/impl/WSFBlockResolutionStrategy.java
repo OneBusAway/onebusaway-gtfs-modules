@@ -274,14 +274,15 @@ class WSFTripResolutionService {
     CalendarServiceDataFactory factory = new CalendarServiceDataFactoryImpl(
         _dao);
     _csd = factory.createData();
+    
+    _maxStopTime = calculateMaxStopTime();
   }
 
   public Trip resolve(String departingTerminalId, long departureTime,
       String arrivingTerminalId) {
     ServiceDate initialServiceDate = new ServiceDate(
         new Date(departureTime * 1000));
-    int maxStopTime = maxStopTime();
-    int lookBackDays = (maxStopTime / 86400) + 1;
+    int lookBackDays = (_maxStopTime / 86400) + 1;
 
     AgencyAndId stopId = new AgencyAndId(_agencyId, departingTerminalId);
     AgencyAndId routeId = new AgencyAndId(_agencyId,
@@ -316,7 +317,7 @@ class WSFTripResolutionService {
 
   }
 
-  private int maxStopTime() {
+  private int calculateMaxStopTime() {
     Set<Integer> times = new HashSet<Integer>();
 
     for (StopTime st : _dao.getAllStopTimes()) {

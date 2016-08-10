@@ -57,7 +57,7 @@
     <dependency>
       <groupId>com.kurtraschke</groupId>
       <artifactId>wsf-api</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0</version>
     </dependency>
     
   </dependencies>

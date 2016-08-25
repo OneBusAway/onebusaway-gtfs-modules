@@ -16,8 +16,11 @@
 package org.onebusaway.gtfs_merge.strategies.scoring;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
+import java.util.SortedSet;
 
 public class DuplicateScoringSupport {
 
@@ -56,6 +59,50 @@ public class DuplicateScoringSupport {
     return ((double) common.size() / a.size() + (double) common.size()
         / b.size()) / 2;
   }
+  
+  /**
+   * A faster implementation of {@link #scoreElementOverlap(Collection, Collection)},
+   * when the Collections are SortedSets.
+   * 
+   * @param a
+   * @param b
+   * @return the numeric overlap score
+   */
+  public static <T> double scoreElementOverlap(SortedSet<T> a, SortedSet<T> b) {
+    if (a.isEmpty() || b.isEmpty()) {
+      return 0.0;
+    }
+    
+    int nIntersect = calculateIntersection(a, b);
+    return ((double) nIntersect / a.size() + (double) nIntersect
+        / b.size()) / 2;
+  }
+  
+  private static <T> int calculateIntersection(SortedSet<T> aSet, SortedSet<T> bSet) {
+    Comparator<? super T> comparator = aSet.comparator();
+    
+    Iterator<T> a = aSet.iterator();
+    Iterator<T> b = bSet.iterator();
+    int nIntersect = 0;
+    
+    T s = a.next(), t = b.next();
+    while (a.hasNext() && b.hasNext()) {
+      int cmp = comparator.compare(s, t);
+      if (cmp == 0 && s.equals(t)) { // s == t
+        nIntersect++;
+        s = a.next();
+        t = b.next();
+      }
+      else if (cmp < 0) { // s < t
+        s = a.next();
+      }
+      else { // s > t
+        t = b.next();
+      }
+    }
+   
+    return nIntersect;
+  }
 
   public static double scoreIntervalOverlap(int[] sourceInterval,
       int[] targetInterval) {
@@ -65,4 +112,6 @@ public class DuplicateScoringSupport {
     return (overlap / (sourceInterval[1] - sourceInterval[0]) + overlap
         / (targetInterval[1] - targetInterval[0])) / 2;
   }
+  
+  
 }

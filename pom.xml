@@ -26,12 +26,6 @@
     </repository>
   </repositories>
 
-  <scm>
-    <connection>scm:git:https://github.com/OneBusAway/onebusaway-gtfs-modules.git</connection>
-    <developerConnection>scm:git:https://github.com/OneBusAway/onebusaway-gtfs-modules.git</developerConnection>
-    <url>https://github.com/OneBusAway/onebusaway-gtfs-modules</url>
-  </scm>
-
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/OneBusAway/onebusaway-gtfs-modules/issues</url>

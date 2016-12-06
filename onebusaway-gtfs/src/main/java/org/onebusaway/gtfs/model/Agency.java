@@ -43,6 +43,9 @@ public final class Agency extends IdentityBean<String> {
   @CsvField(optional = true)
   private String fareUrl;
 
+  @CsvField(optional = true)
+  private String brandingUrl;
+
   public Agency() {
 
   }
@@ -54,6 +57,7 @@ public final class Agency extends IdentityBean<String> {
     this.timezone = a.timezone;
     this.lang = a.lang;
     this.phone = a.phone;
+    this.brandingUrl = a.brandingUrl;
   }
 
   public String getId() {
@@ -110,6 +114,14 @@ public final class Agency extends IdentityBean<String> {
 
   public void setFareUrl(String fareUrl) {
     this.fareUrl = fareUrl;
+  }
+
+  public String getBrandingUrl() {
+    return brandingUrl;
+  }
+
+  public void setBrandingUrl(String brandingUrl) {
+    this.brandingUrl = brandingUrl;
   }
 
   public String toString() {

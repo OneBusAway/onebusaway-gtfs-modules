@@ -64,6 +64,12 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true)
   private double shapeDistTraveled = MISSING_VALUE;
 
+  @CsvField(optional = true, defaultValue = "-1")
+  private int continuousPickup;
+
+  @CsvField(optional = true, defaultValue = "-1")
+  private int continuousDropOff;
+
   @CsvField(ignore = true)
   private transient StopTimeProxy proxy = null;
 
@@ -310,6 +316,22 @@ public final class StopTime extends IdentityBean<Integer> implements
       return;
     }
     this.dropOffType = dropOffType;
+  }
+
+  public int getContinuousPickup() {
+    return continuousPickup;
+  }
+
+  public void setContinuousPickup(int continuousPickup) {
+    this.continuousPickup = continuousPickup;
+  }
+
+  public int getContinuousDropOff() {
+    return continuousDropOff;
+  }
+
+  public void setContinuousDropOff(int continuousDropOff) {
+    this.continuousDropOff = continuousDropOff;
   }
 
   public boolean isShapeDistTraveledSet() {

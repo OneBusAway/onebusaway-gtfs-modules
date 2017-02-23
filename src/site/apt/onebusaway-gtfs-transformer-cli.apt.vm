@@ -13,6 +13,10 @@ Introduction
 
 %{toc} 
 
+Requirements
+  
+  * Java 6 or greater
+
 Getting the Application
 
   You can download the application here:
@@ -23,19 +27,21 @@ Getting the Application
   
 Using the Application
 
-  You'll need a Java 1.6 runtime installed to run the client.  To run the application:
+  To run the application:
 
 +---+
 java -jar onebusaway-gtfs-transformer-cli.jar [-args] input_gtfs_path ... output_gtfs_path
 +---+
 
-  <<Note>>: Transforming large GTFS feeds is often processor and memory intensive.  You'll likely need to increase the
-max amount of memory allocated to Java with an option like <<<-Xmx1G>>> (adjust the limit as needed).  I also recommend
-adding the <<<-server>>> argument if you are running the Oracle or OpenJDK, as it can really increase performance. 
+<<<input_gtfs_path>>> and <<<output_gtfs_path>>> can be either a directory containing a GTFS feed or a .zip file.
+
+  <<Note>>: Transforming large GTFS feeds is processor and memory intensive.  You'll likely need to increase the
+max amount of memory allocated to Java with an option like <<<-Xmx1G>>> or greater.  Adding the <<<-server>>> argument 
+if you are running the Oracle or OpenJDK can also increase performance. 
 
 * Arguments
 
-  * <<<--transform=...>>> : specify a transformation to apply to the input GTFS feed (see syntax described below)
+  * <<<--transform=...>>> : specify a transformation to apply to the input GTFS feed (see syntax below)
   
   * <<<--agencyId=id>>> : specify a default agency id for the input GTFS feed
   
@@ -205,7 +211,9 @@ Types of Transforms
 
 * Retain an Entity
 
-  We also provide a powerful mechanism for selecting just a sub-set of a feed.  You can apply retain operations to entities you wish to keep and all the supporting entities referenced by the retained entity will be retained as well.  By the same token, unreferenced entities will be pruned.
+  We also provide a powerful mechanism for selecting just a sub-set of a feed.  
+  You can apply retain operations to entities you wish to keep and all the supporting entities referenced 
+  by the retained entity will be retained as well.  Unreferenced entities will be pruned.
   
   In the following example, only route B15 will be retained, along with all the stops, trips, stop times, shapes, and agencies linked to directly by that route.
 
@@ -231,7 +239,7 @@ example:
   You can remove a specific entity from a feed.
 
 +---+
-{"op":"remove", "match":{"file":"stopst.txt", "stop_name":"Stop Name"}}
+{"op":"remove", "match":{"file":"stops.txt", "stop_name":"Stop Name"}}
 +---+
 
   Note that removing an entity has a cascading effect.  If you remove a trip, all the stop times that depend on that

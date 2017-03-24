@@ -47,6 +47,10 @@ public class CalendarServiceImpl implements CalendarService {
 
   private volatile CalendarServiceData _data;
 
+  // this cache does not expire but is cleared if _data changes
+  private volatile Map<String, Integer> _searchCache = new HashMap<String, Integer>();
+
+
   public CalendarServiceImpl() {
 
   }
@@ -61,6 +65,7 @@ public class CalendarServiceImpl implements CalendarService {
 
   public void setData(CalendarServiceData data) {
     _data = data;
+    _searchCache.clear();
   }
 
   /****
@@ -271,9 +276,31 @@ public class CalendarServiceImpl implements CalendarService {
     return resultsForServiceId;
   }
 
-  private int search(List<Date> serviceDates, ServiceIdOp op, int indexFrom,
-      int indexTo, Date key) {
 
+  private String hash(int indexFrom, int indexTo, Date key) {
+    return indexFrom + "_" + indexTo + "_" + dayOfDate(key);
+  }
+
+  // package private for unit tests;
+  String dayOfDate(Date key) {
+    //TODO: this is a hack but stable according to javadoc
+    String fullDate = key.toString();
+    return fullDate.substring(0, 10) + " " + fullDate.substring(24,28);
+  }
+
+  private int search(List<Date> serviceDates, ServiceIdOp op, int indexFrom,
+                     int indexTo, Date key) {
+    String hashKey = hash(indexFrom, indexTo, key);
+    Integer searchIndex = _searchCache.get(hashKey);
+    if (searchIndex == null) {
+      searchIndex = _search(serviceDates, op, indexFrom, indexTo, key);
+      _searchCache.put(hashKey, searchIndex);
+    }
+    return searchIndex;
+  }
+
+  private int _search(List<Date> serviceDates, ServiceIdOp op, int indexFrom,
+      int indexTo, Date key) {
     if (indexTo == indexFrom)
       return indexFrom;
 
@@ -287,9 +314,9 @@ public class CalendarServiceImpl implements CalendarService {
       return index;
 
     if (rc < 0)
-      return search(serviceDates, op, indexFrom, index, key);
+      return _search(serviceDates, op, indexFrom, index, key);
     else
-      return search(serviceDates, op, index + 1, indexTo, key);
+      return _search(serviceDates, op, index + 1, indexTo, key);
   }
 
   private static final <T> List<T> list(List<T> values) {

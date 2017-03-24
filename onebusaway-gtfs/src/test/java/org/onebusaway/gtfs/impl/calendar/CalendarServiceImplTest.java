@@ -79,10 +79,10 @@ public class CalendarServiceImplTest {
   }
 
   @Test
-  public void testDayOfDate() throws ParseException {
+  public void testHashDate() throws ParseException {
     CalendarServiceImpl service = new CalendarServiceImpl();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
     Date date = sdf.parse("20160606");
-    assertEquals("Mon Jun 06 2016", service.dayOfDate(date));
+    assertEquals("20160606", service.hashDate(date));
   }
 }

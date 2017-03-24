@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.calendar.CalendarServiceData;
 import org.onebusaway.gtfs.model.calendar.LocalizedServiceId;
@@ -43,6 +45,7 @@ import org.onebusaway.gtfs.services.calendar.CalendarServiceDataFactory;
  */
 public class CalendarServiceImpl implements CalendarService {
 
+  private static final DateTimeFormatter _updatedDateFormatter = ISODateTimeFormat.basicDate();
   private CalendarServiceDataFactory _factory;
 
   private volatile CalendarServiceData _data;
@@ -278,14 +281,12 @@ public class CalendarServiceImpl implements CalendarService {
 
 
   private String hash(int indexFrom, int indexTo, Date key) {
-    return indexFrom + "_" + indexTo + "_" + dayOfDate(key);
+    return indexFrom + "_" + indexTo + "_" + hashDate(key);
   }
 
   // package private for unit tests;
-  String dayOfDate(Date key) {
-    //TODO: this is a hack but stable according to javadoc
-    String fullDate = key.toString();
-    return fullDate.substring(0, 10) + " " + fullDate.substring(24,28);
+  String hashDate(Date key) {
+    return _updatedDateFormatter.print(key.getTime());
   }
 
   private int search(List<Date> serviceDates, ServiceIdOp op, int indexFrom,

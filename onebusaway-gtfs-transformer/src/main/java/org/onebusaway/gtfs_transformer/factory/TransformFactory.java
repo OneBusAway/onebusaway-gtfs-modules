@@ -69,6 +69,8 @@ import org.onebusaway.gtfs_transformer.updates.SubsectionTripTransformStrategy;
 import org.onebusaway.gtfs_transformer.updates.SubsectionTripTransformStrategy.SubsectionOperation;
 import org.onebusaway.gtfs_transformer.updates.TrimTripTransformStrategy;
 import org.onebusaway.gtfs_transformer.updates.TrimTripTransformStrategy.TrimOperation;
+import org.onebusaway.gtfs_transformer.updates.RemoveNonRevenueStopsStrategy;
+import org.onebusaway.gtfs_transformer.updates.RemoveNonRevenueStopsExcludingTerminalsStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -215,7 +217,13 @@ public class TransformFactory {
           handleTransformOperation(line, json, new ShiftNegativeStopTimesUpdateStrategy());
         } else if (opType.equals("shape_direction")) { 
           handleTransformOperation(line, json, new ShapeDirectionTransformStrategy());
-        } else if (opType.equals("transform")) {
+        } else if (opType.equals("remove_non_revenue_stops")) {
+          handleTransformOperation(line, json, new RemoveNonRevenueStopsStrategy());
+        }
+        else if (opType.equals("remove_non_revenue_stops_excluding_terminals")) {
+          handleTransformOperation(line, json, new RemoveNonRevenueStopsExcludingTerminalsStrategy());
+        }
+        else if (opType.equals("transform")) {
           handleTransformOperation(line, json);
         } else {
           throw new TransformSpecificationException("unknown transform op \""

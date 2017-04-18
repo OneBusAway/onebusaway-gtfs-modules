@@ -40,6 +40,9 @@ public class AndDuplicateScoringStrategy<T> implements
     double score = 1.0;
     for (DuplicateScoringStrategy<T> strategy : _strategies) {
       score *= strategy.score(context, source, target);
+      if (score == 0) {
+        break;
+      }
     }
     return score;
   }

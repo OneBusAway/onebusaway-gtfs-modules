@@ -217,6 +217,8 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
       // we no longer remove the best match to avoid concurrency issues
     }
 
+    executorService.shutdown();
+
     /**
      * There needs to be sufficient overlap between the two feeds for us to
      * consider using fuzzy duplicate detection in the first place.

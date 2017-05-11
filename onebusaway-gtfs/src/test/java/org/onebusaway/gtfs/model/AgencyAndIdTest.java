@@ -16,6 +16,7 @@
 package org.onebusaway.gtfs.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
@@ -47,4 +48,19 @@ public class AgencyAndIdTest {
     AgencyAndId id = new AgencyAndId("a","b");
     assertEquals("a_b",AgencyAndId.convertToString(id));
   }
+  
+  @Test
+  public void testSingleArgConstructor() {
+
+	AgencyAndId aaid = new AgencyAndId("a_b");
+    assertEquals("a",aaid.getAgencyId());
+    assertEquals("b",aaid.getId());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testSingleArgConstructorInvalidArgumentException() {
+
+	AgencyAndId fail = new AgencyAndId("invaildBecauseNoUnderscore");
+  }
+
 }

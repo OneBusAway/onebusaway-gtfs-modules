@@ -54,7 +54,7 @@ public class RemoveNonRevenueStopsStrategy implements GtfsTransformStrategy {
 	      }
 	    }
 
-	    _log.info("removed=" + removedStopTimeCount + " total=" + totalStopTimeCount);
+	    _log.info("removed " + removedStopTimeCount + " of " + totalStopTimeCount + " StopTimes");
 
 	    UpdateLibrary.clearDaoCache(dao);
 	  }

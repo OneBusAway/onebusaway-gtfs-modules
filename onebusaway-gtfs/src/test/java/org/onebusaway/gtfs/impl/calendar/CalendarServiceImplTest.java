@@ -19,8 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -78,11 +76,4 @@ public class CalendarServiceImplTest {
     }
   }
 
-  @Test
-  public void testHashDate() throws ParseException {
-    CalendarServiceImpl service = new CalendarServiceImpl();
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-    Date date = sdf.parse("20160606");
-    assertEquals("20160606", service.hashDate(date));
-  }
 }

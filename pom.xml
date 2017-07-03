@@ -113,6 +113,7 @@
         <configuration>
           <useReleaseProfile>false</useReleaseProfile>
         </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>

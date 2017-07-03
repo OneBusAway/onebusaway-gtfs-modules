@@ -25,7 +25,7 @@ public final class FeedInfo extends IdentityBean<Integer> {
 
   private static final long serialVersionUID = 1L;
 
-  @CsvField(ignore = true)
+  @CsvField(optional = true)
   private int id;
 
   private String publisherName;

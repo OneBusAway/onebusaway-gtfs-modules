@@ -376,7 +376,24 @@ such that the resulting schedule is semantically the same.
   
   * "-01:45:00" => "23:45:00" on the previous day
   
-  * "-05:13:32" => "19:13:32" on the previou day 
+  * "-05:13:32" => "19:13:32" on the previous day 
+
+* Remove non-revenue stops
+
+  Stop_times which do not allow pick up or drop off are also known as non-revenue stops. Some GTFS consumers display 
+  these stops as if they were stops that passengers can use, at which point it is helpful to remove them. 
+  
+  To remove them, apply the following transform:
+  
++---+
+{"op":"remove_non_revenue_stops"}
++---+
+
+  Terminals (the first and last stop_time of a trip) can be excluded from removal with the following transform:
+
++---+
+{"op":"remove_non_revenue_stops_excluding_terminals"}}
++---+
 
 * Arbitrary Transform
 

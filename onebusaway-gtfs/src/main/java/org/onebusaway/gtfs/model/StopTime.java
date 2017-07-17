@@ -67,6 +67,12 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, defaultValue = "-1")
   private int continuousStops;
 
+  @CsvField(optional = true)
+  private String startServiceAreaId;
+
+  @CsvField(optional = true)
+  private String endServiceAreaId;
+
   @CsvField(ignore = true)
   private transient StopTimeProxy proxy = null;
 
@@ -91,6 +97,8 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.stopSequence = st.stopSequence;
     this.timepoint = st.timepoint;
     this.trip = st.trip;
+    this.startServiceAreaId = st.startServiceAreaId;
+    this.endServiceAreaId = st.endServiceAreaId;
   }
 
   public Integer getId() {
@@ -360,6 +368,22 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   public void setFarePeriodId(String farePeriodId) {
     this.farePeriodId = farePeriodId;
+  }
+
+  public String getStartServiceAreaId() {
+    return startServiceAreaId;
+  }
+
+  public void setStartServiceAreaId(String startServiceAreaId) {
+    this.startServiceAreaId = startServiceAreaId;
+  }
+
+  public String getEndServiceAreaId() {
+    return endServiceAreaId;
+  }
+
+  public void setEndServiceAreaId(String endServiceAreaId) {
+    this.endServiceAreaId = endServiceAreaId;
   }
 
   public int compareTo(StopTime o) {

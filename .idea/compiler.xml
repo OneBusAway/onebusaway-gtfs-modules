@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="onebusaway-gtfs" />
+        <module name="onebusaway-gtfs-hibernate" />
+        <module name="onebusaway-gtfs-hibernate-cli" />
+        <module name="onebusaway-gtfs-merge" />
+        <module name="onebusaway-gtfs-merge-cli" />
+        <module name="onebusaway-gtfs-transformer" />
+        <module name="onebusaway-gtfs-transformer-cli" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="onebusaway-gtfs" target="1.7" />
+      <module name="onebusaway-gtfs-hibernate" target="1.7" />
+      <module name="onebusaway-gtfs-hibernate-cli" target="1.7" />
+      <module name="onebusaway-gtfs-merge" target="1.7" />
+      <module name="onebusaway-gtfs-merge-cli" target="1.7" />
+      <module name="onebusaway-gtfs-modules" target="1.7" />
+      <module name="onebusaway-gtfs-transformer" target="1.7" />
+      <module name="onebusaway-gtfs-transformer-cli" target="1.7" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

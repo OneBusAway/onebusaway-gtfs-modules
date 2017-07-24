@@ -158,7 +158,8 @@ public final class StopTime extends IdentityBean<Integer> implements
   }
 
   /**
-   * @return arrival time, in seconds since midnight
+   * @return arrival time, in seconds since "noon minus 12h" (effectively midnight, except for days on which daylight
+   * savings time changes occur) at the beginning of the service date
    */
   public int getArrivalTime() {
     if (proxy != null) {
@@ -191,7 +192,8 @@ public final class StopTime extends IdentityBean<Integer> implements
   }
 
   /**
-   * @return departure time, in seconds since midnight
+   * @return departure time, in seconds since "noon minus 12h" (effectively midnight, except for days on which daylight
+   * savings time changes occur) at the beginning of the service date
    */
   public int getDepartureTime() {
     if (proxy != null) {

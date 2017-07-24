@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/onebusaway-gtfs/onebusaway-gtfs.iml" filepath="$PROJECT_DIR$/onebusaway-gtfs/onebusaway-gtfs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/onebusaway-gtfs-hibernate/onebusaway-gtfs-hibernate.iml" filepath="$PROJECT_DIR$/onebusaway-gtfs-hibernate/onebusaway-gtfs-hibernate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/onebusaway-gtfs-hibernate-cli/onebusaway-gtfs-hibernate-cli.iml" filepath="$PROJECT_DIR$/onebusaway-gtfs-hibernate-cli/onebusaway-gtfs-hibernate-cli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/onebusaway-gtfs-merge/onebusaway-gtfs-merge.iml" filepath="$PROJECT_DIR$/onebusaway-gtfs-merge/onebusaway-gtfs-merge.iml" />
+      <module fileurl="file://$PROJECT_DIR$/onebusaway-gtfs-merge-cli/onebusaway-gtfs-merge-cli.iml" filepath="$PROJECT_DIR$/onebusaway-gtfs-merge-cli/onebusaway-gtfs-merge-cli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/onebusaway-gtfs-modules.iml" filepath="$PROJECT_DIR$/onebusaway-gtfs-modules.iml" />
+      <module fileurl="file://$PROJECT_DIR$/onebusaway-gtfs-transformer/onebusaway-gtfs-transformer.iml" filepath="$PROJECT_DIR$/onebusaway-gtfs-transformer/onebusaway-gtfs-transformer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/onebusaway-gtfs-transformer-cli/onebusaway-gtfs-transformer-cli.iml" filepath="$PROJECT_DIR$/onebusaway-gtfs-transformer-cli/onebusaway-gtfs-transformer-cli.iml" />
+    </modules>
+  </component>
+</project>

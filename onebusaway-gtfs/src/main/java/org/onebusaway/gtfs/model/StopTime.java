@@ -73,6 +73,12 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true)
   private String endServiceAreaId;
 
+  @CsvField(optional = true)
+  private double startServiceAreaRadius = MISSING_VALUE;
+
+  @CsvField(optional = true)
+  private double endServiceAreaRadius = MISSING_VALUE;
+
   @CsvField(ignore = true)
   private transient StopTimeProxy proxy = null;
 
@@ -99,6 +105,8 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.trip = st.trip;
     this.startServiceAreaId = st.startServiceAreaId;
     this.endServiceAreaId = st.endServiceAreaId;
+    this.startServiceAreaRadius = st.startServiceAreaRadius;
+    this.endServiceAreaRadius = st.endServiceAreaRadius;
   }
 
   public Integer getId() {
@@ -384,6 +392,22 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   public void setEndServiceAreaId(String endServiceAreaId) {
     this.endServiceAreaId = endServiceAreaId;
+  }
+
+  public double getStartServiceAreaRadius() {
+    return startServiceAreaRadius;
+  }
+
+  public void setStartServiceAreaRadius(double startServiceAreaRadius) {
+    this.startServiceAreaRadius = startServiceAreaRadius;
+  }
+
+  public double getEndServiceAreaRadius() {
+    return endServiceAreaRadius;
+  }
+
+  public void setEndServiceAreaRadius(double endServiceAreaRadius) {
+    this.endServiceAreaRadius = endServiceAreaRadius;
   }
 
   public int compareTo(StopTime o) {

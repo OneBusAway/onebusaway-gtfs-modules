@@ -56,6 +56,15 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, defaultValue = "0")
   private int wheelchairAccessible = 0;
 
+  @CsvField(optional = true)
+  private String drtMaxTravelTime;
+
+  @CsvField(optional = true)
+  private String drtAvgTravelTime;
+
+  @CsvField(optional = true)
+  private int drtAdvanceBookMin;
+
   @Deprecated
   @CsvField(optional = true, defaultValue = "0")
   private int tripBikesAllowed = 0;
@@ -85,6 +94,9 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.blockId = obj.blockId;
     this.shapeId = obj.shapeId;
     this.wheelchairAccessible = obj.wheelchairAccessible;
+    this.drtMaxTravelTime = obj.drtMaxTravelTime;
+    this.drtAvgTravelTime = obj.drtAvgTravelTime;
+    this.drtAdvanceBookMin = obj.drtAdvanceBookMin;
     this.tripBikesAllowed = obj.tripBikesAllowed;
     this.bikesAllowed = obj.bikesAllowed;
     this.fareId = obj.fareId;
@@ -168,6 +180,30 @@ public final class Trip extends IdentityBean<AgencyAndId> {
 
   public int getWheelchairAccessible() {
     return wheelchairAccessible;
+  }
+
+  public String getDrtMaxTravelTime() {
+    return drtMaxTravelTime;
+  }
+
+  public void setDrtMaxTravelTime(String drtMaxTravelTime) {
+    this.drtMaxTravelTime = drtMaxTravelTime;
+  }
+
+  public String getDrtAvgTravelTime() {
+    return drtAvgTravelTime;
+  }
+
+  public void setDrtAvgTravelTime(String drtAvgTravelTime) {
+    this.drtAvgTravelTime = drtAvgTravelTime;
+  }
+
+  public int getDrtAdvanceBookMin() {
+    return drtAdvanceBookMin;
+  }
+
+  public void setDrtAdvanceBookMin(int drtAdvanceBookMin) {
+    this.drtAdvanceBookMin = drtAdvanceBookMin;
   }
 
   @Deprecated

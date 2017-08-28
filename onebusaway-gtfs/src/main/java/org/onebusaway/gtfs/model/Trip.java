@@ -65,6 +65,12 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true)
   private int drtAdvanceBookMin;
 
+  @CsvField(optional = true)
+  private String drtPickupMessage;
+
+  @CsvField(optional = true)
+  private String drtDropOffMessage;
+
   @Deprecated
   @CsvField(optional = true, defaultValue = "0")
   private int tripBikesAllowed = 0;
@@ -97,6 +103,8 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.drtMaxTravelTime = obj.drtMaxTravelTime;
     this.drtAvgTravelTime = obj.drtAvgTravelTime;
     this.drtAdvanceBookMin = obj.drtAdvanceBookMin;
+    this.drtPickupMessage = obj.drtPickupMessage;
+    this.drtDropOffMessage = obj.drtDropOffMessage;
     this.tripBikesAllowed = obj.tripBikesAllowed;
     this.bikesAllowed = obj.bikesAllowed;
     this.fareId = obj.fareId;
@@ -204,6 +212,22 @@ public final class Trip extends IdentityBean<AgencyAndId> {
 
   public void setDrtAdvanceBookMin(int drtAdvanceBookMin) {
     this.drtAdvanceBookMin = drtAdvanceBookMin;
+  }
+
+  public String getDrtPickupMessage() {
+    return drtPickupMessage;
+  }
+
+  public void setDrtPickupMessage(String drtPickupMessage) {
+    this.drtPickupMessage = drtPickupMessage;
+  }
+
+  public String getDrtDropOffMessage() {
+    return drtDropOffMessage;
+  }
+
+  public void setDrtDropOffMessage(String drtDropOffMessage) {
+    this.drtDropOffMessage = drtDropOffMessage;
   }
 
   @Deprecated

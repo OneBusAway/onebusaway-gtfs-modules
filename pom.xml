@@ -37,19 +37,18 @@
     <url>https://github.com/conveyal/onebusaway-gtfs-modules</url>
   </scm>
 
-  <distributionManagement>
-    <repository>
-      <id>conveyal-maven-repo</id>
-      <name>Conveyal Maven Repository</name>
-      <url>s3://maven.conveyal.com/</url>
-    </repository>
-    <snapshotRepository>
-      <!-- Also override snapshotRepository defined in parent POMs -->
-      <id>conveyal-maven-repo</id>
-      <name>Conveyal Maven Repository</name>
-      <url>s3://maven.conveyal.com/</url>
-    </snapshotRepository>
-  </distributionManagement>
+   <distributionManagement>
+      <repository>
+        <id>nexus.onebusaway.org-releases</id>
+        <name>Nexus Release Repo</name>
+        <url>http://nexus.onebusaway.org/content/repositories/releases/</url>
+      </repository>
+      <snapshotRepository>
+        <id>nexus.onebusaway.org-snapshots</id>
+        <name>Nexus Snapshot Repo</name>
+        <url>http://nexus.onebusaway.org/content/repositories/snapshots/</url>
+      </snapshotRepository>
+    </distributionManagement>
 
   <modules>
     <module>onebusaway-gtfs</module>

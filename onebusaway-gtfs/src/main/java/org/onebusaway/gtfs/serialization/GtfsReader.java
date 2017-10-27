@@ -78,6 +78,7 @@ public class GtfsReader extends CsvEntityReader {
 
     _entityClasses.add(Agency.class);
     _entityClasses.add(ShapePoint.class);
+    _entityClasses.add(Area.class);
     _entityClasses.add(Route.class);
     _entityClasses.add(Stop.class);
     _entityClasses.add(Trip.class);
@@ -90,7 +91,6 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Pathway.class);
     _entityClasses.add(Transfer.class);
     _entityClasses.add(FeedInfo.class);
-    _entityClasses.add(Area.class);
 
     CsvTokenizerStrategy tokenizerStrategy = new CsvTokenizerStrategy();
     tokenizerStrategy.getCsvParser().setTrimInitialWhitespace(true);
@@ -252,6 +252,9 @@ public class GtfsReader extends CsvEntityReader {
       } else if (entity instanceof FareAttribute) {
         FareAttribute fare = (FareAttribute) entity;
         registerAgencyId(FareAttribute.class, fare.getId());
+      } else if (entity instanceof Area) {
+        Area area = (Area) entity;
+        registerAgencyId(Area.class, area.getId());
       }
 
       if (entity instanceof IdentityBean<?>) {

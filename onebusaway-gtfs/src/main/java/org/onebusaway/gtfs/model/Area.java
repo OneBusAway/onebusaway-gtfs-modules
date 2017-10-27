@@ -20,20 +20,14 @@ import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 
 @CsvFields(filename = "areas.txt", required = false)
-public final class Area extends IdentityBean<Integer> {
+public final class Area extends IdentityBean<AgencyAndId> {
 
   private static final long serialVersionUID = 1L;
 
-  @CsvField(ignore = true)
-  private int id;
+  @CsvField(name="area_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
+  private AgencyAndId id;
 
-  private String areaId;
-
-  private double lat;
-
-  private double lon;
-
-  private int sequence;
+  private String wkt;
 
   public Area() {
 
@@ -41,50 +35,27 @@ public final class Area extends IdentityBean<Integer> {
 
   public Area(Area a) {
     this.id = a.id;
-    this.lat = a.lat;
-    this.lon = a.lon;
-    this.sequence = a.sequence;
+    this.wkt = a.wkt;
   }
 
-  @Override
-  public Integer getId() {
+
+  public String getAreaId() {
+    return id.getId();
+  }
+
+  public AgencyAndId getId() {
     return id;
   }
 
-  @Override
-  public void setId(Integer id) {
-    this.id = id;
+  public void setId(AgencyAndId areaId) {
+    this.id = areaId;
   }
 
-  public String getAreaId() {
-    return areaId;
+  public String getWkt() {
+    return wkt;
   }
 
-  public void setAreaId(String areaId) {
-    this.areaId = areaId;
-  }
-
-  public double getLat() {
-    return lat;
-  }
-
-  public void setLat(double lat) {
-    this.lat = lat;
-  }
-
-  public double getLon() {
-    return lon;
-  }
-
-  public void setLon(double lon) {
-    this.lon = lon;
-  }
-
-  public int getSequence() {
-    return sequence;
-  }
-
-  public void setSequence(int sequence) {
-    this.sequence = sequence;
+  public void setWkt(String wkt) {
+    this.wkt = wkt;
   }
 }

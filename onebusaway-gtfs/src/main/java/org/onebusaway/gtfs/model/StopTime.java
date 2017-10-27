@@ -70,11 +70,11 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, defaultValue = "-1")
   private int continuousDropOff;
 
-  @CsvField(optional = true)
-  private String startServiceAreaId;
+  @CsvField(optional = true, name = "pick_up_area_id", mapping = EntityFieldMappingFactory.class, order = -2)
+  private Area startServiceArea;
 
-  @CsvField(optional = true)
-  private String endServiceAreaId;
+  @CsvField(optional = true, name = "drop_off_area_id", mapping = EntityFieldMappingFactory.class, order = -2)
+  private Area endServiceArea;
 
   @CsvField(optional = true)
   private double startServiceAreaRadius = MISSING_VALUE;
@@ -106,8 +106,8 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.stopSequence = st.stopSequence;
     this.timepoint = st.timepoint;
     this.trip = st.trip;
-    this.startServiceAreaId = st.startServiceAreaId;
-    this.endServiceAreaId = st.endServiceAreaId;
+    this.startServiceArea = st.startServiceArea;
+    this.endServiceArea = st.endServiceArea;
     this.startServiceAreaRadius = st.startServiceAreaRadius;
     this.endServiceAreaRadius = st.endServiceAreaRadius;
   }
@@ -388,20 +388,20 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.farePeriodId = farePeriodId;
   }
 
-  public String getStartServiceAreaId() {
-    return startServiceAreaId;
+  public Area getStartServiceArea() {
+    return startServiceArea;
   }
 
-  public void setStartServiceAreaId(String startServiceAreaId) {
-    this.startServiceAreaId = startServiceAreaId;
+  public void setStartServiceArea(Area startServiceArea) {
+    this.startServiceArea = startServiceArea;
   }
 
-  public String getEndServiceAreaId() {
-    return endServiceAreaId;
+  public Area getEndServiceArea() {
+    return endServiceArea;
   }
 
-  public void setEndServiceAreaId(String endServiceAreaId) {
-    this.endServiceAreaId = endServiceAreaId;
+  public void setEndServiceArea(Area endServiceArea) {
+    this.endServiceArea = endServiceArea;
   }
 
   public double getStartServiceAreaRadius() {

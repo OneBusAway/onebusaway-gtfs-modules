@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.Elevator;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
@@ -103,6 +104,14 @@ public interface GtfsDao extends GenericDao {
   public Collection<Pathway> getAllPathways();
 
   public Pathway getPathwayForId(AgencyAndId id);
+
+  /****
+   * {@link Elevator} Methods
+   ****/
+
+  public Collection<Elevator> getAllElevators();
+
+  public Elevator getElevatorForId(AgencyAndId id);
 
   /****
    * {@link Route} Methods

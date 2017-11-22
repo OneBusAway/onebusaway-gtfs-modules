@@ -2,6 +2,8 @@
 
 A Java library for reading and writing [GTFS](https://developers.google.com/transit/gtfs) feeds, including database support.
 
+See more documentation [on the wiki](https://github.com/OneBusAway/onebusaway-gtfs-modules/wiki).
+
 ## Maven usage
 
 In your `pom.xml`, include:

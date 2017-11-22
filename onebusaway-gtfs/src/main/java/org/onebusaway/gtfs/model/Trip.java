@@ -62,7 +62,7 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true)
   private String drtAvgTravelTime;
 
-  @CsvField(optional = true)
+  @CsvField(optional = true, defaultValue = "-1")
   private int drtAdvanceBookMin;
 
   @CsvField(optional = true)

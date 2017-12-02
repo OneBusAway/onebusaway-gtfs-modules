@@ -57,6 +57,15 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true)
   private int journeyDuration = MISSING_VALUE;
 
+  @CsvField(name = "distance_mode", optional = true, defaultValue = "0")
+  private int distanceMode = MISSING_VALUE;
+
+  @CsvField(name = "distance_unit_price", optional = true)
+  private float distanceUnitPrice = MISSING_VALUE;
+
+  @CsvField(name = "distance_unit_start_offset", optional = true)
+  private float distanceUnitStartOffset = MISSING_VALUE;
+
   public FareAttribute() {
 
   }
@@ -70,6 +79,9 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
     this.transfers = fa.transfers;
     this.transferDuration = fa.transferDuration;
     this.journeyDuration = fa.journeyDuration;
+    this.distanceMode = fa.distanceMode;
+    this.distanceUnitPrice = fa.distanceUnitPrice;
+    this.distanceUnitStartOffset = fa.distanceUnitStartOffset;
   }
 
   @Override
@@ -160,6 +172,42 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
 
   public void clearJourneyDuration() {
     this.journeyDuration = MISSING_VALUE;
+  }
+
+  public int getDistanceMode() {
+    return distanceMode;
+  }
+
+  public void setDistanceMode(int distanceMode) {
+    this.distanceMode = distanceMode;
+  }
+
+  public void clearDistanceMode() {
+    this.distanceMode = MISSING_VALUE;
+  }
+
+  public float getDistanceUnitPrice() {
+    return distanceUnitPrice;
+  }
+
+  public void setDistanceUnitPrice(float distanceUnitPrice) {
+    this.distanceUnitPrice = distanceUnitPrice;
+  }
+
+  public void clearDistanceUnitPrice() {
+    this.distanceUnitPrice = MISSING_VALUE;
+  }
+
+  public float getDistanceUnitStartOffset() {
+    return distanceUnitStartOffset;
+  }
+
+  public void setDistanceUnitStartOffset(float distanceUnitStartOffset) {
+    this.distanceUnitStartOffset = distanceUnitStartOffset;
+  }
+
+  public void clearDistanceUnitStartOffset() {
+    this.distanceUnitStartOffset = MISSING_VALUE;
   }
 
   public String toString() {

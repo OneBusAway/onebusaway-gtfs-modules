@@ -46,6 +46,9 @@ public class FareRuleMergeStrategy extends
     if (!equals(fareRuleA.getContainsId(), fareRuleB.getContainsId())) {
       return false;
     }
+    if (!equals(fareRuleA.getUnitsTraveled(), fareRuleB.getUnitsTraveled())) {
+      return false;
+    }
     return true;
   }
 

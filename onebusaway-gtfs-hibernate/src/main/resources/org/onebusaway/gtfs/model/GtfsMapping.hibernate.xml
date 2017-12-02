@@ -54,6 +54,9 @@
         <property name="transfers" />
         <property name="transferDuration" />
         <property name="journeyDuration" />
+        <property name="distanceMode" />
+        <property name="distanceUnitPrice" />
+        <property name="distanceUnitStartOffset" />
     </class>
 
     <class name="org.onebusaway.gtfs.model.FareRule" table="gtfs_fare_rules">
@@ -71,6 +74,7 @@
         <property name="originId" />
         <property name="destinationId" />
         <property name="containsId" />
+        <property name="unitsTraveled" />
     </class>
     
     <class name="org.onebusaway.gtfs.model.FeedInfo" table="gtfs_feed_info">

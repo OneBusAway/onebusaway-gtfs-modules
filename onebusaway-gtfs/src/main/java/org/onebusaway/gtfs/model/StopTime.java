@@ -71,6 +71,10 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true)
   private String farePeriodId;
 
+  /** Extension to support departure buffer https://groups.google.com/forum/#!msg/gtfs-changes/sHTyliLgMQk/gfpaGkI_AgAJ */
+  @CsvField(optional = true, defaultValue = "-1")
+  private int departureBuffer;
+
   public StopTime() {
 
   }
@@ -88,6 +92,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.stopSequence = st.stopSequence;
     this.timepoint = st.timepoint;
     this.trip = st.trip;
+    this.departureBuffer = st.departureBuffer;
   }
 
   public Integer getId() {
@@ -348,6 +353,14 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   public void setFarePeriodId(String farePeriodId) {
     this.farePeriodId = farePeriodId;
+  }
+
+  public int getDepartureBuffer() {
+    return departureBuffer;
+  }
+
+  public void setDepartureBuffer(int departureBuffer) {
+    this.departureBuffer = departureBuffer;
   }
 
   public int compareTo(StopTime o) {

@@ -69,6 +69,10 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   // Custom extension for KCM to specify a fare per-trip
   @CsvField(optional = true)
   private String fareId;
+
+  // Custom extension for MNR
+  @CsvField(optional = true, name = "note_id", mapping = EntityFieldMappingFactory.class, order = -1)
+  private TimetableNote note;
   
   public Trip() {
 
@@ -207,4 +211,11 @@ public final class Trip extends IdentityBean<AgencyAndId> {
 	  this.fareId = fareId;
   }
 
+  public TimetableNote getNote() {
+    return note;
+  }
+
+  public void setNote(TimetableNote note) {
+    this.note = note;
+  }
 }

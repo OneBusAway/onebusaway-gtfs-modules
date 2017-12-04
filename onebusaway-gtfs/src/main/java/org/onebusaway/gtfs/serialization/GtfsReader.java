@@ -45,6 +45,7 @@ import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
+import org.onebusaway.gtfs.model.TimetableNote;
 import org.onebusaway.gtfs.model.Transfer;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GenericMutableDao;
@@ -78,6 +79,7 @@ public class GtfsReader extends CsvEntityReader {
 
     _entityClasses.add(Agency.class);
     _entityClasses.add(ShapePoint.class);
+    _entityClasses.add(TimetableNote.class);
     _entityClasses.add(Route.class);
     _entityClasses.add(Stop.class);
     _entityClasses.add(Trip.class);
@@ -252,6 +254,9 @@ public class GtfsReader extends CsvEntityReader {
       } else if (entity instanceof FareAttribute) {
         FareAttribute fare = (FareAttribute) entity;
         registerAgencyId(FareAttribute.class, fare.getId());
+      } else if (entity instanceof TimetableNote) {
+        TimetableNote note = (TimetableNote) entity;
+        registerAgencyId(TimetableNote.class, note.getId());
       }
 
       if (entity instanceof IdentityBean<?>) {

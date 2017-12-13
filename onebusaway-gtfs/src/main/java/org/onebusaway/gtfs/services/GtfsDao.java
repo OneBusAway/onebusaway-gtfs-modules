@@ -20,6 +20,7 @@ import java.util.Collection;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Elevator;
+import org.onebusaway.gtfs.model.Block;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
@@ -160,5 +161,9 @@ public interface GtfsDao extends GenericDao {
   public Collection<Trip> getAllTrips();
 
   public Trip getTripForId(AgencyAndId id);
+
+  public Collection<Block> getAllBlocks();
+  
+  public Block getBlockForId(int id);
 
 }

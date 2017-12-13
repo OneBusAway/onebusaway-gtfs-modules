@@ -64,8 +64,16 @@ public abstract class IdentityBean<T extends Serializable> implements
     return getId().equals(entity.getId());
   }
 
+  private int _hashCode;
+  private T _hashCodeSource = null;
+  
   @Override
   public int hashCode() {
-    return getId().hashCode();
+    // Cache hashCode value, which only depends on id 
+    if (getId() != _hashCodeSource) {
+      _hashCodeSource = getId();
+      _hashCode = getId().hashCode();
+    }
+    return _hashCode;
   }
 }

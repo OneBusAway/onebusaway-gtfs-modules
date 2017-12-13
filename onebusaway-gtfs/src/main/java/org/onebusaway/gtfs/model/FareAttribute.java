@@ -22,12 +22,15 @@ import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFac
 @CsvFields(filename = "fare_attributes.txt", required = false)
 public final class FareAttribute extends IdentityBean<AgencyAndId> {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   private static final int MISSING_VALUE = -999;
 
   @CsvField(name = "fare_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
+
+  @CsvField(optional = true)
+  private String farePeriodId;
 
   private float price;
 
@@ -41,11 +44,10 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true)
   private int transferDuration = MISSING_VALUE;
 
-  /** youthPrice is an extension to the GTFS spec to support Seattle fare types. */
+  /** The following are extensions to the GTFS spec to support Seattle fare types. */
   @CsvField(optional = true)
   private float youthPrice;
 
-  /** seniorPrice is an extension to the GTFS spec to support Seattle fare types. */
   @CsvField(optional = true)
   private float seniorPrice;
   
@@ -59,6 +61,7 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
 
   public FareAttribute(FareAttribute fa) {
     this.id = fa.id;
+    this.farePeriodId = fa.farePeriodId;
     this.price = fa.price;
     this.currencyType = fa.currencyType;
     this.paymentMethod = fa.paymentMethod;
@@ -75,6 +78,14 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
   @Override
   public void setId(AgencyAndId id) {
     this.id = id;
+  }
+
+  public String getFarePeriodId() {
+    return farePeriodId;
+  }
+
+  public void setFarePeriodId(String farePeriodId) {
+    this.farePeriodId = farePeriodId;
   }
 
   public float getPrice() {

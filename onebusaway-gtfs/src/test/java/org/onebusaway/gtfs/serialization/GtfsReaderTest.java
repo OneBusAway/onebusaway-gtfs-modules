@@ -42,6 +42,7 @@ import org.onebusaway.gtfs.GtfsTestData;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.Block;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
@@ -67,6 +68,9 @@ public class GtfsReaderTest {
   @Test
   public void testAllFields() throws IOException {
     MockGtfs gtfs = MockGtfs.create();
+    gtfs.putLines("block.txt", 
+        "block_seq_num,block_var_num,block_route_num,block_run_num",
+        "4237385,1,599,1");
     gtfs.putLines(
         "agency.txt",
         "agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url",
@@ -135,6 +139,13 @@ public class GtfsReaderTest {
     assertEquals("555-1234", agency.getPhone());
     assertEquals("http://agency.gov/fares", agency.getFareUrl());
 
+    Block block = dao.getBlockForId(1);
+    assertNotNull(block);
+    assertEquals(4237385, block.getBlockSequence());
+    assertEquals(1, block.getBlockVariable());
+    assertEquals(599, block.getBlockRoute());
+    assertEquals(1, block.getBlockRun());
+    
     Stop stop = dao.getStopForId(new AgencyAndId("1", "S1"));
     assertEquals(new AgencyAndId("1", "S1"), stop.getId());
     assertEquals("Stop", stop.getName());

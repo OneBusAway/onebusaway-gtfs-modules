@@ -24,7 +24,7 @@ import org.onebusaway.gtfs.serialization.mappings.TripAgencyIdFieldMappingFactor
 @CsvFields(filename = "trips.txt")
 public final class Trip extends IdentityBean<AgencyAndId> {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   @CsvField(name = "trip_id", mapping = TripAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
@@ -73,7 +73,7 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   // Custom extension for MNR
   @CsvField(optional = true, name = "note_id", mapping = EntityFieldMappingFactory.class, order = -1)
   private TimetableNote note;
-  
+
   public Trip() {
 
   }
@@ -92,6 +92,7 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.tripBikesAllowed = obj.tripBikesAllowed;
     this.bikesAllowed = obj.bikesAllowed;
     this.fareId = obj.fareId;
+    this.note = obj.note;
   }
 
   public AgencyAndId getId() {

@@ -1,6 +1,7 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2015 University of South Florida (cagricetin@mail.usf.edu)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +24,7 @@ import org.onebusaway.gtfs.serialization.mappings.AgencyIdTranslationFieldMappin
 @CsvFields(filename = "agency.txt", prefix = "agency_")
 public final class Agency extends IdentityBean<String> {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   @CsvField(optional = true, mapping = AgencyIdTranslationFieldMappingFactory.class)
   private String id;
@@ -42,6 +43,9 @@ public final class Agency extends IdentityBean<String> {
 
   @CsvField(optional = true)
   private String fareUrl;
+  
+  @CsvField(optional = true)
+  private String email;
 
   @CsvField(optional = true)
   private String brandingUrl;
@@ -58,6 +62,8 @@ public final class Agency extends IdentityBean<String> {
     this.lang = a.lang;
     this.phone = a.phone;
     this.brandingUrl = a.brandingUrl;
+    this.email = a.email;
+    this.fareUrl = a.fareUrl;
   }
 
   public String getId() {
@@ -114,6 +120,14 @@ public final class Agency extends IdentityBean<String> {
 
   public void setFareUrl(String fareUrl) {
     this.fareUrl = fareUrl;
+  }
+  
+  public String getEmail() {
+	return email;
+  }
+
+  public void setEmail(String email) {
+	this.email = email;
   }
 
   public String getBrandingUrl() {

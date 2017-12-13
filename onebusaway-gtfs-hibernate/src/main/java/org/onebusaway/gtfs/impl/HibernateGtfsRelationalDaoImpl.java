@@ -27,6 +27,7 @@ import java.util.Set;
 import org.hibernate.SessionFactory;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.Block;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
@@ -87,6 +88,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
     return _ops.find("from Agency");
   }
 
+  @Override
+  public List<Block> getAllBlocks() {
+    return _ops.find("from Block");
+  }
+  
   @Override
   public List<ServiceCalendar> getAllCalendars() {
     return _ops.find("FROM ServiceCalendar");
@@ -157,6 +163,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
     return (Agency) _ops.get(Agency.class, id);
   }
 
+  @Override
+  public Block getBlockForId(int id) {
+    return (Block) _ops.get(Block.class, id);
+  }
+  
   @Override
   public FareAttribute getFareAttributeForId(AgencyAndId id) {
     return (FareAttribute) _ops.get(FareAttribute.class, id);

@@ -69,6 +69,10 @@ import org.onebusaway.gtfs_transformer.updates.SubsectionTripTransformStrategy;
 import org.onebusaway.gtfs_transformer.updates.SubsectionTripTransformStrategy.SubsectionOperation;
 import org.onebusaway.gtfs_transformer.updates.TrimTripTransformStrategy;
 import org.onebusaway.gtfs_transformer.updates.TrimTripTransformStrategy.TrimOperation;
+import org.onebusaway.gtfs_transformer.updates.RemoveNonRevenueStopsStrategy;
+import org.onebusaway.gtfs_transformer.updates.RemoveNonRevenueStopsExcludingTerminalsStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -92,6 +96,8 @@ import java.util.regex.Pattern;
 
 public class TransformFactory {
 
+  private static Logger _log = LoggerFactory.getLogger(TransformFactory.class);
+  
   private static final String ARG_OBJ = "obj";
 
   private static final String ARG_UPDATE = "update";
@@ -211,7 +217,13 @@ public class TransformFactory {
           handleTransformOperation(line, json, new ShiftNegativeStopTimesUpdateStrategy());
         } else if (opType.equals("shape_direction")) { 
           handleTransformOperation(line, json, new ShapeDirectionTransformStrategy());
-        } else if (opType.equals("transform")) {
+        } else if (opType.equals("remove_non_revenue_stops")) {
+          handleTransformOperation(line, json, new RemoveNonRevenueStopsStrategy());
+        }
+        else if (opType.equals("remove_non_revenue_stops_excluding_terminals")) {
+          handleTransformOperation(line, json, new RemoveNonRevenueStopsExcludingTerminalsStrategy());
+        }
+        else if (opType.equals("transform")) {
           handleTransformOperation(line, json);
         } else {
           throw new TransformSpecificationException("unknown transform op \""
@@ -467,7 +479,10 @@ public class TransformFactory {
       try {
         mapping.translateFromCSVToObject(context, values, wrapped);
       } catch (MissingRequiredFieldException ex) {
-        throw new TransformSpecificationMissingArgumentException(line,
+        String verboseMessage = "line=" + line + ", context=" + context + ", json="
+            + json + ", object=" + object;
+        _log.error("missing required field; details:" + verboseMessage);
+        throw new TransformSpecificationMissingArgumentException(verboseMessage,
             ex.getFieldName());
       }
     }

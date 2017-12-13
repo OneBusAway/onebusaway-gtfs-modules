@@ -1,0 +1,2 @@
+Usage: gtfs_input_dir ... gtfs_output_dir
+

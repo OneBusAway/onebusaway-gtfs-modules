@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.Elevator;
 import org.onebusaway.gtfs.model.Block;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
@@ -173,16 +172,6 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   public Pathway getPathwayForId(AgencyAndId id) {
     return getEntityForId(Pathway.class, id);
-  }
-
-  @Override
-  public Collection<Elevator> getAllElevators() {
-    return getAllEntitiesForType(Elevator.class);
-  }
-
-  @Override
-  public Elevator getElevatorForId(AgencyAndId id) {
-    return getEntityForId(Elevator.class, id);
   }
 
   public Route getRouteForId(AgencyAndId id) {

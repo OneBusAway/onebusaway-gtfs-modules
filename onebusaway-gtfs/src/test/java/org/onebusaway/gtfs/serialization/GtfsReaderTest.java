@@ -756,7 +756,7 @@ public class GtfsReaderTest {
     reader.readEntities(FeedInfo.class, new StringReader(b.toString()));
 
     FeedInfo feedInfo = reader.getEntityStore().getEntityForId(FeedInfo.class,
-        1);
+        "1");
     assertEquals("Test", feedInfo.getPublisherName());
     assertEquals("http://test/", feedInfo.getPublisherUrl());
     assertEquals("en", feedInfo.getLang());

@@ -20,6 +20,7 @@ import org.onebusaway.gtfs.model.Pathway;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.csv.MTAElevator;
+import org.onebusaway.gtfs_transformer.csv.MTAEntrance;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -63,6 +65,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     private static final int NOT_WHEELCHAIR_ACCESSIBLE = 2;
 
     private static final int PATHWAY_MODE_GENERIC = 0;
+    private static final int PATHWAY_MODE_WALKWAY = 1;
+    private static final int PATHWAY_MODE_STAIR = 2;
+    private static final int PATHWAY_MODE_TRAVELATOR = 3;
+    private static final int PATHWAY_MODE_ESCALATOR = 4;
     private static final int PATHWAY_MODE_ELEVATOR = 5;
 
     private static final int GENERIC_PATHWAY_TRAVERSAL_TIME = 30;
@@ -81,6 +87,8 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
     private String elevatorsCsv;
 
+    private String entrancesCsv;
+
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
@@ -93,12 +101,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
         // For every stop that's not a station, add an entrance which is not wheelchair accessible, and a pathway.
         for (Stop stop : dao.getAllStops()) {
-            if (stop.getLocationType() == LOCATION_TYPE_STOP) {
-                // create NON-WHEELCHAIR ACCESSIBLE entrances and pathways
-                Stop entrance = createNonAccessibleStreetEntrance(stop);
-                createPathway(entrance, stop, PATHWAY_MODE_GENERIC, GENERIC_PATHWAY_TRAVERSAL_TIME, -1, "GENERIC", null);
-            }
-
             // Put stop into a stop-group with parent, uptown, downtown
             String gid = stop.getLocationType() == LOCATION_TYPE_STOP ? stop.getParentStation() : stop.getId().getId();
             StopGroup group = stopGroups.get(gid);
@@ -116,6 +118,8 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
             } else throw new RuntimeException("unexpected!");
         }
 
+        readEntranceData(stopGroups);
+
         readElevatorData(stopGroups);
 
         for (Stop s : newStops) {
@@ -127,7 +131,65 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         }
     }
 
-    // elevators...
+    /*
+    Read entrances, for each, create only non-accessible (and non-easement) entrances and pathways.
+    In the future, entrance dataset should include elevator IDs, so it can be matched to elevator dataset.
+     */
+    private void readEntranceData(Map<String, StopGroup> stopGroups) {
+        // FYI, blacklist: Easement, Elevator, easement_elevator, easement_escalator, easement_stair, street_elevator
+        List<String> whitelist = Arrays.asList("Door", "Escalator", "Ramp", "Stair", "Walkway", "street_escalator", "street_stair");
+
+        List<MTAEntrance> entrances = getEntrances();
+
+        for (MTAEntrance e : entrances) {
+            if (whitelist.contains(e.getEntranceType()) && e.hasLocation()) {
+                StopGroup g = stopGroups.get(e.getStopId());
+                if (g == null)
+                    _log.error("No stop group for station {}", e.getStopId());
+                else
+                    g.entrances.add(e);
+            }
+        }
+
+        for (StopGroup group : stopGroups.values()) {
+            if (group.entrances.isEmpty()) {
+                _log.error("Station {} has no entrances", group.parent.getId());
+                // mock, like we were doing before
+                Stop entrance = createNonAccessibleStreetEntrance(group.parent);
+                createPathway(entrance, group.uptown, PATHWAY_MODE_GENERIC, GENERIC_PATHWAY_TRAVERSAL_TIME, -1, "GENERIC", null);
+                createPathway(entrance, group.downtown, PATHWAY_MODE_GENERIC, GENERIC_PATHWAY_TRAVERSAL_TIME, -1, "GENERIC", null);
+                continue;
+            }
+
+            int i = 0;
+            for (MTAEntrance entrance : group.entrances) {
+                Stop entranceStop = createStopFromMTAEntrance(group.parent, entrance, i);
+                int pathwayMode;
+                switch(entrance.getEntranceType()) {
+                    case "Stair":
+                    case "street_stair":
+                        pathwayMode = PATHWAY_MODE_STAIR;
+                        break;
+                    case "Ramp":
+                    case "Walkway":
+                        pathwayMode = PATHWAY_MODE_WALKWAY;
+                        break;
+                    case "Escalator":
+                    case "street_escalator":
+                        pathwayMode = PATHWAY_MODE_ESCALATOR;
+                        break;
+                    case "Door":
+                    default:
+                        pathwayMode = PATHWAY_MODE_GENERIC;
+                }
+                String id = entrance.getEntranceType() + "-" + i;
+                // TODO: for stops with no free crossover, we should have identified which platform it goes to.
+                createPathway(entranceStop, group.uptown, pathwayMode, GENERIC_PATHWAY_TRAVERSAL_TIME, -1, id, null);
+                createPathway(entranceStop, group.downtown, pathwayMode, GENERIC_PATHWAY_TRAVERSAL_TIME, -1, id, null);
+                i++;
+            }
+        }
+    }
 
     private void readElevatorData(Map<String, StopGroup> stopGroups) {
         List<MTAElevator> elevators = getElevators();
@@ -152,7 +214,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 ElevatorPathwayType type = ElevatorPathwayType.fromString(e.getLoc());
                 if (type == ElevatorPathwayType.UNKNOWN) {
                     unknown++;
-                    _log.warn("unknown type={}, elev={}", e.getLoc(), e.getId());
+                    _log.debug("unknown type={}, elev={}", e.getLoc(), e.getId());
                     continue;
                 }
                 if (entrance == null && type.shouldCreateStreetEntrance()) {
@@ -312,6 +374,8 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
         List<MTAElevator> elevators = new ArrayList<>();
 
+        List<MTAEntrance> entrances = new ArrayList<>();
+
         @Override
         public int hashCode() {
             return parent.hashCode();
@@ -326,6 +390,13 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     }
 
     // Utility functions
+
+    private Stop createStopFromMTAEntrance(Stop parent, MTAEntrance ent, int num) {
+        Stop entrance = createStop(parent, LOCATION_TYPE_ENTRANCE, NOT_WHEELCHAIR_ACCESSIBLE, "entrance-" + num);
+        entrance.setLat(ent.getLatitude());
+        entrance.setLon(ent.getLongitude());
+        return entrance;
+    }
 
     private Stop createNonAccessibleStreetEntrance(Stop parent) {
         return createStop(parent, LOCATION_TYPE_ENTRANCE, NOT_WHEELCHAIR_ACCESSIBLE, "ent");
@@ -356,7 +427,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
     private void createElevPathways(Stop from, Stop to, String code, String idStr, Set<String> seenElevatorPathways) {
         if (seenElevatorPathways.contains(idStr)) {
-            _log.error("Duplicate elevator pathway id={}", code);
+            _log.debug("Duplicate elevator pathway id={}", code);
             return;
         }
         seenElevatorPathways.add(idStr);
@@ -396,24 +467,36 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     }
 
     private List<MTAElevator> getElevators() {
+       return readCsv(MTAElevator.class, elevatorsCsv);
+    }
+
+    private List<MTAEntrance> getEntrances() {
+        return readCsv(MTAEntrance.class, entrancesCsv);
+    }
+
+    private static <T> List<T> readCsv(final Class<T> klass, String csv) {
         CsvEntityReader reader = new CsvEntityReader();
-        final List<MTAElevator> elevators = new ArrayList<>();
+        final List<T> ret = new ArrayList<>();
         reader.addEntityHandler(new EntityHandler() {
             @Override
             public void handleEntity(Object o) {
-                elevators.add((MTAElevator) o);
+                ret.add(klass.cast(o));
             }
         });
         try {
-            reader.readEntities(MTAElevator.class, new FileReader(elevatorsCsv));
+            reader.readEntities(klass, new FileReader(csv));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return elevators;
+        return ret;
     }
 
     public void setElevatorsCsv(String elevatorsCsv) {
         this.elevatorsCsv = elevatorsCsv;
+    }
+
+    public void setEntrancesCsv(String entrancesCsv) {
+        this.entrancesCsv = entrancesCsv;
     }
 }
 

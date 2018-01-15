@@ -233,6 +233,12 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 case "STREET TO MEZZANINE & UPTOWN PLATFORM":
                 case "STREET TO MEZZANINE &PLATFORMS":
                 case "STREET TO MEZZANINE ALL TRAINS":
+                case "STREET TO MEZZANINE AND DOWNTOWN PLATFORM":
+                case "STREET TO MEZZANINE & DOWNTOWN PLATFORM":
+                case "STREET TO MEZZANINE TO 6/E/M TRAINS":
+                case "STREET TO MEZZANINE TO ALL TRAINS":
+                case "STREET TO MEZZANINE TO UPTOWN N/Q/R PLATFORM":
+                case "STREET TO MEZZANINE AND UPTOWN 1 PLATFORM":
                     return STREET_TO_MEZZ_TO_PLATFORM;
 
                 case "MEZZANINE TO STREET":
@@ -259,6 +265,19 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 case "SOUTHBOUND PLATFORM TO MEZZANINE":
                 case "MEZZANINE TO DOWNTOWN A,C&E PLATFORM":
                 case "MEZZANINE TO UPTOWN A,C&E PLATFORM":
+                case "MEZZANINE TO SOUTHBOUND PLATFORM":
+                case "MEZZANINE TO DOWNTOWN 4":
+                case "MEZZANINE TO UPTOWN 4":
+                case "MEZZANINE TO UPTOWN LOCAL PLATFORM":
+                case "MEZZANINE TO UPTOWN PLATFORM N":
+                case "MEZZANINE TO DOWNTOWN PLATFORM(N&R)":
+                case "MEZZANINE TO DOWNTOWN A":
+                case "MEZZANINE TO UPTOWN A":
+                case "PLATFORM TO MEZZANINE":
+                case "MEZZANINE TO DOWNTOWN 2":
+                case "MEZZANINE TO 4":
+                case "MEZZANINE TO DOWNTOWN AND DOWNTOWN TO UPTOWN PLATFORM":
+                case "MEZZANINE TO NORTHBOUND PLATFORM":
                     // likely work:
                 case "MEZZANINE TO DOWNTOWN LOCAL PLATFORM":
                 case "MEZZANINE TO EXPRESS PLATFORM":
@@ -270,8 +289,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 case "STREET TO UPTOWN PLATFORM":
                 case "STREET TO DOWNTOWN PLATFORM":
                 case "STREET TO DOWNTOWN C PLATFORM AND S PLATFORM":
+                case "SOUTH BOUND PLATFORM TO STREET":
                     // likely work
                 case "STREET TO MEZZANINE & OVERPASS":
+                case "STREET TO PLATFORMS":
                     return STREET_TO_PLATFORM;
 
                 default:

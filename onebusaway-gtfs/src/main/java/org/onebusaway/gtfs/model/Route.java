@@ -66,6 +66,9 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true)
   private int sortOrder = MISSING_VALUE;
 
+  @CsvField(optional = true)
+  private String brandingUrl;
+
   public Route() {
 
   }
@@ -82,6 +85,7 @@ public final class Route extends IdentityBean<AgencyAndId> {
     this.textColor = r.textColor;
     this.bikesAllowed = r.bikesAllowed;
     this.sortOrder = r.sortOrder;
+    this.brandingUrl = r.brandingUrl;
   }
 
   public AgencyAndId getId() {
@@ -191,6 +195,14 @@ public final class Route extends IdentityBean<AgencyAndId> {
 
   public void setSortOrder(int sortOrder) {
     this.sortOrder = sortOrder;
+  }
+
+  public String getBrandingUrl() {
+    return brandingUrl;
+  }
+
+  public void setBrandingUrl(String brandingUrl) {
+    this.brandingUrl = brandingUrl;
   }
 
   @Override

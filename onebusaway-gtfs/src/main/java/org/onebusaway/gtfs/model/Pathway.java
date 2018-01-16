@@ -27,6 +27,19 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
 
   private static final int MISSING_VALUE = -999;
 
+  // Default, undefined infrastructure
+  public static final int MODE_LINK = 0;
+
+  public static final int MODE_WALKWAY = 1;
+
+  public static final int MODE_STAIRS = 2;
+
+  public static final int MODE_MOVING_SIDEWALK = 3;
+
+  public static final int MODE_ESCALATOR = 4;
+
+  public static final int MODE_ELEVATOR = 5;
+
   @CsvField(name = "pathway_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 
@@ -42,6 +55,12 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
 
   @CsvField(optional = true)
   private int wheelchairTraversalTime = MISSING_VALUE;
+
+  @CsvField(optional = true, defaultValue = "0")
+  private int pathwayMode = 0;
+
+  @CsvField(optional = true)
+  private String pathwayCode;
 
   @Override
   public AgencyAndId getId() {
@@ -99,6 +118,22 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
 
   public void clearWheelchairTraversalTime() {
     this.wheelchairTraversalTime = MISSING_VALUE;
+  }
+
+  public int getPathwayMode() {
+    return pathwayMode;
+  }
+
+  public void setPathwayMode(int pathwayMode) {
+    this.pathwayMode = pathwayMode;
+  }
+
+  public String getPathwayCode() {
+    return pathwayCode;
+  }
+
+  public void setPathwayCode(String pathwayCode) {
+    this.pathwayCode = pathwayCode;
   }
 
   @Override

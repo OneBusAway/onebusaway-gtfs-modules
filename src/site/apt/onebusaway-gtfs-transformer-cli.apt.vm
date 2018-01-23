@@ -395,6 +395,16 @@ such that the resulting schedule is semantically the same.
 {"op":"remove_non_revenue_stops_excluding_terminals"}}
 +---+
 
+* Remove unused stops
+
+  Some feeds contain Stops that are not present in Stop Times.
+
+  To remove them, apply the following transform:
+
++---+
+{"op":"remove_unused_stops"}
++---+
+
 * Arbitrary Transform
 
   We also allow you to specify arbitrary transformations as well.  Here, you specify your transformation class and we will

@@ -74,9 +74,8 @@
     </class>
     
     <class name="org.onebusaway.gtfs.model.FeedInfo" table="gtfs_feed_info">
-        <id name="id" column="gid" type="int" length="11" unsaved-value="null">
-            <generator class="native" />
-        </id>        
+        <id name="id" column="gid" type="string" length="50">
+        </id>
         <property name="publisherName" />
         <property name="publisherUrl" />
         <property name="lang" />         

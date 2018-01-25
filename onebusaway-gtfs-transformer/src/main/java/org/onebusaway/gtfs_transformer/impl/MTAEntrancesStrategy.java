@@ -1,19 +1,20 @@
-/* This program is free software: you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public License
- as published by the Free Software Foundation, either version 3 of
- the License, or (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+/**
+ * Copyright (C) 2018 Cambridge Systematics, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.csv_entities.CsvEntityReader;
-import org.onebusaway.csv_entities.EntityHandler;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Pathway;
@@ -26,7 +27,6 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +35,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static org.onebusaway.gtfs_transformer.csv.CSVUtil.readCsv;
 
 public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
@@ -46,12 +48,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
      *
      * See: https://docs.google.com/document/d/1qJOTe4m_a4dcJnvXYt4smYj4QQ1ejZ8CvLBYzDM5IyM/edit?ts=5a39452a
      *
-     * assumptions/notes:
-     * - mezzanine is shared
-     * - "mezzanine and uptown" => street to mezz and uptown
-     * - Good examples for assumptions: A09, Court Sq 719
-     * - need to figure out what to do for cross-feed entities (PATH, LIRR)
-     * - will need track info (look at 34th st/penn)
      */
 
     private static final int LOCATION_TYPE_STOP = 0;
@@ -71,9 +67,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     private static final int PATHWAY_MODE_ESCALATOR = 4;
     private static final int PATHWAY_MODE_ELEVATOR = 5;
 
-    private static final int GENERIC_PATHWAY_TRAVERSAL_TIME = 30;
-    private static final int ELEVATOR_TRAVERSAL_TIME = 60;
-
     private static final Logger _log = LoggerFactory.getLogger(MTAEntrancesStrategy.class);
 
     @CsvField(ignore = true)
@@ -88,6 +81,21 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     private String elevatorsCsv;
 
     private String entrancesCsv;
+
+    @CsvField(optional = true)
+    private int genericPathwayTraversalTime = 60;
+
+    @CsvField(optional = true)
+    private int stairTraversalTime = 60;
+
+    @CsvField(optional = true)
+    private int escalatorTraversalTime = 60;
+
+    @CsvField(optional = true)
+    private int walkwayTraveralTime = 60;
+
+    @CsvField(optional = true)
+    private int elevatorTraversalTime = 120;
 
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
@@ -156,36 +164,40 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 _log.error("Station {} has no entrances", group.parent.getId());
                 // mock, like we were doing before
                 Stop entrance = createNonAccessibleStreetEntrance(group.parent);
-                createPathway(entrance, group.uptown, PATHWAY_MODE_GENERIC, GENERIC_PATHWAY_TRAVERSAL_TIME, -1, "GENERIC", null);
-                createPathway(entrance, group.downtown, PATHWAY_MODE_GENERIC, GENERIC_PATHWAY_TRAVERSAL_TIME, -1, "GENERIC", null);
+                createPathway(entrance, group.uptown, PATHWAY_MODE_GENERIC, genericPathwayTraversalTime, -1, "GENERIC", null);
+                createPathway(entrance, group.downtown, PATHWAY_MODE_GENERIC, genericPathwayTraversalTime, -1, "GENERIC", null);
                 continue;
             }
 
             int i = 0;
             for (MTAEntrance entrance : group.entrances) {
                 Stop entranceStop = createStopFromMTAEntrance(group.parent, entrance, i);
-                int pathwayMode;
+                int pathwayMode, traversalTime;
                 switch(entrance.getEntranceType()) {
                     case "Stair":
                     case "street_stair":
                         pathwayMode = PATHWAY_MODE_STAIR;
+                        traversalTime = stairTraversalTime;
                         break;
                     case "Ramp":
                     case "Walkway":
                         pathwayMode = PATHWAY_MODE_WALKWAY;
+                        traversalTime = walkwayTraveralTime;
                         break;
                     case "Escalator":
                     case "street_escalator":
                         pathwayMode = PATHWAY_MODE_ESCALATOR;
+                        traversalTime = escalatorTraversalTime;
                         break;
                     case "Door":
                     default:
                         pathwayMode = PATHWAY_MODE_GENERIC;
+                        traversalTime = genericPathwayTraversalTime;
                 }
                 String id = entrance.getEntranceType() + "-" + i;
                 // TODO: for stops with no free crossover, we should have identified which platform it goes to.
-                createPathway(entranceStop, group.uptown, pathwayMode, GENERIC_PATHWAY_TRAVERSAL_TIME, -1, id, null);
-                createPathway(entranceStop, group.downtown, pathwayMode, GENERIC_PATHWAY_TRAVERSAL_TIME, -1, id, null);
+                createPathway(entranceStop, group.uptown, pathwayMode, traversalTime, -1, id, null);
+                createPathway(entranceStop, group.downtown, pathwayMode, traversalTime, -1, id, null);
                 i++;
             }
         }
@@ -211,8 +223,8 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
             Set<String> seenElevatorPathways = new HashSet<>();
 
             for (MTAElevator e : group.elevators) {
-                ElevatorPathwayType type = ElevatorPathwayType.fromString(e.getLoc());
-                if (type == ElevatorPathwayType.UNKNOWN) {
+                ElevatorPathwayType type = ElevatorPathwayType.valueOf(e.getLoc());
+                if (type == ElevatorPathwayType.UNKNOWN || type == ElevatorPathwayType.MEZZ_TO_MEZZ) {
                     unknown++;
                     _log.debug("unknown type={}, elev={}", e.getLoc(), e.getId());
                     continue;
@@ -265,6 +277,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         STREET_TO_MEZZ,
         MEZZ_TO_PLATFORM,
         STREET_TO_PLATFORM,
+        MEZZ_TO_MEZZ,
         UNKNOWN;
 
         boolean shouldCreateStreetEntrance() {
@@ -287,80 +300,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
             return this == STREET_TO_MEZZ_TO_PLATFORM || this == STREET_TO_PLATFORM;
         }
 
-        static ElevatorPathwayType fromString(String s) {
-            switch (s) {
-                case "STREET TO MEZZANINE / MEZZANINE TO PLATFORM":
-                case "MEZZANINE AND UPTOWN":
-                case "MEZZANINE AND DOWNTOWN":
-                case "STREET TO MEZZANINE & UPTOWN PLATFORM":
-                case "STREET TO MEZZANINE &PLATFORMS":
-                case "STREET TO MEZZANINE ALL TRAINS":
-                case "STREET TO MEZZANINE AND DOWNTOWN PLATFORM":
-                case "STREET TO MEZZANINE & DOWNTOWN PLATFORM":
-                case "STREET TO MEZZANINE TO 6/E/M TRAINS":
-                case "STREET TO MEZZANINE TO ALL TRAINS":
-                case "STREET TO MEZZANINE TO UPTOWN N/Q/R PLATFORM":
-                case "STREET TO MEZZANINE AND UPTOWN 1 PLATFORM":
-                    return STREET_TO_MEZZ_TO_PLATFORM;
-
-                case "MEZZANINE TO STREET":
-                case "STREET TO MEZZANINE":
-                case "STREET TO TERMINAL/MEZZANINE":
-                    // needs work:
-                case "STREET TO LIRR PLATFORM A & MEZZANINE":
-                case "STREET TO TA MEZZANINE AND LIRR OVERPASS":
-                    return STREET_TO_MEZZ;
-
-                case "CENTER ISLAND PLATFORM TO MEZZANINE":
-                case "MEZZANINE TO PLATFORM":
-                case "MEZZANINE TO PLATFORMS":
-                case "MEZZANINE TO UPTOWN AND DOWNTOWN PLATFORMS":
-                case "MEZZANINES TO UPTOWN 4 PLATFORM":
-                case "MEZZANINES TO DOWNTOWN 4 PLATFORM":
-                case "MEZZANINE TO DOWNTOWN B":
-                case "MEZZANINE TO UPTOWN B":
-                case "MEZZANINE TO UPTOWN":
-                case "MEZZANINE TO DOWNTOWN":
-                case "NORTHBOUND PLATFORM TO MEZZANINE":
-                case "MEZZANINE TO 7 PLATFORM":
-                case "MEZZANINE TO L PLATFORM":
-                case "SOUTHBOUND PLATFORM TO MEZZANINE":
-                case "MEZZANINE TO DOWNTOWN A,C&E PLATFORM":
-                case "MEZZANINE TO UPTOWN A,C&E PLATFORM":
-                case "MEZZANINE TO SOUTHBOUND PLATFORM":
-                case "MEZZANINE TO DOWNTOWN 4":
-                case "MEZZANINE TO UPTOWN 4":
-                case "MEZZANINE TO UPTOWN LOCAL PLATFORM":
-                case "MEZZANINE TO UPTOWN PLATFORM N":
-                case "MEZZANINE TO DOWNTOWN PLATFORM(N&R)":
-                case "MEZZANINE TO DOWNTOWN A":
-                case "MEZZANINE TO UPTOWN A":
-                case "PLATFORM TO MEZZANINE":
-                case "MEZZANINE TO DOWNTOWN 2":
-                case "MEZZANINE TO 4":
-                case "MEZZANINE TO DOWNTOWN AND DOWNTOWN TO UPTOWN PLATFORM":
-                case "MEZZANINE TO NORTHBOUND PLATFORM":
-                    // likely work:
-                case "MEZZANINE TO DOWNTOWN LOCAL PLATFORM":
-                case "MEZZANINE TO EXPRESS PLATFORM":
-                    return MEZZ_TO_PLATFORM;
-
-                case "STREET TO PLATFORM":
-                case "STREET TO NORTH BOUND PLATFORM":
-                case "STREET TO SOUTH BOUND PLATFORM":
-                case "STREET TO UPTOWN PLATFORM":
-                case "STREET TO DOWNTOWN PLATFORM":
-                case "STREET TO DOWNTOWN C PLATFORM AND S PLATFORM":
-                case "SOUTH BOUND PLATFORM TO STREET":
-                    // likely work
-                case "STREET TO MEZZANINE & OVERPASS":
-                case "STREET TO PLATFORMS":
-                    return STREET_TO_PLATFORM;
-
-                default:
-                    return UNKNOWN;
-            }
-        }
     }
 
 
@@ -431,7 +370,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
             return;
         }
         seenElevatorPathways.add(idStr);
-        createPathway(from, to, PATHWAY_MODE_ELEVATOR, ELEVATOR_TRAVERSAL_TIME, ELEVATOR_TRAVERSAL_TIME, idStr, code);
+        createPathway(from, to, PATHWAY_MODE_ELEVATOR, elevatorTraversalTime, elevatorTraversalTime, idStr, code);
     }
 
     private void createPathway(Stop from, Stop to, int mode, int traversalTime, int wheelchairTraversalTime, String id, String code) {
@@ -474,29 +413,32 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         return readCsv(MTAEntrance.class, entrancesCsv);
     }
 
-    private static <T> List<T> readCsv(final Class<T> klass, String csv) {
-        CsvEntityReader reader = new CsvEntityReader();
-        final List<T> ret = new ArrayList<>();
-        reader.addEntityHandler(new EntityHandler() {
-            @Override
-            public void handleEntity(Object o) {
-                ret.add(klass.cast(o));
-            }
-        });
-        try {
-            reader.readEntities(klass, new FileReader(csv));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ret;
-    }
-
     public void setElevatorsCsv(String elevatorsCsv) {
         this.elevatorsCsv = elevatorsCsv;
     }
 
     public void setEntrancesCsv(String entrancesCsv) {
         this.entrancesCsv = entrancesCsv;
+    }
+
+    public void setGenericPathwayTraversalTime(int genericPathwayTraversalTime) {
+        this.genericPathwayTraversalTime = genericPathwayTraversalTime;
+    }
+
+    public void setStairTraversalTime(int stairTraversalTime) {
+        this.stairTraversalTime = stairTraversalTime;
+    }
+
+    public void setEscalatorTraversalTime(int escalatorTraversalTime) {
+        this.escalatorTraversalTime = escalatorTraversalTime;
+    }
+
+    public void setWalkwayTraveralTime(int walkwayTraveralTime) {
+        this.walkwayTraveralTime = walkwayTraveralTime;
+    }
+
+    public void setElevatorTraversalTime(int elevatorTraversalTime) {
+        this.elevatorTraversalTime = elevatorTraversalTime;
     }
 }
 

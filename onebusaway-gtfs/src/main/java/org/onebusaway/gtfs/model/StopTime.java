@@ -70,10 +70,10 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, defaultValue = "-1")
   private int continuousDropOff;
 
-  @CsvField(optional = true, name = "pick_up_area_id", mapping = EntityFieldMappingFactory.class, order = -2)
+  @CsvField(optional = true, name = "start_service_area_id", mapping = EntityFieldMappingFactory.class, order = -2)
   private Area startServiceArea;
 
-  @CsvField(optional = true, name = "drop_off_area_id", mapping = EntityFieldMappingFactory.class, order = -2)
+  @CsvField(optional = true, name = "end_service_area_id", mapping = EntityFieldMappingFactory.class, order = -2)
   private Area endServiceArea;
 
   @CsvField(optional = true)

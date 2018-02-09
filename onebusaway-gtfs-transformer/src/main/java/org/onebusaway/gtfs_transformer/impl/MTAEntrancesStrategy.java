@@ -78,9 +78,17 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     @CsvField(ignore = true)
     private Collection<Pathway> newPathways;
 
+    @CsvField(optional = true)
     private String elevatorsCsv;
 
     private String entrancesCsv;
+
+    // control a few things so this can be reused for the railroads:
+    private boolean stopsHaveParents;
+
+    private boolean createMissingLinks;
+
+    private boolean contextualAccessibility;
 
     @CsvField(optional = true)
     private int genericPathwayTraversalTime = 60;
@@ -92,7 +100,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     private int escalatorTraversalTime = 60;
 
     @CsvField(optional = true)
-    private int walkwayTraveralTime = 60;
+    private int walkwayTraversalTime = 60;
 
     @CsvField(optional = true)
     private int elevatorTraversalTime = 120;
@@ -109,26 +117,34 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
         // For every stop that's not a station, add an entrance which is not wheelchair accessible, and a pathway.
         for (Stop stop : dao.getAllStops()) {
-            // Put stop into a stop-group with parent, uptown, downtown
-            String gid = stop.getLocationType() == LOCATION_TYPE_STOP ? stop.getParentStation() : stop.getId().getId();
-            StopGroup group = stopGroups.get(gid);
-            if (group == null) {
-                group = new StopGroup();
+            if (stopsHaveParents) {
+                // Put stop into a stop-group with parent, uptown, downtown
+                String gid = stop.getLocationType() == LOCATION_TYPE_STOP ? stop.getParentStation() : stop.getId().getId();
+                StopGroup group = stopGroups.get(gid);
+                if (group == null) {
+                    group = new StopGroup();
+                    stopGroups.put(gid, group);
+                }
+                if (stop.getLocationType() == LOCATION_TYPE_STATION) {
+                    group.parent = stop;
+                } else if (stop.getId().getId().endsWith("S")) {
+                    group.downtown = stop;
+                } else if (stop.getId().getId().endsWith("N")) {
+                    group.uptown = stop;
+                } else throw new RuntimeException("unexpected!");
+            } else {
+                StopGroup group = new StopGroup();
+                group.parent = stop;
+                String gid = stop.getId().getId();
                 stopGroups.put(gid, group);
             }
-            if (stop.getLocationType() == LOCATION_TYPE_STATION) {
-                group.parent = stop;
-            }
-            else if (stop.getId().getId().endsWith("S")) {
-                group.downtown = stop;
-            } else if (stop.getId().getId().endsWith("N")) {
-                group.uptown = stop;
-            } else throw new RuntimeException("unexpected!");
         }
 
         readEntranceData(stopGroups);
 
-        readElevatorData(stopGroups);
+        if (elevatorsCsv != null) {
+            readElevatorData(stopGroups);
+        }
 
         for (Stop s : newStops) {
             dao.saveEntity(s);
@@ -144,14 +160,22 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     In the future, entrance dataset should include elevator IDs, so it can be matched to elevator dataset.
      */
     private void readEntranceData(Map<String, StopGroup> stopGroups) {
-        // FYI, blacklist: Easement, Elevator, easement_elevator, easement_escalator, easement_stair, street_elevator
-        List<String> whitelist = Arrays.asList("Door", "Escalator", "Ramp", "Stair", "Walkway", "street_escalator", "street_stair");
+        // FYI, blacklist: Easement, Elevator.
+        // LIRR: Overpass_Walkway, Overpass_Walkway_Stair, Road_Walkway_Stair, Overpass_Walkway_Elevator
+        List<String> whitelist = new ArrayList<>(Arrays.asList("Door", "Escalator", "Ramp", "Stair", "Walkway", // subway
+                "Stair_Escalator", "Road_Walkway", "Entrance" // LIRR
+                ));
+
+        if (contextualAccessibility)
+            whitelist.add("Elevator");
 
         List<MTAEntrance> entrances = getEntrances();
 
         for (MTAEntrance e : entrances) {
             if (whitelist.contains(e.getEntranceType()) && e.hasLocation()) {
                 StopGroup g = stopGroups.get(e.getStopId());
+                if (g.parent == null)
+                    _log.error("s");
                 if (g == null)
                     _log.error("No stop group for station {}", e.getStopId());
                 else
@@ -160,7 +184,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         }
 
         for (StopGroup group : stopGroups.values()) {
-            if (group.entrances.isEmpty()) {
+            if (group.entrances.isEmpty() && createMissingLinks) {
                 _log.error("Station {} has no entrances", group.parent.getId());
                 // mock, like we were doing before
                 Stop entrance = createNonAccessibleStreetEntrance(group.parent);
@@ -172,32 +196,50 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
             int i = 0;
             for (MTAEntrance entrance : group.entrances) {
                 Stop entranceStop = createStopFromMTAEntrance(group.parent, entrance, i);
-                int pathwayMode, traversalTime;
+                int pathwayMode, traversalTime, wheelchairTraversalTime;
                 switch(entrance.getEntranceType()) {
+                    case "Stair_Escalator": // treat as stair for now
                     case "Stair":
-                    case "street_stair":
                         pathwayMode = PATHWAY_MODE_STAIR;
                         traversalTime = stairTraversalTime;
+                        wheelchairTraversalTime = -1;
                         break;
                     case "Ramp":
                     case "Walkway":
+                    case "Road_Walkway":
                         pathwayMode = PATHWAY_MODE_WALKWAY;
-                        traversalTime = walkwayTraveralTime;
+                        traversalTime = walkwayTraversalTime;
+                        wheelchairTraversalTime = traversalTime * 2;
                         break;
                     case "Escalator":
-                    case "street_escalator":
                         pathwayMode = PATHWAY_MODE_ESCALATOR;
                         traversalTime = escalatorTraversalTime;
+                        wheelchairTraversalTime = -1;
+                        break;
+                    case "Elevator":
+                        pathwayMode = PATHWAY_MODE_ELEVATOR;
+                        traversalTime = elevatorTraversalTime;
+                        wheelchairTraversalTime = elevatorTraversalTime;
                         break;
                     case "Door":
+                    case "Entrance":
                     default:
                         pathwayMode = PATHWAY_MODE_GENERIC;
                         traversalTime = genericPathwayTraversalTime;
+                        wheelchairTraversalTime = traversalTime * 2;
                 }
                 String id = entrance.getEntranceType() + "-" + i;
-                // TODO: for stops with no free crossover, we should have identified which platform it goes to.
-                createPathway(entranceStop, group.uptown, pathwayMode, traversalTime, -1, id, null);
-                createPathway(entranceStop, group.downtown, pathwayMode, traversalTime, -1, id, null);
+                wheelchairTraversalTime = contextualAccessibility ? wheelchairTraversalTime : -1;
+                if (stopsHaveParents) {
+                    if (!entrance.hasDirection() || entrance.getDirection().equals("N")) {
+                        createPathway(entranceStop, group.uptown, pathwayMode, traversalTime, wheelchairTraversalTime, id, null);
+                    }
+                    if (!entrance.hasDirection() || entrance.getDirection().equals("S")) {
+                        createPathway(entranceStop, group.downtown, pathwayMode, traversalTime, wheelchairTraversalTime, id, null);
+                    }
+                } else {
+                    createPathway(entranceStop, group.parent, pathwayMode, traversalTime, wheelchairTraversalTime, id, null);
+                }
                 i++;
             }
         }
@@ -433,12 +475,24 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         this.escalatorTraversalTime = escalatorTraversalTime;
     }
 
-    public void setWalkwayTraveralTime(int walkwayTraveralTime) {
-        this.walkwayTraveralTime = walkwayTraveralTime;
+    public void setWalkwayTraversalTime(int walkwayTraveralTime) {
+        this.walkwayTraversalTime = walkwayTraveralTime;
     }
 
     public void setElevatorTraversalTime(int elevatorTraversalTime) {
         this.elevatorTraversalTime = elevatorTraversalTime;
+    }
+
+    public void setStopsHaveParents(boolean stopsHaveParents) {
+        this.stopsHaveParents = stopsHaveParents;
+    }
+
+    public void setCreateMissingLinks(boolean createMissingLinks) {
+        this.createMissingLinks = createMissingLinks;
+    }
+
+    public void setContextualAccessibility(boolean contextualAccessibility) {
+        this.contextualAccessibility = contextualAccessibility;
     }
 }
 

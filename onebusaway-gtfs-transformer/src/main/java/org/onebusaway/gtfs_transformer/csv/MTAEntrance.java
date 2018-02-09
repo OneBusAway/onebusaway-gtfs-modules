@@ -22,11 +22,6 @@ import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 public class MTAEntrance {
     // station_key,MRN,entrance_type,latitude,longitude
 
-    private String stationKey;
-
-    @CsvField(name = "MRN")
-    private String MRN;
-
     private String entranceType;
 
     // a couple have missing lat/lons
@@ -39,21 +34,8 @@ public class MTAEntrance {
 
     private String stopId;
 
-    public String getStationKey() {
-        return stationKey;
-    }
-
-    public void setStationKey(String stationKey) {
-        this.stationKey = stationKey;
-    }
-
-    public String getMRN() {
-        return MRN;
-    }
-
-    public void setMRN(String MRN) {
-        this.MRN = MRN;
-    }
+    @CsvField(optional = true)
+    private String direction;
 
     public String getEntranceType() {
         return entranceType;
@@ -79,6 +61,10 @@ public class MTAEntrance {
         this.longitude = longitude;
     }
 
+    public boolean hasLocation() {
+        return latitude != null && longitude != null;
+    }
+
     public String getStopId() {
         return stopId;
     }
@@ -87,7 +73,15 @@ public class MTAEntrance {
         this.stopId = stopId;
     }
 
-    public boolean hasLocation() {
-        return latitude != null && longitude != null;
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+
+    public boolean hasDirection() {
+        return direction != null;
     }
 }

@@ -24,6 +24,7 @@ import org.onebusaway.gtfs_transformer.csv.MTAElevator;
 import org.onebusaway.gtfs_transformer.csv.MTAEntrance;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
+import org.onebusaway.gtfs_transformer.util.PathwayUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +38,8 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.onebusaway.gtfs_transformer.csv.CSVUtil.readCsv;
+
+import static org.onebusaway.gtfs_transformer.util.PathwayUtil.*;
 
 public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
@@ -60,13 +63,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     private static final int WHEELCHAIR_ACCESSIBLE = 1;
     private static final int NOT_WHEELCHAIR_ACCESSIBLE = 2;
 
-    private static final int PATHWAY_MODE_GENERIC = 0;
-    private static final int PATHWAY_MODE_WALKWAY = 1;
-    private static final int PATHWAY_MODE_STAIR = 2;
-    private static final int PATHWAY_MODE_TRAVELATOR = 3;
-    private static final int PATHWAY_MODE_ESCALATOR = 4;
-    private static final int PATHWAY_MODE_ELEVATOR = 5;
-
     private static final Logger _log = LoggerFactory.getLogger(MTAEntrancesStrategy.class);
 
     @CsvField(ignore = true)
@@ -77,6 +73,9 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
     @CsvField(ignore = true)
     private Collection<Pathway> newPathways;
+
+    @CsvField(ignore = true)
+    private PathwayUtil pathwayUtil;
 
     @CsvField(optional = true)
     private String elevatorsCsv;
@@ -112,6 +111,8 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
         newStops = new HashSet<>();
         newPathways = new HashSet<>();
+
+        pathwayUtil = new PathwayUtil(agencyId, newPathways);
 
         Map<String, StopGroup> stopGroups = new HashMap<>();
 
@@ -174,8 +175,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         for (MTAEntrance e : entrances) {
             if (whitelist.contains(e.getEntranceType()) && e.hasLocation()) {
                 StopGroup g = stopGroups.get(e.getStopId());
-                if (g.parent == null)
-                    _log.error("s");
                 if (g == null)
                     _log.error("No stop group for station {}", e.getStopId());
                 else
@@ -188,8 +187,8 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 _log.error("Station {} has no entrances", group.parent.getId());
                 // mock, like we were doing before
                 Stop entrance = createNonAccessibleStreetEntrance(group.parent);
-                createPathway(entrance, group.uptown, PATHWAY_MODE_GENERIC, genericPathwayTraversalTime, -1, "GENERIC", null);
-                createPathway(entrance, group.downtown, PATHWAY_MODE_GENERIC, genericPathwayTraversalTime, -1, "GENERIC", null);
+                pathwayUtil.createPathway(entrance, group.uptown, PATHWAY_MODE_GENERIC, genericPathwayTraversalTime, -1, "GENERIC", null);
+                pathwayUtil.createPathway(entrance, group.downtown, PATHWAY_MODE_GENERIC, genericPathwayTraversalTime, -1, "GENERIC", null);
                 continue;
             }
 
@@ -232,13 +231,13 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 wheelchairTraversalTime = contextualAccessibility ? wheelchairTraversalTime : -1;
                 if (stopsHaveParents) {
                     if (!entrance.hasDirection() || entrance.getDirection().equals("N")) {
-                        createPathway(entranceStop, group.uptown, pathwayMode, traversalTime, wheelchairTraversalTime, id, null);
+                        pathwayUtil.createPathway(entranceStop, group.uptown, pathwayMode, traversalTime, wheelchairTraversalTime, id, null);
                     }
                     if (!entrance.hasDirection() || entrance.getDirection().equals("S")) {
-                        createPathway(entranceStop, group.downtown, pathwayMode, traversalTime, wheelchairTraversalTime, id, null);
+                        pathwayUtil.createPathway(entranceStop, group.downtown, pathwayMode, traversalTime, wheelchairTraversalTime, id, null);
                     }
                 } else {
-                    createPathway(entranceStop, group.parent, pathwayMode, traversalTime, wheelchairTraversalTime, id, null);
+                    pathwayUtil.createPathway(entranceStop, group.parent, pathwayMode, traversalTime, wheelchairTraversalTime, id, null);
                 }
                 i++;
             }
@@ -412,39 +411,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
             return;
         }
         seenElevatorPathways.add(idStr);
-        createPathway(from, to, PATHWAY_MODE_ELEVATOR, elevatorTraversalTime, elevatorTraversalTime, idStr, code);
-    }
-
-    private void createPathway(Stop from, Stop to, int mode, int traversalTime, int wheelchairTraversalTime, String id, String code) {
-        Pathway pathway = new Pathway();
-        pathway.setFromStop(from);
-        pathway.setToStop(to);
-        pathway.setPathwayMode(mode);
-        pathway.setTraversalTime(traversalTime);
-        if (wheelchairTraversalTime > 0) {
-            pathway.setWheelchairTraversalTime(wheelchairTraversalTime);
-        }
-        pathway.setId(new AgencyAndId(agencyId, to.getId().getId() + "-" + id + "-IN"));
-        if (code != null) {
-            pathway.setPathwayCode(code);
-        }
-
-        Pathway reverse = reverse(pathway, new AgencyAndId(agencyId, to.getId().getId() + "-" + id + "-OUT"));
-
-        newPathways.add(pathway);
-        newPathways.add(reverse);
-    }
-
-    private Pathway reverse(Pathway p, AgencyAndId id) {
-        Pathway q = new Pathway();
-        q.setFromStop(p.getToStop());
-        q.setToStop(p.getFromStop());
-        q.setTraversalTime(p.getTraversalTime());
-        q.setWheelchairTraversalTime(p.getWheelchairTraversalTime());
-        q.setPathwayMode(p.getPathwayMode());
-        q.setPathwayCode(p.getPathwayCode());
-        q.setId(id);
-        return q;
+        pathwayUtil.createPathway(from, to, PATHWAY_MODE_ELEVATOR, elevatorTraversalTime, elevatorTraversalTime, idStr, code);
     }
 
     private List<MTAElevator> getElevators() {

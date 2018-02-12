@@ -87,7 +87,7 @@ public interface GtfsDao extends GenericDao {
 
   public Collection<FeedInfo> getAllFeedInfos();
 
-  public FeedInfo getFeedInfoForId(int id);
+  public FeedInfo getFeedInfoForId(String id);
 
   /****
    * {@link Frequency} Methods

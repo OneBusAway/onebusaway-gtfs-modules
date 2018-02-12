@@ -179,7 +179,7 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
-  public FeedInfo getFeedInfoForId(int id) {
+  public FeedInfo getFeedInfoForId(String id) {
     return (FeedInfo) _ops.get(FeedInfo.class, id);
   }
 

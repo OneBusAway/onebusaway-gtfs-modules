@@ -115,7 +115,7 @@ public class GtfsMappingTest {
 
     _reader.readEntities(FeedInfo.class, new StringReader(b.toString()));
 
-    FeedInfo feedInfo = _dao.getFeedInfoForId(1);
+    FeedInfo feedInfo = _dao.getFeedInfoForId("1");
     assertEquals("Test", feedInfo.getPublisherName());
     assertEquals("http://test/", feedInfo.getPublisherUrl());
     assertEquals("en", feedInfo.getLang());

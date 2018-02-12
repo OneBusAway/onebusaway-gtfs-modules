@@ -158,7 +158,7 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
   }
 
   @Override
-  public FeedInfo getFeedInfoForId(int id) {
+  public FeedInfo getFeedInfoForId(String id) {
     return getEntityForId(FeedInfo.class, id);
   }
 

@@ -75,6 +75,10 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, defaultValue = "-1")
   private int departureBuffer;
 
+  /** Support track extension */
+  @CsvField(optional = true)
+  private String track;
+
   public StopTime() {
 
   }
@@ -94,6 +98,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.timepoint = st.timepoint;
     this.trip = st.trip;
     this.departureBuffer = st.departureBuffer;
+    this.track = st.track;
   }
 
   public Integer getId() {
@@ -362,6 +367,14 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   public void setDepartureBuffer(int departureBuffer) {
     this.departureBuffer = departureBuffer;
+  }
+
+  public String getTrack() {
+    return track;
+  }
+
+  public void setTrack(String track) {
+    this.track = track;
   }
 
   public int compareTo(StopTime o) {

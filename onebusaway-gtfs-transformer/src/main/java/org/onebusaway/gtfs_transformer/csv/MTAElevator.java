@@ -43,6 +43,12 @@ public class MTAElevator {
     @CsvField(name = "Line", optional = true)
     private String line;
 
+    @CsvField(name = "mezzanine_name_1", optional = true)
+    private String mezzanineName1;
+
+    @CsvField(name = "mezzanine_name_2", optional = true)
+    private String mezzanineName2;
+
     public String getId() {
         return id;
     }
@@ -97,5 +103,21 @@ public class MTAElevator {
 
     public void setLine(String line) {
         this.line = line;
+    }
+
+    public String getMezzanineName1() {
+        return mezzanineName1;
+    }
+
+    public void setMezzanineName1(String mezzanineName1) {
+        this.mezzanineName1 = mezzanineName1;
+    }
+
+    public String getMezzanineName2() {
+        return mezzanineName2;
+    }
+
+    public void setMezzanineName2(String mezzanineName2) {
+        this.mezzanineName2 = mezzanineName2;
     }
 }

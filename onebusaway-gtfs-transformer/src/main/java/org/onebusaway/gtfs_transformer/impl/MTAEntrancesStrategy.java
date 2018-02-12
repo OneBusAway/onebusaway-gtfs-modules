@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -62,6 +63,8 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
     private static final int WHEELCHAIR_ACCESSIBLE = 1;
     private static final int NOT_WHEELCHAIR_ACCESSIBLE = 2;
+
+    private static final String DEFAULT_MEZZ = "default";
 
     private static final Logger _log = LoggerFactory.getLogger(MTAEntrancesStrategy.class);
 
@@ -163,6 +166,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     private void readEntranceData(Map<String, StopGroup> stopGroups) {
         // FYI, blacklist: Easement, Elevator.
         // LIRR: Overpass_Walkway, Overpass_Walkway_Stair, Road_Walkway_Stair, Overpass_Walkway_Elevator
+        // MNR: Tunnel
         List<String> whitelist = new ArrayList<>(Arrays.asList("Door", "Escalator", "Ramp", "Stair", "Walkway", // subway
                 "Stair_Escalator", "Road_Walkway", "Entrance" // LIRR
                 ));
@@ -258,14 +262,16 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
         for (StopGroup group : stopGroups.values()) {
             Stop entrance = null;
-            Stop mezzanine = null;
 
             // elevator is defined by ID, type, and direction iff it includes platform
             Set<String> seenElevatorPathways = new HashSet<>();
 
+            Map<String, Stop> mezzByName = new HashMap<>();
+
             for (MTAElevator e : group.elevators) {
                 ElevatorPathwayType type = ElevatorPathwayType.valueOf(e.getLoc());
-                if (type == ElevatorPathwayType.UNKNOWN || type == ElevatorPathwayType.MEZZ_TO_MEZZ) {
+                type.resolveElevatorNames(e);
+                if (type == ElevatorPathwayType.UNKNOWN) {
                     unknown++;
                     _log.debug("unknown type={}, elev={}", e.getLoc(), e.getId());
                     continue;
@@ -273,8 +279,15 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 if (entrance == null && type.shouldCreateStreetEntrance()) {
                     entrance = createAccessibleStreetEntrance(group.parent);
                 }
-                if (mezzanine == null && type.shouldCreateMezzanine()) {
-                    mezzanine = createMezzanine(group.parent);
+
+                if (type.shouldCreateMezzanine()) {
+                    for (String name : type.mezzanineNames) {
+                        Stop m = mezzByName.get(name);
+                        if (m == null) {
+                            m = createMezzanine(group.parent, name);
+                            mezzByName.put(name, m);
+                        }
+                    }
                 }
 
                 Stop platform = null;
@@ -291,18 +304,39 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 String code = e.getId();
 
                 if (type.shouldCreateStreetToMezzanine()) {
-                    String id = "S2M_" + code;
-                    createElevPathways(entrance, mezzanine, code, id, seenElevatorPathways);
+                    String id_base = "S2M_" + code;
+                    for (String name : type.mezzanineNames) {
+                        Stop mezz = mezzByName.get(name);
+                        String id = id_base + "_" + name;
+                        createElevPathways(entrance, mezz, code, id, seenElevatorPathways);
+                    }
                 }
 
                 if (type.shouldCreateMezzanineToPlatform()) {
-                    String id = "M2P_" + code + "_" + e.getDirection();
-                    createElevPathways(mezzanine, platform, code, id, seenElevatorPathways);
+                    String id_base = "M2P_" + code + "_" + e.getDirection();
+                    for (String name : type.mezzanineNames) {
+                        Stop mezz = mezzByName.get(name);
+                        String id = id_base + "_" + name;
+                        createElevPathways(mezz, platform, code, id, seenElevatorPathways);
+                    }
                 }
 
                 if (type.shouldCreateStreetToPlatform()) {
                     String id = "S2P_" + code + "_" + e.getDirection();
                     createElevPathways(entrance, platform, code, id, seenElevatorPathways);
+                }
+
+                if (type.shouldCreateMezzanineToMezzanine()) {
+                    for (int i = 0; i < type.mezzanineNames.size(); i++) {
+                        for (int j = i + 1; j < type.mezzanineNames.size(); j++) {
+                            String name0 = type.mezzanineNames.get(i);
+                            String name1 = type.mezzanineNames.get(j);
+                            Stop mezz0 = mezzByName.get(name0);
+                            Stop mezz1 = mezzByName.get(name1);
+                            String id = "M2M_" + code + "_" + name0 + "_" + name1;
+                            createElevPathways(mezz0, mezz1, code, id, seenElevatorPathways);
+                        }
+                    }
                 }
             }
         }
@@ -319,28 +353,66 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         MEZZ_TO_PLATFORM,
         STREET_TO_PLATFORM,
         MEZZ_TO_MEZZ,
+        MEZZ_TO_MEZZ_TO_STREET,
+        MEZZ_TO_MEZZ_TO_PLATFORM,
+        MEZZ_TO_MEZZ_TO_STREET_TO_PLATFORM,
         UNKNOWN;
 
+        List<String> mezzanineNames;
+
         boolean shouldCreateStreetEntrance() {
-            return this == STREET_TO_MEZZ || this == STREET_TO_MEZZ_TO_PLATFORM || this == STREET_TO_PLATFORM;
+            return this == STREET_TO_MEZZ || this == STREET_TO_MEZZ_TO_PLATFORM || this == STREET_TO_PLATFORM || this == MEZZ_TO_MEZZ_TO_STREET_TO_PLATFORM;
         }
 
         boolean shouldCreateMezzanine() {
-            return this == STREET_TO_MEZZ_TO_PLATFORM | this == STREET_TO_MEZZ || this == MEZZ_TO_PLATFORM;
+            return this == STREET_TO_MEZZ_TO_PLATFORM | this == STREET_TO_MEZZ || this == MEZZ_TO_PLATFORM
+                    || this == MEZZ_TO_MEZZ || this == MEZZ_TO_MEZZ_TO_STREET || this == MEZZ_TO_MEZZ_TO_PLATFORM
+                    || this == MEZZ_TO_MEZZ_TO_STREET_TO_PLATFORM;
         }
 
         boolean shouldCreateStreetToMezzanine() {
-            return this == STREET_TO_MEZZ_TO_PLATFORM || this == STREET_TO_MEZZ;
+            return this == STREET_TO_MEZZ_TO_PLATFORM || this == STREET_TO_MEZZ || this == MEZZ_TO_MEZZ_TO_STREET
+                    || this == MEZZ_TO_MEZZ_TO_STREET_TO_PLATFORM;
         }
 
         boolean shouldCreateMezzanineToPlatform() {
-            return this == STREET_TO_MEZZ_TO_PLATFORM || this == MEZZ_TO_PLATFORM;
+            return this == STREET_TO_MEZZ_TO_PLATFORM || this == MEZZ_TO_PLATFORM || this == MEZZ_TO_MEZZ_TO_PLATFORM
+                    || this == MEZZ_TO_MEZZ_TO_STREET_TO_PLATFORM;
         }
 
         boolean shouldCreateStreetToPlatform() {
-            return this == STREET_TO_MEZZ_TO_PLATFORM || this == STREET_TO_PLATFORM;
+            return this == STREET_TO_MEZZ_TO_PLATFORM || this == STREET_TO_PLATFORM
+                    || this == MEZZ_TO_MEZZ_TO_STREET_TO_PLATFORM;
         }
 
+        boolean shouldCreateMezzanineToMezzanine() {
+            return this == MEZZ_TO_MEZZ || this == MEZZ_TO_MEZZ_TO_STREET || this == MEZZ_TO_MEZZ_TO_PLATFORM
+                    || this == MEZZ_TO_MEZZ_TO_STREET_TO_PLATFORM;
+        }
+
+        void resolveElevatorNames(MTAElevator e) {
+            String mezz1 = e.getMezzanineName1();
+            String mezz2 = e.getMezzanineName2();
+            switch (this) {
+                case STREET_TO_MEZZ_TO_PLATFORM:
+                case STREET_TO_MEZZ:
+                case MEZZ_TO_PLATFORM:
+                    if (mezz1 != null)
+                        mezzanineNames = Collections.singletonList(mezz1);
+                    else
+                        mezzanineNames = Collections.singletonList(DEFAULT_MEZZ);
+                    break;
+                case MEZZ_TO_MEZZ:
+                case MEZZ_TO_MEZZ_TO_STREET:
+                case MEZZ_TO_MEZZ_TO_PLATFORM:
+                case MEZZ_TO_MEZZ_TO_STREET_TO_PLATFORM:
+                    if (mezz1 == null | mezz2 == null)
+                        throw new IllegalArgumentException("elevators with >1 mezzanine require names: " + e.getId());
+                    mezzanineNames = Arrays.asList(mezz1, mezz2);
+                default:
+                    // pass
+            }
+        }
     }
 
 
@@ -386,8 +458,8 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         return createStop(parent, LOCATION_TYPE_ENTRANCE, WHEELCHAIR_ACCESSIBLE, "ent-acs");
     }
 
-    private Stop createMezzanine(Stop parent) {
-        return createStop(parent, LOCATION_TYPE_GENERIC, WHEELCHAIR_ACCESSIBLE, "mezz");
+    private Stop createMezzanine(Stop parent, String name) {
+        return createStop(parent, LOCATION_TYPE_GENERIC, WHEELCHAIR_ACCESSIBLE, "mezz-" + name);
     }
 
     private Stop createStop(Stop stop, int locationType, int wheelchairAccessible, String suffix) {

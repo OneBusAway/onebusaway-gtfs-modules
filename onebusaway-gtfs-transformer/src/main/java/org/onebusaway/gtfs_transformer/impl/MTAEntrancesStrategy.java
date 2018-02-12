@@ -68,6 +68,9 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
     private static final Logger _log = LoggerFactory.getLogger(MTAEntrancesStrategy.class);
 
+    private static final List<String> accessibleEntranceTypes = Arrays.asList(
+            "Ramp", "Walkway", "Road_Walkway", "Elevator", "Door", "Entrance");
+
     @CsvField(ignore = true)
     private String agencyId;
 
@@ -444,7 +447,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     // Utility functions
 
     private Stop createStopFromMTAEntrance(Stop parent, MTAEntrance ent, int num) {
-        Stop entrance = createStop(parent, LOCATION_TYPE_ENTRANCE, NOT_WHEELCHAIR_ACCESSIBLE, "entrance-" + num);
+        int wheelchairFlag = NOT_WHEELCHAIR_ACCESSIBLE;
+        if (contextualAccessibility && accessibleEntranceTypes.contains(ent.getEntranceType()))
+            wheelchairFlag = WHEELCHAIR_ACCESSIBLE;
+        Stop entrance = createStop(parent, LOCATION_TYPE_ENTRANCE, wheelchairFlag, "entrance-" + num);
         entrance.setLat(ent.getLatitude());
         entrance.setLon(ent.getLongitude());
         return entrance;

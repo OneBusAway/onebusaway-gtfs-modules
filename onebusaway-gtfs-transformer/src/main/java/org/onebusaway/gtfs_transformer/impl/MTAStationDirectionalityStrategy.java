@@ -59,11 +59,12 @@ public class MTAStationDirectionalityStrategy implements GtfsTransformStrategy {
                 _log.debug("Missing station ID = {}", st.getStop().getParentStation());
                 continue;
             }
-            String direction = st.getTrip().getDirectionId();
+            String stopId = st.getStop().getId().getId();
+            String direction = stopId.substring(stopId.length() - 1);
             String headsign = null;
-            if ("0".equals(direction)) {
+            if ("N".equals(direction)) {
                 headsign = dir.getNorthDesc();
-            } else if ("1".equals(direction)) {
+            } else if ("S".equals(direction)) {
                 headsign = dir.getSouthDesc();
             }
             if (headsign != null && !headsign.equals("n/a")) {

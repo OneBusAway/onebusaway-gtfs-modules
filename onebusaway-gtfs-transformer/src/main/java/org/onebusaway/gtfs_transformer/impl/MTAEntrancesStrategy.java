@@ -479,6 +479,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         entrance.setLon(stop.getLon());
         entrance.setLocationType(locationType);
         entrance.setWheelchairBoarding(wheelchairAccessible);
+        entrance.setParentStation(stop.getId().getId());
         newStops.add(entrance);
         return entrance;
     }

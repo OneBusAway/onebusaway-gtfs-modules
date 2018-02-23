@@ -69,7 +69,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     private static final Logger _log = LoggerFactory.getLogger(MTAEntrancesStrategy.class);
 
     private static final List<String> accessibleEntranceTypes = Arrays.asList(
-            "Ramp", "Walkway", "Road_Walkway", "Elevator", "Door", "Entrance");
+            "Ramp", "Walkway", "Road_Walkway", "Elevator", "Door", "Entrance", "Tunnel");
 
     @CsvField(ignore = true)
     private String agencyId;

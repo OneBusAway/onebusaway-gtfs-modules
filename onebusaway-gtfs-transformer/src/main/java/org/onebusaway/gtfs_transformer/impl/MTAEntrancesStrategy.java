@@ -171,7 +171,8 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         // LIRR: Overpass_Walkway, Overpass_Walkway_Stair, Road_Walkway_Stair, Overpass_Walkway_Elevator
         // MNR: Tunnel
         List<String> whitelist = new ArrayList<>(Arrays.asList("Door", "Escalator", "Ramp", "Stair", "Walkway", // subway
-                "Stair_Escalator", "Road_Walkway", "Entrance" // LIRR
+                "Stair_Escalator", "Road_Walkway", "Entrance", // LIRR
+                "Tunnel" // MNR
                 ));
 
         if (contextualAccessibility)

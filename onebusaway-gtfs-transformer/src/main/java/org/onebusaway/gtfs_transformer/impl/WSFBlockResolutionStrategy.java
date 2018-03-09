@@ -151,8 +151,8 @@ public class WSFBlockResolutionStrategy implements GtfsTransformStrategy {
       String arrive = stc.getArrivingTerminalID().toString();
 
       for (SchedTime sched : schedTime(stc)) {
-        long time = ts(sched.getDepartingTime());
-        Trip trip = _tripResolutionService.resolve(depart, time, arrive);
+        GregorianCalendar gregorianCalendar = sched.getDepartingTime().toGregorianCalendar(_agencyTimeZone, null, null);
+        Trip trip = _tripResolutionService.resolve(depart, gregorianCalendar, arrive);
         if (trip != null) {
           trip.setBlockId(sched.getVesselID().toString());
         } else {
@@ -278,10 +278,9 @@ class WSFTripResolutionService {
     _maxStopTime = calculateMaxStopTime();
   }
 
-  public Trip resolve(String departingTerminalId, long departureTime,
+  public Trip resolve(String departingTerminalId, Calendar departureTime,
       String arrivingTerminalId) {
-    ServiceDate initialServiceDate = new ServiceDate(
-        new Date(departureTime * 1000));
+    ServiceDate initialServiceDate = new ServiceDate(departureTime);
     int lookBackDays = (_maxStopTime / 86400) + 1;
 
     AgencyAndId stopId = new AgencyAndId(_agencyId, departingTerminalId);
@@ -297,9 +296,9 @@ class WSFTripResolutionService {
 
           if (_csd.getServiceIdsForDate(sd).contains(
               st.getTrip().getServiceId())
-              && st.getDepartureTime() == (departureTime
-                  - (sd.getAsCalendar(_agencyTimeZone).getTimeInMillis()
-                      / 1000))) {
+              && st.getDepartureTime() == (departureTime.getTimeInMillis()
+                  - sd.getAsCalendar(_agencyTimeZone).getTimeInMillis())
+                      / 1000) {
 
             return st.getTrip();
           }

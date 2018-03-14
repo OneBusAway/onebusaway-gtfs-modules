@@ -35,6 +35,11 @@ public class RemoveDuplicateTripsStrategy implements GtfsTransformStrategy {
   private static Logger _log = LoggerFactory.getLogger(RemoveDuplicateTripsStrategy.class);
 
   @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
+
+  @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     Map<Pattern, List<Trip>> tripsByPattern = new FactoryMap<Pattern, List<Trip>>(

@@ -28,7 +28,12 @@ import org.slf4j.LoggerFactory;
 public class LocalVsExpressUpdateStrategy implements GtfsTransformStrategy {
 
   private static Logger _log = LoggerFactory.getLogger(LocalVsExpressUpdateStrategy.class);
-  
+  @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
+
+
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
     _log.info("running");

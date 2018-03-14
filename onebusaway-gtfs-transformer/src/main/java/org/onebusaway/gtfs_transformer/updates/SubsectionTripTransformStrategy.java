@@ -36,6 +36,11 @@ public class SubsectionTripTransformStrategy implements GtfsTransformStrategy {
 
   private Map<String, List<SubsectionOperation>> _operationsByRouteId = new HashMap<String, List<SubsectionOperation>>();
 
+  @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
+
   public void addOperation(SubsectionOperation operation) {
     if (operation.getFromStopId() == null && operation.getToStopId() == null) {
       throw new IllegalArgumentException(

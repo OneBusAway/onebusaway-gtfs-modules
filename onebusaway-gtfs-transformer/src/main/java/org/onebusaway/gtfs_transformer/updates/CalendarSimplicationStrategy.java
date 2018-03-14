@@ -85,6 +85,11 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
   }
 
   @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
+
+  @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();

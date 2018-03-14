@@ -32,6 +32,11 @@ public class EnsureStopTimesIncreaseUpdateStrategy implements
   private static Logger _log = LoggerFactory.getLogger(EnsureStopTimesIncreaseUpdateStrategy.class);
 
   @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
+
+  @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     Map<String, List<Trip>> tripsByBlockId = TripsByBlockInSortedOrder.getTripsByBlockInSortedOrder(dao);

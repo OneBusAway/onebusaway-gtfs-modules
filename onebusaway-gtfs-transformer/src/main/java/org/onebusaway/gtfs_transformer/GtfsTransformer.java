@@ -20,7 +20,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.impl.GenericMutableDaoWrapper;
@@ -49,6 +51,8 @@ public class GtfsTransformer {
 
   private List<File> _gtfsInputDirectories;
 
+  private File _gtfsReferenceDirectory;
+
   private File _outputDirectory;
 
   private List<GtfsTransformStrategy> _transformStrategies = new ArrayList<GtfsTransformStrategy>();
@@ -60,6 +64,8 @@ public class GtfsTransformer {
   private TransformContext _context = new TransformContext();
 
   private GtfsReader _reader = new GtfsReader();
+
+  private GtfsReader _referenceReader = new GtfsReader();
   
   private GtfsWriter _writer = new GtfsWriter();
 
@@ -67,10 +73,16 @@ public class GtfsTransformer {
 
   private String _agencyId;
 
+  private Map<String, Object> _parameters = new HashMap<>();
+
   private TransformFactory _transformFactory = new TransformFactory(this);
 
   public void setGtfsInputDirectory(File gtfsInputDirectory) {
     setGtfsInputDirectories(Arrays.asList(gtfsInputDirectory));
+  }
+
+  public void setGtfsReferenceDirectory(File referenceDirectory) {
+    _gtfsReferenceDirectory = referenceDirectory;
   }
 
   public void setGtfsInputDirectories(List<File> paths) {
@@ -103,12 +115,20 @@ public class GtfsTransformer {
     _outputSchemaUpdates.add(outputSchemaUpdate);
   }
 
+  public void addParameter(String key, Object value) {
+    _parameters.put(key, value);
+  }
+
   public void setAgencyId(String agencyId) {
     _agencyId = agencyId;
   }
 
   public GtfsReader getReader() {
     return _reader;
+  }
+
+  public GtfsReader getReferenceReader() {
+    return _referenceReader;
   }
   
   public GtfsWriter getWriter() {
@@ -129,12 +149,23 @@ public class GtfsTransformer {
         && !_outputDirectory.getName().endsWith(".zip"))
       _outputDirectory.mkdirs();
 
+    // copy over parameters
+    for (String key: _parameters.keySet()) {
+      _context.putParameter(key, _parameters.get(key));
+    }
+
     readGtfs();
+    if (_gtfsReferenceDirectory != null && _gtfsReferenceDirectory.exists()) {
+      readReferenceGtfs();
+    } else {
+      _log.trace("reference GTFS not found, continuing");
+    }
 
     _context.setDefaultAgencyId(_reader.getDefaultAgencyId());
     _context.setReader(_reader);
 
-    udateGtfs();
+
+    updateGtfs();
     writeGtfs();
   }
 
@@ -164,9 +195,26 @@ public class GtfsTransformer {
     }
   }
 
-  private void udateGtfs() {
-    for (GtfsTransformStrategy strategy : _transformStrategies)
+  private void readReferenceGtfs() throws IOException {
+    _log.info("reading reference GTFS at " + _gtfsReferenceDirectory);
+    GenericMutableDao dao = new GtfsRelationalDaoImpl();
+    _referenceReader.setEntityStore(dao);
+
+    if (_agencyId != null)
+      _referenceReader.setDefaultAgencyId(_agencyId);
+
+    _referenceReader.setInputLocation(_gtfsReferenceDirectory);
+    _referenceReader.run();
+    _context.setReferenceReader(_referenceReader);
+  }
+
+
+  private void updateGtfs() {
+    for (GtfsTransformStrategy strategy : _transformStrategies) {
+      _log.info("Running strategy {} ....", strategy.getName() );
       strategy.run(_context, _dao);
+      _log.info("Strategy {} complete.", strategy.getName());
+    }
   }
 
   private void writeGtfs() throws IOException {

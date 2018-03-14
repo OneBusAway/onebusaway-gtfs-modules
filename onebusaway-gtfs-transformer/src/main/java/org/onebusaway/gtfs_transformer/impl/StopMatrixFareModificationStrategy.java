@@ -114,6 +114,11 @@ public class StopMatrixFareModificationStrategy implements GtfsTransformStrategy
     }
 
     @Override
+    public String getName() {
+        return this.getClass().getSimpleName();
+    }
+
+    @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         // remove rules for route
         for (FareRule rule : new HashSet<FareRule>(dao.getAllFareRules())) {

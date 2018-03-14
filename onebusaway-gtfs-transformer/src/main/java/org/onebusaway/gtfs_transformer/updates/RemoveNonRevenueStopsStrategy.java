@@ -34,7 +34,12 @@ import org.slf4j.LoggerFactory;
 public class RemoveNonRevenueStopsStrategy implements GtfsTransformStrategy {
 	private static Logger _log = LoggerFactory.getLogger(RemoveNonRevenueStopsStrategy.class);
 
-	  @Override
+	@Override
+	public String getName() {
+		return this.getClass().getSimpleName();
+	}
+
+	@Override
 	  public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
 	    int removedStopTimeCount = 0;

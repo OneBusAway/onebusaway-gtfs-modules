@@ -46,10 +46,13 @@ import org.onebusaway.gtfs_transformer.deferred.EntitySchemaCache;
 import org.onebusaway.gtfs_transformer.deferred.PropertyPathExpressionValueSetter;
 import org.onebusaway.gtfs_transformer.deferred.ReplaceValueSetter;
 import org.onebusaway.gtfs_transformer.deferred.ValueSetter;
+import org.onebusaway.gtfs_transformer.impl.MergeStopIdsFromReferenceStrategy;
+import org.onebusaway.gtfs_transformer.impl.MergeStopNamesFromReferenceStrategy;
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
 import org.onebusaway.gtfs_transformer.impl.ServiceIdTransformStrategyImpl;
 import org.onebusaway.gtfs_transformer.impl.SimpleModificationStrategy;
 import org.onebusaway.gtfs_transformer.impl.StringModificationStrategy;
+import org.onebusaway.gtfs_transformer.impl.UpdateTripHeadsignByDestinationStrategy;
 import org.onebusaway.gtfs_transformer.match.EntityMatch;
 import org.onebusaway.gtfs_transformer.match.EntityMatchCollection;
 import org.onebusaway.gtfs_transformer.match.PropertyAnyValueEntityMatch;
@@ -222,6 +225,15 @@ public class TransformFactory {
         }
         else if (opType.equals("remove_non_revenue_stops_excluding_terminals")) {
           handleTransformOperation(line, json, new RemoveNonRevenueStopsExcludingTerminalsStrategy());
+        }
+        else if (opType.equals("update_trip_headsign_by_destination")) {
+          handleTransformOperation(line, json, new UpdateTripHeadsignByDestinationStrategy());
+        }
+        else if (opType.equals("merge_stop_names_from_reference")) {
+          handleTransformOperation(line, json, new MergeStopNamesFromReferenceStrategy());
+        }
+        else if (opType.equals("merge_stop_ids_from_reference")) {
+          handleTransformOperation(line, json, new MergeStopIdsFromReferenceStrategy());
         }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);

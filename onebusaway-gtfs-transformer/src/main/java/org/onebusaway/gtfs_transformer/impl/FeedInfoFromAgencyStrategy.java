@@ -32,6 +32,11 @@ public class FeedInfoFromAgencyStrategy implements GtfsTransformStrategy {
   private String defaultLang = "en";
 
   @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
+
+  @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
     for (Agency agency : dao.getAllAgencies()) {
       if (agency.getId().equals(agencyId)) {

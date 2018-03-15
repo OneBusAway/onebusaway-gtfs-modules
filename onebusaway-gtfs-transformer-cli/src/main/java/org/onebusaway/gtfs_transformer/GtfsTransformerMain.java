@@ -64,6 +64,8 @@ public class GtfsTransformerMain {
 
   private static final String ARG_REGEX_FILE = "regexFile";
 
+  private static final String ARG_CONTROL_FILE = "controlFile";
+
   private static final String ARG_LOCAL_VS_EXPRESS = "localVsExpress";
 
   private static final String ARG_CHECK_STOP_TIMES = "checkStopTimes";
@@ -146,6 +148,7 @@ public class GtfsTransformerMain {
     options.addOption(ARG_STOP_MAPPING, true, "Stop Name Mapping File");
     options.addOption(ARG_IGNORE_STOPS, true, "List of stops names to ignore");
     options.addOption(ARG_REGEX_FILE, true, "Regex pattern mapping file");
+    options.addOption(ARG_CONTROL_FILE, true, "file to remap stop ids and other properties");
 
     options.addOption(ARG_LOCAL_VS_EXPRESS, false,
         "add additional local vs express fields");
@@ -229,6 +232,10 @@ public class GtfsTransformerMain {
         configureRegexFile(transformer, option.getValue());
       }
 
+      if (name.equals(ARG_CONTROL_FILE)) {
+        configureControlFile(transformer, option.getValue());
+      }
+
       if (name.equals(ARG_LOCAL_VS_EXPRESS))
         configureLocalVsExpressUpdates(transformer);
 
@@ -305,6 +312,10 @@ public class GtfsTransformerMain {
 
   private void configureRegexFile(GtfsTransformer updater, String file) {
     updater.addParameter("regexFile", file);
+  }
+
+  private void configureControlFile(GtfsTransformer updater, String file) {
+    updater.addParameter("controlFile", file);
   }
 
   /*****************************************************************************

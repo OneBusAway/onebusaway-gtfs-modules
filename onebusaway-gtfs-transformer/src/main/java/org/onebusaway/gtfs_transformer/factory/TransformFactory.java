@@ -46,6 +46,7 @@ import org.onebusaway.gtfs_transformer.deferred.EntitySchemaCache;
 import org.onebusaway.gtfs_transformer.deferred.PropertyPathExpressionValueSetter;
 import org.onebusaway.gtfs_transformer.deferred.ReplaceValueSetter;
 import org.onebusaway.gtfs_transformer.deferred.ValueSetter;
+import org.onebusaway.gtfs_transformer.impl.MergeStopIdsFromControlStrategy;
 import org.onebusaway.gtfs_transformer.impl.MergeStopIdsFromReferenceStrategy;
 import org.onebusaway.gtfs_transformer.impl.MergeStopNamesFromReferenceStrategy;
 import org.onebusaway.gtfs_transformer.impl.RemoveEntityUpdateStrategy;
@@ -234,6 +235,9 @@ public class TransformFactory {
         }
         else if (opType.equals("merge_stop_ids_from_reference")) {
           handleTransformOperation(line, json, new MergeStopIdsFromReferenceStrategy());
+        }
+        else if (opType.equals("merge_stop_ids_from_control")) {
+          handleTransformOperation(line, json, new MergeStopIdsFromControlStrategy());
         }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);

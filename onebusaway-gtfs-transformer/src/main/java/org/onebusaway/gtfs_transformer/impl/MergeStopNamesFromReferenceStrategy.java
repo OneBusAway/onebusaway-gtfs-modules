@@ -43,9 +43,9 @@ public class MergeStopNamesFromReferenceStrategy implements GtfsTransformStrateg
 
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-        Map<String, String> map = readOrderedMap((String)context.getParameter(("stopMappingFile")));
+        Map<String, String> map = new InputLibrary().readOrderedMap((String)context.getParameter(("stopMappingFile")));
 
-        Map<String, String> regexMap = readOrderedMap((String)context.getParameter(("regexFile")));
+        Map<String, String> regexMap = new InputLibrary().readOrderedMap((String)context.getParameter(("regexFile")));
 
         for (Stop stop : dao.getAllStops()) {
             String upperCaseName = stop.getName();
@@ -79,40 +79,4 @@ public class MergeStopNamesFromReferenceStrategy implements GtfsTransformStrateg
                 s.substring(1).toLowerCase();
     }
 
-    private Map<String, String> readOrderedMap(String fileName) {
-        Map<String, String> map = new LinkedHashMap<>();
-        if (fileName == null || fileName.length() == 0) return map;
-        BufferedReader reader = null;
-        int count = 0;
-        try {
-            reader = new BufferedReader(new FileReader(fileName));
-
-            String line = null;
-
-            while ((line = reader.readLine()) != null) {
-                String[] strings = line.split("\t");
-                if (strings != null && strings.length > 1) {
-                    count++;
-                    String key = strings[0];
-                    String value = strings[1];
-                    map.put(sanitize(key), sanitize(value));
-                }
-            }
-        } catch (FileNotFoundException e) {
-            _log.error("failed to load stop mapping file={}", fileName, e);
-            return map;
-        } catch (IOException ioe) {
-            _log.error("error reading mapping file {} = {}", fileName, ioe, ioe);
-        }
-
-        _log.info("Successfully read {} entries from {}", count, fileName);
-        return map;
-    }
-
-    private String sanitize(String s) {
-        if (s == null) return s;
-        s = s.trim();
-        s = s.replaceAll("^\"", "").replaceAll("\"$", "");
-        return s;
-    }
 }

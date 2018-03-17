@@ -114,7 +114,30 @@ public class TransformFactoryTest {
     
     assertEquals("Uptown Express", trip.getTripHeadsign());
   }
-  
+
+  @Test
+  public void testReplaceValueInUpdateRegex() throws IOException,
+          TransformSpecificationException {
+    _factory.addModificationsFromString("{'op':'update', "
+            + "'match':{'file':'trips.txt', 'trip_short_name': 'm/X41/'}, "
+            + "'update':{'trip_headsign': 'Uptown Express'}}");
+    GtfsTransformStrategy transform = _transformer.getLastTransform();
+    TransformContext context = new TransformContext();
+    GtfsMutableRelationalDao dao = new GtfsRelationalDaoImpl();
+
+    Trip trip = new Trip();
+    trip.setId(new AgencyAndId("1", "1"));
+
+    trip.setTripShortName("X41");
+    trip.setTripHeadsign("Downtown Local");
+    dao.saveEntity(trip);
+
+    transform.run(context, dao);
+
+    assertEquals("Uptown Express", trip.getTripHeadsign());
+  }
+
+
   @Test
   public void testCalendarSimplification() throws IOException,
       TransformSpecificationException {

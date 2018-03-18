@@ -41,6 +41,11 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
   }
 
   @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
+
+  @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     List<Trip> tripsToAdd = new ArrayList<Trip>();

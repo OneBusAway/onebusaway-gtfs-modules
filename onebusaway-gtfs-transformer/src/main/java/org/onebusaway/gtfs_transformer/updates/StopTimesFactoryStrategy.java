@@ -73,6 +73,11 @@ public class StopTimesFactoryStrategy implements GtfsTransformStrategy {
   }
 
   @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
+
+  @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
     GtfsReaderContext gtfsReaderContext = context.getReader().getGtfsReaderContext();
     Trip trip = getTrip(gtfsReaderContext, dao);

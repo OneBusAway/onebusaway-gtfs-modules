@@ -45,6 +45,11 @@ public class DeduplicateServiceIdsStrategy implements GtfsTransformStrategy {
   private static Logger _log = LoggerFactory.getLogger(DeduplicateServiceIdsStrategy.class);
 
   @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
+
+  @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
     CalendarService service = CalendarServiceDataFactoryImpl.createService(dao);
     Map<Set<ServiceDate>, List<AgencyAndId>> serviceIdsByServiceDates = new FactoryMap<Set<ServiceDate>, List<AgencyAndId>>(

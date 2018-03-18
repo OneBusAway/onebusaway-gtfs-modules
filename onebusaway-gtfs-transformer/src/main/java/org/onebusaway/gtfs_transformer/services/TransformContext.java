@@ -27,6 +27,8 @@ public class TransformContext {
 
   private GtfsReader _reader;
 
+  private GtfsReader _referenceReader;
+
   private Map<String, Object> _parameters = new HashMap<String, Object>();
 
   public void setDefaultAgencyId(String agencyId) {
@@ -45,8 +47,16 @@ public class TransformContext {
     return _reader;
   }
 
+  public GtfsReader getReferenceReader() {
+    return _referenceReader;
+  }
+
   public void setReader(GtfsReader reader) {
     _reader = reader;
+  }
+
+  public void setReferenceReader(GtfsReader reader) {
+    _referenceReader = reader;
   }
 
   public void putParameter(String key, Object value) {

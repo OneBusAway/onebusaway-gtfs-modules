@@ -45,6 +45,11 @@ public class ShapeDirectionTransformStrategy implements GtfsTransformStrategy {
   String shapeDirection;
 
   @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
+
+  @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     List<Trip> tripsToTransform = new ArrayList<Trip>();

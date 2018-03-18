@@ -53,6 +53,11 @@ public class RetainEntitiesTransformStrategy implements GtfsTransformStrategy {
     matches.add(retention);
   }
 
+  @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
+
   @SuppressWarnings("unchecked")
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {

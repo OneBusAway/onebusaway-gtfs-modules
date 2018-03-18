@@ -50,12 +50,18 @@ public class DeferredValueMatcher implements ValueMatcher {
     Class<?> expectedValueType = value.getClass();
     Class<?> actualValueType = _value.getClass();
     if (expectedValueType.isAssignableFrom(actualValueType)) {
+      if (isRegexObj(_value)) {
+        return regexMatch((String)value, ((String)_value));
+      }
       return value.equals(_value);
     }
     if (actualValueType == String.class) {
       String actualValue = (String) _value;
       if (expectedValueType == AgencyAndId.class) {
         AgencyAndId expectedId = (AgencyAndId) value;
+        if (isRegexObj(_value)) {
+          return regexMatch(expectedId.getId(), actualValue);
+        }
         return expectedId.getId().equals(actualValue);
       } else if (IdentityBean.class.isAssignableFrom(expectedValueType)) {
         IdentityBean<?> bean = (IdentityBean<?>) value;
@@ -86,5 +92,24 @@ public class DeferredValueMatcher implements ValueMatcher {
     throw new IllegalStateException("no type conversion from type \""
         + actualValueType.getName() + "\" to type \""
         + expectedValueType.getName() + "\" for value comparison");
+  }
+
+  private Boolean isRegexObj = null;
+  private boolean isRegexObj(Object value) {
+    if (isRegexObj == null) {
+      isRegexObj = (_value instanceof String && isRegex((String) _value));
+    }
+    return isRegexObj;
+  }
+  private boolean isRegex(String pattern) {
+    return pattern.startsWith("m/") && pattern.endsWith("/");
+  }
+  private String getRegexFromPattern(String pattern) {
+    return pattern.substring(2, pattern.length()-1);
+  }
+  private boolean regexMatch(String value, String pattern) {
+    String regexPattern = getRegexFromPattern(pattern);
+    boolean rc = value.matches(regexPattern);
+    return rc;
   }
 }

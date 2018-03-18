@@ -38,6 +38,11 @@ public class DeduplicateTripsStrategy implements GtfsTransformStrategy {
   private Logger _log = LoggerFactory.getLogger(DeduplicateTripsStrategy.class);
 
   @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
+
+  @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     Map<String, List<Trip>> tripsByCommonId = new FactoryMap<String, List<Trip>>(

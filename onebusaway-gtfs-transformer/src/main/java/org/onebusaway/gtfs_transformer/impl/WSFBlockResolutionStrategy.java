@@ -85,7 +85,11 @@ public class WSFBlockResolutionStrategy implements GtfsTransformStrategy {
   private WSFScheduleService _scheduleService;
   
   private String apiAccessCode = "";
-  
+
+  @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
 
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {

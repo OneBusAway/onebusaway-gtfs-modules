@@ -42,6 +42,11 @@ public class EntitiesTransformStrategy implements GtfsTransformStrategy {
   }
 
   @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
+
+  @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     for (MatchAndTransform modification : _modifications) {

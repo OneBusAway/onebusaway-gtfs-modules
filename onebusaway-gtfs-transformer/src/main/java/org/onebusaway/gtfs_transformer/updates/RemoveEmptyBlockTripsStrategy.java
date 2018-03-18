@@ -32,6 +32,11 @@ public class RemoveEmptyBlockTripsStrategy implements GtfsTransformStrategy {
   private static Logger _log = LoggerFactory.getLogger(RemoveEmptyBlockTripsStrategy.class);
 
   @Override
+  public String getName() {
+      return this.getClass().getSimpleName();
+  }
+
+  @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     Map<String, List<Trip>> tripsByBlockId = MappingLibrary.mapToValueList(

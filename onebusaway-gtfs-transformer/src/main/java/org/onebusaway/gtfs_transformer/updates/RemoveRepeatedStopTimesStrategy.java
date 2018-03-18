@@ -31,6 +31,11 @@ public class RemoveRepeatedStopTimesStrategy implements GtfsTransformStrategy {
   private static Logger _log = LoggerFactory.getLogger(RemoveRepeatedStopTimesStrategy.class);
 
   @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
+
+  @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     int removed = 0;

@@ -36,6 +36,11 @@ public class ShiftNegativeStopTimesUpdateStrategy implements GtfsTransformStrate
   private static final int SECONDS_IN_DAY = 24 * 60 * 60;
 
   @Override
+  public String getName() {
+    return this.getClass().getSimpleName();
+  }
+
+  @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
     Set<ShiftedServiceCalendar> shiftedIds = new HashSet<ShiftedServiceCalendar>();
     for (Trip trip : dao.getAllTrips()) {

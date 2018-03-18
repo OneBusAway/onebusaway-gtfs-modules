@@ -40,6 +40,10 @@ public class MTAStationDirectionalityStrategy implements GtfsTransformStrategy {
 
     private String directionCsv;
 
+    public String getName() {
+	return this.getClass().getName();
+    }
+
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         List<MTAStationDirection> stationDirections = readCsv(MTAStationDirection.class, directionCsv);

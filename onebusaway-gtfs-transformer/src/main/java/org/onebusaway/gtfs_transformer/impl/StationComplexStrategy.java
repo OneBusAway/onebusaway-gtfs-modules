@@ -45,6 +45,10 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
     @CsvField(optional = true)
     private int genericPathwayTraversalTime = 60;
 
+    public String getName() {
+      return this.getClass().getName();
+    }
+
     // Create pathways between all stops in a station complex
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {

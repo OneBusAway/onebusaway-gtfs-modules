@@ -110,6 +110,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     @CsvField(optional = true)
     private int elevatorTraversalTime = 120;
 
+    public String getName() {
+      return this.getClass().getName();
+    }
+
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 

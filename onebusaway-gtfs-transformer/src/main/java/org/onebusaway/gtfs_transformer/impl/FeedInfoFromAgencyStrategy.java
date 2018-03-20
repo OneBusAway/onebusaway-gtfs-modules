@@ -22,8 +22,6 @@ import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
-import java.util.Scanner;
-
 public class FeedInfoFromAgencyStrategy implements GtfsTransformStrategy {
 
   private String agencyId;
@@ -41,10 +39,7 @@ public class FeedInfoFromAgencyStrategy implements GtfsTransformStrategy {
     for (Agency agency : dao.getAllAgencies()) {
       if (agency.getId().equals(agencyId)) {
         FeedInfo info = new FeedInfo();
-        Scanner scanner = new Scanner(agencyId);
-        if (scanner.hasNextInt()) {
-          info.setId(scanner.nextInt());
-        }
+        info.setId(agencyId);
         info.setPublisherName(agency.getName());
         info.setPublisherUrl(agency.getUrl());
         if (agency.getLang() == null || agency.getLang().isEmpty()) {

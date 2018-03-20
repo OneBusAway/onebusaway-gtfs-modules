@@ -78,6 +78,10 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, name = "peak_offpeak")
   private int peakOffpeak;
 
+  // Custom extension for MTA
+  @CsvField(optional = true, name = "mta_trip_id")
+  private String mtaTripId;
+
   public Trip() {
 
   }
@@ -98,6 +102,7 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.fareId = obj.fareId;
     this.note = obj.note;
     this.peakOffpeak = obj.peakOffpeak;
+    this.mtaTripId = obj.mtaTripId;
   }
 
   public AgencyAndId getId() {
@@ -232,4 +237,9 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   public void setPeakOffpeak(int peakOffpeak) {
     this.peakOffpeak = peakOffpeak;
   }
+
+  public String getMtaTripId() { return mtaTripId; }
+
+  public void setMtaTripId(String mtaTripId) { this.mtaTripId = mtaTripId; }
+
 }

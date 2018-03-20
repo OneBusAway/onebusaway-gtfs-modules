@@ -229,14 +229,20 @@ public class TransformFactory {
         else if (opType.equals("merge_stop_ids_from_reference")) {
           handleTransformOperation(line, json, new MergeStopIdsFromReferenceStrategy());
         }
-        else if (opType.equals("merge_stop_ids_from_control")) {
-          handleTransformOperation(line, json, new MergeStopIdsFromControlStrategy());
+        else if (opType.equals("update_stop_ids_from_control")) {
+          handleTransformOperation(line, json, new UpdateStopIdFromControlStrategy());
         }
         else if (opType.equals("merge_route_from_reference_by_longname")) {
-          handleTransformOperation(line, json, new MergeRouteFromReferenceStrategyById());
+          handleTransformOperation(line, json, new MergeRouteFromReferenceStrategyByLongName());
         }
         else if (opType.equals("merge_route_from_reference_by_id")) {
-          handleTransformOperation(line, json, new MergeRouteFromReferenceStrategyByLongName());
+          handleTransformOperation(line, json, new MergeRouteFromReferenceStrategyById());
+        }
+        else if (opType.equals("merge_route_from_reference")) {
+          handleTransformOperation(line, json, new MergeRouteFromReferenceStrategy());
+        }
+        else if (opType.equals("update_trip_id_by_id")) {
+          handleTransformOperation(line, json, new UpdateTripIdById());
         }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);

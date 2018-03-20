@@ -3,11 +3,7 @@
   <parent>
     <artifactId>onebusaway-gtfs-modules</artifactId>
     <groupId>org.onebusaway</groupId>
-<<<<<<< HEAD
-    <version>1.3.22-SNAPSHOT</version>
-=======
-    <version>1.3.24-nyc-SNAPSHOT</version>
->>>>>>> camsys/mta-entrances-strategy
+    <version>1.3.22</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>onebusaway-gtfs-merge-cli</artifactId>

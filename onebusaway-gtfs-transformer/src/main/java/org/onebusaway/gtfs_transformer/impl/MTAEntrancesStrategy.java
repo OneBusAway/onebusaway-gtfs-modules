@@ -142,7 +142,11 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                     group.downtown = stop;
                 } else if (stop.getId().getId().endsWith("N")) {
                     group.uptown = stop;
-                } else throw new RuntimeException("unexpected!");
+                } else {
+                    _log.error("unexpected stop not of parent type but of {} for stop {}", stop.getLocationType(), stop.getId());
+                    continue;
+
+                }
             } else {
                 StopGroup group = new StopGroup();
                 group.parent = stop;
@@ -207,6 +211,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
             int i = 0;
             for (MTAEntrance entrance : group.entrances) {
                 Stop entranceStop = createStopFromMTAEntrance(group.parent, entrance, i);
+                if (entranceStop == null) {
+                    _log.error("data issue with entrance={}", entrance.getStopId());
+                    continue;
+                }
                 int pathwayMode, traversalTime, wheelchairTraversalTime;
                 switch(entrance.getEntranceType()) {
                     case "Stair_Escalator": // treat as stair for now
@@ -456,6 +464,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         if (contextualAccessibility && accessibleEntranceTypes.contains(ent.getEntranceType()))
             wheelchairFlag = WHEELCHAIR_ACCESSIBLE;
         Stop entrance = createStop(parent, LOCATION_TYPE_ENTRANCE, wheelchairFlag, "entrance-" + num);
+        if (entrance == null) return null;
         entrance.setLat(ent.getLatitude());
         entrance.setLon(ent.getLongitude());
         return entrance;
@@ -474,6 +483,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     }
 
     private Stop createStop(Stop stop, int locationType, int wheelchairAccessible, String suffix) {
+        if (stop == null) return null;
         Stop entrance = new Stop();
         AgencyAndId id = new AgencyAndId();
         id.setAgencyId(agencyId);

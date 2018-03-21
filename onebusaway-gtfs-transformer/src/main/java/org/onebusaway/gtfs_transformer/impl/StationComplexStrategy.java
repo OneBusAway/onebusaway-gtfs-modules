@@ -24,6 +24,8 @@ import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.onebusaway.gtfs_transformer.util.PathwayUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,6 +38,8 @@ import java.util.List;
 import static org.onebusaway.gtfs_transformer.util.PathwayUtil.PATHWAY_MODE_GENERIC;
 
 public class StationComplexStrategy implements GtfsTransformStrategy {
+
+    private final Logger _log = LoggerFactory.getLogger(StationComplexStrategy.class);
 
     private static final String STOP_SEPARATOR = " ";
 
@@ -58,9 +62,13 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
         for (List<Stop> complex : getComplexList(dao, feedId)) {
             for (Stop s : complex) {
                 for (Stop t : complex) {
-                    if (!s.equals(t) && !s.getParentStation().equals(t.getParentStation())) {
-                        String id = String.format("complex-%s-%s", s.getId().getId(), t.getId().getId());
-                        util.createPathway(s, t, PATHWAY_MODE_GENERIC, genericPathwayTraversalTime, -1, id, null, false);
+                    if (s != null && s.getParentStation() != null && t != null) {
+                        if (!s.equals(t) && !s.getParentStation().equals(t.getParentStation())) {
+                            String id = String.format("complex-%s-%s", s.getId().getId(), t.getId().getId());
+                            util.createPathway(s, t, PATHWAY_MODE_GENERIC, genericPathwayTraversalTime, -1, id, null, false);
+                        }
+                    } else {
+                        _log.error("Illegal Stop {}", s);
                     }
                 }
             }

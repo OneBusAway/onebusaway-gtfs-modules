@@ -18,10 +18,14 @@ package org.onebusaway.gtfs_transformer.util;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Pathway;
 import org.onebusaway.gtfs.model.Stop;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
 public class PathwayUtil {
+
+    private final Logger _log = LoggerFactory.getLogger(PathwayUtil.class);
 
     public static final int PATHWAY_MODE_GENERIC = 0;
     public static final int PATHWAY_MODE_WALKWAY = 1;
@@ -44,6 +48,14 @@ public class PathwayUtil {
     }
 
     public void createPathway(Stop from, Stop to, int mode, int traversalTime, int wheelchairTraversalTime, String id, String code, boolean reverse) {
+        if (to == null || to.getId() == null) {
+            _log.error("invalid to {}", to);
+            return;
+        }
+        if (from == null || from.getId() == null) {
+            _log.error("invalid from {}", from);
+            return;
+        }
         Pathway pathway = new Pathway();
         pathway.setFromStop(from);
         pathway.setToStop(to);

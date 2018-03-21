@@ -24,17 +24,19 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * using crontrol file re-map GTFS stop ids and other stop properties
+ * using control file re-map GTFS stop ids and other stop properties
  */
 public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(UpdateStopIdFromControlStrategy.class);
 
     private static final int LOCATION_NAME_INDEX = 0;
+    private static final int DIRECTION = 3;
     private static final int ATIS_ID_INDEX = 6;
 
     @Override
@@ -45,10 +47,15 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
+        RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
 
         List<String> controlLines = new InputLibrary().readList((String) context.getParameter("controlFile"));
         int matched = 0;
         int unmatched = 0;
+        int duplicate = 0;
+
+        ArrayList<AgencyAndId> stopsAdded = new ArrayList();
+        ArrayList<AgencyAndId> stopsToRemove = new ArrayList();
 
         HashMap<String, Stop> referenceStops = new HashMap<>();
         for (Stop stop : reference.getAllStops()) {
@@ -58,7 +65,6 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
         AgencyAndId agencyAndId = dao.getAllStops().iterator().next().getId();
         _log.info("Stop Agency: {}, dao AgencyAndId: {}", agencyAndId.getAgencyId(), getDaoAgencyId(dao));
 
-
         for (String controlLine : controlLines) {
             String[] controlArray = controlLine.split(",");
             if (controlArray == null || controlArray.length < 2) {
@@ -66,18 +72,39 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
                 continue;
             }
             String referenceId = controlArray[LOCATION_NAME_INDEX];
+            String direction = controlArray[DIRECTION];
             String atisId = controlArray[ATIS_ID_INDEX];
+            Stop refStop;
 
-            Stop refStop = referenceStops.get(referenceId);
-            if (refStop == null) {
-                _log.info("missing reference stop {} for agency {}", referenceId, getReferenceAgencyId(reference));
-                unmatched++;
+            if (direction.isEmpty()) {
+                refStop = referenceStops.get(referenceId);
+                if (refStop == null) {
+                    _log.info("missing reference stop {} for agency {}", referenceId, getReferenceAgencyId(reference));
+                    unmatched++;
+                    continue;
+                }
+            } else {
+                refStop = referenceStops.get(referenceId+direction);
+                if (refStop == null) {
+                    _log.info("missing reference stop {} for agency {}", referenceId+direction, getReferenceAgencyId(reference));
+                    unmatched++;
+                    continue;
+                }
+            }
+            //don't add duplicates
+            //if the reference id already exists as a stop, skip
+            //Stop existingStop = dao.getStopForId(new AgencyAndId(refStop.getId().getAgencyId(), refStop.getId().getId()));
+            _log.info("Looking for stop, agency {} id {}", refStop.getId().getAgencyId(), refStop.getId().getId());
+            if (stopsAdded.contains(refStop.getId())){
+                _log.info("Duplicate stop: " + refStop.getId());
+                duplicate++;
+                stopsToRemove.add(new AgencyAndId(agencyAndId.getAgencyId(), atisId));
                 continue;
             }
 
             Stop atisStop = dao.getStopForId(new AgencyAndId(agencyAndId.getAgencyId(), atisId));
             if (atisStop == null) {
-                _log.info("missing atis stop {} for agency {}", atisId, getDaoAgencyId(dao));
+                _log.info("missing atis stop {} for agency {}", atisId, agencyAndId.getAgencyId());
                 unmatched++;
                 continue;
             }
@@ -85,8 +112,18 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
             atisStop.setName(refStop.getName());
             atisStop.setDirection(refStop.getDirection());
             atisStop.setId(refStop.getId());
+            atisStop.setParentStation(refStop.getParentStation());
+            atisStop.setLocationType(refStop.getLocationType());
+            stopsAdded.add(atisStop.getId());
+            _log.info("Stop updated, agency {} id {}", atisStop.getId().getAgencyId(), atisStop.getId().getId());
         }
-        _log.info("Complete with {} matched and {} unmatched", matched, unmatched);
+        _log.info("Complete with {} matched and {} unmatched and {} duplicates", matched, unmatched, duplicate);
+
+        for (AgencyAndId id : stopsToRemove) {
+            _log.info("Removing stop: " + id);
+            Stop stop = dao.getStopForId(id);
+            removeEntityLibrary.removeStop(dao, stop);
+        }
     }
 
     @CsvField(ignore = true)

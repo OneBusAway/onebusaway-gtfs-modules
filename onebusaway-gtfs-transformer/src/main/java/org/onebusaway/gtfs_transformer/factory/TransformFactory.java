@@ -232,6 +232,9 @@ public class TransformFactory {
         else if (opType.equals("update_stop_ids_from_control")) {
           handleTransformOperation(line, json, new UpdateStopIdFromControlStrategy());
         }
+        else if (opType.equals("update_stop_ids_from_reference")) {
+          handleTransformOperation(line, json, new UpdateStopIdFromReferenceStrategy());
+        }
         else if (opType.equals("merge_route_from_reference_by_longname")) {
           handleTransformOperation(line, json, new MergeRouteFromReferenceStrategyByLongName());
         }

@@ -15,7 +15,6 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import com.sun.tools.javac.util.StringUtils;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Stop;

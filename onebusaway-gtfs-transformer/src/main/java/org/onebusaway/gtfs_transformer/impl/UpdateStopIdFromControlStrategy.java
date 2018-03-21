@@ -93,8 +93,6 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
             }
             //don't add duplicates
             //if the reference id already exists as a stop, skip
-            //Stop existingStop = dao.getStopForId(new AgencyAndId(refStop.getId().getAgencyId(), refStop.getId().getId()));
-            _log.info("Looking for stop, agency {} id {}", refStop.getId().getAgencyId(), refStop.getId().getId());
             if (stopsAdded.contains(refStop.getId())){
                 _log.info("Duplicate stop: " + refStop.getId());
                 duplicate++;
@@ -115,7 +113,6 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
             atisStop.setParentStation(refStop.getParentStation());
             atisStop.setLocationType(refStop.getLocationType());
             stopsAdded.add(atisStop.getId());
-            _log.info("Stop updated, agency {} id {}", atisStop.getId().getAgencyId(), atisStop.getId().getId());
         }
         _log.info("Complete with {} matched and {} unmatched and {} duplicates", matched, unmatched, duplicate);
 

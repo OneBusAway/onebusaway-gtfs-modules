@@ -46,36 +46,36 @@ public class UpdateStopIdFromReferenceStrategy implements GtfsTransformStrategy 
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
 
+        //list of ids added to prevent duplicates
         ArrayList<AgencyAndId> stopsAdded = new ArrayList();
+        //list of stops to add
+        ArrayList<Stop> stopsToAdd = new ArrayList<>();
 
         HashMap<String, Stop> referenceStops = new HashMap<>();
         for (Stop stop : reference.getAllStops()) {
             referenceStops.put(stop.getId().getId(), stop);
         }
 
-        Stop stopToAdd = new Stop();
-
         AgencyAndId agencyAndId = dao.getAllStops().iterator().next().getId();
-        _log.info("Agency {} and id {}", agencyAndId.getAgencyId(), agencyAndId.getId());
 
         for (Stop stop: dao.getAllStops()) {
             String parentStation = stop.getParentStation();
             if (parentStation != null) {
                 Stop existingStop = dao.getStopForId(new AgencyAndId(agencyAndId.getAgencyId(), parentStation));
                 if (existingStop == null && !stopsAdded.contains(referenceStops.get(parentStation).getId())) {
-
-                    _log.info("adding for the id: " + referenceStops.get(parentStation).getId());
+                    Stop stopToAdd = new Stop();
                     stopToAdd.setId(referenceStops.get(parentStation).getId());
                     stopToAdd.setName(referenceStops.get(parentStation).getName());
                     stopToAdd.setLat(referenceStops.get(parentStation).getLat());
                     stopToAdd.setLon(referenceStops.get(parentStation).getLon());
+                    stopToAdd.setLocationType(referenceStops.get(parentStation).getLocationType());
                     stopsAdded.add(referenceStops.get(parentStation).getId());
-                    break;
+                    stopsToAdd.add(stopToAdd);
                 }
             }
         }
-
-        //dao.getAllStops().add(stopToAdd);
-
+        for (Stop stop : stopsToAdd) {
+            dao.saveOrUpdateEntity(stop);
         }
+    }
 }

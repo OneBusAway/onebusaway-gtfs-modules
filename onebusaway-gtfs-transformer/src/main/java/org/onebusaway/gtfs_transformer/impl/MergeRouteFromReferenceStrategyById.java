@@ -43,6 +43,7 @@ public class MergeRouteFromReferenceStrategyById implements GtfsTransformStrateg
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
+        RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
 
         ArrayList<AgencyAndId> routesToRemove = new ArrayList();
 
@@ -50,6 +51,8 @@ public class MergeRouteFromReferenceStrategyById implements GtfsTransformStrateg
         for (Route route : reference.getAllRoutes()) {
             referenceRoutes.put(route.getId().getId(), route);
         }
+
+        _log.info("Pre Routes: " + dao.getAllRoutes().size());
 
         for (Route route: dao.getAllRoutes()) {
             String identifier = route.getId().getId();
@@ -70,10 +73,16 @@ public class MergeRouteFromReferenceStrategyById implements GtfsTransformStrateg
             }
         }
 
+        _log.info("Routes to remove: " + routesToRemove.size());
+        _log.info("Pre Trips: " + dao.getAllTrips().size());
+
         for (AgencyAndId id : routesToRemove) {
-            dao.removeEntity(dao.getRouteForId(id));
+            Route route = dao.getRouteForId(id);
+            removeEntityLibrary.removeRoute(dao, route);
         }
 
+        _log.info("Post Routes: " + dao.getAllRoutes().size());
+        _log.info("Post Trips: " + dao.getAllTrips().size());
 
     }
 }

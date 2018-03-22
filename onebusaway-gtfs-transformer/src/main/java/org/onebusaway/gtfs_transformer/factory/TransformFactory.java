@@ -247,6 +247,9 @@ public class TransformFactory {
         else if (opType.equals("update_trip_id_by_id")) {
           handleTransformOperation(line, json, new UpdateTripIdById());
         }
+        else if (opType.equals("update_stop_id_by_id")) {
+          handleTransformOperation(line, json, new UpdateStopIdById());
+        }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);
         } else {

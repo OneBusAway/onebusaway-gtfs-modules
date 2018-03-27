@@ -24,6 +24,7 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//Update stop_id to be the mta_stop_id
 public class UpdateStopIdById implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(UpdateTripIdById.class);

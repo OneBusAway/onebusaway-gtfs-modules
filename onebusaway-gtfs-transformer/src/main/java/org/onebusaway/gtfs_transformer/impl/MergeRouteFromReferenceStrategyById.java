@@ -52,38 +52,49 @@ public class MergeRouteFromReferenceStrategyById implements GtfsTransformStrateg
             referenceRoutes.put(route.getId().getId(), route);
         }
 
-        _log.info("Pre Routes: " + dao.getAllRoutes().size());
+        _log.debug("Pre Routes: " + dao.getAllRoutes().size());
 
         for (Route route: dao.getAllRoutes()) {
             String identifier = route.getId().getId();
 
             Route refRoute = referenceRoutes.get(identifier);
             if (refRoute != null) {
-                route.setShortName(refRoute.getShortName());
-                route.setLongName(refRoute.getLongName());
-                route.setType(refRoute.getType());
-                route.setDesc(refRoute.getDesc());
-                route.setUrl(refRoute.getUrl());
-                route.setColor(refRoute.getColor());
-                route.setTextColor(refRoute.getTextColor());
-            }
-            else {
-                _log.info("No reference route for route: " + identifier);
-                routesToRemove.add(route.getId());
+                setRoute(route, refRoute);
+            } else {
+                //if we didn't match ATIS route to ref route by ID, see if the route has an LTD in the ID.
+                //if yes, remove it and match by route id
+                if (identifier.contains("-LTD")) {
+                    identifier = identifier.replace("-LTD", "");
+                    refRoute = referenceRoutes.get(identifier);
+                    if (refRoute != null) {
+                        setRoute(route, refRoute);
+                    }
+                } else {
+                    _log.info("No reference route for route: " + identifier);
+                    routesToRemove.add(route.getId());
+                }
             }
         }
-
-        _log.info("Routes to remove: " + routesToRemove.size());
-        _log.info("Pre Trips: " + dao.getAllTrips().size());
+        _log.debug("Routes to remove: " + routesToRemove.size());
+        _log.debug("Pre Trips: " + dao.getAllTrips().size());
 
         for (AgencyAndId id : routesToRemove) {
             Route route = dao.getRouteForId(id);
             removeEntityLibrary.removeRoute(dao, route);
         }
 
-        _log.info("Post Routes: " + dao.getAllRoutes().size());
-        _log.info("Post Trips: " + dao.getAllTrips().size());
+        _log.debug("Post Routes: " + dao.getAllRoutes().size());
+        _log.debug("Post Trips: " + dao.getAllTrips().size());
+    }
 
+    private void setRoute(Route daoRoute, Route refRoute) {
+        daoRoute.setShortName(refRoute.getShortName());
+        daoRoute.setLongName(refRoute.getLongName());
+        daoRoute.setType(refRoute.getType());
+        daoRoute.setDesc(refRoute.getDesc());
+        daoRoute.setUrl(refRoute.getUrl());
+        daoRoute.setColor(refRoute.getColor());
+        daoRoute.setTextColor(refRoute.getTextColor());
     }
 }
 

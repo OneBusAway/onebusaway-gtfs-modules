@@ -50,28 +50,18 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
         //List of DuplicateTrips and the required data
         ArrayList<DuplicateTrips> duplicateTripData = new ArrayList<>();
 
-        //set all the trips that are duplicates based on mta_trip_id
-        _log.info("Total trips {}", dao.getAllTrips().size());
-        int dupl = 0;
-        int unique = 0;
-
         //set all the trips that are duplcates based on mta_trip_id
         for (Trip trip : dao.getAllTrips()) {
             if (tripsMap.containsKey(trip.getMtaTripId())) {
                 ArrayList<Trip> trips = tripsMap.get(trip.getMtaTripId());
                 trips.add(trip);
                 tripsMap.put(trip.getMtaTripId(), trips);
-                dupl++;
             } else {
                 ArrayList<Trip> trips = new ArrayList<>();
                 trips.add(trip);
                 tripsMap.put(trip.getMtaTripId(), trips);
-                unique++;
             }
         }
-
-        _log.info("Unique mta trips {} ", tripsMap.size());
-        _log.info("Dups {}, unique {}", dupl, unique);
 
         Iterator entries = tripsMap.entrySet().iterator();
         int service_id = getNextServiceId(dao);
@@ -88,10 +78,7 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
             }
         }
         //now we have a list of DuplicateTrips and we need to fill in the calendar dates
-
-        int totalTrips = 0;
         for (DuplicateTrips dts : duplicateTripData) {
-            totalTrips = totalTrips + dts.getTrips().size();
             for (Trip trip : dts.getTrips()) {
                 //for each trip, get the calendar dates
                 for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
@@ -99,14 +86,6 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
                 }
             }
         }
-        _log.info("Total trips in duplicate entries {}", totalTrips);
-
-        int totalcaldates = 0;
-        for (DuplicateTrips dts : duplicateTripData) {
-            totalcaldates = totalcaldates + dts.getDates().size();
-            }
-        _log.info("Total service dates in duplicate entries {}", totalcaldates);
-
         //now we have a list of DuplicateTrips and their calendar dates
         //a lot of the DuplicateTrips will have the same list of calendar dates.  Don't create duplicate calendar entries unnecessarily
 
@@ -116,7 +95,6 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
         //for each duplicateTrips in the list, get the list of caldate entries
         //if the caldate entries is in the dateMap, change the Service Id for the duplicate trip
         //if its not in there, then add it
-        int newSvcEntries = 0;
         int newDates = 0;
         for (DuplicateTrips dts : duplicateTripData) {
             //first time through, populate dateMap
@@ -124,18 +102,14 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
                 dateMap.put(dts.getServiceId(), dts.getDates());
             } else {
                 boolean addNewDateMap = true;
-                Iterator newCalDates = dateMap.entrySet().iterator();
-                while (newCalDates.hasNext()) {
-                    HashMap.Entry calDate = (HashMap.Entry) newCalDates.next();
-                //for (HashMap.Entry<String, ArrayList<ServiceCalendarDate>> calDate : dateMap.entrySet()) {
-
+                for (HashMap.Entry<String, ArrayList<ServiceCalendarDate>> calDate : dateMap.entrySet()) {
                     ArrayList<ServiceCalendarDate> scds = (ArrayList<ServiceCalendarDate>) calDate.getValue();
                     //scds is a unique list of service calendar dates in the map
                     if (new HashSet<ServiceCalendarDate>(dts.getDates()).equals(new HashSet<ServiceCalendarDate>(scds))) {
                         //we already have a list of the same dates.  Re-use the service id
                         addNewDateMap = false;
                         //set the service date id in DuplicateTrips to be this one
-                        dts.setServiceId((String) calDate.getKey());
+                        dts.setServiceId(calDate.getKey());
                         break;
                     }
                 }
@@ -143,28 +117,19 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
                 if (addNewDateMap) {
                     //dates don't exist, add new entry to date map and add service id
                     dateMap.put(dts.getServiceId(), dts.getDates());
-                    newSvcEntries++;
                     newDates = newDates + dts.getDates().size();
                 }
             }
         }
-        _log.info("New scv entries {}", newSvcEntries);
-        _log.info("New dates {}", newDates);
-
 
         int count = 0;
         int caldates = 0;
         int serviceIds = 0;
         //Now the list is compete, add the new service id and dates
-        Iterator newCalDates = dateMap.entrySet().iterator();
-        while (newCalDates.hasNext()) {
-
-            HashMap.Entry calDateId = (HashMap.Entry) newCalDates.next();
-        //for (HashMap.Entry<String, ArrayList<ServiceCalendarDate>> calDateId : dateMap.entrySet()) {
+        for (HashMap.Entry<String, ArrayList<ServiceCalendarDate>> calDateId : dateMap.entrySet()) {
             caldates++;
-            AgencyAndId newServiceId = new AgencyAndId(agency, (String)calDateId.getKey());
-            ArrayList<ServiceCalendarDate> scds = (ArrayList<ServiceCalendarDate>) calDateId.getValue();
-            _log.info("List of service cal dates {}", scds.size());
+            AgencyAndId newServiceId = new AgencyAndId(agency, calDateId.getKey());
+            ArrayList<ServiceCalendarDate> scds = calDateId.getValue();
             //need a list of the service cal dates, iterate, add
             for (ServiceCalendarDate calDate : scds) {
                 serviceIds++;
@@ -177,7 +142,6 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
                 count++;
             }
         }
-
         _log.info("Add service dates {}, calDates {}, serviceIds {}", count, caldates, serviceIds);
 
         //update the trips with the new service_id

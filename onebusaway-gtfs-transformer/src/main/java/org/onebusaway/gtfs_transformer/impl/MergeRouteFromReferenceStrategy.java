@@ -62,6 +62,7 @@ public class MergeRouteFromReferenceStrategy implements GtfsTransformStrategy {
                 route.setUrl(refRoute.getUrl());
                 route.setColor(refRoute.getColor());
                 route.setTextColor(refRoute.getTextColor());
+                route.setId(refRoute.getId());
             }
         }
     }

@@ -16,7 +16,6 @@
 package org.onebusaway.gtfs_transformer.impl;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
-import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Pathway;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.services.GtfsDao;
@@ -33,7 +32,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.onebusaway.gtfs_transformer.util.PathwayUtil.PATHWAY_MODE_GENERIC;
 
@@ -59,7 +60,7 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
         String feedId = dao.getAllStops().iterator().next().getId().getAgencyId();
         List<Pathway> newPathways = new ArrayList<>();
         PathwayUtil util = new PathwayUtil(feedId, newPathways);
-        for (List<Stop> complex : getComplexList(dao, feedId)) {
+        for (List<Stop> complex : getComplexList(dao)) {
             for (Stop s : complex) {
                 for (Stop t : complex) {
                     if (s != null && s.getParentStation() != null && t != null) {
@@ -78,15 +79,15 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
         }
     }
 
-    private Collection<List<Stop>> getComplexList(GtfsDao dao, String feedId) {
+    private Collection<List<Stop>> getComplexList(GtfsDao dao) {
+        Map<String, Stop> stops = getStopMap(dao);
         Collection<List<Stop>> complexes = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(new File(complexFile)))) {
             String line;
             while ((line = br.readLine()) != null) {
                 List<Stop> complex = new ArrayList<>();
                 for (String id : line.split(STOP_SEPARATOR)) {
-                    AgencyAndId aid = new AgencyAndId(feedId, id);
-                    Stop stop = dao.getStopForId(aid);
+                    Stop stop = stops.get(id);
                     complex.add(stop);
                 }
                 complexes.add(complex);
@@ -95,6 +96,16 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
             e.printStackTrace();
         }
         return complexes;
+    }
+
+    private Map<String, Stop> getStopMap(GtfsDao dao) {
+        Map<String, Stop> map = new HashMap<>();
+        for (Stop stop : dao.getAllStops()) {
+            if (stop.getLocationType() == 0) {
+                map.put(stop.getId().getId(), stop);
+            }
+        }
+        return map;
     }
 
     public void setComplexFile(String complexFile) {

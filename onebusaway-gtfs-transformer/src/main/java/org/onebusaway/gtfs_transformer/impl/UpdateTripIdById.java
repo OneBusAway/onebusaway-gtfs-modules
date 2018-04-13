@@ -18,7 +18,7 @@ package org.onebusaway.gtfs_transformer.impl;
 
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Trip;
-import org.onebusaway.gtfs.model.ServiceCalendarDate;
+import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
@@ -38,31 +38,41 @@ public class UpdateTripIdById implements GtfsTransformStrategy {
         return this.getClass().getSimpleName();
     }
 
-
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
 
         //trips updated, array of mta_ids that we've updated
-        HashMap<String, AgencyAndId> tripsUpdated = new HashMap<>();
+        HashMap<String, Trip> tripsUpdated = new HashMap<>();
 
         //trips to remove, list of trips that have duplicate mta_ids
         ArrayList<Trip> tripsToRemove = new ArrayList<>();
+        _log.info("Total dao {}", dao.getAllTrips().size());
+        _log.info("Stop times: {}" , dao.getAllStopTimes().size());
 
         for (Trip trip : dao.getAllTrips()) {
             if (trip.getMtaTripId() != null) {
                 if (tripsUpdated.containsKey(trip.getMtaTripId())) {
                     tripsToRemove.add(trip);
+                    for (StopTime stopTime : dao.getStopTimesForTrip(trip)){
+                        stopTime.setTrip(tripsUpdated.get(trip.getMtaTripId()));
+                    }
                 } else {
+                    tripsUpdated.put(trip.getMtaTripId(), trip);
                     trip.setId(new AgencyAndId(trip.getId().getAgencyId(), trip.getMtaTripId()));
-                    tripsUpdated.put(trip.getMtaTripId(), trip.getServiceId());
                 }
             }
         }
 
         for (Trip tripToRemove : tripsToRemove) {
-            removeEntityLibrary.removeTrip(dao, tripToRemove);
+            //removeEntityLibrary.removeTrip(dao, tripToRemove);
+            dao.removeEntity(tripToRemove);
         }
+
+        _log.info("Total dao {}", dao.getAllTrips().size());
+        _log.info("Stop times: {}" , dao.getAllStopTimes().size());
+
     }
+
 }

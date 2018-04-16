@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,27 +42,68 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
 
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-        GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
-
+        RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
         String agency = dao.getAllTrips().iterator().next().getId().getAgencyId();
 
         //map of each mta_trip_id and list of trips
         HashMap<String, ArrayList<Trip>> tripsMap = new HashMap<>();
-        //List of DuplicateTrips and the required data
+        //List of DuplicateTrips
         ArrayList<DuplicateTrips> duplicateTripData = new ArrayList<>();
 
-        //set all the trips that are duplcates based on mta_trip_id
+        //they are only duplicates if the stop times match as well.
+        //if the stop times match, then we can move forward with merging trips
+        //if not, then we can't merge and we leave the trips alone
+
+        //set all the trips that are duplicates based on mta_trip_id
         for (Trip trip : dao.getAllTrips()) {
-            if (tripsMap.containsKey(trip.getMtaTripId())) {
-                ArrayList<Trip> trips = tripsMap.get(trip.getMtaTripId());
-                trips.add(trip);
-                tripsMap.put(trip.getMtaTripId(), trips);
+            if (trip.getMtaTripId() != null) {
+                if (tripsMap.containsKey(trip.getMtaTripId())) {
+                    ArrayList<Trip> trips = tripsMap.get(trip.getMtaTripId());
+                    trips.add(trip);
+                    tripsMap.put(trip.getMtaTripId(), trips);
+                } else {
+                    ArrayList<Trip> trips = new ArrayList<>();
+                    trips.add(trip);
+                    tripsMap.put(trip.getMtaTripId(), trips);
+                }
             } else {
-                ArrayList<Trip> trips = new ArrayList<>();
-                trips.add(trip);
-                tripsMap.put(trip.getMtaTripId(), trips);
+                _log.info("trip {} mta_trip_id is null", trip.getId());
             }
         }
+
+        GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
+
+        HashMap<String, Trip> referenceTrips = new HashMap<>();
+        for (Trip trip : reference.getAllTrips()) {
+            referenceTrips.put(trip.getId().getId(), trip);
+        }
+
+        //this is just for logging if dups are in reference, delete when ready
+ /*       Iterator entries2 = tripsMap.entrySet().iterator();
+        while (entries2.hasNext()) {
+            HashMap.Entry entry = (HashMap.Entry) entries2.next();
+            ArrayList<Trip> trips = (ArrayList<Trip>) entry.getValue();
+            if (trips.size() > 1) {
+                //these are duplicates
+                if (referenceTrips.containsKey(entry.getKey())) {
+                    //_log.info("Duplicate trip id {} is in reference", entry.getKey());
+                }
+            }
+        }
+*/
+        int orStopTimes = dao.getAllStopTimes().size();
+
+        _log.info("Routes: {}", dao.getAllRoutes().size());
+        _log.info("Trips: {}", dao.getAllTrips().size());
+        _log.info("Stops: {}", dao.getAllStops().size());
+        _log.info("Stop times: {}", orStopTimes);
+        _log.info("Cals: {}", dao.getAllCalendarDates().size());
+
+        int countUnique = 0;
+        int countCombine = 0;
+        int countDoNothing = 0;
+
+        _log.info("Total Trips: {}", dao.getAllTrips().size());
 
         Iterator entries = tripsMap.entrySet().iterator();
         int service_id = getNextServiceId(dao);
@@ -69,14 +111,44 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
             HashMap.Entry entry = (HashMap.Entry) entries.next();
             ArrayList<Trip> trips = (ArrayList<Trip>) entry.getValue();
             if (trips.size() > 1) {
-                //for each mta_id that is a duplicate, we need to ultimately delete those duplicates
-                //First, get all the corresponding serviceDates for all the trips with that mta_id, then create new service ids
-                //and add entries with that new id that correspond to all the service dates for all the trips
-                DuplicateTrips dup = new DuplicateTrips((String) entry.getKey(), Integer.toString(service_id), trips);
-                duplicateTripData.add(dup);
-                service_id++;
+                Boolean equals = true;
+                //do all the trips have identical stops?  If yes, proceed and update calendar dates and stop times and the trip_id
+                //If not, leave the trip alone.  Do nothing.
+                trip_loop:
+                for (int i = 0; i < trips.size(); i++) {
+                    for (int j = i+1; j < trips.size(); j++) {
+                        //if (!dao.getStopTimesForTrip(trips.get(i)).equals(dao.getStopTimesForTrip(trips.get(j))) ) {
+                        //they won't be equal because a stop time has a trip id and the trip ids are different
+                        if (!stopTimesEqual(dao.getStopTimesForTrip(trips.get(i)), dao.getStopTimesForTrip(trips.get(j)))) {
+                            //_log.info("The stop times for {} and {} are not equal", trips.get(i).getId().getId(), trips.get(j).getId().getId());
+                            equals = false;
+                            //so at this point the stop times don't equal.  Do I check if its just one or just throw the whole thing out?
+                            //For now if one doesn't match then none do and I'm going to ignore.
+                            countDoNothing = countDoNothing + trips.size();
+                            break trip_loop;
+                        }
+                    }
+                }
+                if (equals) {
+                    //_log.info("EQUALS!");
+                    //for each mta_id that is a duplicate, we need to ultimately delete those duplicates
+                    //First, get all the corresponding serviceDates for all the trips with that mta_id, then create new service ids
+                    //and add entries with that new id that correspond to all the service dates for all the trips
+                    DuplicateTrips dup = new DuplicateTrips((String) entry.getKey(), Integer.toString(service_id), trips);
+                    duplicateTripData.add(dup);
+                    service_id++;
+                    countCombine = countCombine + trips.size();
+                }
+            }
+            else {
+                //trips.size is not > 1 so these trips are unique.  Copy over mta_trip_id
+                Trip trip = trips.get(0);
+                trip.setId(new AgencyAndId(trip.getId().getAgencyId(), trip.getMtaTripId()));
+                countUnique++;
             }
         }
+        _log.info("Unique {}, Do nothing {}, combine {}, total {}", countUnique, countDoNothing, countCombine, countUnique+countDoNothing+countCombine);
+
         //now we have a list of DuplicateTrips and we need to fill in the calendar dates
         for (DuplicateTrips dts : duplicateTripData) {
             for (Trip trip : dts.getTrips()) {
@@ -144,14 +216,51 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
         }
         _log.info("Add service dates {}, calDates {}, serviceIds {}", count, caldates, serviceIds);
 
+        //trips updated, array of mta_ids that we've updated
+        HashMap<String, Trip> tripsUpdated = new HashMap<>();
+        ArrayList<Trip> tripsToRemove = new ArrayList<>();
+
         //update the trips with the new service_id
         for (DuplicateTrips dts : duplicateTripData) {
             AgencyAndId newServiceId = new AgencyAndId(agency, dts.getServiceId());
             for (Trip trip : dts.getTrips()) {
-                //for each trip, set the id
+                //for each trip, set the new service id
                 trip.setServiceId(newServiceId);
+                //now the trip_id has to be set with the mta_trip_id
+                //we have to have one as the one to keep and mark the others for deletion
+                //and then there needs to be a seperate method for all the deletions.
+                if (trip.getMtaTripId() != null) {
+                    if (tripsUpdated.containsKey(trip.getMtaTripId())) {
+                        //and stop times match - match everything thing about the stop times - number, times etc
+                        tripsToRemove.add(trip);
+                    } else {
+                        tripsUpdated.put(trip.getMtaTripId(), trip);
+                        trip.setId(new AgencyAndId(trip.getId().getAgencyId(), trip.getMtaTripId()));
+                    }
+                }
             }
         }
+
+        int stopsTimesToRemove = 0;
+        int remove = 0;
+        for (Trip tripToRemove : tripsToRemove) {
+            stopsTimesToRemove = stopsTimesToRemove + dao.getStopTimesForTrip(tripToRemove).size();
+            removeEntityLibrary.removeTrip(dao, tripToRemove);
+            remove++;
+        }
+
+        _log.info("Removed: {}, stoptimes: {}", remove, stopsTimesToRemove);
+
+
+
+        _log.info("Routes: {}", dao.getAllRoutes().size());
+        _log.info("Trips: {}", dao.getAllTrips().size());
+        _log.info("Stops: {}", dao.getAllStops().size());
+        _log.info("Stop times: {}", dao.getAllStopTimes().size());
+        _log.info("Cals: {}", dao.getAllCalendarDates().size());
+        _log.info("Stop times math, difference: {}", orStopTimes-stopsTimesToRemove);
+
+
     }
 
     private int getNextServiceId(GtfsMutableRelationalDao dao) {
@@ -179,5 +288,30 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
             }
         }
         return true;
+    }
+
+    private boolean stopTimesEqual(List<StopTime> s1, List<StopTime> s2) {
+        boolean equals = false;
+        if (s1.size() != s2.size()) {
+            //_log.info("Not equal on size {} {}", s1.size(), s2.size());
+            return equals;
+        }
+        int index = 0;
+        for (int i = 0; i < s1.size(); i++) {
+            if(!s1.get(i).getStop().equals(s2.get(i).getStop())) {
+                //_log.info("Stops {} {}", s1.get(i).getStop(), s2.get(i).getStop());
+                return equals;
+            }
+            if(s1.get(i).getDepartureTime() != s2.get(i).getDepartureTime()) {
+                //_log.info("Dep time {} {}", s1.get(i).getDepartureTime(), s2.get(i).getDepartureTime());
+                return equals;
+            }
+            if(s1.get(i).getArrivalTime() != s2.get(i).getArrivalTime()) {
+                //_log.info("Arr time {} {}", s1.get(i).getArrivalTime(), s2.get(i).getArrivalTime());
+                return equals;
+            }
+        }
+        equals = true;
+        return equals;
     }
 }

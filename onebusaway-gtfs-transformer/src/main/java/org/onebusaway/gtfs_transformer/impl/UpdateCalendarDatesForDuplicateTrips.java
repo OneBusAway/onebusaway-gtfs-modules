@@ -231,7 +231,6 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
                 //and then there needs to be a seperate method for all the deletions.
                 if (trip.getMtaTripId() != null) {
                     if (tripsUpdated.containsKey(trip.getMtaTripId())) {
-                        //and stop times match - match everything thing about the stop times - number, times etc
                         tripsToRemove.add(trip);
                     } else {
                         tripsUpdated.put(trip.getMtaTripId(), trip);
@@ -291,27 +290,25 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
     }
 
     private boolean stopTimesEqual(List<StopTime> s1, List<StopTime> s2) {
-        boolean equals = false;
         if (s1.size() != s2.size()) {
             //_log.info("Not equal on size {} {}", s1.size(), s2.size());
-            return equals;
+            return false;
         }
         int index = 0;
         for (int i = 0; i < s1.size(); i++) {
             if(!s1.get(i).getStop().equals(s2.get(i).getStop())) {
                 //_log.info("Stops {} {}", s1.get(i).getStop(), s2.get(i).getStop());
-                return equals;
+                return false;
             }
             if(s1.get(i).getDepartureTime() != s2.get(i).getDepartureTime()) {
                 //_log.info("Dep time {} {}", s1.get(i).getDepartureTime(), s2.get(i).getDepartureTime());
-                return equals;
+                return false;
             }
             if(s1.get(i).getArrivalTime() != s2.get(i).getArrivalTime()) {
                 //_log.info("Arr time {} {}", s1.get(i).getArrivalTime(), s2.get(i).getArrivalTime());
-                return equals;
+                return false;
             }
         }
-        equals = true;
-        return equals;
+        return true;
     }
 }

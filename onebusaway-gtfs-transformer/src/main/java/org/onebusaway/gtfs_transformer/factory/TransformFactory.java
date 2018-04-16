@@ -244,6 +244,9 @@ public class TransformFactory {
         else if (opType.equals("merge_route_from_reference")) {
           handleTransformOperation(line, json, new MergeRouteFromReferenceStrategy());
         }
+        else if (opType.equals("merge_route_five")) {
+          handleTransformOperation(line, json, new MergeRouteFive());
+        }
         else if (opType.equals("update_calendar_dates_for_dups")) {
           handleTransformOperation(line, json, new UpdateCalendarDatesForDuplicateTrips());
         }

@@ -24,6 +24,8 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+
 //Update stop_id to be the mta_stop_id
 public class UpdateStopIdById implements GtfsTransformStrategy {
 
@@ -38,8 +40,17 @@ public class UpdateStopIdById implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
 
+        HashMap<String, Stop> referenceStops = new HashMap<>();
+        for (Stop stop : reference.getAllStops()) {
+            referenceStops.put(stop.getId().getId(), stop);
+        }
+
         for (Stop stop : dao.getAllStops()) {
             if (stop.getMtaStopId() != null) {
+                Stop refStop = referenceStops.get(stop.getMtaStopId());
+                if (refStop != null) {
+                    stop.setName(refStop.getName());
+                }
                 stop.setId(new AgencyAndId(stop.getId().getAgencyId(), stop.getMtaStopId()));
             }
         }

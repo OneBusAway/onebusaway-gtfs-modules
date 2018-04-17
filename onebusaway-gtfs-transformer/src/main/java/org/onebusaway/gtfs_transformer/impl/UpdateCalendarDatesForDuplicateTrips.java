@@ -32,7 +32,7 @@ import java.util.Iterator;
 
 public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(UpdateTripIdById.class);
+    private final Logger _log = LoggerFactory.getLogger(UpdateCalendarDatesForDuplicateTrips.class);
 
     @Override
     public String getName() {
@@ -55,6 +55,7 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
         //if not, then we can't merge and we leave the trips alone
 
         //set all the trips that are duplicates based on mta_trip_id
+        int mtaIdNull = 0;
         for (Trip trip : dao.getAllTrips()) {
             if (trip.getMtaTripId() != null) {
                 if (tripsMap.containsKey(trip.getMtaTripId())) {
@@ -68,6 +69,7 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
                 }
             } else {
                 _log.info("trip {} mta_trip_id is null", trip.getId());
+                mtaIdNull++;
             }
         }
 
@@ -93,17 +95,11 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
 */
         int orStopTimes = dao.getAllStopTimes().size();
 
-        _log.info("Routes: {}", dao.getAllRoutes().size());
-        _log.info("Trips: {}", dao.getAllTrips().size());
-        _log.info("Stops: {}", dao.getAllStops().size());
-        _log.info("Stop times: {}", orStopTimes);
-        _log.info("Cals: {}", dao.getAllCalendarDates().size());
+        _log.info("Routes: {} Trips: {} Stops: {} Stop times: {} CalDatess: {} ", dao.getAllRoutes().size(), dao.getAllTrips().size(), dao.getAllStops().size(), dao.getAllStopTimes().size(), dao.getAllCalendarDates().size());
 
         int countUnique = 0;
         int countCombine = 0;
         int countDoNothing = 0;
-
-        _log.info("Total Trips: {}", dao.getAllTrips().size());
 
         Iterator entries = tripsMap.entrySet().iterator();
         int service_id = getNextServiceId(dao);
@@ -147,7 +143,7 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
                 countUnique++;
             }
         }
-        _log.info("Unique {}, Do nothing {}, combine {}, total {}", countUnique, countDoNothing, countCombine, countUnique+countDoNothing+countCombine);
+        _log.info("Mta_trip_ids: null {}, unique {}, do nothing {}, combine {}, total {}", mtaIdNull, countUnique, countDoNothing, countCombine, mtaIdNull+countUnique+countDoNothing+countCombine);
 
         //now we have a list of DuplicateTrips and we need to fill in the calendar dates
         for (DuplicateTrips dts : duplicateTripData) {
@@ -194,12 +190,9 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
             }
         }
 
-        int count = 0;
-        int caldates = 0;
         int serviceIds = 0;
         //Now the list is compete, add the new service id and dates
         for (HashMap.Entry<String, ArrayList<ServiceCalendarDate>> calDateId : dateMap.entrySet()) {
-            caldates++;
             AgencyAndId newServiceId = new AgencyAndId(agency, calDateId.getKey());
             ArrayList<ServiceCalendarDate> scds = calDateId.getValue();
             //need a list of the service cal dates, iterate, add
@@ -211,10 +204,8 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
                 newScd.setDate(calDate.getDate());
                 newScd.setExceptionType(calDate.getExceptionType());
                 dao.saveOrUpdateEntity(newScd);
-                count++;
             }
         }
-        _log.info("Add service dates {}, calDates {}, serviceIds {}", count, caldates, serviceIds);
 
         //trips updated, array of mta_ids that we've updated
         HashMap<String, Trip> tripsUpdated = new HashMap<>();
@@ -248,18 +239,8 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
             remove++;
         }
 
-        _log.info("Removed: {}, stoptimes: {}", remove, stopsTimesToRemove);
-
-
-
-        _log.info("Routes: {}", dao.getAllRoutes().size());
-        _log.info("Trips: {}", dao.getAllTrips().size());
-        _log.info("Stops: {}", dao.getAllStops().size());
-        _log.info("Stop times: {}", dao.getAllStopTimes().size());
-        _log.info("Cals: {}", dao.getAllCalendarDates().size());
-        _log.info("Stop times math, difference: {}", orStopTimes-stopsTimesToRemove);
-
-
+        _log.info("Added Service Cal dates: {}, Removed trips: {}, stoptimes: {}", serviceIds, remove, stopsTimesToRemove);
+        _log.info("Routes: {} Trips: {} Stops: {} Stop times: {} CalDates: {} ", dao.getAllRoutes().size(), dao.getAllTrips().size(), dao.getAllStops().size(), dao.getAllStopTimes().size(), dao.getAllCalendarDates().size());
     }
 
     private int getNextServiceId(GtfsMutableRelationalDao dao) {

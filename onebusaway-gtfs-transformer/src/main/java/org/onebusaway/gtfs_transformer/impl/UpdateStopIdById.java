@@ -29,7 +29,7 @@ import java.util.HashMap;
 //Update stop_id to be the mta_stop_id
 public class UpdateStopIdById implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(UpdateTripIdById.class);
+    private final Logger _log = LoggerFactory.getLogger(UpdateStopIdById.class);
 
     @Override
     public String getName() {

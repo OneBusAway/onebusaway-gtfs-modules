@@ -49,7 +49,7 @@ public class MergeRouteFromReferenceStrategyById implements GtfsTransformStrateg
             referenceRoutes.put(route.getId().getId(), route);
         }
 
-        _log.info("Pre Routes: " + dao.getAllRoutes().size());
+        _log.info("Routes: {}, Trips: {}", dao.getAllRoutes().size(), dao.getAllTrips().size());
 
         for (Route route: dao.getAllRoutes()) {
             String identifier = route.getId().getId();
@@ -82,24 +82,22 @@ public class MergeRouteFromReferenceStrategyById implements GtfsTransformStrateg
                         else {
                             setLTDRoute(route, refRoute);
                         }
+                    } else {
+                        _log.info("No reference route for route: " + route.getId().getId());
                     }
-                } else {
-                    _log.info("No reference route for route: " + identifier);
-                    //routesToRemove.add(route.getId());
                 }
             }
         }
         _log.info("Routes to remove: " + routesToRemove.size());
-        _log.info("Pre Trips: " + dao.getAllTrips().size());
 
         for (Route route : routesToRemove) {
             //removeEntityLibrary.removeRoute(dao, route);
             dao.removeEntity(route);
         }
 
-        _log.info("Post Routes: " + dao.getAllRoutes().size());
-        _log.info("Post Trips: " + dao.getAllTrips().size());
+        _log.info("Routes: {}, Trips: {}", dao.getAllRoutes().size(), dao.getAllTrips().size());
     }
+
 
     private void setRoute(Route daoRoute, Route refRoute) {
         daoRoute.setShortName(refRoute.getShortName());

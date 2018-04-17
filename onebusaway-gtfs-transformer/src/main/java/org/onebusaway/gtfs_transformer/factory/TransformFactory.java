@@ -259,6 +259,9 @@ public class TransformFactory {
         else if (opType.equals("update_route_name")) {
           handleTransformOperation(line, json, new UpdateRouteNames());
         }
+        else if (opType.equals("count_and_test_bus")) {
+          handleTransformOperation(line, json, new CountAndTestBus());
+        }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);
         } else {

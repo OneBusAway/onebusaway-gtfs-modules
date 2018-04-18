@@ -64,14 +64,11 @@ public class MergeRouteFromReferenceStrategyById implements GtfsTransformStrateg
                     identifier = identifier.replace("-LTD", "");
                     refRoute = referenceRoutes.get(identifier);
                     if (refRoute != null) {
-                        //get all the trips for this route and add LTD to the trip headsign
-                        for (Trip trip : dao.getTripsForRoute(route)) {
-                            String tripHeadSign = trip.getTripHeadsign();
-                            tripHeadSign = tripHeadSign.concat(" LTD");
-                            trip.setTripHeadsign(tripHeadSign);
-                        }
+                        updateTripHeadsign(dao, route);
+
                         //if there already is a route with this reference route_id, set this one to be removed
                         //and re-assign the trips to the non-LTD route
+                        //dao.getRouteForId only works with route ids that have not changed at all from input
                         if(dao.getRouteForId(new AgencyAndId(route.getId().getAgencyId(), refRoute.getId().getId())) != null) {
                             routesToRemove.add(route);
                             for (Trip trip : dao.getTripsForRoute(route)) {
@@ -82,7 +79,19 @@ public class MergeRouteFromReferenceStrategyById implements GtfsTransformStrateg
                         else {
                             setLTDRoute(route, refRoute);
                         }
-                    } else {
+                    } else if(identifier.equals("Q6")) {
+                        refRoute = referenceRoutes.get("Q06");
+                        if (refRoute != null) {
+                            updateTripHeadsign(dao, route);
+                            if(dao.getRouteForId(new AgencyAndId(route.getId().getAgencyId(), "Q6")) != null) {
+                                routesToRemove.add(route);
+                                for (Trip trip : dao.getTripsForRoute(route)) {
+                                    trip.setRoute(dao.getRouteForId(new AgencyAndId(route.getId().getAgencyId(), "Q6")));
+                                }
+                            }
+                        }
+                    }
+                    else {
                         _log.info("No reference route for route: " + route.getId().getId());
                     }
                 }
@@ -91,13 +100,20 @@ public class MergeRouteFromReferenceStrategyById implements GtfsTransformStrateg
         _log.info("Routes to remove: " + routesToRemove.size());
 
         for (Route route : routesToRemove) {
-            //removeEntityLibrary.removeRoute(dao, route);
             dao.removeEntity(route);
         }
 
         _log.info("Routes: {}, Trips: {}", dao.getAllRoutes().size(), dao.getAllTrips().size());
     }
 
+    private void updateTripHeadsign(GtfsMutableRelationalDao dao, Route route) {
+        //get all the trips for this route and add LTD to the trip headsign
+        for (Trip trip : dao.getTripsForRoute(route)) {
+            String tripHeadSign = trip.getTripHeadsign();
+            tripHeadSign = tripHeadSign.concat(" LTD");
+            trip.setTripHeadsign(tripHeadSign);
+        }
+    }
 
     private void setRoute(Route daoRoute, Route refRoute) {
         daoRoute.setShortName(refRoute.getShortName());

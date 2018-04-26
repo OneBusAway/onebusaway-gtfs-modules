@@ -395,6 +395,12 @@ public final class StopTime extends IdentityBean<Integer> implements
     return proxy;
   }
 
+  public String displayArrival() {
+    return "StopTime(Arrival time="
+            + StopTimeFieldMappingFactory.getSecondsAsString(getArrivalTime())
+           + ")";
+  }
+
   @Override
   public String toString() {
     return "StopTime(seq=" + getStopSequence() + " stop=" + getStop().getId()

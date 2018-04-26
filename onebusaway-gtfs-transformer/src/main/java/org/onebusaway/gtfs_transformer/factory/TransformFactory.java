@@ -265,6 +265,9 @@ public class TransformFactory {
         else if (opType.equals("count_and_test_subway")) {
           handleTransformOperation(line, json, new CountAndTestSubway());
         }
+        else if (opType.equals("update_stoptimes_for_time")) {
+          handleTransformOperation(line, json, new UpdateStopTimesForTime());
+        }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);
         } else {

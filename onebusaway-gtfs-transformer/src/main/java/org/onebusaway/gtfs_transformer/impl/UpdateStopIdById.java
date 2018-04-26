@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.ArrayList;
 
 //Update stop_id to be the mta_stop_id
 public class UpdateStopIdById implements GtfsTransformStrategy {
@@ -39,20 +40,37 @@ public class UpdateStopIdById implements GtfsTransformStrategy {
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
+        RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
 
         HashMap<String, Stop> referenceStops = new HashMap<>();
         for (Stop stop : reference.getAllStops()) {
             referenceStops.put(stop.getId().getId(), stop);
         }
 
+        ArrayList<Stop> stopsToDelete = new ArrayList<>();
+
+        ArrayList<String> existingStops = new ArrayList<>();
+
         for (Stop stop : dao.getAllStops()) {
             if (stop.getMtaStopId() != null) {
-                Stop refStop = referenceStops.get(stop.getMtaStopId());
-                if (refStop != null) {
-                    stop.setName(refStop.getName());
+                if (existingStops.contains(stop.getMtaStopId())) {
+                    //throw exception ?
+                    _log.error("*** MtaStopId {} already exists", stop.getMtaStopId());
+                    stopsToDelete.add(stop);
                 }
-                stop.setId(new AgencyAndId(stop.getId().getAgencyId(), stop.getMtaStopId()));
+                else {
+                    existingStops.add(stop.getMtaStopId());
+                    Stop refStop = referenceStops.get(stop.getMtaStopId());
+                    if (refStop != null) {
+                        stop.setName(refStop.getName());
+                    }
+                    stop.setId(new AgencyAndId(stop.getId().getAgencyId(), stop.getMtaStopId()));
+                }
             }
         }
+        for (Stop stop : stopsToDelete) {
+            removeEntityLibrary.removeStop(dao, stop);
+        }
+
     }
 }

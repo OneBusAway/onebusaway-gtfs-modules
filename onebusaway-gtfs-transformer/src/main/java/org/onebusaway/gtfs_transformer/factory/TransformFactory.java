@@ -268,6 +268,9 @@ public class TransformFactory {
         else if (opType.equals("update_stoptimes_for_time")) {
           handleTransformOperation(line, json, new UpdateStopTimesForTime());
         }
+        else if (opType.equals("update_trips_for_sdon")) {
+          handleTransformOperation(line, json, new UpdateTripsForSdon());
+        }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);
         } else {

@@ -55,7 +55,7 @@ public class UpdateTripsForSdon implements GtfsTransformStrategy {
         }
 
         //Unique list of calendar dates to add where the key = new service id
-        HashMap<String, ArrayList<ServiceDate>> dateMap = new HashMap<>();
+        HashMap<String, ArrayList<ServiceDate>> serviceDates = new HashMap<>();
 
         //for each reference trip, if it contails SDon
         // create a nonSdon string
@@ -100,23 +100,40 @@ public class UpdateTripsForSdon implements GtfsTransformStrategy {
                     }
 
                     //see if this list of sdForTrip is unique
-                    //so, how??
                     //have a hashmap of service dates, where the service id is the key and the value is the list of dates
                     //does the  hashmap have this list of dates?
                     //yes, great, take the id and use that for the trip
                     //no? ok, create the calendar dates
 
                     AgencyAndId newServiceId = new AgencyAndId(agency, Integer.toString(service_id));
-                    sdonAtisTrip.setServiceId(newServiceId);
 
-                    //now we have a list of dates that the sDon trip operates on
-                    for (ServiceDate sd : sdForTrip) {
-                        ServiceCalendarDate newScd = new ServiceCalendarDate();
-                        newScd.setServiceId(newServiceId);
-                        newScd.setDate(sd);
-                        newScd.setExceptionType(1); //add
-                        dao.saveOrUpdateEntity(newScd);
+                    if (serviceDates.isEmpty()) {
+                        serviceDates.put(Integer.toString(service_id), sdForTrip);
+                        newServiceId = new AgencyAndId(agency, Integer.toString(service_id));
+                        service_id++;
+                    } else {
+                        boolean addNewServiceDate = true;
+                        for (HashMap.Entry<String, ArrayList<ServiceDate>> serviceDate : serviceDates.entrySet()) {
+                            ArrayList<ServiceDate> scds = (ArrayList<ServiceDate>) serviceDate.getValue();
+                            //scds is a unique list of service dates in the map
+                            if (new HashSet<ServiceDate>(sdForTrip).equals(new HashSet<ServiceDate>(scds))) {
+                                //we already have a list of the same dates.  Re-use the service id
+                                addNewServiceDate = false;
+                                //set the service date id to be this one
+                                newServiceId = new AgencyAndId(agency, serviceDate.getKey());
+                                sdonAtisTrip.setServiceId(newServiceId);
+                            }
+                        }
+                        //there was no match, update the date map and add new serviceId
+                        if (addNewServiceDate) {
+                            //dates don't exist, add new entry
+                            serviceDates.put(Integer.toString(service_id), sdForTrip);
+                            newServiceId = new AgencyAndId(agency, Integer.toString(service_id));
+                            service_id++;
+                        }
                     }
+
+                    sdonAtisTrip.setServiceId(newServiceId);
 
                     for (StopTime stopTime : dao.getStopTimesForTrip(atisTrip)) {
                         StopTime st = new StopTime();
@@ -133,9 +150,27 @@ public class UpdateTripsForSdon implements GtfsTransformStrategy {
                     }
                 }
             }
-            service_id++;
         }
-        _log.error("Dao count: {}", countdao);
+
+        _log.info("Adding {} service date ids. Next id {}", serviceDates.size(), getNextServiceId(dao));
+
+        int serviceIds = 0;
+        //Now the list is compete, add the new service id and dates
+        for (HashMap.Entry<String, ArrayList<ServiceDate>> serviceDatesToAdd : serviceDates.entrySet()) {
+            AgencyAndId newServiceId = new AgencyAndId(agency, serviceDatesToAdd.getKey());
+            ArrayList<ServiceDate> scds = serviceDatesToAdd.getValue();
+            //need a list of the service cal dates, iterate, add
+            for (ServiceDate sd : scds) {
+                serviceIds++;
+                ServiceCalendarDate newScd = new ServiceCalendarDate();
+                newScd.setServiceId(newServiceId);
+                newScd.setDate(sd);
+                newScd.setExceptionType(1); //add
+                dao.saveOrUpdateEntity(newScd);
+            }
+        }
+
+        _log.error("Dao count: {}.  Added Service dates: {}", countdao, serviceIds);
     }
 
     private Trip createTrip(GtfsMutableRelationalDao dao, Trip referenceTrip, Trip atisTrip) {

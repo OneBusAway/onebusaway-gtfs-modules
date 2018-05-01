@@ -110,8 +110,10 @@ public class MergeRouteFromReferenceStrategyById implements GtfsTransformStrateg
         //get all the trips for this route and add LTD to the trip headsign
         for (Trip trip : dao.getTripsForRoute(route)) {
             String tripHeadSign = trip.getTripHeadsign();
-            tripHeadSign = tripHeadSign.concat(" LTD");
-            trip.setTripHeadsign(tripHeadSign);
+            if (tripHeadSign != null) {
+                tripHeadSign = tripHeadSign.concat(" LTD");
+                trip.setTripHeadsign(tripHeadSign);
+            }
         }
     }
 

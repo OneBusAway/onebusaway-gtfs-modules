@@ -15,6 +15,7 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
+import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -36,16 +37,18 @@ public class UpdateTripHeadsignByDestinationStrategy implements GtfsTransformStr
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
+        GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
+        String agency = reference.getAllTrips().iterator().next().getId().getAgencyId();
+
         for (Trip trip : dao.getAllTrips()) {
-            String tripId = trip.getId().getId();
-            List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
+            Trip refTrip = reference.getTripForId(new AgencyAndId(agency, trip.getMtaTripId()));
+            List<StopTime> stopTimes = reference.getStopTimesForTrip(refTrip);
             if (stopTimes != null && stopTimes.size() > 0) {
                 String tripHeadSign = stopTimes.get(stopTimes.size()-1).getStop().getName();
                 if (tripHeadSign != null) {
                     trip.setTripHeadsign(tripHeadSign);
                 }
             }
-
         }
     }
 }

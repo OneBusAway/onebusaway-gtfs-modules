@@ -1,3 +1,19 @@
+/*
+  Copyright (C) 2018 Tony Laidig
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ */
+
 package org.onebusaway.gtfs_transformer.updates;
 
 import org.junit.Assert;
@@ -31,13 +47,15 @@ public class LastStopToHeadsignStrategyTest {
     public void test() {
         LastStopToHeadsignStrategy _strategy = new LastStopToHeadsignStrategy();
 
-        _strategy.run(new TransformContext(), _dao);
         AgencyAndId tripId = new AgencyAndId();
         tripId.setId("1.1");
         tripId.setAgencyId("agency");
-
         Trip trip = _dao.getTripForId(tripId);
-        System.out.println("headsign is " + trip.getTripHeadsign());
+
+        Assert.assertNotSame("C",trip.getTripHeadsign());
+        _strategy.run(new TransformContext(), _dao);
+
+        trip = _dao.getTripForId(tripId);
         Assert.assertEquals("C",trip.getTripHeadsign());
     }
 }

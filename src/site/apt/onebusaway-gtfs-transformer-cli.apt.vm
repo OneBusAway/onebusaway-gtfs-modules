@@ -395,6 +395,14 @@ such that the resulting schedule is semantically the same.
 {"op":"remove_non_revenue_stops_excluding_terminals"}}
 +---+
 
+* Replacing trip_headsign with the last stop
+
+  Certain feeds contain unhelpful or incorrect trip_headsign. They can be replaced with the last stop's stop_name.
+
++---+
+{"op":"last_stop_to_headsign"}
++---+
+
 * Arbitrary Transform
 
   We also allow you to specify arbitrary transformations as well.  Here, you specify your transformation class and we will

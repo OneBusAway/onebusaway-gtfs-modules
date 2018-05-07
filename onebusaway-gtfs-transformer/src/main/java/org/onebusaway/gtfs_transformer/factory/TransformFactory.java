@@ -26,12 +26,7 @@ import org.onebusaway.collections.tuple.Tuples;
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.CsvEntityContextImpl;
 import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
-import org.onebusaway.csv_entities.schema.BeanWrapper;
-import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
-import org.onebusaway.csv_entities.schema.EntitySchema;
-import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
-import org.onebusaway.csv_entities.schema.FieldMapping;
-import org.onebusaway.csv_entities.schema.SingleFieldMapping;
+import org.onebusaway.csv_entities.schema.*;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs_transformer.GtfsTransformer;
 import org.onebusaway.gtfs_transformer.TransformSpecificationException;
@@ -40,54 +35,22 @@ import org.onebusaway.gtfs_transformer.collections.ServiceIdKey;
 import org.onebusaway.gtfs_transformer.collections.ServiceIdKeyMatch;
 import org.onebusaway.gtfs_transformer.collections.ShapeIdKey;
 import org.onebusaway.gtfs_transformer.collections.ShapeIdKeyMatch;
-import org.onebusaway.gtfs_transformer.deferred.DeferredValueMatcher;
-import org.onebusaway.gtfs_transformer.deferred.DeferredValueSetter;
-import org.onebusaway.gtfs_transformer.deferred.EntitySchemaCache;
-import org.onebusaway.gtfs_transformer.deferred.PropertyPathExpressionValueSetter;
-import org.onebusaway.gtfs_transformer.deferred.ReplaceValueSetter;
-import org.onebusaway.gtfs_transformer.deferred.ValueSetter;
+import org.onebusaway.gtfs_transformer.deferred.*;
 import org.onebusaway.gtfs_transformer.impl.*;
-import org.onebusaway.gtfs_transformer.match.EntityMatch;
-import org.onebusaway.gtfs_transformer.match.EntityMatchCollection;
-import org.onebusaway.gtfs_transformer.match.PropertyAnyValueEntityMatch;
-import org.onebusaway.gtfs_transformer.match.PropertyValueEntityMatch;
-import org.onebusaway.gtfs_transformer.match.TypedEntityMatch;
+import org.onebusaway.gtfs_transformer.match.*;
 import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsEntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategyFactory;
-import org.onebusaway.gtfs_transformer.updates.CalendarExtensionStrategy;
-import org.onebusaway.gtfs_transformer.updates.CalendarSimplicationStrategy;
-import org.onebusaway.gtfs_transformer.updates.DeduplicateServiceIdsStrategy;
-import org.onebusaway.gtfs_transformer.updates.ShapeDirectionTransformStrategy;
-import org.onebusaway.gtfs_transformer.updates.ShiftNegativeStopTimesUpdateStrategy;
-import org.onebusaway.gtfs_transformer.updates.StopTimesFactoryStrategy;
-import org.onebusaway.gtfs_transformer.updates.SubsectionTripTransformStrategy;
+import org.onebusaway.gtfs_transformer.updates.*;
 import org.onebusaway.gtfs_transformer.updates.SubsectionTripTransformStrategy.SubsectionOperation;
-import org.onebusaway.gtfs_transformer.updates.TrimTripTransformStrategy;
 import org.onebusaway.gtfs_transformer.updates.TrimTripTransformStrategy.TrimOperation;
-import org.onebusaway.gtfs_transformer.updates.RemoveNonRevenueStopsStrategy;
-import org.onebusaway.gtfs_transformer.updates.RemoveNonRevenueStopsExcludingTerminalsStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
+import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -273,6 +236,9 @@ public class TransformFactory {
         }
         else if (opType.equals("update_trips_for_sdon")) {
           handleTransformOperation(line, json, new UpdateTripsForSdon());
+        }
+        else if (opType.equals("last_stop_to_headsign")){
+          handleTransformOperation(line, json, new LastStopToHeadsignStrategy());
         }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);

@@ -20,6 +20,8 @@ import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -28,6 +30,7 @@ import java.util.List;
  */
 public class UpdateTripHeadsignByDestinationStrategy implements GtfsTransformStrategy {
 
+    private final Logger _log = LoggerFactory.getLogger(UpdateTripHeadsignByDestinationStrategy.class);
     @Override
     public String getName() {
         return this.getClass().getSimpleName();
@@ -37,7 +40,6 @@ public class UpdateTripHeadsignByDestinationStrategy implements GtfsTransformStr
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
         for (Trip trip : dao.getAllTrips()) {
-            String tripId = trip.getId().getId();
             List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
             if (stopTimes != null && stopTimes.size() > 0) {
                 String tripHeadSign = stopTimes.get(stopTimes.size()-1).getStop().getName();
@@ -45,7 +47,6 @@ public class UpdateTripHeadsignByDestinationStrategy implements GtfsTransformStr
                     trip.setTripHeadsign(tripHeadSign);
                 }
             }
-
         }
     }
 }

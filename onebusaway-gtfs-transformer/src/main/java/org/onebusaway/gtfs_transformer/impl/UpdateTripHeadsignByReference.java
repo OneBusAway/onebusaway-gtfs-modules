@@ -16,13 +16,19 @@
 
 package org.onebusaway.gtfs_transformer.impl;
 
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
+import org.onebusaway.gtfs_transformer.updates.UpdateLibrary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UpdateTripHeadsignByReference implements GtfsTransformStrategy {
@@ -32,22 +38,42 @@ public class UpdateTripHeadsignByReference implements GtfsTransformStrategy {
         return this.getClass().getSimpleName();
     }
 
+    private final Logger _log = LoggerFactory.getLogger(UpdateTripHeadsignByReference.class);
+
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         String agency = reference.getAllTrips().iterator().next().getId().getAgencyId();
+        ArrayList<String> missingStops = new ArrayList<>();
 
         for (Trip trip : dao.getAllTrips()) {
-            Trip refTrip = reference.getTripForId(new AgencyAndId(agency, trip.getMtaTripId()));
-            List<StopTime> stopTimes = reference.getStopTimesForTrip(refTrip);
+            List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
             if (stopTimes != null && stopTimes.size() > 0) {
-                String tripHeadSign = stopTimes.get(stopTimes.size()-1).getStop().getName();
-                if (tripHeadSign != null) {
-                    trip.setTripHeadsign(tripHeadSign);
+                Stop stop = stopTimes.get(stopTimes.size()-1).getStop();
+                Stop gtfsStop = reference.getStopForId(new AgencyAndId(getReferenceAgencyId(reference), stop.getMtaStopId()));
+                if (gtfsStop == null && !missingStops.contains(stop.getMtaStopId())) {
+                    _log.info("missing reference stop {} for agency {}", stop.getMtaStopId(), getReferenceAgencyId(reference));
+                    missingStops.add(stop.getMtaStopId());
+                }
+                if (gtfsStop != null) {
+                    //then set the headsign from the reference stop
+                    String tripHeadSign = gtfsStop.getName();
+                    if (tripHeadSign != null) {
+                        trip.setTripHeadsign(tripHeadSign);
+                    }
                 }
             }
         }
+    }
+
+    @CsvField(ignore = true)
+    private String _referenceAgencyId = null;
+    private String getReferenceAgencyId(GtfsMutableRelationalDao dao) {
+        if (_referenceAgencyId == null) {
+            _referenceAgencyId = dao.getAllAgencies().iterator().next().getId();
+        }
+        return _referenceAgencyId;
     }
 }
 

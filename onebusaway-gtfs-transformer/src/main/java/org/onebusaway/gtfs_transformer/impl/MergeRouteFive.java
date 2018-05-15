@@ -46,10 +46,12 @@ public class MergeRouteFive implements GtfsTransformStrategy {
         Route routeFive = dao.getRouteForId(new AgencyAndId(agency, "5"));
         Route routeFiveX = dao.getRouteForId(new AgencyAndId(agency, "5X"));
 
-        for (Trip trip : dao.getTripsForRoute(routeFiveX)) {
-            trip.setRoute(routeFive);
+        if (routeFive != null && routeFiveX != null) {
+            for (Trip trip : dao.getTripsForRoute(routeFiveX)) {
+                trip.setRoute(routeFive);
+            }
+            dao.removeEntity(routeFiveX);
         }
-        dao.removeEntity(routeFiveX);
     }
 }
 

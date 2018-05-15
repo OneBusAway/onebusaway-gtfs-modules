@@ -23,6 +23,7 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,13 @@ public class MTAStationDirectionalityStrategy implements GtfsTransformStrategy {
 
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
+
+        File file = new File(directionCsv);
+        if(!file.exists()) {
+            throw new IllegalStateException(
+                    "Direction file does not exist: " + file.getName());
+        }
+
         List<MTAStationDirection> stationDirections = readCsv(MTAStationDirection.class, directionCsv);
 
         Map<String, MTAStationDirection> dirByStation = new HashMap<>();

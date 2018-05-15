@@ -57,6 +57,12 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
     // Create pathways between all stops in a station complex
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
+        File stComplexFile = new File(complexFile);
+        if(!stComplexFile.exists()) {
+            throw new IllegalStateException(
+                    "Station Complex file does not exist: " + stComplexFile.getName());
+        }
+
         String feedId = dao.getAllStops().iterator().next().getId().getAgencyId();
         List<Pathway> newPathways = new ArrayList<>();
         PathwayUtil util = new PathwayUtil(feedId, newPathways);

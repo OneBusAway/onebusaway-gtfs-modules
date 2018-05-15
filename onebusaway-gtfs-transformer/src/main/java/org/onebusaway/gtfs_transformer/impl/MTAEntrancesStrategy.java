@@ -28,6 +28,7 @@ import org.onebusaway.gtfs_transformer.util.PathwayUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -116,6 +117,20 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
+
+        File entrancesFile = new File(entrancesCsv);
+        if(!entrancesFile.exists()) {
+            throw new IllegalStateException(
+                    "Entrances file does not exist: " + entrancesFile.getName());
+        }
+
+        if (elevatorsCsv != null) {
+            File elevatorsFile = new File(elevatorsCsv);
+            if(!elevatorsFile.exists()) {
+                throw new IllegalStateException(
+                        "Elevators file does not exist: " + elevatorsFile.getName());
+            }
+        }
 
         agencyId = dao.getAllAgencies().iterator().next().getId();
 

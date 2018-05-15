@@ -25,6 +25,7 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +50,12 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
+
+        File controlFile = new File((String)context.getParameter("controlFile"));
+        if(!controlFile.exists()) {
+            throw new IllegalStateException(
+                    "Control file does not exist: " + controlFile.getName());
+        }
 
         List<String> controlLines = new InputLibrary().readList((String) context.getParameter("controlFile"));
         int matched = 0;

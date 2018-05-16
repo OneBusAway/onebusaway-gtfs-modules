@@ -15,10 +15,7 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.Trip;
-import org.onebusaway.gtfs.model.Route;
-import org.onebusaway.gtfs.model.Stop;
+import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
@@ -26,13 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
-import java.io.Writer;
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
-import java.io.FileOutputStream;
-
-import java.io.IOException;
 
 public class CountAndTestBus implements GtfsTransformStrategy {
 
@@ -46,6 +39,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
+        String agency = dao.getAllTrips().iterator().next().getId().getAgencyId();
 
         HashMap<String, Route> referenceRoutes = new HashMap<>();
         for (Route route : reference.getAllRoutes()) {
@@ -73,13 +67,44 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         }
         _log.info("ATIS Routes: {}, References: {}, ATIS match to reference: {}", dao.getAllRoutes().size(), reference.getAllRoutes().size(), matches);
 
+        int countSt = 0;
+        int countCd = 0;
+
+        int countNoSt = 0;
+        int countNoCd = 0;
+        int curSerTrips = 0;
+
+        AgencyAndId serviceAgencyAndId = new AgencyAndId();
         matches = 0;
         for (Trip trip : dao.getAllTrips()) {
             if (referenceTrips.containsKey(trip.getId().getId())) {
                 matches++;
             }
+
+            if (dao.getStopTimesForTrip(trip).size() == 0) {
+                countNoSt++;
+            }
+            countSt = countSt + dao.getStopTimesForTrip(trip).size();
+            serviceAgencyAndId = trip.getServiceId();
+            if (dao.getCalendarDatesForServiceId(serviceAgencyAndId).size() == 0) {
+                countNoCd++;
+            }
+            countCd = countCd + dao.getCalendarDatesForServiceId(serviceAgencyAndId).size();
+
+            //check for current service
+            for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
+                Date date = calDate.getDate().getAsDate();
+                Date today = removeTime(new Date());
+                if (date.equals(today)) {
+                    curSerTrips++;
+                    break;
+                }
+            }
         }
-        _log.info("ATIS Trips: {}, Reference: {}, ATIS match to reference: {}", dao.getAllTrips().size(), reference.getAllTrips().size(), matches);
+
+        _log.info("ATIS Trips: {}, Reference: {}, match: {}, Current Service: {}", dao.getAllTrips().size(), reference.getAllTrips().size(), matches, curSerTrips);
+        _log.info("Total stop times {}, Stop times for Trips: {}, Trips w/out st: {}", dao.getAllStopTimes().size(), countSt, countNoSt);
+        _log.info("Total calendar dates {}, Calendar dates for Trips {}, Trips w/out cd: {}", dao.getAllCalendarDates().size(), countCd, countNoCd);
 
         matches = 0;
         for (Stop stop : dao.getAllStops()) {
@@ -89,133 +114,20 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         }
         _log.info("ATIS Stops: {}, Reference: {}, ATIS match to reference: {}", dao.getAllStops().size(), reference.getAllStops().size(), matches);
 
-        /* The following code is for counting bus trips, looking at what matches between the ATIS
-        * and reference files and taking into consideration the Sdon trips in the reference file
-        * Also prints out the trips that don't match
-        *
-
-        int sdonRef=0;
-        int minusSdonRef=0;
-        int minusSdonAtis=0;
-
-        ArrayList<String> refsToRemove = new ArrayList<>();
-        ArrayList<String> ATISToRemove = new ArrayList<>();
-
-        for (HashMap.Entry<String, Trip> referenceTrip : referenceTrips.entrySet()) {
-            Trip refTrip = referenceTrip.getValue();
-            if (refTrip.getId().getId().contains("SDon")) {
-                sdonRef++;
-                String refId = refTrip.getId().getId();
-                refsToRemove.add(refId);
-                String refIdMinusSDon = refId.replace("-SDon", "");
-                if(referenceTrips.containsKey(refIdMinusSDon)) {
-                    minusSdonRef++;
-                    refsToRemove.add(refIdMinusSDon);
-                }
-                if (atisTrips.containsKey(refIdMinusSDon)) {
-                   minusSdonAtis++;
-                   ATISToRemove.add(refIdMinusSDon);
-                }
-            }
+        if (curSerTrips < 1) {
+            throw new IllegalStateException(
+                    "There is no current service!!");
         }
+    }
 
-        for (String toRemove : refsToRemove) {
-            referenceTrips.remove(toRemove);
-        }
-
-        for (String toRemove : ATISToRemove) {
-            atisTrips.remove(toRemove);
-        }
-
-        _log.info("Sdon in ref: {}, minusSdon in ref: {}, minusSdon in ATIS: {}", sdonRef, minusSdonRef, minusSdonAtis);
-        _log.info("Total ATIS Trips: {} and {}", dao.getAllTrips().size(), atisTrips.size());
-        _log.info("Total Ref Trips: {} and {}", reference.getAllTrips().size(), referenceTrips.size());
-
-        int inBoth=0;
-        ArrayList<String> inBothLists = new ArrayList<>();
-
-        for (HashMap.Entry<String, Trip> referenceTrip : referenceTrips.entrySet()) {
-            if(atisTrips.containsKey(referenceTrip.getKey())) {
-                inBoth++;
-                inBothLists.add(referenceTrip.getKey());
-            }
-
-        }
-        _log.info("In both {}", inBoth);
-
-        for (String toRemove : inBothLists) {
-            referenceTrips.remove(toRemove);
-        }
-
-        for (String toRemove : inBothLists) {
-            atisTrips.remove(toRemove);
-        }
-
-        _log.info("Total ATIS Trips: {} and {}", dao.getAllTrips().size(), atisTrips.size());
-        _log.info("Total Ref Trips: {} and {}", reference.getAllTrips().size(), referenceTrips.size());
-
-
-        //write out remaining to files
-        ArrayList<String> daoTripList = new ArrayList<String>();
-
-        int inDaoNotRef = 0;
-        int inboth = 0;
-        int inRefNotDao = 0;
-        int daoTrips = 0;
-        int refTrips = 0;
-
-        Writer writer = null;
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("filename.txt"), "utf-8"));
-            writer.write("Trips in ATIS not Reference\n");
-            for (Trip trip: dao.getAllTrips()) {
-                daoTrips++;
-                daoTripList.add(trip.getId().getId());
-                if (referenceTrips.get(trip.getId().getId()) == null){
-                    inDaoNotRef++;
-                    String line = trip.getId().getId() + "\n";
-                    writer.write(line);
-                }
-                else {
-                    inboth++;
-                }
-            }
-        } catch (IOException ex) {
-            // Report
-        } finally {
-            try {writer.close();} catch (Exception ex) { }
-        }
-
-        _log.info("Dao trips: {}", daoTrips);
-        _log.info("In DaoNotRef: {} in both: {}", inDaoNotRef, inboth);
-
-        inboth = 0;
-
-        Writer writer2 = null;
-        try {
-            writer2 = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("filename2.txt"), "utf-8"));
-            writer2.write("Trips in Reference not in ATIS\n");
-            for (HashMap.Entry<String, Trip> refTrip : referenceTrips.entrySet()) {
-                refTrips++;
-                if (daoTripList.contains(refTrip.getKey())){
-                    inboth++;
-                } else {
-                    String line = refTrip.getValue().getId().getId() + "\n";
-                    writer2.write(line);
-                    inRefNotDao++;
-                }
-            }
-        } catch (IOException ex) {
-            // Report
-        } finally {
-            try {writer2.close();} catch (Exception ex) { }
-        }
-
-        _log.info("Ref trips: {}", refTrips);
-        _log.info("In RefNotDao: {} in both: {}", inRefNotDao, inboth);
-    */
-
+    private Date removeTime(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        date = calendar.getTime();
+        return date;
     }
 }

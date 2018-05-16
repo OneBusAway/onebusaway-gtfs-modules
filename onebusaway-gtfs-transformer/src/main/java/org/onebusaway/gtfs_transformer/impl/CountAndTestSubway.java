@@ -15,16 +15,17 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.gtfs.model.Route;
-import org.onebusaway.gtfs.model.Stop;
-import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
+import org.onebusaway.gtfs_transformer.updates.UpdateLibrary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.Date;
+import java.util.Calendar;
 
 public class CountAndTestSubway implements GtfsTransformStrategy {
 
@@ -65,13 +66,49 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
         }
         _log.info("ATIS Routes: {}, References: {}, ATIS match to reference: {}", dao.getAllRoutes().size(), reference.getAllRoutes().size(), matches);
 
+        int countSt = 0;
+        int countCd = 0;
+
+        int countNoSt = 0;
+        int countNoCd = 0;
+        int countNoHs = 0;
+        int curSerTrips = 0;
+
+        AgencyAndId serviceAgencyAndId = new AgencyAndId();
         matches = 0;
         for (Trip trip : dao.getAllTrips()) {
             if (referenceTrips.containsKey(trip.getId().getId())) {
                 matches++;
             }
+
+            if (dao.getStopTimesForTrip(trip).size() == 0) {
+                countNoSt++;
+            }
+            countSt = countSt + dao.getStopTimesForTrip(trip).size();
+            serviceAgencyAndId = trip.getServiceId();
+            if (dao.getCalendarDatesForServiceId(serviceAgencyAndId).size() == 0) {
+                countNoCd++;
+            }
+            countCd = countCd + dao.getCalendarDatesForServiceId(serviceAgencyAndId).size();
+
+            if (trip.getTripHeadsign().isEmpty()) {
+                countNoHs++;
+            }
+
+            //check for current service
+            for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
+                Date date = calDate.getDate().getAsDate();
+                Date today = removeTime(new Date());
+                if (date.equals(today)) {
+                    curSerTrips++;
+                    break;
+                }
+            }
         }
-        _log.info("ATIS Trips: {}, Reference: {}, ATIS match to reference: {}", dao.getAllTrips().size(), reference.getAllTrips().size(), matches);
+        _log.info("ATIS Trips: {}, Reference: {}, match: {}, Current Service: {}", dao.getAllTrips().size(), reference.getAllTrips().size(), matches, curSerTrips);
+        _log.info("Total stop times {}, Stop times for Trips: {}, Trips w/out st: {}", dao.getAllStopTimes().size(), countSt, countNoSt);
+        _log.info("Total calendar dates {}, Calendar dates for Trips {}, Trips w/out cd: {}", dao.getAllCalendarDates().size(), countCd, countNoCd);
+        _log.info("Total trips w/out headsign: {}", countNoHs);
 
         matches = 0;
         for (Stop stop : dao.getAllStops()) {
@@ -81,5 +118,20 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
         }
         _log.info("ATIS Stops: {}, Reference: {}, ATIS match to reference: {}", dao.getAllStops().size(), reference.getAllStops().size(), matches);
 
+        if (curSerTrips < 1) {
+            throw new IllegalStateException(
+                    "There is no current service!!");
+        }
+    }
+
+    private Date removeTime(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        date = calendar.getTime();
+        return date;
     }
 }

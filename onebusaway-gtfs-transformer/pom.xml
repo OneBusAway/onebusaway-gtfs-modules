@@ -59,7 +59,11 @@
       <artifactId>wsf-api</artifactId>
       <version>1.0</version>
     </dependency>
-    
+    <dependency>
+      <groupId>org.onebusaway</groupId>
+      <artifactId>onebusaway-cloud-noop</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
   <build>

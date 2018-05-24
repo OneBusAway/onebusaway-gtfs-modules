@@ -50,6 +50,7 @@
     <module>onebusaway-gtfs-hibernate-cli</module>
     <module>onebusaway-gtfs-transformer</module>
     <module>onebusaway-gtfs-transformer-cli</module>
+    <module>onebusaway-gtfs-transformer-cli-aws</module>
     <module>onebusaway-gtfs-merge</module>
     <module>onebusaway-gtfs-merge-cli</module>
   </modules>

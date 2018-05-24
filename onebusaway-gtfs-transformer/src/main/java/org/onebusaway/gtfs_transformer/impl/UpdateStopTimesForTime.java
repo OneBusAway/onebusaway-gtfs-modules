@@ -16,6 +16,8 @@
 
 package org.onebusaway.gtfs_transformer.impl;
 
+import org.onebusaway.cloud.api.ExternalServices;
+import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -29,11 +31,14 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(UpdateStopTimesForTime.class);
 
+    private int _illegalTrips = 0;
+
     @Override
     public String getName() {
         return this.getClass().getSimpleName();
     }
 
+    
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
@@ -54,6 +59,7 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
                 //each additional, compare
                 else if (lastDepartureTime.getArrivalTime() > stopTime.getArrivalTime()) {
                     _log.info("Time travel!! last time {} this stop{}", lastDepartureTime.displayArrival(), stopTime.toString());
+                    _illegalTrips++;
                     tripsToRemove.add(trip);
                     negativeTimes++;
                     break;
@@ -63,8 +69,22 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
         }
         _log.info("Negative times: {}, TripsToRemove: {}", negativeTimes, tripsToRemove.size());
 
+        StringBuffer illegalTripList = new StringBuffer();
         for (Trip trip : tripsToRemove) {
+            illegalTripList.append(trip.getId().toString()).append(" ");
             removeEntityLibrary.removeTrip(dao, trip);
         }
+
+        if (_illegalTrips > 0) {
+            ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+            // here we assume es is always present, even if its a no-op
+            // an exception will be thrown otherwise
+            es.pubishMessage(getTopic(), "Illegal (Negative Times) Trip Count: "
+                    + _illegalTrips + "\n\n" + illegalTripList.toString());
+        }
+    }
+
+    private String getTopic() {
+        return System.getProperty("sns.topic");
     }
 }

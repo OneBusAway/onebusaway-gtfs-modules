@@ -31,7 +31,7 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(UpdateStopTimesForTime.class);
 
-    private int _illegalTrips = 0;
+
 
     @Override
     public String getName() {
@@ -43,28 +43,23 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
 
-        StopTime lastDepartureTime = new StopTime();
-        lastDepartureTime.setArrivalTime(0);
+        StopTime currentStop = new StopTime();
         int negativeTimes = 0;
-
         ArrayList<Trip> tripsToRemove = new ArrayList<Trip>();
 
         //For now, for any trip with stop_times that go back in time, remove the trip.
         for (Trip trip: dao.getAllTrips()) {
-            for (StopTime stopTime: dao.getStopTimesForTrip(trip)){
-                //first stop sequence, set the first arrival time
-                if (stopTime.getStopSequence() == 1 ) {
-                    lastDepartureTime.setArrivalTime(stopTime.getArrivalTime());
-                }
-                //each additional, compare
-                else if (lastDepartureTime.getArrivalTime() > stopTime.getArrivalTime()) {
-                    _log.info("Time travel!! last time {} this stop{}", lastDepartureTime.displayArrival(), stopTime.toString());
-                    _illegalTrips++;
+            StopTime previousStop = new StopTime();
+            previousStop.setArrivalTime(0);
+            for (StopTime stopTime : dao.getStopTimesForTrip(trip)) {
+                currentStop = stopTime;
+                if (previousStop.getArrivalTime() > currentStop.getArrivalTime()) {
+                    _log.info("Time travel! previous arrival time {} this stop {}", previousStop.displayArrival(), currentStop.toString());
                     tripsToRemove.add(trip);
                     negativeTimes++;
                     break;
                 }
-                lastDepartureTime.setArrivalTime(stopTime.getArrivalTime());
+                previousStop = currentStop;
             }
         }
         _log.info("Negative times: {}, TripsToRemove: {}", negativeTimes, tripsToRemove.size());
@@ -75,12 +70,14 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
             removeEntityLibrary.removeTrip(dao, trip);
         }
 
-        if (_illegalTrips > 0) {
+        if (tripsToRemove.size() > 0) {
             ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
             // here we assume es is always present, even if its a no-op
             // an exception will be thrown otherwise
             es.pubishMessage(getTopic(), "Illegal (Negative Times) Trip Count: "
-                    + _illegalTrips + "\n\n" + illegalTripList.toString());
+                    + tripsToRemove.size() + "\n"
+                    + " Negative Stop Times: " + negativeTimes + "\n\n"
+                    + illegalTripList.toString());
         }
     }
 

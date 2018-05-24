@@ -53,16 +53,24 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
             previousStop.setArrivalTime(0);
             for (StopTime stopTime : dao.getStopTimesForTrip(trip)) {
                 currentStop = stopTime;
-                if (previousStop.getArrivalTime() > currentStop.getArrivalTime()) {
-                    _log.info("Time travel! previous arrival time {} this stop {}", previousStop.displayArrival(), currentStop.toString());
-                    tripsToRemove.add(trip);
-                    negativeTimes++;
-                    break;
+                //handle the cases where there is no stop time (stop time is negative)
+                if (currentStop.getArrivalTime() < 0) {
+                    _log.error("Ignoring negative stop time for {}", currentStop.toString());
                 }
-                previousStop = currentStop;
+                else {
+                    //handle the case of decreasing stop time
+                    if (previousStop.getArrivalTime() > currentStop.getArrivalTime()) {
+                        _log.info("Time travel! previous arrival time {} this stop {}", previousStop.displayArrival(), currentStop.toString());
+                        //TODO publish message
+                        tripsToRemove.add(trip);
+                        negativeTimes++;
+                        break;
+                    }
+                    previousStop = currentStop;
+                }
             }
         }
-        _log.info("Negative times: {}, TripsToRemove: {}", negativeTimes, tripsToRemove.size());
+        _log.info("Decreasing times: {}, TripsToRemove: {}", negativeTimes, tripsToRemove.size());
 
         StringBuffer illegalTripList = new StringBuffer();
         for (Trip trip : tripsToRemove) {

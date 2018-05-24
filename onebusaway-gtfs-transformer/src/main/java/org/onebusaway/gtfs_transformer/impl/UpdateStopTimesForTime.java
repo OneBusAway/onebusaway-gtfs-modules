@@ -70,18 +70,25 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
             removeEntityLibrary.removeTrip(dao, trip);
         }
 
+        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         if (tripsToRemove.size() > 0) {
-            ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
             // here we assume es is always present, even if its a no-op
             // an exception will be thrown otherwise
-            es.pubishMessage(getTopic(), "Illegal (Negative Times) Trip Count: "
+            es.publishMessage(getTopic(), "Illegal (Negative Times) Trip Count: "
                     + tripsToRemove.size() + "\n"
                     + " Negative Stop Times: " + negativeTimes + "\n\n"
                     + illegalTripList.toString());
+            es.publishMetric(getNamespace(), "negativeStopTimes", null, null, negativeTimes);
+
+        } else {
+            es.publishMetric(getNamespace(), "negativeStopTimes", null, null, 0);
         }
     }
 
     private String getTopic() {
         return System.getProperty("sns.topic");
+    }
+    private String getNamespace() {
+        return System.getProperty("cloudwatch.namespace");
     }
 }

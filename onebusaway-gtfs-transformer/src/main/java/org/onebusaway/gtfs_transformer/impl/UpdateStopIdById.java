@@ -54,7 +54,7 @@ public class UpdateStopIdById implements GtfsTransformStrategy {
         for (Stop stop : dao.getAllStops()) {
             if (stop.getMtaStopId() != null) {
                 if (existingStops.contains(stop.getMtaStopId())) {
-                    //throw exception ?
+                    //TODO add publish message
                     _log.error("*** MtaStopId {} already exists", stop.getMtaStopId());
                     stopsToDelete.add(stop);
                 }

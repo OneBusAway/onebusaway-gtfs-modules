@@ -84,12 +84,17 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
             if (dao.getStopTimesForTrip(trip).size() == 0) {
                 countNoSt++;
             }
-            countSt = countSt + dao.getStopTimesForTrip(trip).size();
+            else {
+                countSt++;
+            }
+
             serviceAgencyAndId = trip.getServiceId();
             if (dao.getCalendarDatesForServiceId(serviceAgencyAndId).size() == 0) {
                 countNoCd++;
             }
-            countCd = countCd + dao.getCalendarDatesForServiceId(serviceAgencyAndId).size();
+            else {
+                countCd++;
+            }
 
             if (trip.getTripHeadsign().isEmpty()) {
                 countNoHs++;
@@ -106,8 +111,8 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
             }
         }
         _log.info("ATIS Trips: {}, Reference: {}, match: {}, Current Service: {}", dao.getAllTrips().size(), reference.getAllTrips().size(), matches, curSerTrips);
-        _log.info("Total stop times {}, Stop times for Trips: {}, Trips w/out st: {}", dao.getAllStopTimes().size(), countSt, countNoSt);
-        _log.info("Total calendar dates {}, Calendar dates for Trips {}, Trips w/out cd: {}", dao.getAllCalendarDates().size(), countCd, countNoCd);
+        _log.info("Total stop times {}, Trips w/ st: {}, Trips w/out st: {}", dao.getAllStopTimes().size(), countSt, countNoSt);
+        _log.info("Total calendar dates {}, Trips w/cd {}, Trips w/out cd: {}", dao.getAllCalendarDates().size(), countCd, countNoCd);
         _log.info("Total trips w/out headsign: {}", countNoHs);
 
         matches = 0;
@@ -120,7 +125,13 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
 
         if (curSerTrips < 1) {
             throw new IllegalStateException(
+                    //TODO: add publish message for this error
                     "There is no current service!!");
+        }
+
+        if (countNoHs > 0) {
+            //TODO: add publish message for this error
+            _log.error("There are trips with no headsign");
         }
     }
 

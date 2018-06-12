@@ -96,7 +96,7 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
                 countCd++;
             }
 
-            if (trip.getTripHeadsign().isEmpty()) {
+            if (trip.getTripHeadsign() == null) {
                 countNoHs++;
             }
 

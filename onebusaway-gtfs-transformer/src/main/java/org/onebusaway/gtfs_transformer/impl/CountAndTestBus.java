@@ -22,7 +22,7 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -71,8 +71,11 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         int countCd = 0;
 
         int countNoSt = 0;
+        int countNoStopTimes = 0;
         int countNoCd = 0;
         int curSerTrips = 0;
+        int countNoHs = 0;
+        int stopp = 0;
 
         AgencyAndId serviceAgencyAndId = new AgencyAndId();
         matches = 0;
@@ -81,15 +84,29 @@ public class CountAndTestBus implements GtfsTransformStrategy {
                 matches++;
             }
 
-            if (dao.getStopTimesForTrip(trip).size() == 0) {
+            List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
+            if (stopTimes.size() == 0) {
+                countNoStopTimes++;
+                if (stopp < 30) {
+                    stopp++;
+                    _log.error("Trip: {} has no stop times", trip.getId());
+                }
+            }
+
+            if ((dao.getStopTimesForTrip(trip)).size() == 0) {
                 countNoSt++;
             }
-            countSt = countSt + dao.getStopTimesForTrip(trip).size();
+            else {
+                countSt++;
+            }
+
             serviceAgencyAndId = trip.getServiceId();
             if (dao.getCalendarDatesForServiceId(serviceAgencyAndId).size() == 0) {
                 countNoCd++;
             }
-            countCd = countCd + dao.getCalendarDatesForServiceId(serviceAgencyAndId).size();
+            else {
+                countCd++;
+            }
 
             //check for current service
             for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
@@ -100,11 +117,17 @@ public class CountAndTestBus implements GtfsTransformStrategy {
                     break;
                 }
             }
+
+            if (trip.getTripHeadsign() == null) {
+                countNoHs++;
+            }
         }
 
         _log.info("ATIS Trips: {}, Reference: {}, match: {}, Current Service: {}", dao.getAllTrips().size(), reference.getAllTrips().size(), matches, curSerTrips);
-        _log.info("Total stop times {}, Stop times for Trips: {}, Trips w/out st: {}", dao.getAllStopTimes().size(), countSt, countNoSt);
-        _log.info("Total calendar dates {}, Calendar dates for Trips {}, Trips w/out cd: {}", dao.getAllCalendarDates().size(), countCd, countNoCd);
+        _log.info("Stops: {}, Stop times {}, Trips w/ st: {}, Trips w/out st: {}", dao.getAllStops().size(), dao.getAllStopTimes().size(), countSt, countNoSt);
+        _log.info("Calendar dates: {}, Trips w/cd {}, Trips w/out cd: {}", dao.getAllCalendarDates().size(), countCd, countNoCd);
+        _log.info("Total trips w/out headsign: {}", countNoHs);
+        _log.error("Trips w/out stop times: {}", countNoStopTimes );
 
         matches = 0;
         for (Stop stop : dao.getAllStops()) {

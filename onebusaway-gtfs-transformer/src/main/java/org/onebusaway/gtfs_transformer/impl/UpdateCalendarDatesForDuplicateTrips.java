@@ -239,7 +239,7 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
             remove++;
         }
 
-        _log.info("Added Service Cal dates: {}, Removed trips: {}, stoptimes: {}", serviceIds, remove, stopsTimesToRemove);
+        _log.info("Added Service Cal dates: {}, Removed trips: {}, Removed stoptimes: {}", serviceIds, remove, stopsTimesToRemove);
         _log.info("Routes: {} Trips: {} Stops: {} Stop times: {} CalDates: {} ", dao.getAllRoutes().size(), dao.getAllTrips().size(), dao.getAllStops().size(), dao.getAllStopTimes().size(), dao.getAllCalendarDates().size());
     }
 

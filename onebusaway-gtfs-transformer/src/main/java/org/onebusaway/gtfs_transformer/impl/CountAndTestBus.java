@@ -71,11 +71,9 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         int countCd = 0;
 
         int countNoSt = 0;
-        int countNoStopTimes = 0;
         int countNoCd = 0;
         int curSerTrips = 0;
         int countNoHs = 0;
-        int stopp = 0;
 
         AgencyAndId serviceAgencyAndId = new AgencyAndId();
         matches = 0;
@@ -84,16 +82,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
                 matches++;
             }
 
-            List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
-            if (stopTimes.size() == 0) {
-                countNoStopTimes++;
-                if (stopp < 30) {
-                    stopp++;
-                    _log.error("Trip: {} has no stop times", trip.getId());
-                }
-            }
-
-            if ((dao.getStopTimesForTrip(trip)).size() == 0) {
+            if (dao.getStopTimesForTrip(trip).size() == 0) {
                 countNoSt++;
             }
             else {
@@ -127,7 +116,6 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         _log.info("Stops: {}, Stop times {}, Trips w/ st: {}, Trips w/out st: {}", dao.getAllStops().size(), dao.getAllStopTimes().size(), countSt, countNoSt);
         _log.info("Calendar dates: {}, Trips w/cd {}, Trips w/out cd: {}", dao.getAllCalendarDates().size(), countCd, countNoCd);
         _log.info("Total trips w/out headsign: {}", countNoHs);
-        _log.error("Trips w/out stop times: {}", countNoStopTimes );
 
         matches = 0;
         for (Stop stop : dao.getAllStops()) {

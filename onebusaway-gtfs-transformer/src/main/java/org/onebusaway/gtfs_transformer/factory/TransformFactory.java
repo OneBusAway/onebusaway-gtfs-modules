@@ -189,6 +189,9 @@ public class TransformFactory {
         else if (opType.equals("update_trip_headsign_by_reference")) {
           handleTransformOperation(line, json, new UpdateTripHeadsignByReference());
         }
+        else if (opType.equals("update_trip_headsign_if_null")) {
+          handleTransformOperation(line, json, new UpdateTripHeadsignIfNull());
+        }
         else if (opType.equals("merge_stop_names_from_reference")) {
           handleTransformOperation(line, json, new MergeStopNamesFromReferenceStrategy());
         }
@@ -224,6 +227,9 @@ public class TransformFactory {
         }
         else if (opType.equals("update_route_name")) {
           handleTransformOperation(line, json, new UpdateRouteNames());
+        }
+        else if (opType.equals("count_and_test")) {
+          handleTransformOperation(line, json, new CountAndTest());
         }
         else if (opType.equals("count_and_test_bus")) {
           handleTransformOperation(line, json, new CountAndTestBus());

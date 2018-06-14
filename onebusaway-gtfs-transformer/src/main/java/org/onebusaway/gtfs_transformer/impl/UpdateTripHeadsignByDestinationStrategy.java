@@ -57,7 +57,7 @@ public class UpdateTripHeadsignByDestinationStrategy implements GtfsTransformStr
     }
 
     private void fallbackSetHeadsign (Trip trip) {
-        if (trip.getTripHeadsign().isEmpty()) {
+        if (trip.getTripHeadsign() == null) {
             trip.setTripHeadsign(trip.getRouteShortName());
         }
     }

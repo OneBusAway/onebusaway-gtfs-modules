@@ -1,0 +1,12 @@
+A utility to load a GTFS feed into a database.
+
+Usage:
+  --driverClass=... --url=... [args] path/to/gtfs.zip
+
+Args:
+
+ --driverClass=...     : JDBC driver class for your JDBC provider (eg. "org.hsqldb.jdbcDriver")
+ --url=...             : JDBC connection url for your database (eg. "jdbc:hsqldb:mem:temp_db")
+ --username=...        : JDBC connection username
+ --password=...        : JDBC connection password
+ 

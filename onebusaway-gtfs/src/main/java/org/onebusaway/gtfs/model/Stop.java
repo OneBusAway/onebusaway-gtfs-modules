@@ -72,6 +72,10 @@ public final class Stop extends IdentityBean<AgencyAndId> {
   @CsvField(name="platform_code", optional = true)
   private String platformCode;
 
+  // Custom extension for MTA
+  @CsvField(optional = true, name = "mta_stop_id")
+  private String mtaStopId;
+
   public Stop() {
 
   }
@@ -92,6 +96,7 @@ public final class Stop extends IdentityBean<AgencyAndId> {
     this.timezone = obj.timezone;
     this.vehicleType = obj.vehicleType;
     this.platformCode = obj.platformCode;
+    this.mtaStopId = obj.mtaStopId;
   }
 
   public AgencyAndId getId() {
@@ -226,4 +231,8 @@ public final class Stop extends IdentityBean<AgencyAndId> {
   public void setPlatformCode(String platformCode) {
     this.platformCode = platformCode;
   }
+
+  public String getMtaStopId() { return mtaStopId; }
+
+  public void setMtaStopId(String mtaStopId) { this.mtaStopId = mtaStopId; }
 }

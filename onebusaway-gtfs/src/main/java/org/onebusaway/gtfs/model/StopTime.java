@@ -25,7 +25,7 @@ import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 public final class StopTime extends IdentityBean<Integer> implements
     Comparable<StopTime>, StopTimeProxy {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID =2L;
 
   public static final int MISSING_VALUE = -999;
 
@@ -89,6 +89,14 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true)
   private String farePeriodId;
 
+  /** Extension to support departure buffer https://groups.google.com/forum/#!msg/gtfs-changes/sHTyliLgMQk/gfpaGkI_AgAJ */
+  @CsvField(optional = true, defaultValue = "-1")
+  private int departureBuffer;
+
+  /** Support track extension */
+  @CsvField(optional = true)
+  private String track;
+
   public StopTime() {
 
   }
@@ -101,6 +109,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.pickupType = st.pickupType;
     this.routeShortName = st.routeShortName;
     this.shapeDistTraveled = st.shapeDistTraveled;
+    this.farePeriodId = st.farePeriodId;
     this.stop = st.stop;
     this.stopHeadsign = st.stopHeadsign;
     this.stopSequence = st.stopSequence;
@@ -110,6 +119,8 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.endServiceArea = st.endServiceArea;
     this.startServiceAreaRadius = st.startServiceAreaRadius;
     this.endServiceAreaRadius = st.endServiceAreaRadius;
+    this.departureBuffer = st.departureBuffer;
+    this.track = st.track;
   }
 
   public Integer getId() {
@@ -420,6 +431,22 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.endServiceAreaRadius = endServiceAreaRadius;
   }
 
+  public int getDepartureBuffer() {
+    return departureBuffer;
+  }
+
+  public void setDepartureBuffer(int departureBuffer) {
+    this.departureBuffer = departureBuffer;
+  }
+
+  public String getTrack() {
+    return track;
+  }
+
+  public void setTrack(String track) {
+    this.track = track;
+  }
+
   public int compareTo(StopTime o) {
     return this.getStopSequence() - o.getStopSequence();
   }
@@ -436,6 +463,12 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   public StopTimeProxy getProxy() {
     return proxy;
+  }
+
+  public String displayArrival() {
+    return "StopTime(Arrival time="
+            + StopTimeFieldMappingFactory.getSecondsAsString(getArrivalTime())
+           + ")";
   }
 
   @Override

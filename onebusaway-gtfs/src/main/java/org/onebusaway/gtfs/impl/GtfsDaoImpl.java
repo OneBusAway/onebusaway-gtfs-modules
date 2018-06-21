@@ -22,6 +22,7 @@ import java.util.Map;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Area;
+import org.onebusaway.gtfs.model.Block;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
@@ -76,6 +77,10 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   public Collection<Agency> getAllAgencies() {
     return getAllEntitiesForType(Agency.class);
+  }
+  
+  public Collection<Block> getAllBlocks() {
+    return getAllEntitiesForType(Block.class);
   }
 
   public Collection<ServiceCalendarDate> getAllCalendarDates() {
@@ -133,6 +138,10 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getAllEntitiesForType(Trip.class);
   }
 
+  public Block getBlockForId(int id) {
+    return getEntityForId(Block.class, id);
+  }
+  
   public ServiceCalendarDate getCalendarDateForId(int id) {
     return getEntityForId(ServiceCalendarDate.class, id);
   }
@@ -150,7 +159,7 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
   }
 
   @Override
-  public FeedInfo getFeedInfoForId(int id) {
+  public FeedInfo getFeedInfoForId(String id) {
     return getEntityForId(FeedInfo.class, id);
   }
 

@@ -24,7 +24,7 @@ import org.onebusaway.gtfs.serialization.mappings.TripAgencyIdFieldMappingFactor
 @CsvFields(filename = "trips.txt")
 public final class Trip extends IdentityBean<AgencyAndId> {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   @CsvField(name = "trip_id", mapping = TripAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
@@ -90,7 +90,19 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   // Custom extension for KCM to specify a fare per-trip
   @CsvField(optional = true)
   private String fareId;
-  
+
+  // Custom extension for MNR
+  @CsvField(optional = true, name = "note_id", mapping = EntityFieldMappingFactory.class, order = -1)
+  private TimetableNote note;
+
+  // Custom extension for MNR
+  @CsvField(optional = true, name = "peak_offpeak")
+  private int peakOffpeak;
+
+  // Custom extension for MTA
+  @CsvField(optional = true, name = "mta_trip_id")
+  private String mtaTripId;
+
   public Trip() {
 
   }
@@ -116,6 +128,9 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.tripBikesAllowed = obj.tripBikesAllowed;
     this.bikesAllowed = obj.bikesAllowed;
     this.fareId = obj.fareId;
+    this.note = obj.note;
+    this.peakOffpeak = obj.peakOffpeak;
+    this.mtaTripId = obj.mtaTripId;
   }
 
   public AgencyAndId getId() {
@@ -290,5 +305,25 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   public void setFareId(String fareId) {
 	  this.fareId = fareId;
   }
+
+  public TimetableNote getNote() {
+    return note;
+  }
+
+  public void setNote(TimetableNote note) {
+    this.note = note;
+  }
+
+  public int getPeakOffpeak() {
+    return peakOffpeak;
+  }
+
+  public void setPeakOffpeak(int peakOffpeak) {
+    this.peakOffpeak = peakOffpeak;
+  }
+
+  public String getMtaTripId() { return mtaTripId; }
+
+  public void setMtaTripId(String mtaTripId) { this.mtaTripId = mtaTripId; }
 
 }

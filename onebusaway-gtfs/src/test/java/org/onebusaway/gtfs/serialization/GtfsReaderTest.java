@@ -42,6 +42,7 @@ import org.onebusaway.gtfs.GtfsTestData;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.Block;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
@@ -67,6 +68,9 @@ public class GtfsReaderTest {
   @Test
   public void testAllFields() throws IOException {
     MockGtfs gtfs = MockGtfs.create();
+    gtfs.putLines("block.txt", 
+        "block_seq_num,block_var_num,block_route_num,block_run_num",
+        "4237385,1,599,1");
     gtfs.putLines(
         "agency.txt",
         "agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url",
@@ -84,8 +88,8 @@ public class GtfsReaderTest {
     gtfs.putLines(
         "trips.txt",
         "route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,block_id,shape_id,route_short_name,"
-            + "trip_bikes_allowed,bikes_allowed,wheelchair_accessible",
-        "R1,WEEK,T1,head-sign,short-name,1,B1,SHP1,10X,1,2,1");
+            + "trip_bikes_allowed,bikes_allowed,wheelchair_accessible,peak_offpeak",
+        "R1,WEEK,T1,head-sign,short-name,1,B1,SHP1,10X,1,2,1,3");
     gtfs.putLines(
         "stop_times.txt",
         "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_type,drop_off_type,"
@@ -135,6 +139,13 @@ public class GtfsReaderTest {
     assertEquals("555-1234", agency.getPhone());
     assertEquals("http://agency.gov/fares", agency.getFareUrl());
 
+    Block block = dao.getBlockForId(1);
+    assertNotNull(block);
+    assertEquals(4237385, block.getBlockSequence());
+    assertEquals(1, block.getBlockVariable());
+    assertEquals(599, block.getBlockRoute());
+    assertEquals(1, block.getBlockRun());
+    
     Stop stop = dao.getStopForId(new AgencyAndId("1", "S1"));
     assertEquals(new AgencyAndId("1", "S1"), stop.getId());
     assertEquals("Stop", stop.getName());
@@ -179,6 +190,7 @@ public class GtfsReaderTest {
     assertEquals(1, trip.getTripBikesAllowed());
     assertEquals(2, trip.getBikesAllowed());
     assertEquals(1, trip.getWheelchairAccessible());
+    assertEquals(3, trip.getPeakOffpeak());
 
     List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
     StopTime stopTime = stopTimes.get(0);
@@ -745,7 +757,7 @@ public class GtfsReaderTest {
     reader.readEntities(FeedInfo.class, new StringReader(b.toString()));
 
     FeedInfo feedInfo = reader.getEntityStore().getEntityForId(FeedInfo.class,
-        1);
+        "1");
     assertEquals("Test", feedInfo.getPublisherName());
     assertEquals("http://test/", feedInfo.getPublisherUrl());
     assertEquals("en", feedInfo.getLang());

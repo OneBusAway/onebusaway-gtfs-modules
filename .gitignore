@@ -4,6 +4,5 @@ pom.xml.releaseBackup
 .settings
 .project
 .classpath
-.idea
-*.iml
-
+.metadata/
+/.idea/

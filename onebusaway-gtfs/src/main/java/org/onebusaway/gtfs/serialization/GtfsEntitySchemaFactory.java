@@ -27,6 +27,7 @@ import org.onebusaway.csv_entities.schema.EntitySchemaFactoryHelper;
 import org.onebusaway.csv_entities.schema.beans.CsvEntityMappingBean;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.Block;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
@@ -52,6 +53,7 @@ public class GtfsEntitySchemaFactory {
     List<Class<?>> entityClasses = new ArrayList<Class<?>>();
     entityClasses.add(FeedInfo.class);
     entityClasses.add(Agency.class);
+    entityClasses.add(Block.class);
     entityClasses.add(ShapePoint.class);
     entityClasses.add(Route.class);
     entityClasses.add(Stop.class);
@@ -71,6 +73,8 @@ public class GtfsEntitySchemaFactory {
     Map<Class<?>, Comparator<?>> comparators = new HashMap<Class<?>, Comparator<?>>();
     comparators.put(Agency.class,
         getComparatorForIdentityBeanType(Agency.class));
+    comparators.put(Block.class,
+        getComparatorForIdentityBeanType(Block.class));
     comparators.put(Route.class, getComparatorForIdentityBeanType(Route.class));
     comparators.put(Stop.class, getComparatorForIdentityBeanType(Stop.class));
     comparators.put(Trip.class, getComparatorForIdentityBeanType(Trip.class));

@@ -48,6 +48,7 @@ public final class Transfer extends IdentityBean<Integer> {
   @CsvField(name = "to_trip_id", mapping = EntityFieldMappingFactory.class, optional = true)
   private Trip toTrip;
 
+  @CsvField(optional = true, defaultValue = "0", alwaysIncludeInOutput = true)
   private int transferType;
 
   @CsvField(optional = true)

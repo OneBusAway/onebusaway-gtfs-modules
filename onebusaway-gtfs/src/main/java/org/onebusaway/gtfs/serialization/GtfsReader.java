@@ -33,6 +33,7 @@ import org.onebusaway.gtfs.impl.GtfsDaoImpl;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Area;
+import org.onebusaway.gtfs.model.Block;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
@@ -45,6 +46,7 @@ import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
+import org.onebusaway.gtfs.model.TimetableNote;
 import org.onebusaway.gtfs.model.Transfer;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GenericMutableDao;
@@ -77,7 +79,9 @@ public class GtfsReader extends CsvEntityReader {
   public GtfsReader() {
 
     _entityClasses.add(Agency.class);
+    _entityClasses.add(Block.class);
     _entityClasses.add(ShapePoint.class);
+    _entityClasses.add(TimetableNote.class);
     _entityClasses.add(Area.class);
     _entityClasses.add(Route.class);
     _entityClasses.add(Stop.class);
@@ -252,6 +256,9 @@ public class GtfsReader extends CsvEntityReader {
       } else if (entity instanceof FareAttribute) {
         FareAttribute fare = (FareAttribute) entity;
         registerAgencyId(FareAttribute.class, fare.getId());
+      } else if (entity instanceof TimetableNote) {
+        TimetableNote note = (TimetableNote) entity;
+        registerAgencyId(TimetableNote.class, note.getId());
       } else if (entity instanceof Area) {
         Area area = (Area) entity;
         registerAgencyId(Area.class, area.getId());

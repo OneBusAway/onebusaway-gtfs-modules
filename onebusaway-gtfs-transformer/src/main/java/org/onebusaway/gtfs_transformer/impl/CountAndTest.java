@@ -90,6 +90,7 @@ public class CountAndTest implements GtfsTransformStrategy {
             }
         }
 
+        _log.info("Agency: {}, {}", dao.getAllAgencies().iterator().next().getId(), dao.getAllAgencies().iterator().next().getName());
         _log.info("Routes: {}, Trips: {}, Current Service: {}", dao.getAllRoutes().size(), dao.getAllTrips().size(), curSerTrips);
         _log.info("Stops: {}, Stop times {}, Trips w/ st: {}, Trips w/out st: {}", dao.getAllStops().size(), dao.getAllStopTimes().size(), countSt, countNoSt);
         _log.info("Total trips w/out headsign: {}", countNoHs);

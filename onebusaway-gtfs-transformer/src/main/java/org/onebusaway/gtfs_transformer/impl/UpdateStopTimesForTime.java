@@ -61,7 +61,6 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
                     //handle the case of decreasing stop time
                     if (previousStop.getArrivalTime() > currentStop.getArrivalTime()) {
                         _log.info("Time travel! previous arrival time {} this stop {}", previousStop.displayArrival(), currentStop.toString());
-                        //TODO publish message
                         tripsToRemove.add(trip);
                         negativeTimes++;
                         break;
@@ -71,6 +70,7 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
             }
         }
         _log.info("Decreasing times: {}, TripsToRemove: {}", negativeTimes, tripsToRemove.size());
+
 
         StringBuffer illegalTripList = new StringBuffer();
         for (Trip trip : tripsToRemove) {
@@ -82,7 +82,11 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
         if (tripsToRemove.size() > 0) {
             // here we assume es is always present, even if its a no-op
             // an exception will be thrown otherwise
-            es.publishMessage(getTopic(), "Illegal (Negative Times) Trip Count: "
+            es.publishMessage(getTopic(), "Agency: "
+                    + dao.getAllAgencies().iterator().next().getId()
+                    + " "
+                    + dao.getAllAgencies().iterator().next().getName()
+                    + " Illegal (decreasing stop times) Trip Count: "
                     + tripsToRemove.size() + "\n"
                     + " Negative Stop Times: " + negativeTimes + "\n\n"
                     + illegalTripList.toString());
@@ -96,6 +100,7 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
     private String getTopic() {
         return System.getProperty("sns.topic");
     }
+
     private String getNamespace() {
         return System.getProperty("cloudwatch.namespace");
     }

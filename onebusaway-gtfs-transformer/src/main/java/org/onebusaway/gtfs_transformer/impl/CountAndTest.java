@@ -15,6 +15,8 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
+import org.onebusaway.cloud.api.ExternalServices;
+import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
@@ -95,14 +97,20 @@ public class CountAndTest implements GtfsTransformStrategy {
         _log.info("Stops: {}, Stop times {}, Trips w/ st: {}, Trips w/out st: {}", dao.getAllStops().size(), dao.getAllStopTimes().size(), countSt, countNoSt);
         _log.info("Total trips w/out headsign: {}", countNoHs);
 
+        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         if (curSerTrips < 1) {
             throw new IllegalStateException(
-                    //TODO: add publish message for this error?
-                    "There is no current service!");
+                    "There is no current service!!");
         }
 
         if (countNoHs > 0) {
-            //TODO: add publish message for this error
+            es.publishMessage(getTopic(), "Agency: "
+                    + dao.getAllAgencies().iterator().next().getId()
+                    + " "
+                    + dao.getAllAgencies().iterator().next().getName()
+                    + " has trips w/out headsign: "
+                    + countNoHs);
+            es.publishMetric(getNamespace(), "No headsigns", null, null, countNoHs);
             _log.error("There are trips with no headsign");
         }
     }
@@ -124,5 +132,13 @@ public class CountAndTest implements GtfsTransformStrategy {
         calendar.add(Calendar.DATE, 3);
         date = calendar.getTime();
         return date;
+    }
+
+    private String getTopic() {
+        return System.getProperty("sns.topic");
+    }
+
+    private String getNamespace() {
+        return System.getProperty("cloudwatch.namespace");
     }
 }

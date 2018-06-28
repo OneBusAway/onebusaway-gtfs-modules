@@ -15,6 +15,8 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
+import org.onebusaway.cloud.api.ExternalServices;
+import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
@@ -123,14 +125,20 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
         }
         _log.info("ATIS Stops: {}, Reference: {}, ATIS match to reference: {}", dao.getAllStops().size(), reference.getAllStops().size(), matches);
 
+        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         if (curSerTrips < 1) {
             throw new IllegalStateException(
-                    //TODO: add publish message for this error
                     "There is no current service!!");
         }
 
         if (countNoHs > 0) {
-            //TODO: add publish message for this error
+            es.publishMessage(getTopic(), "Agency: "
+                    + dao.getAllAgencies().iterator().next().getId()
+                    + " "
+                    + dao.getAllAgencies().iterator().next().getName()
+                    + " has trips w/out headsign: "
+                    + countNoHs);
+            es.publishMetric(getNamespace(), "No headsigns", null, null, countNoHs);
             _log.error("There are trips with no headsign");
         }
     }
@@ -144,5 +152,13 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
         calendar.set(Calendar.MILLISECOND, 0);
         date = calendar.getTime();
         return date;
+    }
+
+    private String getTopic() {
+        return System.getProperty("sns.topic");
+    }
+
+    private String getNamespace() {
+        return System.getProperty("cloudwatch.namespace");
     }
 }

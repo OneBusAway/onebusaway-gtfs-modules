@@ -89,7 +89,7 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
                     + " Illegal (decreasing stop times) Trip Count: "
                     + tripsToRemove.size() + "\n"
                     + " Negative Stop Times: " + negativeTimes + "\n\n"
-                    + illegalTripList.toString());
+                    + "Trips removed: " + illegalTripList.toString());
             es.publishMetric(getNamespace(), "negativeStopTimes", null, null, negativeTimes);
 
         } else {

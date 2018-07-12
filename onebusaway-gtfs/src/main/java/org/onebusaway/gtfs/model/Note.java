@@ -20,8 +20,8 @@ import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 
-@CsvFields(filename = "timetable_notes.txt", required = false)
-public final class TimetableNote extends IdentityBean<AgencyAndId> {
+@CsvFields(filename = "notes.txt", required = false)
+public final class Note extends IdentityBean<AgencyAndId> {
 
     private static final long serialVersionUID = 1L;
 

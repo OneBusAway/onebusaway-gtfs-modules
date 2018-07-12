@@ -44,6 +44,7 @@ public class UpdateTripHeadsignIfNull implements GtfsTransformStrategy {
                     String tripHeadSign = stopTimes.get(stopTimes.size()-1).getStop().getName();
                     if (tripHeadSign != null) {
                         trip.setTripHeadsign(tripHeadSign);
+                        _log.error("Setting headsign to last stop: ", tripHeadSign);
                     }
                     else {
                         fallbackSetHeadsign(trip);
@@ -59,6 +60,7 @@ public class UpdateTripHeadsignIfNull implements GtfsTransformStrategy {
     private void fallbackSetHeadsign (Trip trip) {
         if (trip.getTripHeadsign() == null) {
             trip.setTripHeadsign(trip.getRouteShortName());
+            _log.error("Setting headsign to route short name: ", trip.getRouteShortName());
         }
     }
 }

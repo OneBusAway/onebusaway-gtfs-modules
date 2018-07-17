@@ -63,7 +63,7 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   private String drtAvgTravelTime;
 
   @CsvField(optional = true, defaultValue = "-1")
-  private int drtAdvanceBookMin;
+  private double drtAdvanceBookMin;
 
   @CsvField(optional = true)
   private String drtPickupMessage;
@@ -229,11 +229,11 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.drtAvgTravelTime = drtAvgTravelTime;
   }
 
-  public int getDrtAdvanceBookMin() {
+  public double getDrtAdvanceBookMin() {
     return drtAdvanceBookMin;
   }
 
-  public void setDrtAdvanceBookMin(int drtAdvanceBookMin) {
+  public void setDrtAdvanceBookMin(double drtAdvanceBookMin) {
     this.drtAdvanceBookMin = drtAdvanceBookMin;
   }
 

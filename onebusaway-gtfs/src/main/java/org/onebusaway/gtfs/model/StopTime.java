@@ -64,11 +64,11 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true)
   private double shapeDistTraveled = MISSING_VALUE;
 
-  @CsvField(optional = true, defaultValue = "-1")
-  private int continuousPickup;
+  @CsvField(optional = true)
+  private int continuousPickup = MISSING_VALUE;
 
-  @CsvField(optional = true, defaultValue = "-1")
-  private int continuousDropOff;
+  @CsvField(optional = true)
+  private int continuousDropOff = MISSING_VALUE;
 
   @CsvField(optional = true, name = "start_service_area_id", mapping = EntityFieldMappingFactory.class, order = -2)
   private Area startServiceArea;

@@ -56,6 +56,27 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, defaultValue = "0")
   private int wheelchairAccessible = 0;
 
+  @CsvField(optional = true)
+  private String drtMaxTravelTime;
+
+  @CsvField(optional = true)
+  private String drtAvgTravelTime;
+
+  @CsvField(optional = true, defaultValue = "-1")
+  private double drtAdvanceBookMin;
+
+  @CsvField(optional = true)
+  private String drtPickupMessage;
+
+  @CsvField(optional = true)
+  private String drtDropOffMessage;
+
+  @CsvField(optional = true)
+  private String continuousPickupMessage;
+
+  @CsvField(optional = true)
+  private String continuousDropOffMessage;
+
   @Deprecated
   @CsvField(optional = true, defaultValue = "0")
   private int tripBikesAllowed = 0;
@@ -97,6 +118,13 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.blockId = obj.blockId;
     this.shapeId = obj.shapeId;
     this.wheelchairAccessible = obj.wheelchairAccessible;
+    this.drtMaxTravelTime = obj.drtMaxTravelTime;
+    this.drtAvgTravelTime = obj.drtAvgTravelTime;
+    this.drtAdvanceBookMin = obj.drtAdvanceBookMin;
+    this.drtPickupMessage = obj.drtPickupMessage;
+    this.drtDropOffMessage = obj.drtDropOffMessage;
+    this.continuousPickupMessage = obj.continuousPickupMessage;
+    this.continuousDropOffMessage = obj.continuousDropOffMessage;
     this.tripBikesAllowed = obj.tripBikesAllowed;
     this.bikesAllowed = obj.bikesAllowed;
     this.fareId = obj.fareId;
@@ -183,6 +211,62 @@ public final class Trip extends IdentityBean<AgencyAndId> {
 
   public int getWheelchairAccessible() {
     return wheelchairAccessible;
+  }
+
+  public String getDrtMaxTravelTime() {
+    return drtMaxTravelTime;
+  }
+
+  public void setDrtMaxTravelTime(String drtMaxTravelTime) {
+    this.drtMaxTravelTime = drtMaxTravelTime;
+  }
+
+  public String getDrtAvgTravelTime() {
+    return drtAvgTravelTime;
+  }
+
+  public void setDrtAvgTravelTime(String drtAvgTravelTime) {
+    this.drtAvgTravelTime = drtAvgTravelTime;
+  }
+
+  public double getDrtAdvanceBookMin() {
+    return drtAdvanceBookMin;
+  }
+
+  public void setDrtAdvanceBookMin(double drtAdvanceBookMin) {
+    this.drtAdvanceBookMin = drtAdvanceBookMin;
+  }
+
+  public String getDrtPickupMessage() {
+    return drtPickupMessage;
+  }
+
+  public void setDrtPickupMessage(String drtPickupMessage) {
+    this.drtPickupMessage = drtPickupMessage;
+  }
+
+  public String getDrtDropOffMessage() {
+    return drtDropOffMessage;
+  }
+
+  public void setDrtDropOffMessage(String drtDropOffMessage) {
+    this.drtDropOffMessage = drtDropOffMessage;
+  }
+
+  public String getContinuousPickupMessage() {
+    return continuousPickupMessage;
+  }
+
+  public void setContinuousPickupMessage(String continuousPickupMessage) {
+    this.continuousPickupMessage = continuousPickupMessage;
+  }
+
+  public String getContinuousDropOffMessage() {
+    return continuousDropOffMessage;
+  }
+
+  public void setContinuousDropOffMessage(String continuousDropOffMessage) {
+    this.continuousDropOffMessage = continuousDropOffMessage;
   }
 
   @Deprecated

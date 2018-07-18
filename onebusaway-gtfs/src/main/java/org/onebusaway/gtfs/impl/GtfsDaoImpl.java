@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.Area;
 import org.onebusaway.gtfs.model.Block;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
@@ -202,6 +203,10 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   public Trip getTripForId(AgencyAndId id) {
     return getEntityForId(Trip.class, id);
+  }
+
+  public Collection<Area> getAllAreas() {
+    return getAllEntitiesForType(Area.class);
   }
 
   /****

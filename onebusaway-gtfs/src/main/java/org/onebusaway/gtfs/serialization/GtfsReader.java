@@ -32,6 +32,7 @@ import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.impl.GtfsDaoImpl;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.Area;
 import org.onebusaway.gtfs.model.Block;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
@@ -81,6 +82,7 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Block.class);
     _entityClasses.add(ShapePoint.class);
     _entityClasses.add(Note.class);
+    _entityClasses.add(Area.class);
     _entityClasses.add(Route.class);
     _entityClasses.add(Stop.class);
     _entityClasses.add(Trip.class);
@@ -257,6 +259,9 @@ public class GtfsReader extends CsvEntityReader {
       } else if (entity instanceof Note) {
         Note note = (Note) entity;
         registerAgencyId(Note.class, note.getId());
+      } else if (entity instanceof Area) {
+        Area area = (Area) entity;
+        registerAgencyId(Area.class, area.getId());
       }
 
       if (entity instanceof IdentityBean<?>) {

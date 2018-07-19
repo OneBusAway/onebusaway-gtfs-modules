@@ -246,6 +246,9 @@ public class TransformFactory {
         else if (opType.equals("last_stop_to_headsign")){
           handleTransformOperation(line, json, new LastStopToHeadsignStrategy());
         }
+        else if (opType.equals("truncate_calendars")){
+          handleTransformOperation(line, json, new CalendarTruncationStrategy());
+        }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);
         } else {

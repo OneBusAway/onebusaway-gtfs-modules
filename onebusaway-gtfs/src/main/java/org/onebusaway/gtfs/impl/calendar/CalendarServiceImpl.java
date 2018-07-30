@@ -66,6 +66,7 @@ public class CalendarServiceImpl implements CalendarService {
     _factory = factory;
   }
 
+  @Override
   public void setData(CalendarServiceData data) {
     _data = data;
     _searchCache.clear();

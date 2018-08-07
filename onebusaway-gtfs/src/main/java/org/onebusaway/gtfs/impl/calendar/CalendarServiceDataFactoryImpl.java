@@ -151,9 +151,9 @@ public class CalendarServiceDataFactoryImpl implements
 
       Set<TimeZone> timeZones = new HashSet<TimeZone>();
       for (String tripAgencyId : tripAgencyIds) {
-        TimeZone timeZone = timeZoneMapByAgencyId.get(AgencyAndId.convertFromString(tripAgencyId).getAgencyId());
+        TimeZone timeZone = timeZoneMapByAgencyId.get(tripAgencyId);
         if (timeZone == null) {
-          throw new IllegalStateException("no timezone for agency " + AgencyAndId.convertFromString(tripAgencyId).getAgencyId());
+          throw new IllegalStateException("no timezone for agency " + tripAgencyId);
         }
         timeZones.add(timeZone);
       }

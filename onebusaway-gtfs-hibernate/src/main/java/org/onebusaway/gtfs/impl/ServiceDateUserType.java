@@ -24,6 +24,7 @@ import java.sql.Types;
 import java.text.ParseException;
 
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 
@@ -64,34 +65,34 @@ public class ServiceDateUserType implements UserType {
     return new ServiceDate((ServiceDate) value);
   }
 
-  @Override
-  public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
-      throws HibernateException, SQLException {
+	@Override
+	public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
+			throws HibernateException, SQLException {
 
-    String value = rs.getString(names[0]);
+	    String value = rs.getString(names[0]);
 
-    if (rs.wasNull())
-      return null;
+	    if (rs.wasNull())
+	      return null;
 
-    try {
-      return ServiceDate.parseString(value);
-    } catch (ParseException ex) {
-      throw new SQLException("error parsing service date value: " + value, ex);
-    }
-  }
+	    try {
+	      return ServiceDate.parseString(value);
+	    } catch (ParseException ex) {
+	      throw new SQLException("error parsing service date value: " + value, ex);
+	    }
+	}
+	
+	@Override
+	public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session)
+			throws HibernateException, SQLException {
 
-  @Override
-  public void nullSafeSet(PreparedStatement st, Object value, int index)
-      throws HibernateException, SQLException {
-
-    if (value == null) {
-      st.setNull(index, SQL_TYPES[0]);
-    } else {
-      ServiceDate serviceDate = (ServiceDate) value;
-      st.setString(index, serviceDate.getAsString());
-    }
-  }
-
+	    if (value == null) {
+	      st.setNull(index, SQL_TYPES[0]);
+	    } else {
+	      ServiceDate serviceDate = (ServiceDate) value;
+	      st.setString(index, serviceDate.getAsString());
+	    }
+	}
+	
   @Override
   public Object assemble(Serializable cached, Object owner)
       throws HibernateException {
@@ -110,4 +111,5 @@ public class ServiceDateUserType implements UserType {
       return null;
     return deepCopy(original);
   }
+
 }

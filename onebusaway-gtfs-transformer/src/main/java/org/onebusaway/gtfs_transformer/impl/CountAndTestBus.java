@@ -129,6 +129,11 @@ public class CountAndTestBus implements GtfsTransformStrategy {
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         if (curSerTrips < 1) {
+            es.publishMessage(getTopic(), "Agency: "
+                    + dao.getAllAgencies().iterator().next().getId()
+                    + " "
+                    + dao.getAllAgencies().iterator().next().getName()
+                    + " has no current service!");
             throw new IllegalStateException(
                     "There is no current service!!");
         }

@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * using control file re-map GTFS stop ids and other stop properties
+ * using control file re-map GTFS stop ids and other stop properties from reference file
  */
 public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
 

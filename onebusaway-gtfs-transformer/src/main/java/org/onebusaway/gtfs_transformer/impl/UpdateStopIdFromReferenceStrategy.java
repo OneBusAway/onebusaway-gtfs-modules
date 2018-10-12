@@ -29,6 +29,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * using reference file add missing parent stops
+ */
 public class UpdateStopIdFromReferenceStrategy implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(UpdateStopIdFromControlStrategy.class);

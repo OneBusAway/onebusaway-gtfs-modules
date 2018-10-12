@@ -39,26 +39,34 @@ public class UpdateTripHeadsignByDestinationStrategy implements GtfsTransformStr
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
+        int update = 0;
+        int fallback = 0;
+
         for (Trip trip : dao.getAllTrips()) {
             List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
             if (stopTimes != null && stopTimes.size() > 0) {
                 String tripHeadSign = stopTimes.get(stopTimes.size()-1).getStop().getName();
                 if (tripHeadSign != null) {
                     trip.setTripHeadsign(tripHeadSign);
+                    update++;
                 }
                 else {
                     fallbackSetHeadsign(trip);
+                    fallback++;
                 }
             }
             else {
                 fallbackSetHeadsign(trip);
+                fallback++;
             }
         }
+        _log.error("trip headsign update:{} fallback: {}", update, fallback);
     }
 
     private void fallbackSetHeadsign (Trip trip) {
         if (trip.getTripHeadsign() == null) {
             trip.setTripHeadsign(trip.getRouteShortName());
+
         }
     }
 }

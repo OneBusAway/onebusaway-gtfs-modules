@@ -186,6 +186,9 @@ public class TransformFactory {
         else if (opType.equals("update_trip_headsign_by_destination")) {
           handleTransformOperation(line, json, new UpdateTripHeadsignByDestinationStrategy());
         }
+        else if (opType.equals("update_trip_headsign_exclude_nonreference")) {
+          handleTransformOperation(line, json, new UpdateTripHeadsignExcludeNonreference());
+        }
         else if (opType.equals("update_trip_headsign_by_reference")) {
           handleTransformOperation(line, json, new UpdateTripHeadsignByReference());
         }

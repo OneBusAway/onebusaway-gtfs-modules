@@ -190,7 +190,8 @@ public class TransformFactory {
           handleTransformOperation(line, json, new UpdateTripHeadsignExcludeNonreference());
         }
         else if (opType.equals("update_trip_headsign_by_reference")) {
-          handleTransformOperation(line, json, new UpdateTripHeadsignByReference());
+          //handleTransformOperation(line, json, new UpdateTripHeadsignByReference());
+          handleTransformOperation(line, json, new UpdateTripHeadsignExcludeNonreference());
         }
         else if (opType.equals("update_trip_headsign_if_null")) {
           handleTransformOperation(line, json, new UpdateTripHeadsignIfNull());

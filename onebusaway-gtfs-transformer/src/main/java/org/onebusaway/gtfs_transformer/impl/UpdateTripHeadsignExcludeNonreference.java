@@ -48,6 +48,7 @@ public class UpdateTripHeadsignExcludeNonreference implements GtfsTransformStrat
         int update = 0;
         int fallback = 0;
         int noChange = 0;
+        int shuttle = 0;
 
         for (Trip trip : dao.getAllTrips()) {
             List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
@@ -70,6 +71,9 @@ public class UpdateTripHeadsignExcludeNonreference implements GtfsTransformStrat
                     //these are the trips where we don't update the headsign
                     _log.error("Trip {}, Laststop id: {} headsign is: {}, last stop is: {}", trip.getId(), lastStop.getId(), trip.getTripHeadsign(), lastStop.getName());
                     noChange++;
+                    if (trip.getTripHeadsign().contains("SHUTTLE")) {
+                        shuttle++;
+                    }
                 }
             }
             else {
@@ -77,7 +81,7 @@ public class UpdateTripHeadsignExcludeNonreference implements GtfsTransformStrat
                 fallback++;
             }
         }
-        _log.error("trip headsign update:{} fallback: {} no change: {}", update, fallback, noChange);
+        _log.error("trip headsign update:{} fallback: {} no change: {} shuttle: {}", update, fallback, noChange, shuttle);
     }
 
     private void fallbackSetHeadsign (Trip trip) {

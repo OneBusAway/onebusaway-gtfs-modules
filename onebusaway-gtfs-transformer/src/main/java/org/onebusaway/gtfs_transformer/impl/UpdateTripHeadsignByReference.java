@@ -74,7 +74,14 @@ public class UpdateTripHeadsignByReference implements GtfsTransformStrategy {
             }
             else {
                 _log.error("No stoptimes for trip {} mta id", trip.toString(), trip.getMtaTripId());
-                genericSetHeadsign(trip);
+                if (trip.getTripHeadsign() == null && trip.getRouteShortName() == null) {
+                    //if trip has no headsign, no stoptimes and no shortname, remove it
+                    _log.error("Removing trip {}", trip.getId());
+                    dao.removeEntity(trip);
+                }
+                else {
+                    genericSetHeadsign(trip);
+                }
             }
         }
     }
@@ -90,8 +97,10 @@ public class UpdateTripHeadsignByReference implements GtfsTransformStrategy {
     }
 
     private void genericSetHeadsign (Trip trip) {
-        trip.setTripHeadsign(trip.getRouteShortName());
-        _log.error("Setting headsign {} on {}", trip.getRouteShortName(), trip.toString());
+        if (trip.getRouteShortName() != null) {
+            trip.setTripHeadsign(trip.getRouteShortName());
+            _log.error("Setting headsign {} on {}", trip.getRouteShortName(), trip.toString());
+        }
     }
 
     @CsvField(ignore = true)

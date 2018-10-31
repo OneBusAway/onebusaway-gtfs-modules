@@ -38,13 +38,11 @@ public class UpdateTripHeadsignIfNull implements GtfsTransformStrategy {
 
         for (Trip trip : dao.getAllTrips()) {
             if(trip.getTripHeadsign() == null) {
-                _log.error("Trip headsign is null {}", trip.getId());
                 List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
                 if (stopTimes != null && stopTimes.size() > 0) {
                     String tripHeadSign = stopTimes.get(stopTimes.size()-1).getStop().getName();
                     if (tripHeadSign != null) {
                         trip.setTripHeadsign(tripHeadSign);
-                        _log.error("Setting headsign to last stop: ", tripHeadSign);
                     }
                     else {
                         fallbackSetHeadsign(trip);

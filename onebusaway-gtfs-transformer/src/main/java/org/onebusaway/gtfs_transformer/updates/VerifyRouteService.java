@@ -47,6 +47,7 @@ public class VerifyRouteService implements GtfsTransformStrategy {
 
         int curSerRoute = 0;
         boolean missingRoute = false;
+        boolean missingService = false;
         //list of all routes in ATIS
         Set<String> ATISrouteIds = new HashSet<>();
 
@@ -58,7 +59,6 @@ public class VerifyRouteService implements GtfsTransformStrategy {
                 ATISrouteIds.add(route.getId().getId());
             }
             curSerRoute = 0;
-            _log.info("getting trips for route: {}", route.getId());
             triploop:
             for (Trip trip1 : dao.getTripsForRoute(route)) {
                 for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip1.getServiceId())) {
@@ -73,6 +73,7 @@ public class VerifyRouteService implements GtfsTransformStrategy {
             }
             if (curSerRoute == 0) {
                 _log.info("This route has no service: {}", route.getId());
+                missingService = true;
                 es.publishMessage(getTopic(), "Route: "
                         + route.getId()
                         + " has no current service!");
@@ -90,7 +91,7 @@ public class VerifyRouteService implements GtfsTransformStrategy {
             }
         }
 
-        if (curSerRoute > 0 || missingRoute) {
+        if (missingService || missingRoute) {
             throw new IllegalStateException(
                     "Route service missing in agency: " + dao.getAllAgencies().iterator().next());
         }

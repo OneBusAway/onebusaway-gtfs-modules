@@ -252,6 +252,9 @@ public class TransformFactory {
         else if (opType.equals("last_stop_to_headsign")){
           handleTransformOperation(line, json, new LastStopToHeadsignStrategy());
         }
+        else if (opType.equals("remove_current_service")){
+          handleTransformOperation(line, json, new RemoveCurrentService());
+        }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);
         } else {

@@ -132,8 +132,6 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
                     + " "
                     + dao.getAllAgencies().iterator().next().getName()
                     + " has no current service.");
-            throw new IllegalStateException(
-                    "There is no current service!!");
         }
 
         if (countNoHs > 0) {

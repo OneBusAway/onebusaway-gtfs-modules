@@ -104,7 +104,7 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
 
             //check for current service
             for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
-                Date date = calDate.getDate().getAsDate();
+                Date date = removeTime(calDate.getDate().getAsDate());
                 Date today = removeTime(new Date());
                 if (calDate.getExceptionType() == 1 && date.equals(today)) {
                     curSerTrips++;

@@ -69,7 +69,7 @@ public class CountAndTest implements GtfsTransformStrategy {
             if (servCal == null) {
                 //check for current service using calendar dates
                 for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
-                    Date date = calDate.getDate().getAsDate();
+                    Date date = removeTime(calDate.getDate().getAsDate());
                     if (calDate.getExceptionType() == 1 && date.equals(today)) {
                         curSerTrips++;
                         break;

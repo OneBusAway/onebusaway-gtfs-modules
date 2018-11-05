@@ -45,6 +45,9 @@ public class VerifyRouteService implements GtfsTransformStrategy {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
 
+        AgencyAndId refAgencyAndId = reference.getAllTrips().iterator().next().getId();
+
+
         int curSerRoute = 0;
         boolean missingRoute = false;
         boolean missingService = false;
@@ -62,7 +65,7 @@ public class VerifyRouteService implements GtfsTransformStrategy {
             triploop:
             for (Trip trip1 : dao.getTripsForRoute(route)) {
                 for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip1.getServiceId())) {
-                    Date date = calDate.getDate().getAsDate();
+                    Date date = removeTime(calDate.getDate().getAsDate());
                     Date today = removeTime(new Date());
                     if (calDate.getExceptionType() == 1 && date.equals(today)) {
                         _log.info("ATIS has current service for route: {}", route.getId().getId());
@@ -72,11 +75,25 @@ public class VerifyRouteService implements GtfsTransformStrategy {
                 }
             }
             if (curSerRoute == 0) {
-                _log.info("This route has no service: {}", route.getId());
-                missingService = true;
-                es.publishMessage(getTopic(), "Route: "
-                        + route.getId()
-                        + " has no current service!");
+                //if there is no current service, check that it should have service
+                //there are certain routes that don't run on the weekend or won't have service in reference
+                Route refRoute = reference.getRouteForId(new AgencyAndId(refAgencyAndId.getAgencyId(), route.getId().getId()));
+                reftriploop:
+                for (Trip refTrip : dao.getTripsForRoute(refRoute)) {
+                    for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(refTrip.getServiceId())) {
+                        Date date = removeTime(calDate.getDate().getAsDate());
+                        Date today = removeTime(new Date());
+                        if (calDate.getExceptionType() == 1 && date.equals(today)) {
+                            //ATIS has no current service but referece does
+                            _log.info("Reference has service for this route but ATIS has none: {}", route.getId());
+                            missingService = true;
+                            es.publishMessage(getTopic(), "Route: "
+                                    + route.getId()
+                                    + " has no current service!");
+                            break reftriploop;
+                        }
+                    }
+                }
             }
         }
 

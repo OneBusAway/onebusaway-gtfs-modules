@@ -67,6 +67,7 @@ public class CountAndTest implements GtfsTransformStrategy {
             Date today = removeTime(new Date());
             ServiceCalendar servCal = dao.getCalendarForServiceId(trip.getServiceId());
             if (servCal == null) {
+                _log.error("servCal is null");
                 //check for current service using calendar dates
                 for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
                     Date date = removeTime(calDate.getDate().getAsDate());
@@ -78,11 +79,32 @@ public class CountAndTest implements GtfsTransformStrategy {
             }
             else {
                 //check for current service using calendar
-                Date start = servCal.getStartDate().getAsDate();
-                Date end = servCal.getEndDate().getAsDate();
+                Date start = removeTime(servCal.getStartDate().getAsDate());
+                Date end = removeTime(servCal.getEndDate().getAsDate());
                 if (today.equals(start) || today.equals(end) ||
                         (today.after(start) && today.before(end))) {
-                    curSerTrips++;
+                    //there is an entry in calendar.txt that includes today. But is there also
+                    //an exception?
+                    for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
+                        Date date = removeTime(calDate.getDate().getAsDate());
+                        if (date.equals(today)) {
+                            _log.error("there is an exception for today");
+                            if (calDate.getExceptionType() == 1) {
+                                _log.error("it is of type 1");
+                                curSerTrips++;
+                                break;
+                            }
+                                //else would be: there is a calendar.txt for today and
+                                // calendar dates exists and the
+                                //calendar dates has an entry for today that excludes service, so there is
+                                //no service for this trip today
+                        } else {
+                            //there is no exception for today
+                            _log.error("there is no exception for today");
+                            curSerTrips++;
+                            break;
+                        }
+                    }
                 }
             }
 

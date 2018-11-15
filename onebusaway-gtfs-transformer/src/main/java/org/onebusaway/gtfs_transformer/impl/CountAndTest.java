@@ -85,24 +85,31 @@ public class CountAndTest implements GtfsTransformStrategy {
                         (today.after(start) && today.before(end))) {
                     //there is an entry in calendar.txt that includes today. But is there also
                     //an exception?
-                    for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
-                        Date date = removeTime(calDate.getDate().getAsDate());
-                        if (date.equals(today)) {
-                            _log.error("there is an exception for today");
-                            if (calDate.getExceptionType() == 1) {
-                                _log.error("it is of type 1");
-                                curSerTrips++;
-                                break;
-                            }
+                    if (dao.getCalendarDatesForServiceId(trip.getServiceId()) == null) {
+                        _log.error("There is no cal dates for service id");
+                        curSerTrips++;
+                        break;
+                    }
+                    else {
+                        for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
+                            Date date = removeTime(calDate.getDate().getAsDate());
+                            if (date.equals(today)) {
+                                _log.error("there is an exception for today");
+                                if (calDate.getExceptionType() == 1) {
+                                    _log.error("it is of type 1");
+                                    curSerTrips++;
+                                    break;
+                                }
                                 //else would be: there is a calendar.txt for today and
                                 // calendar dates exists and the
                                 //calendar dates has an entry for today that excludes service, so there is
                                 //no service for this trip today
-                        } else {
-                            //there is no exception for today
-                            _log.error("there is no exception for today");
-                            curSerTrips++;
-                            break;
+                            } else {
+                                //there is no exception for today
+                                _log.error("there is no exception for today");
+                                curSerTrips++;
+                                break;
+                            }
                         }
                     }
                 }
@@ -126,8 +133,8 @@ public class CountAndTest implements GtfsTransformStrategy {
                     + " "
                     + dao.getAllAgencies().iterator().next().getName()
                     + " has no current service.");
-            throw new IllegalStateException(
-                    "There is no current service!!");
+            //throw new IllegalStateException(
+            //        "There is no current service!!");
         }
 
         if (countNoHs > 0) {

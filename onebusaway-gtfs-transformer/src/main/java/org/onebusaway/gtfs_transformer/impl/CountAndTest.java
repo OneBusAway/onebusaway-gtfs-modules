@@ -65,55 +65,40 @@ public class CountAndTest implements GtfsTransformStrategy {
 
             //check for current service
             Date today = removeTime(new Date());
-            ServiceCalendar servCal = dao.getCalendarForServiceId(trip.getServiceId());
-            if (servCal == null) {
-                _log.error("servCal is null");
-                //check for current service using calendar dates
+            boolean hasCalDateException = false;
+            //are there calendar dates?
+            if (!dao.getCalendarDatesForServiceId(trip.getServiceId()).isEmpty()) {
+                //calendar dates are not empty
                 for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
                     Date date = removeTime(calDate.getDate().getAsDate());
-                    if (calDate.getExceptionType() == 1 && date.equals(today)) {
-                        curSerTrips++;
-                        break;
-                    }
-                }
-            }
-            else {
-                //check for current service using calendar
-                Date start = removeTime(servCal.getStartDate().getAsDate());
-                Date end = removeTime(servCal.getEndDate().getAsDate());
-                if (today.equals(start) || today.equals(end) ||
-                        (today.after(start) && today.before(end))) {
-                    //there is an entry in calendar.txt that includes today. But is there also
-                    //an exception?
-                    if (dao.getCalendarDatesForServiceId(trip.getServiceId()) == null) {
-                        _log.error("There is no cal dates for service id");
-                        curSerTrips++;
-                        break;
-                    }
-                    else {
-                        for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
-                            Date date = removeTime(calDate.getDate().getAsDate());
-                            if (date.equals(today)) {
-                                _log.error("there is an exception for today");
-                                if (calDate.getExceptionType() == 1) {
-                                    _log.error("it is of type 1");
-                                    curSerTrips++;
-                                    break;
-                                }
-                                //else would be: there is a calendar.txt for today and
-                                // calendar dates exists and the
-                                //calendar dates has an entry for today that excludes service, so there is
-                                //no service for this trip today
-                            } else {
-                                //there is no exception for today
-                                _log.error("there is no exception for today");
-                                curSerTrips++;
-                                break;
-                            }
+                    if (date.equals(today)) {
+                        hasCalDateException = true;
+                        if (calDate.getExceptionType() == 1) {
+                            //there is service for today
+                            curSerTrips++;
+                            break;
+                        }
+                        if (calDate.getExceptionType() == 2) {
+                            //service has been excluded for today
+                            break;
                         }
                     }
                 }
             }
+            //if there are no entries in calendarDates, check serviceCalendar
+            if (!hasCalDateException) {
+                ServiceCalendar servCal = dao.getCalendarForServiceId(trip.getServiceId());
+                if (servCal != null) {
+                    //check for current service using calendar
+                    Date start = removeTime(servCal.getStartDate().getAsDate());
+                    Date end = removeTime(servCal.getEndDate().getAsDate());
+                    if (today.equals(start) || today.equals(end) ||
+                            (today.after(start) && today.before(end))) {
+                        curSerTrips++;
+                    }
+                }
+            }
+
 
             if (trip.getTripHeadsign() == null) {
                 countNoHs++;

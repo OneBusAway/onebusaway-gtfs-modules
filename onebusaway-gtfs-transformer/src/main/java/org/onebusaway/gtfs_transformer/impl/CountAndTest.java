@@ -46,6 +46,9 @@ public class CountAndTest implements GtfsTransformStrategy {
         int curSerTrips = 0;
         int countNoHs = 0;
 
+        String agency = dao.getAllAgencies().iterator().next().getId();
+        String name = dao.getAllAgencies().iterator().next().getName();
+
         AgencyAndId serviceAgencyAndId = new AgencyAndId();
         for (Trip trip : dao.getAllTrips()) {
 
@@ -106,27 +109,28 @@ public class CountAndTest implements GtfsTransformStrategy {
             }
         }
 
-        _log.info("Agency: {}, {}", dao.getAllAgencies().iterator().next().getId(), dao.getAllAgencies().iterator().next().getName());
-        _log.info("Routes: {}, Trips: {}, Current Service: {}", dao.getAllRoutes().size(), dao.getAllTrips().size(), curSerTrips);
-        _log.info("Stops: {}, Stop times {}, Trips w/ st: {}, Trips w/out st: {}", dao.getAllStops().size(), dao.getAllStopTimes().size(), countSt, countNoSt);
-        _log.info("This is the Total trips w/out headsign: {}", countNoHs);
+        _log.info("Agency: {}, {}. Routes: {}, Trips: {}, Current Service: {}, " +
+                "Stops: {}, Stop times {}, Trips w/ st: {}, Trips w/out st: {}, " +
+                "Total trips w/out headsign: {}", agency, name, dao.getAllRoutes().size(),
+                dao.getAllTrips().size(), curSerTrips, dao.getAllStops().size(),
+                dao.getAllStopTimes().size(), countSt, countNoSt, countNoHs);
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         if (curSerTrips < 1) {
             es.publishMessage(getTopic(), "Agency: "
-                    + dao.getAllAgencies().iterator().next().getId()
+                    + agency
                     + " "
-                    + dao.getAllAgencies().iterator().next().getName()
+                    + name
                     + " has no current service.");
-            //throw new IllegalStateException(
-            //        "There is no current service!!");
+            throw new IllegalStateException(
+                    "There is no current service!!");
         }
 
         if (countNoHs > 0) {
             es.publishMessage(getTopic(), "Agency: "
-                    + dao.getAllAgencies().iterator().next().getId()
+                    + agency
                     + " "
-                    + dao.getAllAgencies().iterator().next().getName()
+                    + name
                     + " has trips w/out headsign: "
                     + countNoHs);
             es.publishMetric(getNamespace(), "No headsigns", null, null, countNoHs);
@@ -141,14 +145,6 @@ public class CountAndTest implements GtfsTransformStrategy {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        date = calendar.getTime();
-        return date;
-    }
-
-    private Date add3Days(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DATE, 3);
         date = calendar.getTime();
         return date;
     }

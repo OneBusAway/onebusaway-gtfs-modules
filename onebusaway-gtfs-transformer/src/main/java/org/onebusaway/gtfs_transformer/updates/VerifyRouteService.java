@@ -18,18 +18,19 @@ package org.onebusaway.gtfs_transformer.updates;
 
 import org.onebusaway.cloud.api.ExternalServices;
 import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
+import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
 import org.onebusaway.gtfs.model.*;
+import org.onebusaway.gtfs.model.calendar.CalendarServiceData;
+import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs.services.calendar.CalendarService;
 import org.onebusaway.gtfs_transformer.impl.CountAndTestSubway;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 public class VerifyRouteService implements GtfsTransformStrategy {
 
@@ -44,13 +45,14 @@ public class VerifyRouteService implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+        CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
 
         AgencyAndId refAgencyAndId = reference.getAllTrips().iterator().next().getId();
-
 
         int curSerRoute = 0;
         boolean missingRoute = false;
         boolean missingService = false;
+        Date today = removeTime(new Date());
         //list of all routes in ATIS
         Set<String> ATISrouteIds = new HashSet<>();
 
@@ -58,15 +60,16 @@ public class VerifyRouteService implements GtfsTransformStrategy {
         for (Route route : dao.getAllRoutes()) {
             if (route.getId().getId().length() > 2) {
                 ATISrouteIds.add(route.getId().getId().substring(0,2));
+                _log.error("Adding route: {}", route.getId().getId().substring(0,2));
             } else {
                 ATISrouteIds.add(route.getId().getId());
+                _log.error("Adding route: {}", route.getId().getId());
             }
             curSerRoute = 0;
             triploop:
             for (Trip trip1 : dao.getTripsForRoute(route)) {
                 for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip1.getServiceId())) {
                     Date date = removeTime(calDate.getDate().getAsDate());
-                    Date today = removeTime(new Date());
                     if (calDate.getExceptionType() == 1 && date.equals(today)) {
                         _log.info("ATIS has current service for route: {}", route.getId().getId());
                         curSerRoute++;
@@ -75,23 +78,21 @@ public class VerifyRouteService implements GtfsTransformStrategy {
                 }
             }
             if (curSerRoute == 0) {
+                _log.error("No current service for {}", route.getId().getId());
                 //if there is no current service, check that it should have service
                 //there are certain routes that don't run on the weekend or won't have service in reference
+                ServiceDate sToday = createServiceDate(today);
                 Route refRoute = reference.getRouteForId(new AgencyAndId(refAgencyAndId.getAgencyId(), route.getId().getId()));
                 reftriploop:
-                for (Trip refTrip : dao.getTripsForRoute(refRoute)) {
-                    for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(refTrip.getServiceId())) {
-                        Date date = removeTime(calDate.getDate().getAsDate());
-                        Date today = removeTime(new Date());
-                        if (calDate.getExceptionType() == 1 && date.equals(today)) {
-                            //ATIS has no current service but referece does
-                            _log.info("Reference has service for this route but ATIS has none: {}", route.getId());
-                            missingService = true;
-                            es.publishMessage(getTopic(), "Route: "
-                                    + route.getId()
-                                    + " has no current service!");
-                            break reftriploop;
-                        }
+                for (Trip refTrip : reference.getTripsForRoute(refRoute)) {
+                    Set<ServiceDate> activeDates = refCalendarService.getServiceDatesForServiceId(refTrip.getServiceId());
+                    if (activeDates.contains(sToday)) {
+                        _log.info("Reference has service for this route but ATIS has none: {}", route.getId());
+                        missingService = true;
+                        es.publishMessage(getTopic(), "Route: "
+                                + route.getId()
+                                + " has no current service!");
+                        break reftriploop;
                     }
                 }
             }
@@ -125,11 +126,14 @@ public class VerifyRouteService implements GtfsTransformStrategy {
         return date;
     }
 
+    private ServiceDate createServiceDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return new ServiceDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) +1, calendar.get(Calendar.DAY_OF_MONTH));
+    }
+
     private String getTopic() {
         return System.getProperty("sns.topic");
     }
 
-    private String getNamespace() {
-        return System.getProperty("cloudwatch.namespace");
-    }
 }

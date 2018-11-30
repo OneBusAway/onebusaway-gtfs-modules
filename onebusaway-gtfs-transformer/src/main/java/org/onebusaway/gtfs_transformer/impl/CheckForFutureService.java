@@ -55,7 +55,7 @@ public class CheckForFutureService implements GtfsTransformStrategy {
         tripsDayAfterNext = hasServiceForDate(dao,dayAfterNext);
 
         if (tripsTomorrow == 0) {
-            _log.error("Agency {} is missing service for tomorrow {}", agency, tomorrow);
+            _log.error("Agency {} {} is missing service for tomorrow {}", agency, agencyName, tomorrow);
             es.publishMessage(getTopic(), "Agency: "
                     + agency
                     + " "
@@ -64,7 +64,7 @@ public class CheckForFutureService implements GtfsTransformStrategy {
                     + tomorrow);
         }
         if (tripsNextDay == 0) {
-            _log.error("Agency {} is missing service for the day after tomorrow {}", agency, nextDay);
+            _log.error("Agency {} {} is missing service for the day after tomorrow {}", agency, agencyName, nextDay);
             es.publishMessage(getTopic(), "Agency: "
                     + agency
                     + " "
@@ -73,7 +73,7 @@ public class CheckForFutureService implements GtfsTransformStrategy {
                     + nextDay);
         }
         if (tripsDayAfterNext == 0) {
-            _log.error("Agency {} is missing service in 3 days {}", agency, dayAfterNext);
+            _log.error("Agency {} {} is missing service in 3 days {}", agency, agencyName, dayAfterNext);
             es.publishMessage(getTopic(), "Agency: "
                     + agency
                     + " "

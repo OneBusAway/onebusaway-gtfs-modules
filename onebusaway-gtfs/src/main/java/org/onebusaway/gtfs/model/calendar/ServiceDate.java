@@ -127,7 +127,8 @@ public class ServiceDate implements Serializable, Comparable<ServiceDate> {
 
   /**
    * @return calls {@link #getAsDate(TimeZone)} with the default timezone for
-   *         this VM
+   *         this VM. Be careful, this may return a time of 00:00:00
+   *         or 01:00:00 depending on EST or EDT
    */
   public Date getAsDate() {
     return getAsDate(TimeZone.getDefault());

@@ -186,8 +186,14 @@ public class TransformFactory {
         else if (opType.equals("update_trip_headsign_by_destination")) {
           handleTransformOperation(line, json, new UpdateTripHeadsignByDestinationStrategy());
         }
+        else if (opType.equals("update_trip_headsign_exclude_nonreference")) {
+          handleTransformOperation(line, json, new UpdateTripHeadsignExcludeNonreference());
+        }
         else if (opType.equals("update_trip_headsign_by_reference")) {
           handleTransformOperation(line, json, new UpdateTripHeadsignByReference());
+        }
+        else if (opType.equals("update_trip_headsign_if_null")) {
+          handleTransformOperation(line, json, new UpdateTripHeadsignIfNull());
         }
         else if (opType.equals("merge_stop_names_from_reference")) {
           handleTransformOperation(line, json, new MergeStopNamesFromReferenceStrategy());
@@ -198,8 +204,11 @@ public class TransformFactory {
         else if (opType.equals("update_stop_ids_from_control")) {
           handleTransformOperation(line, json, new UpdateStopIdFromControlStrategy());
         }
+        else if (opType.equals("update_stop_ids_from_file")) {
+          handleTransformOperation(line, json, new UpdateStopIdsFromFile());
+        }
         else if (opType.equals("update_stop_ids_from_reference")) {
-          handleTransformOperation(line, json, new UpdateStopIdFromReferenceStrategy());
+            handleTransformOperation(line, json, new UpdateStopIdFromReferenceStrategy());
         }
         else if (opType.equals("merge_route_from_reference_by_longname")) {
           handleTransformOperation(line, json, new MergeRouteFromReferenceStrategyByLongName());
@@ -225,11 +234,17 @@ public class TransformFactory {
         else if (opType.equals("update_route_name")) {
           handleTransformOperation(line, json, new UpdateRouteNames());
         }
+        else if (opType.equals("count_and_test")) {
+          handleTransformOperation(line, json, new CountAndTest());
+        }
         else if (opType.equals("count_and_test_bus")) {
           handleTransformOperation(line, json, new CountAndTestBus());
         }
         else if (opType.equals("count_and_test_subway")) {
           handleTransformOperation(line, json, new CountAndTestSubway());
+        }
+        else if (opType.equals("verify_route_service")) {
+          handleTransformOperation(line, json, new VerifyRouteService());
         }
         else if (opType.equals("update_stoptimes_for_time")) {
           handleTransformOperation(line, json, new UpdateStopTimesForTime());
@@ -239,6 +254,15 @@ public class TransformFactory {
         }
         else if (opType.equals("last_stop_to_headsign")){
           handleTransformOperation(line, json, new LastStopToHeadsignStrategy());
+        }
+        else if (opType.equals("remove_current_service")){
+          handleTransformOperation(line, json, new RemoveCurrentService());
+        }
+        else if (opType.equals("check_for_future_service")){
+          handleTransformOperation(line, json, new CheckForFutureService());
+        }
+        else if (opType.equals("verify_future_route_service")){
+          handleTransformOperation(line, json, new VerifyFutureRouteService());
         }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);

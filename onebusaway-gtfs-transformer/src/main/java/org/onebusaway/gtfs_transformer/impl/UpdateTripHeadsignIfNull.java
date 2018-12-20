@@ -25,12 +25,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-/**
- * set the trip headsign to be that of the trip destination.
- */
-public class UpdateTripHeadsignByDestinationStrategy implements GtfsTransformStrategy {
+public class UpdateTripHeadsignIfNull implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(UpdateTripHeadsignByDestinationStrategy.class);
+    private final Logger _log = LoggerFactory.getLogger(UpdateTripHeadsignIfNull.class);
     @Override
     public String getName() {
         return this.getClass().getSimpleName();
@@ -39,34 +36,29 @@ public class UpdateTripHeadsignByDestinationStrategy implements GtfsTransformStr
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-        int update = 0;
-        int fallback = 0;
-
         for (Trip trip : dao.getAllTrips()) {
-            List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
-            if (stopTimes != null && stopTimes.size() > 0) {
-                String tripHeadSign = stopTimes.get(stopTimes.size()-1).getStop().getName();
-                if (tripHeadSign != null) {
-                    trip.setTripHeadsign(tripHeadSign);
-                    update++;
+            if(trip.getTripHeadsign() == null) {
+                List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
+                if (stopTimes != null && stopTimes.size() > 0) {
+                    String tripHeadSign = stopTimes.get(stopTimes.size()-1).getStop().getName();
+                    if (tripHeadSign != null) {
+                        trip.setTripHeadsign(tripHeadSign);
+                    }
+                    else {
+                        fallbackSetHeadsign(trip);
+                    }
                 }
                 else {
                     fallbackSetHeadsign(trip);
-                    fallback++;
                 }
             }
-            else {
-                fallbackSetHeadsign(trip);
-                fallback++;
-            }
         }
-        _log.error("trip headsign update:{} fallback: {}", update, fallback);
     }
 
     private void fallbackSetHeadsign (Trip trip) {
         if (trip.getTripHeadsign() == null) {
             trip.setTripHeadsign(trip.getRouteShortName());
-
+            _log.error("Setting headsign to route short name: ", trip.getRouteShortName());
         }
     }
 }

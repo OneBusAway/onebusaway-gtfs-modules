@@ -69,8 +69,9 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
         for (List<Stop> complex : getComplexList(dao)) {
             for (Stop s : complex) {
                 for (Stop t : complex) {
+
                     if (s != null && s.getParentStation() != null && t != null) {
-                        if (!s.equals(t) && !s.getParentStation().equals(t.getParentStation())) {
+                        if (!s.equals(t)) {
                             String id = String.format("complex-%s-%s", s.getId().getId(), t.getId().getId());
                             util.createPathway(s, t, PATHWAY_MODE_GENERIC, genericPathwayTraversalTime, -1, id, null, false);
                         }
@@ -94,6 +95,8 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
                 List<Stop> complex = new ArrayList<>();
                 for (String id : line.split(STOP_SEPARATOR)) {
                     Stop stop = stops.get(id);
+                    if (stop == null)
+                        _log.info("null stop: {}", id);
                     complex.add(stop);
                 }
                 complexes.add(complex);

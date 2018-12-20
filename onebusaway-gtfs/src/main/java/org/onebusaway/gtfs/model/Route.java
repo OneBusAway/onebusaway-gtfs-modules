@@ -52,6 +52,9 @@ public final class Route extends IdentityBean<AgencyAndId> {
 
   @CsvField(optional = true)
   private String textColor;
+
+  @CsvField(name = "eligibility_restricted", optional = true)
+  private int eligibilityRestricted = MISSING_VALUE;
   
   @Deprecated
   @CsvField(name="route_bikes_allowed", optional = true, defaultValue = "0")
@@ -86,6 +89,7 @@ public final class Route extends IdentityBean<AgencyAndId> {
     this.bikesAllowed = r.bikesAllowed;
     this.sortOrder = r.sortOrder;
     this.brandingUrl = r.brandingUrl;
+    this.eligibilityRestricted = r.eligibilityRestricted;
   }
 
   public AgencyAndId getId() {
@@ -204,6 +208,19 @@ public final class Route extends IdentityBean<AgencyAndId> {
   public void setBrandingUrl(String brandingUrl) {
     this.brandingUrl = brandingUrl;
   }
+
+  public boolean hasEligibilityRestricted() {
+    return eligibilityRestricted != MISSING_VALUE;
+  }
+
+  public int getEligibilityRestricted() {
+    return eligibilityRestricted;
+  }
+
+  public void setEligibilityRestricted(int eligibilityRestricted) {
+    this.eligibilityRestricted = eligibilityRestricted;
+  }
+
 
   @Override
   public String toString() {

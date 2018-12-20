@@ -15,6 +15,8 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
+import org.onebusaway.cloud.api.ExternalServices;
+import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Pathway;
@@ -118,8 +120,15 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
+        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         File entrancesFile = new File(entrancesCsv);
         if(!entrancesFile.exists()) {
+            es.publishMessage(getTopic(), "For Agency: "
+                    + dao.getAllAgencies().iterator().next().getId()
+                    + " "
+                    + dao.getAllAgencies().iterator().next().getName()
+                    + " Entrances file does not exist:  "
+                    + entrancesFile.getName());
             throw new IllegalStateException(
                     "Entrances file does not exist: " + entrancesFile.getName());
         }
@@ -127,6 +136,12 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         if (elevatorsCsv != null) {
             File elevatorsFile = new File(elevatorsCsv);
             if(!elevatorsFile.exists()) {
+                es.publishMessage(getTopic(), "For Agency: "
+                        + dao.getAllAgencies().iterator().next().getId()
+                        + " "
+                        + dao.getAllAgencies().iterator().next().getName()
+                        + " Elevators file does not exist:  "
+                        + elevatorsFile.getName());
                 throw new IllegalStateException(
                         "Elevators file does not exist: " + elevatorsFile.getName());
             }
@@ -521,6 +536,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         }
         seenElevatorPathways.add(idStr);
         pathwayUtil.createPathway(from, to, PATHWAY_MODE_ELEVATOR, elevatorTraversalTime, elevatorTraversalTime, idStr, code);
+    }
+
+    private String getTopic() {
+        return System.getProperty("sns.topic");
     }
 
     private List<MTAElevator> getElevators() {

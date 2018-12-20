@@ -27,6 +27,7 @@ import java.util.Set;
 import org.hibernate.SessionFactory;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.Area;
 import org.onebusaway.gtfs.model.Block;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
@@ -235,6 +236,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   @Override
   public Trip getTripForId(AgencyAndId id) {
     return (Trip) _ops.get(Trip.class, id);
+  }
+
+  @Override
+  public Collection<Area> getAllAreas() {
+    return _ops.find("from Area");
   }
 
   /****

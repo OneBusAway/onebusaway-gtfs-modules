@@ -53,7 +53,7 @@ public class UpdateTripHeadsignByReference implements GtfsTransformStrategy {
                 Stop stop = stopTimes.get(stopTimes.size()-1).getStop();
                 Stop gtfsStop = reference.getStopForId(new AgencyAndId(getReferenceAgencyId(reference), stop.getMtaStopId()));
                 if (gtfsStop == null && !missingStops.contains(stop.getMtaStopId())) {
-                    _log.info("missing reference stop {} for agency {}", stop.getMtaStopId(), getReferenceAgencyId(reference));
+                    _log.info("Stop {} is missing reference stop {} for agency {}", stop.getId(), stop.getMtaStopId(), getReferenceAgencyId(reference));
                     missingStops.add(stop.getMtaStopId());
                 }
                 if (gtfsStop != null) {
@@ -62,8 +62,44 @@ public class UpdateTripHeadsignByReference implements GtfsTransformStrategy {
                     if (tripHeadSign != null) {
                         trip.setTripHeadsign(tripHeadSign);
                     }
+                    else {
+                        //TODO reference GTFS has no headsign, add publish message for this error
+                        _log.error("No reference trip headsign {}", gtfsStop.getId());
+                        fallbackSetHeadsign(trip, stop);
+                    }
+                }
+                else {
+                    fallbackSetHeadsign(trip, stop);
                 }
             }
+            else {
+                _log.error("No stoptimes for trip {} mta id", trip.toString(), trip.getMtaTripId());
+                if (trip.getTripHeadsign() == null && trip.getRouteShortName() == null) {
+                    //if trip has no headsign, no stoptimes and no shortname, remove it
+                    _log.error("Removing trip {}", trip.getId());
+                    dao.removeEntity(trip);
+                }
+                else {
+                    genericSetHeadsign(trip);
+                }
+            }
+        }
+    }
+
+    private void fallbackSetHeadsign (Trip trip, Stop stop) {
+        if (stop != null && stop.getName() != null) {
+            trip.setTripHeadsign(stop.getName());
+            _log.error("Setting headsign {} on {}", stop.getName(), trip.toString());
+        }
+        else {
+            genericSetHeadsign(trip);
+        }
+    }
+
+    private void genericSetHeadsign (Trip trip) {
+        if (trip.getRouteShortName() != null) {
+            trip.setTripHeadsign(trip.getRouteShortName());
+            _log.error("Setting headsign {} on {}", trip.getRouteShortName(), trip.toString());
         }
     }
 

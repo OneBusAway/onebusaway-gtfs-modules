@@ -15,6 +15,8 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
+import org.onebusaway.cloud.api.ExternalServices;
+import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
@@ -84,30 +86,35 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
             if (dao.getStopTimesForTrip(trip).size() == 0) {
                 countNoSt++;
             }
-            countSt = countSt + dao.getStopTimesForTrip(trip).size();
+            else {
+                countSt++;
+            }
+
             serviceAgencyAndId = trip.getServiceId();
             if (dao.getCalendarDatesForServiceId(serviceAgencyAndId).size() == 0) {
                 countNoCd++;
             }
-            countCd = countCd + dao.getCalendarDatesForServiceId(serviceAgencyAndId).size();
+            else {
+                countCd++;
+            }
 
-            if (trip.getTripHeadsign().isEmpty()) {
+            if (trip.getTripHeadsign() == null) {
                 countNoHs++;
             }
 
             //check for current service
             for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
-                Date date = calDate.getDate().getAsDate();
+                Date date = removeTime(calDate.getDate().getAsDate());
                 Date today = removeTime(new Date());
-                if (date.equals(today)) {
+                if (calDate.getExceptionType() == 1 && date.equals(today)) {
                     curSerTrips++;
                     break;
                 }
             }
         }
         _log.info("ATIS Trips: {}, Reference: {}, match: {}, Current Service: {}", dao.getAllTrips().size(), reference.getAllTrips().size(), matches, curSerTrips);
-        _log.info("Total stop times {}, Stop times for Trips: {}, Trips w/out st: {}", dao.getAllStopTimes().size(), countSt, countNoSt);
-        _log.info("Total calendar dates {}, Calendar dates for Trips {}, Trips w/out cd: {}", dao.getAllCalendarDates().size(), countCd, countNoCd);
+        _log.info("Total stop times {}, Trips w/ st: {}, Trips w/out st: {}", dao.getAllStopTimes().size(), countSt, countNoSt);
+        _log.info("Total calendar dates {}, Trips w/cd {}, Trips w/out cd: {}", dao.getAllCalendarDates().size(), countCd, countNoCd);
         _log.info("Total trips w/out headsign: {}", countNoHs);
 
         matches = 0;
@@ -118,9 +125,24 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
         }
         _log.info("ATIS Stops: {}, Reference: {}, ATIS match to reference: {}", dao.getAllStops().size(), reference.getAllStops().size(), matches);
 
+        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         if (curSerTrips < 1) {
-            throw new IllegalStateException(
-                    "There is no current service!!");
+            es.publishMessage(getTopic(), "Agency: "
+                    + dao.getAllAgencies().iterator().next().getId()
+                    + " "
+                    + dao.getAllAgencies().iterator().next().getName()
+                    + " has no current service.");
+        }
+
+        if (countNoHs > 0) {
+            es.publishMessage(getTopic(), "Agency: "
+                    + dao.getAllAgencies().iterator().next().getId()
+                    + " "
+                    + dao.getAllAgencies().iterator().next().getName()
+                    + " has trips w/out headsign: "
+                    + countNoHs);
+            es.publishMetric(getNamespace(), "No headsigns", null, null, countNoHs);
+            _log.error("There are trips with no headsign");
         }
     }
 
@@ -133,5 +155,13 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
         calendar.set(Calendar.MILLISECOND, 0);
         date = calendar.getTime();
         return date;
+    }
+
+    private String getTopic() {
+        return System.getProperty("sns.topic");
+    }
+
+    private String getNamespace() {
+        return System.getProperty("cloudwatch.namespace");
     }
 }

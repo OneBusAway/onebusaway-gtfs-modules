@@ -25,6 +25,7 @@ import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Pathway;
+import org.onebusaway.gtfs.model.Ridership;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
@@ -156,5 +157,7 @@ public interface GtfsDao extends GenericDao {
   public Collection<Block> getAllBlocks();
   
   public Block getBlockForId(int id);
+
+  public Collection<Ridership> getAllRiderships();
 
 }

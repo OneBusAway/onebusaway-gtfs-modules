@@ -75,7 +75,7 @@ public class GtfsDatabaseLoaderMain {
     }
     config.setProperty("hibernate.connection.pool_size", "1");
     config.setProperty("hibernate.cache.provider_class",
-        "org.hibernate.cache.NoCacheProvider");
+        "org.hibernate.cache.internal.NoCachingRegionFactory");
     config.setProperty("hibernate.hbm2ddl.auto", "update");
     config.addResource("org/onebusaway/gtfs/model/GtfsMapping.hibernate.xml");
     config.addResource("org/onebusaway/gtfs/impl/HibernateGtfsRelationalDaoImpl.hibernate.xml");

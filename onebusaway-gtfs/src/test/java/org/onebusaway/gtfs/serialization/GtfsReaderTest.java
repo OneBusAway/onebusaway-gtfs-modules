@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -48,6 +49,7 @@ import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Pathway;
+import org.onebusaway.gtfs.model.Ridership;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
@@ -127,8 +129,33 @@ public class GtfsReaderTest {
         "pathways.txt",
         "pathway_id,pathway_type,from_stop_id,to_stop_id,traversal_time,wheelchair_traversal_time",
         "P1,1,S1,S1,60,61");
+    gtfs.putLines(
+            "ridership.txt",
+            "total_boardings,total_alightings,ridership_start_date,ridership_end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday,agency_id,route_id,trip_id,stop_id,average_load",
+            "0,0,20180101,20180601,1,1,1,1,1,0,0,1,1,34741338,538,15.2",
+            "0,0,20180101,20180601,1,1,1,1,1,0,0,1,1,34741338,558,14.4",
+            "0,0,20180101,20180601,1,1,1,1,1,0,0,1,1,34741339,2010,1.3");
 
     GtfsRelationalDao dao = processFeed(gtfs.getPath(), "1", false);
+
+    List<Ridership> riderships = new ArrayList<>(dao.getAllRiderships());
+    assertNotNull(riderships);
+    assertEquals(3, riderships.size());
+
+    riderships = dao.getRidershipForTrip(new AgencyAndId("1", "34741339"));
+    assertNotNull(riderships);
+    assertEquals(1, riderships.size());
+    Ridership ridership = riderships.get(0);
+    assertEquals("1", ridership.getAgencyId());
+    assertEquals("1", ridership.getRouteId());
+    assertEquals("34741339", ridership.getTripId());
+    assertEquals("2010", ridership.getStopId());
+    assertEquals(0, ridership.getTotalBoardings());
+    assertEquals(0, ridership.getTotalAlightings());
+    assertEquals(new ServiceDate(2018, 01, 01), ridership.getStartDate());
+    assertEquals(new ServiceDate(2018, 06, 01), ridership.getEndDate());
+    assertEquals(1.3, ridership.getAverageLoad(), 0.001);
+
 
     Agency agency = dao.getAgencyForId("1");
     assertEquals("1", agency.getId());
@@ -286,7 +313,13 @@ public class GtfsReaderTest {
     assertEquals(stop, pathway.getFromStop());
     assertEquals(stop, pathway.getToStop());
     assertEquals(60, pathway.getTraversalTime());
-    assertEquals(61, pathway.getWheelchairTraversalTime());        
+    assertEquals(61, pathway.getWheelchairTraversalTime());
+
+
+    riderships = dao.getRidershipForTrip(new AgencyAndId("1", "34741338"));
+    assertNotNull(riderships);
+    assertEquals(2, riderships.size());
+    assertEquals("34741338", riderships.get(0).getTripId());
   }
 
   @Test

@@ -23,6 +23,7 @@ import org.onebusaway.gtfs.model.Block;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.Frequency;
+import org.onebusaway.gtfs.model.Ridership;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
@@ -129,4 +130,8 @@ public interface GtfsRelationalDao extends GtfsDao {
 
   public List<FareRule> getFareRulesForFareAttribute(FareAttribute fareAttribute);
 
+  /***
+   * {@link Ridership}
+   */
+  public List<Ridership> getRidershipForTrip(AgencyAndId tripId);
 }

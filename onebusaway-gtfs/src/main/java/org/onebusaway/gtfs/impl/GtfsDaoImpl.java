@@ -29,6 +29,7 @@ import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.model.Pathway;
+import org.onebusaway.gtfs.model.Ridership;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
@@ -136,6 +137,10 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   public Collection<Trip> getAllTrips() {
     return getAllEntitiesForType(Trip.class);
+  }
+
+  public Collection<Ridership> getAllRiderships() {
+    return getAllEntitiesForType(Ridership.class);
   }
 
   public Block getBlockForId(int id) {

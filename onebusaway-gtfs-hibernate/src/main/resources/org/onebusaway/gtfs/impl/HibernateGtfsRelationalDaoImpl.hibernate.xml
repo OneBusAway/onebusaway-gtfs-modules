@@ -70,4 +70,8 @@
     <query name="fareRulesForFareAttribute" read-only="true">
         FROM FareRule fr WHERE fr.fare = :fareAttribute
     </query>
+    <query name="ridershipsForTripId" read-only="true">
+        FROM Ridership r WHERE r.tripId = :tripId
+    </query>
+
 </hibernate-mapping>

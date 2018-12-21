@@ -28,6 +28,11 @@ import org.hibernate.Transaction;
 import org.onebusaway.gtfs.services.HibernateOperation;
 import org.onebusaway.gtfs.services.HibernateOperations;
 
+/**
+ * Manually manage hibernate operations instead of via Spring.  This
+ * does essentially the same as the Spring Transactional annotation.
+ * Refactored for Hibernate4 where some of the hibernate semantics have changed!
+ */
 public class HibernateOperationsImpl implements HibernateOperations {
 
   private static final int BUFFER_SIZE = 1000;
@@ -73,9 +78,21 @@ public class HibernateOperationsImpl implements HibernateOperations {
   @Override
   public Object execute(HibernateOperation callback) {
     if (_session == null) {
-      Session session = _sessionFactory.openSession();
-      Transaction tx = session.beginTransaction();
-      tx.begin();
+      // re-use the session if already active
+      Session session = _sessionFactory.getCurrentSession();
+      if (session == null) {
+        session = _sessionFactory.openSession();
+      }
+      Transaction tx;
+      if (session.getTransaction() != null
+        && session.getTransaction().isActive()) {
+        // re-use existing transactions, beginTransaction is no-longer reentrant
+        tx = session.getTransaction();
+
+      } else {
+        tx = session.beginTransaction();
+      }
+
       try {
         Object result = callback.doInHibernate(session);
         tx.commit();
@@ -84,7 +101,10 @@ public class HibernateOperationsImpl implements HibernateOperations {
         tx.rollback();
         throw new IllegalStateException(ex);
       } finally {
-        session.close();
+        if (session.isOpen()) {
+          // close is no longer re-entrant
+          session.close();
+        }
       }
     } else {
       try {

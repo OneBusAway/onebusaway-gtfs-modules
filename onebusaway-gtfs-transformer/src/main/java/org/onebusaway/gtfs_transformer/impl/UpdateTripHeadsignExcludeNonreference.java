@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-/* Update the trip headsign if the last stop is in the GTFS or if its null.
-    if the trip headsign is not null AND its not in the reference GTFS, don't update it.
+/* Update the trip headsign if the last stop is in the reference GTFS or if the headsign is null.
+    if the trip headsign is not null AND the last stop is not in the reference GTFS, don't update it.
     MOTP-966
  */
 

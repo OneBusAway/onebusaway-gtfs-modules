@@ -285,5 +285,19 @@
         <property name="wheelchairAccessible"/>
     </class>
 
+    <class name="org.onebusaway.gtfs.model.Ridership" table="gtfs_riderships">
+        <id name="id" column="gid" type="int" length="11" unsaved-value="null">
+            <generator class="native" />
+        </id>
+        <property name="agencyId" length="50"/>
+        <property name="routeId" length="50"/>
+        <property name="tripId" length="50"/>
+        <property name="stopId" length="50"/>
+        <property name="totalBoardings" />
+        <property name="totalAlightings" />
+        <property name="startDate" type="org.onebusaway.gtfs.impl.ServiceDateUserType" length="8"/>
+        <property name="endDate" type="org.onebusaway.gtfs.impl.ServiceDateUserType" length="8"/>
+        <property name="averageLoad" />
+    </class>
 
 </hibernate-mapping>

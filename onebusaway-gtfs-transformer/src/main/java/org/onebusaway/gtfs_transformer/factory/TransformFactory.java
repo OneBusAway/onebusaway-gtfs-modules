@@ -204,8 +204,11 @@ public class TransformFactory {
         else if (opType.equals("update_stop_ids_from_control")) {
           handleTransformOperation(line, json, new UpdateStopIdFromControlStrategy());
         }
+        else if (opType.equals("update_stop_ids_from_file")) {
+          handleTransformOperation(line, json, new UpdateStopIdsFromFile());
+        }
         else if (opType.equals("update_stop_ids_from_reference")) {
-          handleTransformOperation(line, json, new UpdateStopIdFromReferenceStrategy());
+            handleTransformOperation(line, json, new UpdateStopIdFromReferenceStrategy());
         }
         else if (opType.equals("merge_route_from_reference_by_longname")) {
           handleTransformOperation(line, json, new MergeRouteFromReferenceStrategyByLongName());
@@ -254,6 +257,12 @@ public class TransformFactory {
         }
         else if (opType.equals("remove_current_service")){
           handleTransformOperation(line, json, new RemoveCurrentService());
+        }
+        else if (opType.equals("check_for_future_service")){
+          handleTransformOperation(line, json, new CheckForFutureService());
+        }
+        else if (opType.equals("verify_future_route_service")){
+          handleTransformOperation(line, json, new VerifyFutureRouteService());
         }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);

@@ -41,6 +41,7 @@ import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.model.Note;
 import org.onebusaway.gtfs.model.Pathway;
+import org.onebusaway.gtfs.model.Ridership;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
@@ -95,6 +96,7 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Pathway.class);
     _entityClasses.add(Transfer.class);
     _entityClasses.add(FeedInfo.class);
+    _entityClasses.add(Ridership.class);
 
     CsvTokenizerStrategy tokenizerStrategy = new CsvTokenizerStrategy();
     tokenizerStrategy.getCsvParser().setTrimInitialWhitespace(true);

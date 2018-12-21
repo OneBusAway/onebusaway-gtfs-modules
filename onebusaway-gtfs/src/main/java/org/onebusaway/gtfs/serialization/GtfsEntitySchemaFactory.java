@@ -34,6 +34,7 @@ import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.model.Pathway;
+import org.onebusaway.gtfs.model.Ridership;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
@@ -66,6 +67,7 @@ public class GtfsEntitySchemaFactory {
     entityClasses.add(Frequency.class);
     entityClasses.add(Pathway.class);
     entityClasses.add(Transfer.class);
+    entityClasses.add(Ridership.class);
     return entityClasses;
   }
 

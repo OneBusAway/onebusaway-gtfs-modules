@@ -34,6 +34,7 @@ import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.Frequency;
+import org.onebusaway.gtfs.model.Ridership;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
@@ -82,6 +83,8 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
 
   private Map<FareAttribute, List<FareRule>> _fareRulesByFareAttribute = null;
 
+  private Map<AgencyAndId, List<Ridership>> _ridershipByTrip = null;
+
   public void clearAllCaches() {
     _tripAgencyIdsByServiceId = clearMap(_tripAgencyIdsByServiceId);
     _routesByAgency = clearMap(_routesByAgency);
@@ -97,6 +100,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
     _calendarDatesByServiceId = clearMap(_calendarDatesByServiceId);
     _calendarsByServiceId = clearMap(_calendarsByServiceId);
     _fareRulesByFareAttribute = clearMap(_fareRulesByFareAttribute);
+    _ridershipByTrip = clearMap(_ridershipByTrip);
   }
 
   @Override
@@ -285,6 +289,25 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
     }
     return list(_fareRulesByFareAttribute.get(fareAttribute));
   }
+
+  @Override
+  public List<Ridership> getRidershipForTrip(AgencyAndId tripId) {
+    if (_ridershipByTrip == null) {
+      _ridershipByTrip = new HashMap<>();
+      for (Ridership r : getAllRiderships()) {
+        AgencyAndId aid = new AgencyAndId(r.getAgencyId(), r.getTripId());
+        if (_ridershipByTrip.containsKey(aid)) {
+          _ridershipByTrip.get(aid).add(r);
+        } else {
+          List<Ridership> list = new ArrayList<>();
+          list.add(r);
+          _ridershipByTrip.put(aid, list);
+        }
+      }
+    }
+    return _ridershipByTrip.get(tripId);
+  }
+
 
   /****
    * Private Methods

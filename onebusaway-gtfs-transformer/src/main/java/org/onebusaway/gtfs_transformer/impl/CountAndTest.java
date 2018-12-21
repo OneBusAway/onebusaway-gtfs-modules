@@ -44,7 +44,11 @@ public class CountAndTest implements GtfsTransformStrategy {
         int countNoSt = 0;
         int countNoCd = 0;
         int curSerTrips = 0;
+        int tomSerTrips = 0;
         int countNoHs = 0;
+
+        String agency = dao.getAllAgencies().iterator().next().getId();
+        String name = dao.getAllAgencies().iterator().next().getName();
 
         AgencyAndId serviceAgencyAndId = new AgencyAndId();
         for (Trip trip : dao.getAllTrips()) {
@@ -65,24 +69,74 @@ public class CountAndTest implements GtfsTransformStrategy {
 
             //check for current service
             Date today = removeTime(new Date());
-            ServiceCalendar servCal = dao.getCalendarForServiceId(trip.getServiceId());
-            if (servCal == null) {
-                //check for current service using calendar dates
+            boolean hasCalDateException = false;
+            //are there calendar dates?
+            if (!dao.getCalendarDatesForServiceId(trip.getServiceId()).isEmpty()) {
+                //calendar dates are not empty
                 for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
                     Date date = removeTime(calDate.getDate().getAsDate());
-                    if (calDate.getExceptionType() == 1 && date.equals(today)) {
-                        curSerTrips++;
-                        break;
+                    if (date.equals(today)) {
+                        hasCalDateException = true;
+                        if (calDate.getExceptionType() == 1) {
+                            //there is service for today
+                            curSerTrips++;
+                            break;
+                        }
+                        if (calDate.getExceptionType() == 2) {
+                            //service has been excluded for today
+                            break;
+                        }
                     }
                 }
             }
-            else {
-                //check for current service using calendar
-                Date start = servCal.getStartDate().getAsDate();
-                Date end = servCal.getEndDate().getAsDate();
-                if (today.equals(start) || today.equals(end) ||
-                        (today.after(start) && today.before(end))) {
-                    curSerTrips++;
+            //if there are no entries in calendarDates, check serviceCalendar
+            if (!hasCalDateException) {
+                ServiceCalendar servCal = dao.getCalendarForServiceId(trip.getServiceId());
+                if (servCal != null) {
+                    //check for current service using calendar
+                    Date start = removeTime(servCal.getStartDate().getAsDate());
+                    Date end = removeTime(servCal.getEndDate().getAsDate());
+                    if (today.equals(start) || today.equals(end) ||
+                            (today.after(start) && today.before(end))) {
+                        curSerTrips++;
+                    }
+                }
+            }
+
+
+            //check for current service
+            Date tomorrow = removeTime(addDays(new Date(), 1));
+            hasCalDateException = false;
+            //are there calendar dates?
+            if (!dao.getCalendarDatesForServiceId(trip.getServiceId()).isEmpty()) {
+                //calendar dates are not empty
+                for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
+                    Date date = removeTime(calDate.getDate().getAsDate());
+                    if (date.equals(tomorrow)) {
+                        hasCalDateException = true;
+                        if (calDate.getExceptionType() == 1) {
+                            //there is service for today
+                            tomSerTrips++;
+                            break;
+                        }
+                        if (calDate.getExceptionType() == 2) {
+                            //service has been excluded for today
+                            break;
+                        }
+                    }
+                }
+            }
+            //if there are no entries in calendarDates, check serviceCalendar
+            if (!hasCalDateException) {
+                ServiceCalendar servCal = dao.getCalendarForServiceId(trip.getServiceId());
+                if (servCal != null) {
+                    //check for current service using calendar
+                    Date start = removeTime(servCal.getStartDate().getAsDate());
+                    Date end = removeTime(servCal.getEndDate().getAsDate());
+                    if (tomorrow.equals(start) || tomorrow.equals(end) ||
+                            (tomorrow.after(start) && tomorrow.before(end))) {
+                        tomSerTrips++;
+                    }
                 }
             }
 
@@ -92,27 +146,36 @@ public class CountAndTest implements GtfsTransformStrategy {
             }
         }
 
-        _log.info("Agency: {}, {}", dao.getAllAgencies().iterator().next().getId(), dao.getAllAgencies().iterator().next().getName());
-        _log.info("Routes: {}, Trips: {}, Current Service: {}", dao.getAllRoutes().size(), dao.getAllTrips().size(), curSerTrips);
-        _log.info("Stops: {}, Stop times {}, Trips w/ st: {}, Trips w/out st: {}", dao.getAllStops().size(), dao.getAllStopTimes().size(), countSt, countNoSt);
-        _log.info("This is the Total trips w/out headsign: {}", countNoHs);
+        _log.info("Agency: {}, {}. Routes: {}, Trips: {}, Current Service: {}, " +
+                "Stops: {}, Stop times {}, Trips w/ st: {}, Trips w/out st: {}, " +
+                "Total trips w/out headsign: {}", agency, name, dao.getAllRoutes().size(),
+                dao.getAllTrips().size(), curSerTrips, dao.getAllStops().size(),
+                dao.getAllStopTimes().size(), countSt, countNoSt, countNoHs);
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         if (curSerTrips < 1) {
             es.publishMessage(getTopic(), "Agency: "
-                    + dao.getAllAgencies().iterator().next().getId()
+                    + agency
                     + " "
-                    + dao.getAllAgencies().iterator().next().getName()
-                    + " has no current service.");
+                    + name
+                    + " has no current service for today.");
+        }
+
+        if (curSerTrips + tomSerTrips < 1) {
+            es.publishMessage(getTopic(), "Agency: "
+                    + agency
+                    + " "
+                    + name
+                    + " has no current service for today + tomorrow.");
             throw new IllegalStateException(
                     "There is no current service!!");
         }
 
         if (countNoHs > 0) {
             es.publishMessage(getTopic(), "Agency: "
-                    + dao.getAllAgencies().iterator().next().getId()
+                    + agency
                     + " "
-                    + dao.getAllAgencies().iterator().next().getName()
+                    + name
                     + " has trips w/out headsign: "
                     + countNoHs);
             es.publishMetric(getNamespace(), "No headsigns", null, null, countNoHs);
@@ -131,12 +194,11 @@ public class CountAndTest implements GtfsTransformStrategy {
         return date;
     }
 
-    private Date add3Days(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DATE, 3);
-        date = calendar.getTime();
-        return date;
+    private Date addDays(Date date, int daysToAdd) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, daysToAdd);
+        return cal.getTime();
     }
 
     private String getTopic() {

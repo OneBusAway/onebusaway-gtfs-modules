@@ -135,7 +135,13 @@ public class GtfsReaderTest {
             "0,0,20180101,20180601,1,1,1,1,1,0,0,1,1,34741338,538,15.2",
             "0,0,20180101,20180601,1,1,1,1,1,0,0,1,1,34741338,558,14.4",
             "0,0,20180101,20180601,1,1,1,1,1,0,0,1,1,34741339,2010,1.3");
+    // Control File
+    // AveOn,AveOff,StartTimeA,EndTimeA,Route, Trip_ID, STOP_ID, STOP_SEQ ...,AveLd
 
+    //https://camsys.egnyte.com/dl/wjRcYYUbHG
+
+
+    // Trip181.KeyTrip= Zon181Unsum.Trip_ID
     GtfsRelationalDao dao = processFeed(gtfs.getPath(), "1", false);
 
     List<Ridership> riderships = new ArrayList<>(dao.getAllRiderships());

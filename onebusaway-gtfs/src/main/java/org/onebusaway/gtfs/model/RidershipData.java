@@ -16,18 +16,21 @@
 package org.onebusaway.gtfs.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
-import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.serialization.mappings.ServiceDateFieldMappingFactory;
 
-/**
- * ridership.txt from https://github.com/ODOT-PTS/GTFS-ride/blob/master/spec/en/reference.md#board_alighttxt
- */
-@CsvFields(filename = "ridership.txt", required = false)
-public final class Ridership extends IdentityBean<Integer> {
+import java.time.LocalTime;
+
+public class RidershipData {
 
     private static final long serialVersionUID = 1L;
     private static final int MISSING_VALUE = -999;
+
+    private String rsTripId;
+    private String gtfsTripId;
+    private long minutesDifference;
+
+    private int numStops;
 
     @CsvField(ignore = true)
     private int id; // this is internal only
@@ -42,17 +45,26 @@ public final class Ridership extends IdentityBean<Integer> {
 
     private int totalBoardings;
     private int totalAlightings;
+    private LocalTime passingTime;
 
     @CsvField(name = "ridership_start_date", optional = true, mapping = ServiceDateFieldMappingFactory.class)
     private ServiceDate startDate;
     @CsvField(name = "ridership_end_date", optional = true, mapping = ServiceDateFieldMappingFactory.class)
     private ServiceDate endDate;
     @CsvField(optional = true)
-    private double averageLoad; // this isn't part of the spec, but a proposed addition
+    private double averageLoad;
     @CsvField(optional = true)
-    private int stopSequence; // this isn't part of the spec, but a proposed addition
+    private int stopSequence;
 
 
+
+    public int getNumStops() {
+        return numStops;
+    }
+
+    public void setNumStops(int numStops) {
+        this.numStops = numStops;
+    }
 
     public Integer getId() {
         return id;
@@ -154,4 +166,35 @@ public final class Ridership extends IdentityBean<Integer> {
     }
 
 
+    public LocalTime getPassingTime() {
+        return passingTime;
+    }
+
+    public void setPassingTime(LocalTime passingTime) {
+        this.passingTime = passingTime;
+    }
+
+    public long getMinutesDifference() {
+        return minutesDifference;
+    }
+
+    public void setMinutesDifference(long minutesDifference) {
+        this.minutesDifference = minutesDifference;
+    }
+
+    public String getRsTripId() {
+        return rsTripId;
+    }
+
+    public void setRsTripId(String rsTripId) {
+        this.rsTripId = rsTripId;
+    }
+
+    public String getGtfsTripId() {
+        return gtfsTripId;
+    }
+
+    public void setGtfsTripId(String gtfsTripId) {
+        this.gtfsTripId = gtfsTripId;
+    }
 }

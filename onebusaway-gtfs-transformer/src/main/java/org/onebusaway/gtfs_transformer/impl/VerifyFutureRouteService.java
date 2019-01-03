@@ -92,7 +92,7 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
                 }
             }
             if (numTripsOnDate == 0) {
-                _log.error("No service for {} on {}", route.getId().getId(), testDate);
+                _log.info("No service for {} on {}", route.getId().getId(), testDate);
                 //if there is no current service, check that it should have service
                 //there are certain routes that don't run on the weekend or won't have service in reference
                 ServiceDate sDate = createServiceDate(testDate);
@@ -101,7 +101,8 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
                 for (Trip refTrip : reference.getTripsForRoute(refRoute)) {
                     Set<ServiceDate> activeDates = refCalendarService.getServiceDatesForServiceId(refTrip.getServiceId());
                     if (activeDates.contains(sDate)) {
-                        _log.info("On {} Reference has service for this route but ATIS has none: {}", testDate, route.getId());
+                        _log.info("On {} Reference has service for this route but ATIS has none: {}, Trip {}, Serviceid {}",
+                                testDate, route.getId(), refTrip.getId(), refTrip.getServiceId());
                         es.publishMessage(getTopic(), "Route: "
                                 + route.getId()
                                 + " has no service for "

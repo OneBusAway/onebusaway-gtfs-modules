@@ -211,9 +211,20 @@ public class GtfsTransformer {
 
   private void updateGtfs() {
     for (GtfsTransformStrategy strategy : _transformStrategies) {
-      _log.info("Running strategy {} ....", strategy.getName() );
-      strategy.run(_context, _dao);
-      _log.info("Strategy {} complete.", strategy.getName());
+      String strategyName = strategy.toString();
+      try {
+        strategyName = strategy.getName();
+      } catch (AbstractMethodError ame) {
+        _log.info("(AbstractMethodError) strategy " + strategy + " does not support getName");
+      }
+      _log.info("Running strategy {} ....", strategyName );
+      try {
+        strategy.run(_context, _dao);
+      } catch (Throwable t) {
+        _log.error("Exception in strategy (v1) " + strategyName, t);
+        throw new RuntimeException(t);
+      }
+      _log.info("Strategy {} complete.", strategyName);
     }
   }
 

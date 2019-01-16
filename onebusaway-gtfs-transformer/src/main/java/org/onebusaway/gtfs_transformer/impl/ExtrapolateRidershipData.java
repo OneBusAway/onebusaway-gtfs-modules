@@ -32,6 +32,8 @@ import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.List;
@@ -155,6 +157,8 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
                 riderships.add(ridership);
                 ridershipMap.put(ridership.getTripId(), riderships);
             }
+
+
         }
 
         _log.error("Number of trips in ridership data {}", ridershipMap.size());
@@ -183,9 +187,86 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
 
         _log.error("Number of trips in GTFS: {}", daoTrips.size());
 
+        //used for metrics, each ridership trip_id that is added to dao ridership.txt
+        Set<String> ridershipIds = new HashSet<String>();
+
         //Try to find trips that match by comparing the stops on that trip.  We will get a lot of matches as identical trips run
         //on the same route each day
-        for (HashMap.Entry<AgencyAndId, TreeMap<Integer, String>> trip : daoTrips.entrySet()) {
+        for (HashMap.Entry<String, TreeMap<Integer, String>> trip : ridershipTrips.entrySet()) {
+            TreeMap<Integer, String> ridershipStops = trip.getValue();
+            //for each ridership trip, we now have a tree list of the stops on that trip.  Compare to each dao trip
+            List<String> ridershipStopList = new ArrayList<>(ridershipStops.values());
+            for (HashMap.Entry<AgencyAndId, TreeMap<Integer, String>> daoTrip : daoTrips.entrySet()) {
+                //daoStops is a treemap of stops on that trip, stop sequence: stop id
+                TreeMap<Integer, String> daoStopsTree = daoTrip.getValue();
+                //daoStopList is the stop ids on that trip in order, from the sequences being in order
+                List<String> daoStopList = new ArrayList<>(daoStopsTree.values());
+                boolean equal = ridershipStopList.equals(daoStopList);
+                //The trips are 'equal' in that they have the same stops, narrow it down by time
+
+                //the Access trip id is: trip.getKey(), the GTFS trip id is: daoTrip.getKey().getId
+                if (equal) {
+                    //get the first stop time for the trip
+                    Trip GTFStrip = dao.getTripForId(daoTrip.getKey());
+                    StopTime firstStopTime = dao.getStopTimesForTrip(GTFStrip).get(0);
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+                    String GTFStime = StopTimeFieldMappingFactory.getSecondsAsString(firstStopTime.getArrivalTime());
+                    //a lot of stop times are 'invalid' hours of 24, 25, 26.  For 24 hour clock, hour s/b 0-23
+                    GTFStime = ConvertToValidHours(GTFStime);
+                    LocalTime GTFSArrival = LocalTime.parse(GTFStime, dtf);
+
+                    //We have the stop sequence and the stop id.  From the stop id, get the stop time
+                    Entry<Integer, String> riderStop = ridershipStops.firstEntry();
+                    String firstStopId = riderStop.getValue();
+                    LocalTime passTime = null;
+
+                    //get the stop time for the first stop on this trip
+                    ArrayList<RidershipData> ridershipData = ridershipMap.get(trip.getKey());
+                    for (RidershipData rd : ridershipData) {
+                        if (rd.getStopId() == firstStopId) {
+                            passTime = rd.getPassingTime();
+                        }
+                    }
+                    long minutesDifference = 15;
+
+                    if (passTime != null) {
+                        minutesDifference = Duration.between(GTFSArrival, passTime).toMinutes();
+                    }
+                    if (minutesDifference < 4 && minutesDifference > -4) {
+                        //_log.error("GTFS trip {}, time {}, Ridership trip {}, time {}, diff: {} ", trip.getKey().getId(), GTFSArrival, ridershipStops.getKey(),passTime, minutesDifference);
+
+                        //we have HashMap<String, ArrayList<RidershipData>> ridershipMap = new HashMap<>();
+                        // and we need to set all of the ridershipData ids to the GTFS id, from the ridership id
+
+                        ArrayList<RidershipData> rsList = ridershipMap.get(trip.getKey());
+                        //this is the list of data where the Trip ids are all the same, and each entry is a stop
+                        //so, update the Trip id to go from Ridership_id to Trip_id
+                        for (RidershipData rs : rsList) {
+
+                            //get trips added ids
+                            //if its already been added, compare differences and use lowest?
+                            rs.setRsTripId(trip.getKey());
+                            rs.setGtfsTripId(GTFStrip.getId().getId());
+                            rs.setTripId(GTFStrip.getId().getId());
+                            rs.setMinutesDifference(minutesDifference);
+                            rs.setRouteId(dao.getTripForId(GTFStrip.getId()).getRoute().getId().getId());
+                            saveRidership(dao, rs);
+                            ridershipIds.add(rs.getRsTripId());
+                        }
+                        //Do we need to handle when two ridership stops match to one GTFS? Compare and take the one that is less?
+                        //or what about the same ridership matching to multiple GTFS stops
+                    }
+                }
+            }
+        }
+
+        //the algorithm above takes each ridership trip and tries to find a GTFS trip to match it to.  The algorithm below
+        //takes each GTFS trip and tries to find a ridership trip to match it to.  The numbers of matched trips is the same either way.
+
+        //Try to find trips that match by comparing the stops on that trip.  We will get a lot of matches as identical trips run
+        //on the same route each day
+/*        for (HashMap.Entry<AgencyAndId, TreeMap<Integer, String>> trip : daoTrips.entrySet()) {
             TreeMap<Integer, String> daoStops = (TreeMap<Integer, String>) trip.getValue();
             //for each dao trip, we now have a tree list of the stops on that trip.  Compare to each trip from ridership data
             List<String> daoStopList = new ArrayList<>(daoStops.values());
@@ -243,21 +324,34 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
                             rs.setMinutesDifference(minutesDifference);
                             rs.setRouteId(dao.getTripForId(trip.getKey()).getRoute().getId().getId());
                             saveRidership(dao, rs);
+                            ridershipIds.add(rs.getRsTripId());
                         }
 
                         //Do we need to handle when two ridership stops match to one GTFS? Compare and take the one that is less?
                         //or what about the same ridership matching to multiple GTFS stops
 
-                        //TODO: what about the times?  I am checking that A LOT and its inefficient
-
                     }
                 }
             }
-        }
+        }*/
 
         List<Ridership> riderships2 = new ArrayList<>(dao.getAllRiderships());
+        _log.error("Ridership size: {}", dao.getAllRiderships().size());
         _log.error("Ridership size: {}", riderships2.size());
 
+        int in = 0;
+        int out = 0;
+
+        //iterate over list of ridership data. For each ridershipData, is it in ridership.txt?
+        for (String ridership_trip_id : ridershipMap.keySet()) {
+            if (ridershipIds.contains(ridership_trip_id)) {
+                in++;
+            }
+            else {
+                out++;
+            }
+        }
+        _log.error("Trips ids in ridership.txt: {}, trip ids abandoned: {}", in, out);
 
     }
 

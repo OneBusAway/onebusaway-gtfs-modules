@@ -473,8 +473,8 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   @Override
   public String toString() {
-    return "StopTime(seq=" + getStopSequence() + " stop=" + getStop().getId()
-        + " trip=" + getTrip().getId() + " times="
+    return "StopTime(seq=" + getStopSequence() + " stop=" + (getStop() == null?"NuLl":getStop().getId())
+        + " trip=" + (getTrip() == null?"NuLl":getTrip().getId()) + " times="
         + StopTimeFieldMappingFactory.getSecondsAsString(getArrivalTime())
         + "-"
         + StopTimeFieldMappingFactory.getSecondsAsString(getDepartureTime())

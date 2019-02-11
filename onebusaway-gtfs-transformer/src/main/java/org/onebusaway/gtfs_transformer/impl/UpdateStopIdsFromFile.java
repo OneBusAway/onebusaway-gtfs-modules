@@ -29,13 +29,14 @@ import java.io.File;
 import java.util.List;
 
 //based on the control file, we are changing from the "new" id to the "old" id
-//we are only changing the id, nothing else
+//in addition to changing the id, also update the stop code
 public class UpdateStopIdsFromFile implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(UpdateStopIdFromControlStrategy.class);
 
     private static final int NEW_STOP_ID = 1;
     private static final int OLD_STOP_ID = 2;
+    private static final int NEW_STOP_CODE = 3;
 
     @Override
     public String getName() {
@@ -74,6 +75,7 @@ public class UpdateStopIdsFromFile implements GtfsTransformStrategy {
             }
             String oldId = controlArray[OLD_STOP_ID];
             String newId = controlArray[NEW_STOP_ID];
+            String newCode = controlArray[NEW_STOP_CODE];
 
             Stop stop = dao.getStopForId(new AgencyAndId(agencyAndId.getAgencyId(), newId));
 
@@ -91,10 +93,9 @@ public class UpdateStopIdsFromFile implements GtfsTransformStrategy {
             matched++;
             _log.error("Setting existing new id {} to old id {}", newId, oldId);
             stop.setId(new AgencyAndId(stop.getId().getAgencyId(), oldId));
-
+            stop.setCode(newCode);
         }
         _log.info("Complete with {} matched and {} unmatched and {} duplicates", matched, unmatched, duplicate);
-
     }
 
     private String getTopic() {

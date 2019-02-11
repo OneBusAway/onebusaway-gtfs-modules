@@ -69,7 +69,7 @@ public class UpdateTripHeadsignExcludeNonreference implements GtfsTransformStrat
                 else {
                     //trip headsign is NOT null and the reference stop doesn't exist
                     //these are the trips where we don't update the headsign
-                    _log.error("Trip {}, Laststop id: {} headsign is: {}, last stop is: {}", trip.getId(), lastStop.getId(), trip.getTripHeadsign(), lastStop.getName());
+                    //_log.error("Trip {}, Laststop id: {} headsign is: {}, last stop is: {}", trip.getId(), lastStop.getId(), trip.getTripHeadsign(), lastStop.getName());
                     noChange++;
                     if (trip.getTripHeadsign().contains("SHUTTLE")) {
                         shuttle++;

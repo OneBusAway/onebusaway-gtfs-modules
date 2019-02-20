@@ -15,45 +15,7 @@
  */
 package org.onebusaway.gtfs.services;
 
-import org.onebusaway.gtfs.model.Agency;
-import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.Route;
-import org.onebusaway.gtfs.model.ShapePoint;
-import org.onebusaway.gtfs.model.Stop;
-import org.onebusaway.gtfs.model.StopTime;
-import org.onebusaway.gtfs.model.Trip;
-import org.onebusaway.gtfs.model.calendar.ServiceDate;
+import org.onebusaway.gtfs.services.calendar.CalendarService;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.TimeZone;
-
-public interface GtfsDataService {
-
-    String getFeedId();
-
-    Collection<Agency> getAllAgencies();
-
-    Collection<Route> getAllRoutes();
-
-    Route getRouteForId(AgencyAndId agencyAndId);
-
-    Collection<Trip> getAllTrips();
-
-    Trip getTripForId(AgencyAndId tripId);
-
-    List<Trip> getTripsForRoute(Route route);
-
-    List<StopTime> getStopTimesForTrip(Trip trip);
-
-    Collection<Stop> getAllStops();
-
-    Stop getStopForId(AgencyAndId stopId);
-
-    List<ShapePoint> getShapePointsForShapeId(AgencyAndId shapeId);
-
-    Set<AgencyAndId> getServiceIdsOnDate(ServiceDate serviceDate);
-
-    TimeZone getTimeZoneForAgencyId(String agencyId);
+public interface GtfsDataService extends GtfsRelationalDao, CalendarService {
 }

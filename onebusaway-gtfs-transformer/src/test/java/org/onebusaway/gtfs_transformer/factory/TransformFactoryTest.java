@@ -136,6 +136,27 @@ public class TransformFactoryTest {
     assertEquals("1234", trip.getId().getId());
   }
 
+  @Test
+  public void testReplaceIdInUpdateComplex() throws IOException,
+          TransformSpecificationException {
+    _factory.addModificationsFromString("{'op':'update', "
+            + "'match':{'file':'trips.txt'}, "
+            + "'update':{'trip_id': 's/^([^_]*)_([0-9]*).*/$2/'}}");
+
+    GtfsTransformStrategy transform = _transformer.getLastTransform();
+    TransformContext context = new TransformContext();
+    context.setDefaultAgencyId("2");
+    GtfsMutableRelationalDao dao = new GtfsRelationalDaoImpl();
+
+    Trip trip = new Trip();
+    trip.setId(new AgencyAndId("2", "1234-this-text-to-remove"));
+    dao.saveEntity(trip);
+
+    transform.run(context, dao);
+
+    assertEquals("1234", trip.getId().getId());
+  }
+
 
   @Test
   public void testReplaceValueInUpdateRegex() throws IOException,

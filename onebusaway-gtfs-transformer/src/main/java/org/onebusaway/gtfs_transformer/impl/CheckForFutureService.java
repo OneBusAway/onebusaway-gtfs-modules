@@ -18,6 +18,7 @@ package org.onebusaway.gtfs_transformer.impl;
 import org.onebusaway.cloud.api.ExternalServices;
 import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.*;
+import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
@@ -93,7 +94,7 @@ public class CheckForFutureService implements GtfsTransformStrategy {
             if (!dao.getCalendarDatesForServiceId(trip.getServiceId()).isEmpty()) {
                 //calendar dates are not empty
                 for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
-                    Date date = removeTime(calDate.getDate().getAsDate());
+                    Date date = constructDate(calDate.getDate());
                     if (date.equals(testDate)) {
                         hasCalDateException = true;
                         if (calDate.getExceptionType() == 1) {
@@ -131,6 +132,16 @@ public class CheckForFutureService implements GtfsTransformStrategy {
         cal.setTime(date);
         cal.add(Calendar.DATE, daysToAdd);
         return cal.getTime();
+    }
+
+    private Date constructDate(ServiceDate date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, date.getYear());
+        calendar.set(Calendar.MONTH, date.getMonth()-1);
+        calendar.set(Calendar.DATE, date.getDay());
+        Date date1 = calendar.getTime();
+        date1 = removeTime(date1);
+        return date1;
     }
 
     private Date removeTime(Date date) {

@@ -18,6 +18,7 @@ package org.onebusaway.gtfs_transformer.impl;
 import org.onebusaway.cloud.api.ExternalServices;
 import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.*;
+import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
@@ -104,7 +105,7 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
 
             //check for current service
             for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
-                Date date = removeTime(calDate.getDate().getAsDate());
+                Date date = constructDate(calDate.getDate());
                 Date today = removeTime(new Date());
                 if (calDate.getExceptionType() == 1 && date.equals(today)) {
                     curSerTrips++;
@@ -155,6 +156,16 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
         calendar.set(Calendar.MILLISECOND, 0);
         date = calendar.getTime();
         return date;
+    }
+
+    private Date constructDate(ServiceDate date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, date.getYear());
+        calendar.set(Calendar.MONTH, date.getMonth()-1);
+        calendar.set(Calendar.DATE, date.getDay());
+        Date date1 = calendar.getTime();
+        date1 = removeTime(date1);
+        return date1;
     }
 
     private String getTopic() {

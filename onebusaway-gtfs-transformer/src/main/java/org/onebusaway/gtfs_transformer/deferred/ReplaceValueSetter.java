@@ -16,6 +16,7 @@
 package org.onebusaway.gtfs_transformer.deferred;
 
 import org.onebusaway.csv_entities.schema.BeanWrapper;
+import org.onebusaway.gtfs.model.AgencyAndId;
 
 /**
  * A {@link ValueSetter} that can do string-replacement operations on a bean
@@ -40,7 +41,13 @@ public class ReplaceValueSetter implements ValueSetter {
     String stringValue = value.toString();
     String updatedValue = stringValue.replaceAll(matchRegex, replacementValue);
     if (!stringValue.equals(updatedValue)) {
-      bean.setPropertyValue(propertyName, updatedValue);
+      if (bean.getPropertyType(propertyName) == AgencyAndId.class) {
+        AgencyAndId aid = (AgencyAndId)bean.getPropertyValue(propertyName);
+        aid.setId(updatedValue);
+        bean.setPropertyValue(propertyName, aid);
+      } else {
+        bean.setPropertyValue(propertyName, updatedValue);
+      }
     }
   }
 }

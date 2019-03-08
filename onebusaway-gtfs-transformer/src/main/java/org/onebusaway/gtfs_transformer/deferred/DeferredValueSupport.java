@@ -22,6 +22,7 @@ import org.onebusaway.csv_entities.schema.SingleFieldMapping;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsReaderContext;
+import org.onebusaway.gtfs.serialization.NoDefaultAgencyIdException;
 import org.onebusaway.gtfs.serialization.mappings.ConverterFactory;
 
 public class DeferredValueSupport {
@@ -48,7 +49,12 @@ public class DeferredValueSupport {
   public AgencyAndId resolveAgencyAndId(BeanWrapper bean, String propertyName,
       String newId) {
     GtfsReaderContext context = _reader.getGtfsReaderContext();
-    String agencyId = context.getDefaultAgencyId();
+    String agencyId = null;
+    try {
+      agencyId = context.getDefaultAgencyId();
+    } catch (NoDefaultAgencyIdException ndaie) {
+      agencyId = null;
+    }
     AgencyAndId existingId = (AgencyAndId) bean.getPropertyValue(propertyName);
     if (existingId != null) {
       agencyId = existingId.getAgencyId();

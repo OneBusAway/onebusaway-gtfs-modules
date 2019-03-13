@@ -69,7 +69,7 @@ public class VerifyRouteService implements GtfsTransformStrategy {
             triploop:
             for (Trip trip1 : dao.getTripsForRoute(route)) {
                 for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip1.getServiceId())) {
-                    Date date = removeTime(calDate.getDate().getAsDate());
+                    Date date = constructDate(calDate.getDate());
                     if (calDate.getExceptionType() == 1 && date.equals(today)) {
                         _log.info("ATIS has current service for route: {}", route.getId().getId());
                         curSerRoute++;
@@ -113,6 +113,16 @@ public class VerifyRouteService implements GtfsTransformStrategy {
             throw new IllegalStateException(
                     "Route service missing in agency: " + dao.getAllAgencies().iterator().next());
         }
+    }
+
+    private Date constructDate(ServiceDate date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, date.getYear());
+        calendar.set(Calendar.MONTH, date.getMonth()-1);
+        calendar.set(Calendar.DATE, date.getDay());
+        Date date1 = calendar.getTime();
+        date1 = removeTime(date1);
+        return date1;
     }
 
     private Date removeTime(Date date) {

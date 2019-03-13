@@ -72,16 +72,27 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         int numTripsOnDate = 0;
         int activeRoutes = 0;
+        _log.error("Test date: {}", testDate);
 
         //check for route specific current service
         for (Route route : dao.getAllRoutes()) {
             numTripsOnDate = 0;
             triploop:
+            /*if (route.getId().getId().equals("5X")) {
+                break triploop;
+            }*/
             for (Trip trip : dao.getTripsForRoute(route)) {
-                //_log.error("Got trip: {}", trip.getId());
+                /*
+                if (trip.getServiceId().getId().equals("5")){
+                    _log.error("Got trip: {} service id: {}", trip.getId(), trip.getServiceId().getId());
+                    for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
+                        //_log.error("Date: {} getAsDate: {} constructDate: {} test date: {}", calDate, calDate.getDate().getAsDate(), constructDate(calDate.getDate()), testDate);
+                        _log.error("Date: {} getAsDate: {} constructDate: {}", calDate, calDate.getDate().getAsDate(), constructDate(calDate.getDate()));
+                    }
+                }*/
                 for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
                     //_log.error("Cal Date: {} test date: {}", calDate, testDate);
-                    Date date = removeTime(calDate.getDate().getAsDate());
+                    Date date = constructDate(calDate.getDate());
                     //_log.error("Date: {} test date: {}", date, testDate);
                     if (calDate.getExceptionType() == 1 && date.equals(testDate)) {
                         _log.info("ATIS has service for route: {} on {}", route.getId().getId(), testDate);
@@ -115,6 +126,15 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
         return activeRoutes;
     }
 
+    private Date constructDate(ServiceDate date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, date.getYear());
+        calendar.set(Calendar.MONTH, date.getMonth()-1);
+        calendar.set(Calendar.DATE, date.getDay());
+        Date date1 = calendar.getTime();
+        date1 = removeTime(date1);
+        return date1;
+    }
 
     private Date removeTime(Date date) {
         Calendar calendar = Calendar.getInstance();

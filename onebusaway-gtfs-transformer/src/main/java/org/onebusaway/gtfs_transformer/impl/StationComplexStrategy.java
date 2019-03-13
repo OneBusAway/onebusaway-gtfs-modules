@@ -64,7 +64,7 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
         return this.getClass().getName();
     }
 
-    // Create pathways between all stops in a station complex
+    // Create pathways between all stops in a station complex, or set up the station hierarchy for a complex.
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         List<MTAStation> stations = CSVUtil.readCsv(MTAStation.class, complexFile);

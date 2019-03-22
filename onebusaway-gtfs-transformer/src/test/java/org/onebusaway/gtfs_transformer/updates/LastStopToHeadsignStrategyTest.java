@@ -27,17 +27,18 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class LastStopToHeadsignStrategyTest {
     private GtfsRelationalDaoImpl _dao;
 
     @Before
-    public void setup() throws IOException {
+    public void setup() throws IOException, URISyntaxException {
         _dao = new GtfsRelationalDaoImpl();
 
         GtfsReader reader = new GtfsReader();
         File path = new File(getClass().getResource(
-                "/org/onebusaway/gtfs_transformer/testagency").getPath());
+                "/org/onebusaway/gtfs_transformer/testagency").toURI());
         reader.setInputLocation(path);
         reader.setEntityStore(_dao);
         reader.run();

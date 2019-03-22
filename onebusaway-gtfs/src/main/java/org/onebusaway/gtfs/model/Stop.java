@@ -19,6 +19,7 @@ package org.onebusaway.gtfs.model;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.LatLonFieldMappingFactory;
 
 @CsvFields(filename = "stops.txt", prefix = "stop_")
@@ -28,16 +29,27 @@ public final class Stop extends IdentityBean<AgencyAndId> {
   
   private static final int MISSING_VALUE = -999;
 
+  public static final int LOCATION_TYPE_STOP = 0;
+
+  public static final int LOCATION_TYPE_STATION = 1;
+
+  public static final int LOCATION_TYPE_ENTRANCE_EXIT = 2;
+
+  public static final int LOCATION_TYPE_NODE = 3;
+
+  public static final int LOCATION_TYPE_BOARDING_AREA = 4;
+
   @CsvField(mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 
+  @CsvField(optional = true)
   private String name;
 
-  @CsvField(mapping = LatLonFieldMappingFactory.class)
-  private double lat;
+  @CsvField(mapping = LatLonFieldMappingFactory.class, optional = true)
+  private double lat = MISSING_VALUE;
 
-  @CsvField(mapping = LatLonFieldMappingFactory.class)
-  private double lon;
+  @CsvField(mapping = LatLonFieldMappingFactory.class, optional = true)
+  private double lon = MISSING_VALUE;
 
   @CsvField(optional = true)
   private String code;
@@ -72,6 +84,9 @@ public final class Stop extends IdentityBean<AgencyAndId> {
   @CsvField(name="platform_code", optional = true)
   private String platformCode;
 
+  @CsvField(name="level_id", optional=true, mapping = EntityFieldMappingFactory.class)
+  private Level level;
+
   // Custom extension for MTA
   @CsvField(optional = true, name = "mta_stop_id")
   private String mtaStopId;
@@ -96,6 +111,7 @@ public final class Stop extends IdentityBean<AgencyAndId> {
     this.timezone = obj.timezone;
     this.vehicleType = obj.vehicleType;
     this.platformCode = obj.platformCode;
+    this.level = obj.level;
     this.mtaStopId = obj.mtaStopId;
   }
 
@@ -131,6 +147,10 @@ public final class Stop extends IdentityBean<AgencyAndId> {
     this.desc = desc;
   }
 
+  public boolean isLatSet() {
+    return this.lat != MISSING_VALUE;
+  }
+
   public double getLat() {
     return lat;
   }
@@ -139,12 +159,24 @@ public final class Stop extends IdentityBean<AgencyAndId> {
     this.lat = lat;
   }
 
+  public void clearLat() {
+    this.lat = MISSING_VALUE;
+  }
+
+  public boolean isLonSet() {
+    return this.lon != MISSING_VALUE;
+  }
+
   public double getLon() {
     return lon;
   }
 
   public void setLon(double lon) {
     this.lon = lon;
+  }
+
+  public void clearLon() {
+    this.lon = MISSING_VALUE;
   }
 
   public String getZoneId() {
@@ -230,6 +262,14 @@ public final class Stop extends IdentityBean<AgencyAndId> {
 
   public void setPlatformCode(String platformCode) {
     this.platformCode = platformCode;
+  }
+
+  public Level getLevel() {
+    return this.level;
+  }
+
+  public void setLevel(Level level) {
+    this.level = level;
   }
 
   public String getMtaStopId() { return mtaStopId; }

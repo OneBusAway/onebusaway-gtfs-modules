@@ -17,24 +17,7 @@ package org.onebusaway.gtfs.impl;
 
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceImpl;
-import org.onebusaway.gtfs.model.Agency;
-import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.Area;
-import org.onebusaway.gtfs.model.Block;
-import org.onebusaway.gtfs.model.FareAttribute;
-import org.onebusaway.gtfs.model.FareRule;
-import org.onebusaway.gtfs.model.FeedInfo;
-import org.onebusaway.gtfs.model.Frequency;
-import org.onebusaway.gtfs.model.Pathway;
-import org.onebusaway.gtfs.model.Ridership;
-import org.onebusaway.gtfs.model.Route;
-import org.onebusaway.gtfs.model.ServiceCalendar;
-import org.onebusaway.gtfs.model.ServiceCalendarDate;
-import org.onebusaway.gtfs.model.ShapePoint;
-import org.onebusaway.gtfs.model.Stop;
-import org.onebusaway.gtfs.model.StopTime;
-import org.onebusaway.gtfs.model.Transfer;
-import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.LocalizedServiceId;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.model.calendar.ServiceIdIntervals;
@@ -188,6 +171,16 @@ public class GtfsDataServiceImpl implements GtfsDataService {
     @Override
     public Pathway getPathwayForId(AgencyAndId id) {
         return _dao.getPathwayForId(id);
+    }
+
+    @Override
+    public Collection<Level> getAllLevels() {
+        return _dao.getAllLevels();
+    }
+
+    @Override
+    public Level getLevelForId(AgencyAndId id) {
+        return _dao.getLevelForId(id);
     }
 
     @Override

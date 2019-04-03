@@ -17,18 +17,14 @@
 package org.onebusaway.gtfs_transformer.impl;
 
 import org.onebusaway.gtfs.model.*;
+import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrategy {
 
@@ -100,6 +96,7 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
         int countUnique = 0;
         int countCombine = 0;
         int countDoNothing = 0;
+        int countToday = 0;
 
         Iterator entries = tripsMap.entrySet().iterator();
         int service_id = getNextServiceId(dao);
@@ -121,6 +118,12 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
                             //so at this point the stop times don't equal.  Do I check if its just one or just throw the whole thing out?
                             //For now if one doesn't match then none do and I'm going to ignore.
                             countDoNothing = countDoNothing + trips.size();
+
+                            //check if any of the trips are today.  If one of them is, then copy over the mta_id and ignore the duplicates
+                            //so at least one trip will get the right id
+                            if (checkForServiceToday(trips, dao)) {
+                                countToday++;
+                            }
                             break trip_loop;
                         }
                     }
@@ -143,7 +146,7 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
                 countUnique++;
             }
         }
-        _log.info("Mta_trip_ids: null {}, unique {}, do nothing {}, combine {}, total {}", mtaIdNull, countUnique, countDoNothing, countCombine, mtaIdNull+countUnique+countDoNothing+countCombine);
+        _log.info("Mta_trip_ids: null {}, unique {}, do nothing {}, today {}, combine {}, total {}", mtaIdNull, countUnique, countDoNothing, countToday, countCombine, mtaIdNull+countUnique+countDoNothing+countCombine);
 
         //now we have a list of DuplicateTrips and we need to fill in the calendar dates
         for (DuplicateTrips dts : duplicateTripData) {
@@ -243,6 +246,28 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
         _log.info("Routes: {} Trips: {} Stops: {} Stop times: {} CalDates: {} ", dao.getAllRoutes().size(), dao.getAllTrips().size(), dao.getAllStops().size(), dao.getAllStopTimes().size(), dao.getAllCalendarDates().size());
     }
 
+    private boolean checkForServiceToday(ArrayList<Trip> trips, GtfsMutableRelationalDao dao) {
+        //if the stop times are not equal, check and see if any of the trips are running today.
+        //if the trip is running today, then copy over the id for this one trip,
+        //we'll ignore the rest of the trips and break the trip loop.
+        Date today = removeTime(new Date());
+        if (trips.size() > 2) {
+            _log.info("There are more than two matches for this trip id {}", trips.get(0).getMtaTripId());
+        }
+        for (Trip trip : trips) {
+            for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
+                Date date = constructDate(calDate.getDate());
+                if (calDate.getExceptionType() == 1 && date.equals(today)) {
+                    _log.info("Copying over id for {} {}", trip.getId(), trip.getMtaTripId());
+                    //trip is today, copy of the mta_id for this one and quit
+                    trip.setId(new AgencyAndId(trip.getId().getAgencyId(), trip.getMtaTripId()));
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private int getNextServiceId(GtfsMutableRelationalDao dao) {
         ArrayList<Integer> idList = new ArrayList<>();
         for (ServiceCalendarDate svcDate : dao.getAllCalendarDates()) {
@@ -291,5 +316,26 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
             }
         }
         return true;
+    }
+
+    private Date constructDate(ServiceDate date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, date.getYear());
+        calendar.set(Calendar.MONTH, date.getMonth()-1);
+        calendar.set(Calendar.DATE, date.getDay());
+        Date date1 = calendar.getTime();
+        date1 = removeTime(date1);
+        return date1;
+    }
+
+    private Date removeTime(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        date = calendar.getTime();
+        return date;
     }
 }

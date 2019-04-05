@@ -204,6 +204,9 @@ public class TransformFactory {
         else if (opType.equals("update_stop_ids_from_control")) {
           handleTransformOperation(line, json, new UpdateStopIdFromControlStrategy());
         }
+        else if (opType.equals("update_wrong_way_concurrencies")) {
+          handleTransformOperation(line, json, new UpdateWrongWayConcurrencies());
+        }
         else if (opType.equals("update_stop_ids_from_file")) {
           handleTransformOperation(line, json, new UpdateStopIdsFromFile());
         }

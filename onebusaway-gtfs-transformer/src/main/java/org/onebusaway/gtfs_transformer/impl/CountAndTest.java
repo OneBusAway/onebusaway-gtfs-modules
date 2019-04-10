@@ -179,7 +179,7 @@ public class CountAndTest implements GtfsTransformStrategy {
                     + name
                     + " has trips w/out headsign: "
                     + countNoHs);
-            es.publishMetric(getNamespace(), "No headsigns", null, null, countNoHs);
+            es.publishMetric(getNamespace(), "noHeadsigns", null, null, countNoHs);
             _log.error("There are trips with no headsign");
         }
     }

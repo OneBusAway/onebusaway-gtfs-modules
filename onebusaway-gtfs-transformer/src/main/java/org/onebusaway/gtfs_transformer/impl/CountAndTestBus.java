@@ -99,7 +99,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
                 if (tripIsThisWeek(dao.getCalendarDatesForServiceId(trip.getServiceId()))) {
                     atisTripsThisWeek++;
                     if (referenceTrips.containsKey(trip.getId().getId())) {
-                        matchingTripsThisWeek++;
+                        //ATIS trips this week that match a reference trip (reference trip may not be this week, check this further down)
                         matchingIdsThisWeek.add(trip.getId().getId());
                     }
                 }
@@ -168,7 +168,6 @@ public class CountAndTestBus implements GtfsTransformStrategy {
 
             if (tripIsThisWeek(activeDates)) {
                 refTripsThisWeek++;
-
                 if (!matchingIdsThisWeek.contains(refTrip.getId().getId())) {
                     //_log.info(refTrip.getId().getId());
                     doesntMatchThisWeek++;
@@ -184,7 +183,9 @@ public class CountAndTestBus implements GtfsTransformStrategy {
                         _log.info(refTrip.getId().getId());
                     }
                 } else {
-                    checkMatchesThisWeek++;
+                    matchingTripsThisWeek++;
+                    //the number of ATIS trips this week that match with a reference trip
+                    //that is also this week
                 }
             }
 
@@ -214,7 +215,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         _log.info("ATIS Trips: {}, Reference: {}, match: {}, In ref NotInATIS: {}, In ref NotInATIS Sdon: {}, In ref NotInATIS not Sdon is H9: {}, Current Service: {}", dao.getAllTrips().size(), reference.getAllTrips().size(), matches, noMatch, refTripsWithSdon, refTripsWoutSdonWithh9, curSerTrips);
         _log.info("ATIS Trips this week {}, Reference trips this week {}, ATIS Trips this week that are also Reference Trips this week {}", atisTripsThisWeek, refTripsThisWeek, matchingTripsThisWeek);
 
-        _log.info("This week matches: {}. This week doesn't match {}, in ref NotInATIS Sdon: {}, In ref NotInATIS not Sdon is A9: {}, E9: {}, Leftover: {}",  checkMatchesThisWeek, doesntMatchThisWeek, refTripsThisWeekWithSdon, refTripsThisWeekWoutSdonWithA9, refTripsThisWeekWoutSdonWithE9, leftOverNoMatchThisWeek);
+        _log.info("This week matches: {}. This week doesn't match {}, in ref NotInATIS Sdon: {}, In ref NotInATIS not Sdon is A9: {}, E9: {}, Leftover: {}",  matchingTripsThisWeek, doesntMatchThisWeek, refTripsThisWeekWithSdon, refTripsThisWeekWoutSdonWithA9, refTripsThisWeekWoutSdonWithE9, leftOverNoMatchThisWeek);
 
         _log.info("Stops: {}, Stop times {}, Trips w/ st: {}, Trips w/out st: {}", dao.getAllStops().size(), dao.getAllStopTimes().size(), countSt, countNoSt);
         _log.info("Calendar dates: {}, Trips w/cd {}, Trips w/out cd: {}", dao.getAllCalendarDates().size(), countCd, countNoCd);
@@ -229,6 +230,10 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         _log.info("ATIS Stops: {}, Reference: {}, ATIS match to reference: {}", dao.getAllStops().size(), reference.getAllStops().size(), matches);
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+        es.publishMetric(getNamespace(), "ATISBusTripsThisWeek", null, null, atisTripsThisWeek);
+        es.publishMetric(getNamespace(), "refBusTripsThisWeek", null, null, refTripsThisWeek);
+        es.publishMetric(getNamespace(), "matchingBusTripsThisWeek", null, null, matchingTripsThisWeek);
+
         if (curSerTrips < 1) {
             es.publishMessage(getTopic(), "Agency: "
                     + dao.getAllAgencies().iterator().next().getId()

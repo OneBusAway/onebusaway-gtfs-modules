@@ -258,7 +258,7 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
             for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
                 Date date = constructDate(calDate.getDate());
                 if (calDate.getExceptionType() == 1 && date.equals(today)) {
-                    _log.info("Copying over id for {} {}", trip.getId(), trip.getMtaTripId());
+                    //_log.info("Copying over id for {} {}", trip.getId(), trip.getMtaTripId());
                     //trip is today, copy of the mta_id for this one and quit
                     trip.setId(new AgencyAndId(trip.getId().getAgencyId(), trip.getMtaTripId()));
                     return true;

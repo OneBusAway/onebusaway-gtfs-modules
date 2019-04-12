@@ -154,6 +154,26 @@ public class CountAndTest implements GtfsTransformStrategy {
                 dao.getAllStopTimes().size(), countSt, countNoSt, countNoHs);
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+
+        HashSet<String> ids = new HashSet<String>();
+        for (Stop stop : dao.getAllStops()) {
+            //check for duplicate stop ids.
+            if (ids.contains(stop.getId().getId())) {
+                _log.error("Duplicate stop ids! Agency {} stop id {}", agency, stop.getId().getId());
+                es.publishMessage(getTopic(), "Agency: "
+                        + agency
+                        + " "
+                        + name
+                        + " has duplicate stop id: "
+                        + stop.getId());
+                throw new IllegalStateException(
+                        "There are duplicate stop ids!");
+            }
+            else {
+                ids.add(stop.getId().getId());
+            }
+        }
+
         if (curSerTrips < 1) {
             es.publishMessage(getTopic(), "Agency: "
                     + agency

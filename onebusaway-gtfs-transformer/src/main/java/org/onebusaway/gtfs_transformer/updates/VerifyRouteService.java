@@ -87,7 +87,7 @@ public class VerifyRouteService implements GtfsTransformStrategy {
                 for (Trip refTrip : reference.getTripsForRoute(refRoute)) {
                     Set<ServiceDate> activeDates = refCalendarService.getServiceDatesForServiceId(refTrip.getServiceId());
                     if (activeDates.contains(sToday)) {
-                        _log.info("Reference has service for this route but ATIS has none: {}", route.getId());
+                        _log.info("Reference has service for this route today but ATIS has none: {}", route.getId());
                         es.publishMessage(getTopic(), "Route: "
                                 + route.getId()
                                 + " has no current service!");

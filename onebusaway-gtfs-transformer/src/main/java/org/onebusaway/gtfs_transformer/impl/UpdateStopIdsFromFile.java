@@ -91,7 +91,7 @@ public class UpdateStopIdsFromFile implements GtfsTransformStrategy {
             }
 
             matched++;
-            _log.error("Setting existing new id {} to old id {}", newId, oldId);
+            _log.info("Setting existing new id {} to old id {}", newId, oldId);
             stop.setId(new AgencyAndId(stop.getId().getAgencyId(), oldId));
             stop.setCode(newCode);
         }

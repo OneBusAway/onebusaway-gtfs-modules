@@ -60,7 +60,7 @@ public class UpdateTripHeadsignByDestinationStrategy implements GtfsTransformStr
                 fallback++;
             }
         }
-        _log.error("trip headsign update:{} fallback: {}", update, fallback);
+        _log.info("trip headsign update:{} fallback: {}", update, fallback);
     }
 
     private void fallbackSetHeadsign (Trip trip) {

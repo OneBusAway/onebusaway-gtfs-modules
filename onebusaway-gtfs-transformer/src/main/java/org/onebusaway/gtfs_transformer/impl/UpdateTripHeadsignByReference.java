@@ -89,7 +89,7 @@ public class UpdateTripHeadsignByReference implements GtfsTransformStrategy {
     private void fallbackSetHeadsign (Trip trip, Stop stop) {
         if (stop != null && stop.getName() != null) {
             trip.setTripHeadsign(stop.getName());
-            //_log.error("Setting headsign {} on {}", stop.getName(), trip.toString());
+            //_log.info("Setting headsign {} on {}", stop.getName(), trip.toString());
         }
         else {
             genericSetHeadsign(trip);
@@ -99,7 +99,7 @@ public class UpdateTripHeadsignByReference implements GtfsTransformStrategy {
     private void genericSetHeadsign (Trip trip) {
         if (trip.getRouteShortName() != null) {
             trip.setTripHeadsign(trip.getRouteShortName());
-            //_log.error("Setting headsign {} on {}", trip.getRouteShortName(), trip.toString());
+            //_log.info("Setting headsign {} on {}", trip.getRouteShortName(), trip.toString());
         }
     }
 

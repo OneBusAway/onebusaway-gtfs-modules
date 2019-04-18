@@ -60,10 +60,10 @@ public class VerifyRouteService implements GtfsTransformStrategy {
         for (Route route : dao.getAllRoutes()) {
             if (route.getId().getId().length() > 2) {
                 ATISrouteIds.add(route.getId().getId().substring(0,2));
-                _log.error("Adding route: {}", route.getId().getId().substring(0,2));
+                _log.info("Adding route: {}", route.getId().getId().substring(0,2));
             } else {
                 ATISrouteIds.add(route.getId().getId());
-                _log.error("Adding route: {}", route.getId().getId());
+                _log.info("Adding route: {}", route.getId().getId());
             }
             curSerRoute = 0;
             triploop:

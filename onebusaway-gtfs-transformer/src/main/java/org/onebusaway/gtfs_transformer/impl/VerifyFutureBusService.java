@@ -62,7 +62,7 @@ public class VerifyFutureBusService implements GtfsTransformStrategy {
         tripsNextDay = hasRouteServiceForDate(dao, reference, refCalendarService, nextDay);
         tripsDayAfterNext = hasRouteServiceForDate(dao, reference, refCalendarService, dayAfterNext);
 
-        _log.error("Active routes {}: {}, {}: {}, {}: {}",
+        _log.info("Active routes {}: {}, {}: {}, {}: {}",
                 tomorrow, tripsTomorrow, nextDay, tripsNextDay, dayAfterNext, tripsDayAfterNext);
 
     }
@@ -79,11 +79,8 @@ public class VerifyFutureBusService implements GtfsTransformStrategy {
             numTripsOnDate = 0;
             triploop:
             for (Trip trip : dao.getTripsForRoute(route)) {
-                //_log.error("Got trip: {}", trip.getId());
                 for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
-                    //_log.error("Cal Date: {} test date: {}", calDate, testDate);
                     Date date = constructDate(calDate.getDate());
-                    //_log.error("Date: {} test date: {}", date, testDate);
                     if (calDate.getExceptionType() == 1 && date.equals(testDate)) {
                         _log.info("ATIS has service for route: {} on {}", route.getId().getId(), testDate);
                         numTripsOnDate++;

@@ -160,8 +160,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         int doesntMatchThisWeek = 0;
         int leftOverNoMatchThisWeek = 0;
         List<String> refTripsMissingATIS = new ArrayList<String>();
-        //_log.info("Reference trips that don't have a match in ATIS: ");
-        _log.error("Ref trips that don't match atis and aren't SDon: ");
+        _log.info("Ref trips that don't match atis and aren't SDon: ");
         for (Trip refTrip : reference.getAllTrips()) {
             //count number of reference trips this week
             Set<ServiceDate> activeDates = refCalendarService.getServiceDatesForServiceId(refTrip.getServiceId());
@@ -169,7 +168,6 @@ public class CountAndTestBus implements GtfsTransformStrategy {
             if (tripIsThisWeek(activeDates)) {
                 refTripsThisWeek++;
                 if (!matchingIdsThisWeek.contains(refTrip.getId().getId())) {
-                    //_log.info(refTrip.getId().getId());
                     doesntMatchThisWeek++;
                     if (refTrip.getId().getId().contains("SDon")) {
                         refTripsThisWeekWithSdon++;
@@ -260,9 +258,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         Date today = removeTime(new Date());
         Date inOneWeek = removeTime(addDays(new Date(), 7));
         for (ServiceDate calDate : serviceDates) {
-            //_log.error("Cal Date: {} test date: {}", calDate, testDate);
             Date date = removeTime(calDate.getAsDate());
-            //_log.error("Date: {} test date: {}", date, testDate);
             if (date.after(today) && date.before(inOneWeek)) {
                 return true;
             }
@@ -274,9 +270,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         Date today = removeTime(new Date());
         Date inOneWeek = removeTime(addDays(new Date(), 7));
         for (ServiceCalendarDate calDate : serviceDates) {
-            //_log.error("Cal Date: {} test date: {}", calDate, testDate);
             Date date = constructDate(calDate.getDate());
-            //_log.error("Date: {} test date: {}", date, testDate);
             if (calDate.getExceptionType() == 1 && date.after(today) && date.before(inOneWeek)) {
                 return true;
 

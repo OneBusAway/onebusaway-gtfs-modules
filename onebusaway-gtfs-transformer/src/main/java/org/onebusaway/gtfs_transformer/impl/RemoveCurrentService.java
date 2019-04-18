@@ -54,7 +54,7 @@ public class RemoveCurrentService implements GtfsTransformStrategy {
                 }
             }
             if (!hasEntryToday) {
-                _log.error("No entry for today, adding one, id: {}", aai);
+                _log.info("No entry for today, adding one, id: {}", aai);
                 ServiceCalendarDate calendarDate = new ServiceCalendarDate();
                 calendarDate.setServiceId(aai);
                 calendarDate.setDate(new ServiceDate(today));

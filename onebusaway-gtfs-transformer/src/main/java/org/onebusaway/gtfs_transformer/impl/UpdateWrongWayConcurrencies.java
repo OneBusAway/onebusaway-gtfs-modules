@@ -62,12 +62,9 @@ public class UpdateWrongWayConcurrencies implements GtfsTransformStrategy {
                     "Concurrency file does not exist: " + concurrencyFile.getName());
         }
 
-        _log.error("Concurrencies File exists");
-
         List<String> stopLines = new InputLibrary().readList((String) context.getParameter("concurrencyFile"));
 
         String agency = dao.getAllStops().iterator().next().getId().getAgencyId();
-        _log.error("Agency: {}", agency);
 
         for (String stopInfo : stopLines) {
             String[] stopArray = stopInfo.split(",");
@@ -88,7 +85,6 @@ public class UpdateWrongWayConcurrencies implements GtfsTransformStrategy {
 
             for (Stop stop : dao.getAllStops()) {
                 if (stop.getId().getId().equals(toStopId)) {
-                    _log.error("TO match. Stop: {}, agency: {}, id: {}", stop.getId(), stop.getId().getAgencyId(), stop.getId().getId());
                     toStop = stop;
                     break;
                 }
@@ -102,7 +98,7 @@ public class UpdateWrongWayConcurrencies implements GtfsTransformStrategy {
                                 if (stopTime.getStop().getId().getId() != null) {
                                     if (stopTime.getStop().getId().getId().equals(fromStopId)) {
                                         if (stopTime.getTrip().getDirectionId().equals(directionId)) {
-                                            _log.error("Setting id: {} to: {}, direction: {}, dirId: {}", stopTime.getStop().getId().getId(), toStopId, directionId, stopTime.getTrip().getDirectionId());
+                                            _log.info("Setting id: {} to: {}, direction: {}, dirId: {}", stopTime.getStop().getId().getId(), toStopId, directionId, stopTime.getTrip().getDirectionId());
                                             stopTime.setStop(toStop);
                                         }
                                     }

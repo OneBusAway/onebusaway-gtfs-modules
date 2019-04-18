@@ -62,7 +62,7 @@ public class UpdateStopIdById implements GtfsTransformStrategy {
                             + dao.getAllAgencies().iterator().next().getName()
                             + " has duplicate stop id: "
                             + stop.getMtaStopId());
-                    _log.error("*** MtaStopId {} already exists", stop.getMtaStopId());
+                    _log.info("MtaStopId {} already exists", stop.getMtaStopId());
                     stopsToDelete.add(stop);
                 }
                 else {

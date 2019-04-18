@@ -61,7 +61,7 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
         tripsNextDay = hasRouteServiceForDate(dao, reference, refCalendarService, nextDay);
         tripsDayAfterNext = hasRouteServiceForDate(dao, reference, refCalendarService, dayAfterNext);
 
-        _log.error("Active routes {}: {}, {}: {}, {}: {}",
+        _log.info("Active routes {}: {}, {}: {}, {}: {}",
                 tomorrow, tripsTomorrow, nextDay, tripsNextDay, dayAfterNext, tripsDayAfterNext);
 
     }
@@ -72,28 +72,14 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         int numTripsOnDate = 0;
         int activeRoutes = 0;
-        _log.error("Test date: {}", testDate);
 
         //check for route specific current service
         for (Route route : dao.getAllRoutes()) {
             numTripsOnDate = 0;
             triploop:
-            /*if (route.getId().getId().equals("5X")) {
-                break triploop;
-            }*/
             for (Trip trip : dao.getTripsForRoute(route)) {
-                /*
-                if (trip.getServiceId().getId().equals("5")){
-                    _log.error("Got trip: {} service id: {}", trip.getId(), trip.getServiceId().getId());
-                    for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
-                        //_log.error("Date: {} getAsDate: {} constructDate: {} test date: {}", calDate, calDate.getDate().getAsDate(), constructDate(calDate.getDate()), testDate);
-                        _log.error("Date: {} getAsDate: {} constructDate: {}", calDate, calDate.getDate().getAsDate(), constructDate(calDate.getDate()));
-                    }
-                }*/
                 for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
-                    //_log.error("Cal Date: {} test date: {}", calDate, testDate);
                     Date date = constructDate(calDate.getDate());
-                    //_log.error("Date: {} test date: {}", date, testDate);
                     if (calDate.getExceptionType() == 1 && date.equals(testDate)) {
                         _log.info("ATIS has service for route: {} on {}", route.getId().getId(), testDate);
                         numTripsOnDate++;
@@ -112,7 +98,7 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
                 for (Trip refTrip : reference.getTripsForRoute(refRoute)) {
                     Set<ServiceDate> activeDates = refCalendarService.getServiceDatesForServiceId(refTrip.getServiceId());
                     if (activeDates.contains(sDate)) {
-                        _log.info("On {} Reference has service for this route but ATIS has none: {}, Trip {}, Serviceid {}",
+                        _log.error("On {} Reference has service for this route but ATIS has none: {}, Trip {}, Serviceid {}",
                                 testDate, route.getId(), refTrip.getId(), refTrip.getServiceId());
                         es.publishMessage(getTopic(), "Route: "
                                 + route.getId()

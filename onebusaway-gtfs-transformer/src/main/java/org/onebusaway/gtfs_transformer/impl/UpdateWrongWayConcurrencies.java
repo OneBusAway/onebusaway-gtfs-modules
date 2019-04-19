@@ -67,6 +67,7 @@ public class UpdateWrongWayConcurrencies implements GtfsTransformStrategy {
         String agency = dao.getAllStops().iterator().next().getId().getAgencyId();
 
         for (String stopInfo : stopLines) {
+            int count=0;
             String[] stopArray = stopInfo.split(",");
             if (stopArray == null || stopArray.length < 2) {
                 _log.info("bad line {}", stopInfo);
@@ -98,7 +99,10 @@ public class UpdateWrongWayConcurrencies implements GtfsTransformStrategy {
                                 if (stopTime.getStop().getId().getId() != null) {
                                     if (stopTime.getStop().getId().getId().equals(fromStopId)) {
                                         if (stopTime.getTrip().getDirectionId().equals(directionId)) {
-                                            _log.info("Setting id: {} to: {}, direction: {}, dirId: {}", stopTime.getStop().getId().getId(), toStopId, directionId, stopTime.getTrip().getDirectionId());
+                                            if (count==0) { //log once for each line that updates an id
+                                                _log.info("Setting route: {} direction {} stop id: {} to: {}", stopTime.getTrip().getRoute().getId(), stopTime.getTrip().getDirectionId(), stopTime.getStop().getId().getId(), toStopId);
+                                                count++;
+                                            }
                                             stopTime.setStop(toStop);
                                         }
                                     }

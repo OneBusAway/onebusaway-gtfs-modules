@@ -156,6 +156,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         int refTripsThisWeekWithSdon = 0;
         int refTripsThisWeekWoutSdonWithA9 = 0;
         int refTripsThisWeekWoutSdonWithE9 = 0;
+        int refTripsThisWeekWoutSdonWithB9 = 0;
         int checkMatchesThisWeek = 0;
         int doesntMatchThisWeek = 0;
         int leftOverNoMatchThisWeek = 0;
@@ -175,6 +176,9 @@ public class CountAndTestBus implements GtfsTransformStrategy {
                         refTripsThisWeekWoutSdonWithA9++;
                     } else if (refTrip.getId().getId().contains("E9")) {
                         refTripsThisWeekWoutSdonWithE9++;
+                    }
+                    else if (refTrip.getId().getId().contains("B9")) {
+                        refTripsThisWeekWoutSdonWithB9++;
                     }
                     else {
                         leftOverNoMatchThisWeek++;
@@ -213,7 +217,8 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         _log.info("ATIS Trips: {}, Reference: {}, match: {}, In ref NotInATIS: {}, In ref NotInATIS Sdon: {}, In ref NotInATIS not Sdon is H9: {}, Current Service: {}", dao.getAllTrips().size(), reference.getAllTrips().size(), matches, noMatch, refTripsWithSdon, refTripsWoutSdonWithh9, curSerTrips);
         _log.info("ATIS Trips this week {}, Reference trips this week {}, ATIS Trips this week that are also Reference Trips this week {}", atisTripsThisWeek, refTripsThisWeek, matchingTripsThisWeek);
         _log.info("Matches this week {}", matchingTripsThisWeek);
-        _log.info("This week matches: {}. This week doesn't match {}, in ref NotInATIS Sdon: {}, In ref NotInATIS not Sdon is A9: {}, E9: {}, Leftover: {}",  matchingTripsThisWeek, doesntMatchThisWeek, refTripsThisWeekWithSdon, refTripsThisWeekWoutSdonWithA9, refTripsThisWeekWoutSdonWithE9, leftOverNoMatchThisWeek);
+        _log.info("This week matches: {}. This week doesn't match {}, in ref NotInATIS Sdon: {}, In ref NotInATIS not Sdon is A9: {}, E9: {}, B9: {} Leftover: {}",
+                matchingTripsThisWeek, doesntMatchThisWeek, refTripsThisWeekWithSdon, refTripsThisWeekWoutSdonWithA9, refTripsThisWeekWoutSdonWithE9, refTripsThisWeekWoutSdonWithB9, leftOverNoMatchThisWeek);
 
         _log.info("Stops: {}, Stop times {}, Trips w/ st: {}, Trips w/out st: {}", dao.getAllStops().size(), dao.getAllStopTimes().size(), countSt, countNoSt);
         _log.info("Calendar dates: {}, Trips w/cd {}, Trips w/out cd: {}", dao.getAllCalendarDates().size(), countCd, countNoCd);

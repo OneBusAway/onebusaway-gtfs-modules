@@ -94,8 +94,8 @@ public class VerifyRouteService implements GtfsTransformStrategy {
                         //ignore express routes, MOTP-1184
                         if (!route.getId().getId().contains("X")) {
                             missingService = true;
-                            break reftriploop;
                         }
+                        break reftriploop;
                     }
                 }
             }

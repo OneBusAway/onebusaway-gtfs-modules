@@ -34,6 +34,9 @@ import java.util.List;
 
 /**
  * using control file re-map GTFS stop ids and other stop properties from reference file
+ * The first field in the control file ldrtifny is the reference stop id.
+ * For subway the stops from ATIS have these ids, for example: 36, 9997, 31998
+ * the stops in reference have these ids, for example: 138N, 217N, 242S
  */
 public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
 
@@ -147,6 +150,7 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
             atisStop.setParentStation(refStop.getParentStation());
             atisStop.setLocationType(refStop.getLocationType());
             stopsAdded.put(atisStop.getId(), new AgencyAndId(agencyAndId.getAgencyId(), atisId));
+            dao.saveOrUpdateEntity(atisStop);
         }
         _log.info("Complete with {} matched and {} unmatched and {} duplicates", matched, unmatched, duplicate);
 

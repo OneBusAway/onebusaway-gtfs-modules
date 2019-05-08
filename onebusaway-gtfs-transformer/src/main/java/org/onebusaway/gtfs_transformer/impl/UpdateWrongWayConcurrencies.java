@@ -83,11 +83,11 @@ public class UpdateWrongWayConcurrencies implements GtfsTransformStrategy {
 
             //for some reason this line doesn't work so I have to iteratate over all the stops to get the one we want
             Stop toStop = dao.getStopForId(new AgencyAndId(agency, toStopId));
-            if (toStop == null){
+            if (toStop == null) {
                 _log.error("Stop is null. Agency: {} stopId: {}", agency, toStopId);
+            } else {
+                _log.info("Stop agency {} stop id: {}", toStop.getId().getAgencyId(), toStop.getId().getId());
             }
-
-            _log.info("Stop agency {} stop id: {}", toStop.getId().getAgencyId(), toStop.getId().getId());
 
             if (routeId != null && directionId != null && fromStopId != null && toStopId != null && toStop != null) {
                 for (StopTime stopTime : dao.getAllStopTimes()) {

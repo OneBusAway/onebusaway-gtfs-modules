@@ -32,6 +32,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+/*
+Used for subway service as it has specific logic for the subway routes and the express routes
+ */
 public class VerifyRouteService implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(CountAndTestSubway.class);

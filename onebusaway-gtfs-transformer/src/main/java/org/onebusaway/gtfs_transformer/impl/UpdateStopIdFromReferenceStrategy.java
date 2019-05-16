@@ -79,6 +79,7 @@ public class UpdateStopIdFromReferenceStrategy implements GtfsTransformStrategy 
         }
         for (Stop stop : stopsToAdd) {
             dao.saveOrUpdateEntity(stop);
+            _log.info("updating stops {}", stop.getId());
         }
     }
 }

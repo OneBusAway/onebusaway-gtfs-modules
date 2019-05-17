@@ -249,6 +249,9 @@ public class TransformFactory {
         else if (opType.equals("verify_route_service")) {
           handleTransformOperation(line, json, new VerifyRouteService());
         }
+        else if (opType.equals("verify_bus_service")) {
+          handleTransformOperation(line, json, new VerifyBusService());
+        }
         else if (opType.equals("update_stoptimes_for_time")) {
           handleTransformOperation(line, json, new UpdateStopTimesForTime());
         }
@@ -266,6 +269,9 @@ public class TransformFactory {
         }
         else if (opType.equals("verify_future_route_service")){
           handleTransformOperation(line, json, new VerifyFutureRouteService());
+        }
+        else if (opType.equals("verify_reference_service")){
+          handleTransformOperation(line, json, new VerifyReferenceService());
         }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);

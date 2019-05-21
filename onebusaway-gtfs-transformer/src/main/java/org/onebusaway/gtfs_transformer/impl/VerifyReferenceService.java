@@ -18,10 +18,7 @@ package org.onebusaway.gtfs_transformer.impl;
 import org.onebusaway.cloud.api.ExternalServices;
 import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
-import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.Route;
-import org.onebusaway.gtfs.model.ServiceCalendarDate;
-import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
@@ -60,9 +57,9 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
         Date nextDay = removeTime(addDays(new Date(), 2));
         Date dayAfterNext = removeTime(addDays(new Date(), 3));
 
-        //tripsToday = hasRouteServiceForDate(dao, reference, refCalendarService, today);
-        //tripsTomorrow = hasRouteServiceForDate(dao, reference, refCalendarService, tomorrow);
-        //tripsNextDay = hasRouteServiceForDate(dao, reference, refCalendarService, nextDay);
+        tripsToday = hasRouteServiceForDate(dao, reference, refCalendarService, today);
+        tripsTomorrow = hasRouteServiceForDate(dao, reference, refCalendarService, tomorrow);
+        tripsNextDay = hasRouteServiceForDate(dao, reference, refCalendarService, nextDay);
         tripsDayAfterNext = hasRouteServiceForDate(dao, reference, refCalendarService, dayAfterNext);
 
         _log.info("Active routes {}: {}, {}: {}, {}: {}, {}: {}",
@@ -79,10 +76,11 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
         //check for route specific current service
         for (Route route : reference.getAllRoutes()) {
             numTripsOnDate = 0;
+            ServiceDate sDate = createServiceDate(testDate);
             triploop:
             for (Trip trip : reference.getTripsForRoute(route)) {
                 for (ServiceDate calDate : refCalendarService.getServiceDatesForServiceId(trip.getServiceId())) {
-                    if (calDate.equals(testDate)) {
+                    if (calDate.equals(sDate)) {
                         _log.info("Reference has service for route: {} on {}", route.getId().getId(), testDate);
                         numTripsOnDate++;
                         activeRoutes++;
@@ -95,16 +93,23 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
                 //if there is no current service, check that it should have service
                 //there are certain routes that don't run on the weekend or won't have service
                 Route atisRoute = dao.getRouteForId(new AgencyAndId(daoAgencyAndId.getAgencyId(), route.getId().getId()));
+                if (atisRoute == null) {
+                    atisRoute = dao.getRouteForId(new AgencyAndId(daoAgencyAndId.getAgencyId(), route.getShortName()));
+                }
                 reftriploop:
                 for (Trip atisTrip : dao.getTripsForRoute(atisRoute)) {
-                    List<ServiceCalendarDate> activeDates = dao.getCalendarDatesForServiceId(atisTrip.getServiceId());
-                    if (activeDates.contains(testDate)){
-                        _log.info("On {} ATIS has service for this route but Reference has none: {}", testDate, route.getId());
-                        es.publishMessage(getTopic(), "Route: "
-                                + route.getId()
-                                + " has no service for "
-                                + testDate);
-                        break reftriploop;
+                    for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(atisTrip.getServiceId())) {
+                        Date date = constructDate(calDate.getDate());
+                        if (date.equals(testDate)) {
+                            if (calDate.getExceptionType() == 1) {
+                                _log.info("On {} ATIS has service for this route but Reference has none: {}", testDate, route.getId());
+                                es.publishMessage(getTopic(), "Route: "
+                                        + route.getId()
+                                        + " has no service for "
+                                        + testDate);
+                                break reftriploop;
+                            }
+                        }
                     }
                 }
             }

@@ -42,6 +42,8 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
+        String agency = dao.getAllAgencies().iterator().next().getId();
+        String name = dao.getAllAgencies().iterator().next().getName();
 
         HashMap<String, Route> referenceRoutes = new HashMap<>();
         for (Route route : reference.getAllRoutes()) {
@@ -129,17 +131,28 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         if (curSerTrips < 1) {
             es.publishMessage(getTopic(), "Agency: "
-                    + dao.getAllAgencies().iterator().next().getId()
+                    + agency
                     + " "
-                    + dao.getAllAgencies().iterator().next().getName()
+                    + name
                     + " has no current service.");
         }
 
         if (countNoHs > 0) {
             es.publishMessage(getTopic(), "Agency: "
-                    + dao.getAllAgencies().iterator().next().getId()
+                    + agency
                     + " "
-                    + dao.getAllAgencies().iterator().next().getName()
+                    + name
+                    + " has trips w/out headsign: "
+                    + countNoHs);
+            es.publishMetric(getNamespace(), "noHeadsigns", null, null, countNoHs);
+            _log.error("There are trips with no headsign");
+        }
+
+        if (countNoHs > 0) {
+            es.publishMessage(getTopic(), "Agency: "
+                    + agency
+                    + " "
+                    + name
                     + " has trips w/out headsign: "
                     + countNoHs);
             es.publishMetric(getNamespace(), "noHeadsigns", null, null, countNoHs);

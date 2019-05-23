@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Date;
 import java.util.Calendar;
+import java.util.HashSet;
 
 public class CountAndTestSubway implements GtfsTransformStrategy {
 
@@ -148,15 +149,23 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
             _log.error("There are trips with no headsign");
         }
 
-        if (countNoHs > 0) {
-            es.publishMessage(getTopic(), "Agency: "
-                    + agency
-                    + " "
-                    + name
-                    + " has trips w/out headsign: "
-                    + countNoHs);
-            es.publishMetric(getNamespace(), "noHeadsigns", null, null, countNoHs);
-            _log.error("There are trips with no headsign");
+        HashSet<String> ids = new HashSet<String>();
+        for (Stop stop : dao.getAllStops()) {
+            //check for duplicate stop ids.
+            if (ids.contains(stop.getId().getId())) {
+                _log.error("Duplicate stop ids! Agency {} stop id {}", agency, stop.getId().getId());
+                es.publishMessage(getTopic(), "Agency: "
+                        + agency
+                        + " "
+                        + name
+                        + " has duplicate stop id: "
+                        + stop.getId());
+                throw new IllegalStateException(
+                        "There are duplicate stop ids!");
+            }
+            else {
+                ids.add(stop.getId().getId());
+            }
         }
     }
 

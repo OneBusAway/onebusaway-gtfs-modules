@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs.services;
+package org.onebusaway.gtfs.services.translation;
 
 import org.onebusaway.gtfs.model.Translation;
 
@@ -23,10 +23,10 @@ public interface TranslationService {
      * Translations proposed spec addition. See {@link Translation}
      *
      * @param language language to translate to
-     * @param entity entity type
+     * @param type entity type
      * @param instance instance to clone and translate
      * @param <T> entity type
      * @return cloned instance with the proper fields changed
      */
-    <T> T getTranslatedEntity(String language, Class<T> entity, T instance);
+    <T> T getTranslatedEntity(String language, Class<T> type, T instance);
 }

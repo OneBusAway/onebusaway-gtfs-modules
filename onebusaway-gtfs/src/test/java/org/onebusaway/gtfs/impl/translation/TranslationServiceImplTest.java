@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs.impl;
+package org.onebusaway.gtfs.impl.translation;
 
 import org.junit.Test;
 import org.onebusaway.gtfs.GtfsTestData;
+import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FeedInfo;
@@ -38,7 +39,7 @@ public class TranslationServiceImplTest {
         GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();
         GtfsTestData.readGtfs(dao, GtfsTestData.getTestAgencyGtfs(), agencyId);
         TranslationServiceImpl ts = new TranslationServiceImpl();
-        ts.setDao(dao);
+        ts.setData(TranslationServiceDataFactoryImpl.createData(dao));
         Agency agency = dao.getAgencyForId(agencyId);
 
         assertEquals("Fake Agency Spanish", ts.getTranslatedEntity("es", Agency.class, agency).getName());

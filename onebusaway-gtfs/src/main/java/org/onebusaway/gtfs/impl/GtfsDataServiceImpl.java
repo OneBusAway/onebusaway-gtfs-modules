@@ -34,6 +34,7 @@ import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Transfer;
+import org.onebusaway.gtfs.model.Translation;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.model.calendar.LocalizedServiceId;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
@@ -313,6 +314,11 @@ public class GtfsDataServiceImpl implements GtfsDataService {
     @Override
     public Collection<Area> getAllAreas() {
         return _dao.getAllAreas();
+    }
+
+    @Override
+    public Collection<Translation> getAllTranslations() {
+        return _dao.getAllTranslations();
     }
 
     @Override

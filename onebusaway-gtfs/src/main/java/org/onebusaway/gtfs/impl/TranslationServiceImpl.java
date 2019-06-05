@@ -85,8 +85,16 @@ public class TranslationServiceImpl implements TranslationService  {
         _translationMap = new HashMap<>();
         for (Translation translation : _dao.getAllTranslations()) {
             Class<?> entity = getEntityForTableName(translation.getTableName());
+            if (entity == null) {
+                _log.error("No entity for table_name {}, skipping.", translation.getTableName());
+                continue;
+            }
             TranslationKey key = new TranslationKey(entity, translation.getLanguage());
             String propertyName = getPropertyNameByClassAndCsvName(entity, translation.getFieldName());
+            if (propertyName == null) {
+                _log.error("No property for field_name {}, skipping.", translation.getFieldName());
+                continue;
+            }
             TranslationValue value = new TranslationValue(propertyName, translation);
             List<TranslationValue> translationsForClass = _translationMap.computeIfAbsent(key, k -> new ArrayList<>());
             translationsForClass.add(value);

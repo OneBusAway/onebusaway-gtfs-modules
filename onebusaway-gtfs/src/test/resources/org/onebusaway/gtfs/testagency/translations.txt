@@ -15,3 +15,7 @@ feed_info,feed_publisher_name,es,Fake Feed Publisher Spanish,,,
 feed_info,feed_publisher_url,es,http://fake.example.es,,,
 feed_info,feed_publisher_name,fr,Fake Feed Publisher French,,,
 feed_info,feed_publisher_url,fr,http://fake.example.fr,,,
+wrong_table_name,agency_name,es,Fake Agency Spanish,agency,,
+agency,wrong_column_name,es,Fake Agency Spanish,agency,,
+agency,agency_name,es,No record id,,,
+

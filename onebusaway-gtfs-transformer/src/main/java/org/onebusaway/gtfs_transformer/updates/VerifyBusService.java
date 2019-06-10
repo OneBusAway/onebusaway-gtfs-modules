@@ -87,9 +87,9 @@ public class VerifyBusService implements GtfsTransformStrategy {
                     if (activeDates.contains(sToday)) {
 
                         _log.info("Reference has service for this route today but ATIS has none: {}", route.getId());
-                        es.publishMessage(getTopic(), "Route: "
+                        es.publishMessage(getTopic(), "Reference has service for route: "
                                 + route.getId()
-                                + " has no current service!");
+                                + " today, but ATIS has none.");
                             missingService = true;
                         break reftriploop;
                     }

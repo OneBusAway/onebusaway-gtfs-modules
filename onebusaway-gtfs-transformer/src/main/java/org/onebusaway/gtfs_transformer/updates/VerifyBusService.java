@@ -86,7 +86,7 @@ public class VerifyBusService implements GtfsTransformStrategy {
                     Set<ServiceDate> activeDates = refCalendarService.getServiceDatesForServiceId(refTrip.getServiceId());
                     if (activeDates.contains(sToday)) {
 
-                        _log.info("Reference has service for this route today but ATIS has none: {}", route.getId());
+                        _log.info("Reference has service for this route today but ATIS does not: {}", route.getId());
                         es.publishMessage(getTopic(), "Reference has service for route: "
                                 + route.getId()
                                 + " today, but ATIS has none.");

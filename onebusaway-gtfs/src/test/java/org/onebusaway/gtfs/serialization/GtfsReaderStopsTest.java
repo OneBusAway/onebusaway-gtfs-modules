@@ -41,6 +41,14 @@ public class GtfsReaderStopsTest {
     _gtfs.putDefaultAgencies();
   }
 
+  /* 
+   * These tests are disabled as we do not currently have a mechanism for conditional validation;
+   * with the addition of pathways to the GTFS spec, stop latitude and longitude are now only
+   * conditionally required. Thus they are no longer marked as required fields, leading these
+   * tests to fail.
+   *
+   */
+  
   @Test
   @Ignore
   public void testMissingStopLat() throws IOException {

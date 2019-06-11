@@ -105,7 +105,7 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
                                 _log.info("On {} ATIS has service for this route but Reference has none: {}", testDate, route.getId());
                                 es.publishMessage(getTopic(), "ATIS has service for this route but Reference has none: "
                                         + route.getId()
-                                        + " on "
+                                        + " for "
                                         + testDate);
                                 break reftriploop;
                             }

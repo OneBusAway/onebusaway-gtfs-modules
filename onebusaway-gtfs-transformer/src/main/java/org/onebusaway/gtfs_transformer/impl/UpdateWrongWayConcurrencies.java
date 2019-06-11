@@ -21,13 +21,11 @@ subway-atis-transform.json has:
 {"op":"update", "match": {"file": "stop_times.txt", "trip.route.route_short_name": "G", "trip.direction_id": "1", "stop_id": "32301"}, "update": {"stop_id": "10142"}}
 {"op":"update", "match": {"file": "stop_times.txt", "trip.route.route_short_name": "G", "trip.direction_id": "0", "stop_id": "10142"}, "update": {"stop_id": "32301"}}
 ...
-
 now use control file at
 s3://camsys-mta-otp-graph/dev/schedule/subwayJmzConcurrencies.csv
 route_id, direction_id, from_stop_id, to_stop_id
 G	1	A42S	A42N
 G	0	A42N	A42S
-
  */
 
 import org.onebusaway.gtfs.model.*;
@@ -64,7 +62,7 @@ public class UpdateWrongWayConcurrencies implements GtfsTransformStrategy {
 
         List<String> stopLines = new InputLibrary().readList((String) context.getParameter("concurrencyFile"));
 
-        String agency = dao.getAllRoutes().iterator().next().getId().getAgencyId();
+        String agency = dao.getAllStops().iterator().next().getId().getAgencyId();
 
         for (String stopInfo : stopLines) {
             int count=0;
@@ -81,12 +79,15 @@ public class UpdateWrongWayConcurrencies implements GtfsTransformStrategy {
             String fromStopId = stopArray[FROM_STOP_ID];
             String toStopId = stopArray[TO_STOP_ID];
 
-            //for some reason this line doesn't work so I have to iteratate over all the stops to get the one we want
+            //This line doesn't work so I have to iteratate over all the stops to get the one we want
+            //See MOTP-1232
             Stop toStop = dao.getStopForId(new AgencyAndId(agency, toStopId));
-            if (toStop == null) {
-                _log.error("Stop is null. Agency: {} stopId: {}", agency, toStopId);
-            } else {
-                _log.info("Stop agency {} stop id: {}", toStop.getId().getAgencyId(), toStop.getId().getId());
+
+            for (Stop stop : dao.getAllStops()) {
+                if (stop.getId().getId().equals(toStopId)) {
+                    toStop = stop;
+                    break;
+                }
             }
 
             if (routeId != null && directionId != null && fromStopId != null && toStopId != null && toStop != null) {

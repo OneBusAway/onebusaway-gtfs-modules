@@ -54,7 +54,6 @@ public class VerifyBusService implements GtfsTransformStrategy {
         AgencyAndId refAgencyAndId = reference.getAllTrips().iterator().next().getId();
 
         int curSerRoute = 0;
-        boolean missingService = false;
         Date today = removeTime(new Date());
         //list of all routes in ATIS
         Set<String> ATISrouteIds = new HashSet<>();
@@ -85,21 +84,14 @@ public class VerifyBusService implements GtfsTransformStrategy {
                 for (Trip refTrip : reference.getTripsForRoute(refRoute)) {
                     Set<ServiceDate> activeDates = refCalendarService.getServiceDatesForServiceId(refTrip.getServiceId());
                     if (activeDates.contains(sToday)) {
-
                         _log.info("Reference has service for this bus route today but ATIS does not: {}", route.getId());
                         es.publishMessage(getTopic(), "Reference has bus service for route: "
                                 + route.getId()
                                 + " today, but ATIS has none.");
-                            missingService = true;
                         break reftriploop;
                     }
                 }
             }
-        }
-
-        if (missingService) {
-            throw new IllegalStateException(
-                    "Route service missing in agency: " + dao.getAllAgencies().iterator().next());
         }
     }
 

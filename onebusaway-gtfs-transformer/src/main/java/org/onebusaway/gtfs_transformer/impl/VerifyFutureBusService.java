@@ -39,7 +39,7 @@ public class VerifyFutureBusService implements GtfsTransformStrategy {
     //This is for BUSES.  Heide - what has to change, why can't you use the subway
     //transform also for buses?
 
-    private final Logger _log = LoggerFactory.getLogger(CountAndTestSubway.class);
+    private final Logger _log = LoggerFactory.getLogger(VerifyFutureBusService.class);
 
     @Override
     public String getName() {
@@ -100,7 +100,7 @@ public class VerifyFutureBusService implements GtfsTransformStrategy {
                     Set<ServiceDate> activeDates = refCalendarService.getServiceDatesForServiceId(refTrip.getServiceId());
                     if (activeDates.contains(sDate)) {
                         _log.info("On {} Reference has service for this route but ATIS has none: {}", testDate, route.getId());
-                        es.publishMessage(getTopic(), "Route: "
+                        es.publishMessage(getTopic(), "Reference has service for this route but ATIS has none. Route: "
                                 + route.getId()
                                 + " has no service for "
                                 + testDate);

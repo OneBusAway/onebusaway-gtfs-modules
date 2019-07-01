@@ -32,7 +32,7 @@ import java.util.List;
 //in addition to changing the id, also update the stop code
 public class UpdateStopIdsFromFile implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(UpdateStopIdFromControlStrategy.class);
+    private final Logger _log = LoggerFactory.getLogger(UpdateStopIdsFromFile.class);
 
     private static final int NEW_STOP_ID = 1;
     private static final int OLD_STOP_ID = 2;

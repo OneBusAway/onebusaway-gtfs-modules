@@ -38,7 +38,7 @@ import java.util.Set;
 
 public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(CountAndTestSubway.class);
+    private final Logger _log = LoggerFactory.getLogger(VerifyFutureRouteService.class);
 
     @Override
     public String getName() {
@@ -100,7 +100,7 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
                     if (activeDates.contains(sDate)) {
                         _log.error("On {} Reference has service for this route but ATIS has none: {}, Trip {}, Serviceid {}",
                                 testDate, route.getId(), refTrip.getId(), refTrip.getServiceId());
-                        es.publishMessage(getTopic(), "Route: "
+                        es.publishMessage(getTopic(), "Reference has service for this route but ATIS has none. Route: "
                                 + route.getId()
                                 + " has no service for "
                                 + testDate);

@@ -28,7 +28,7 @@ import java.util.*;
 
 public class RemoveCurrentService implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(CountAndTest.class);
+    private final Logger _log = LoggerFactory.getLogger(RemoveCurrentService.class);
 
     @Override
     public String getName() {

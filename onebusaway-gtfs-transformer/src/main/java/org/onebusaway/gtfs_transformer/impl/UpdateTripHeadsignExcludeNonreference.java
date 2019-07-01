@@ -34,7 +34,7 @@ import java.util.List;
 
 public class UpdateTripHeadsignExcludeNonreference implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(UpdateTripHeadsignByDestinationStrategy.class);
+    private final Logger _log = LoggerFactory.getLogger(UpdateTripHeadsignExcludeNonreference.class);
     @Override
     public String getName() {
         return this.getClass().getSimpleName();

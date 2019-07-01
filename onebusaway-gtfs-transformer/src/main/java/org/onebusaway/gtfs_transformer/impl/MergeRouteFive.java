@@ -29,7 +29,7 @@ import java.util.HashMap;
 
 public class MergeRouteFive implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(MergeRouteFromReferenceStrategy.class);
+    private final Logger _log = LoggerFactory.getLogger(MergeRouteFive.class);
     @Override
     public String getName() {
         return this.getClass().getSimpleName();

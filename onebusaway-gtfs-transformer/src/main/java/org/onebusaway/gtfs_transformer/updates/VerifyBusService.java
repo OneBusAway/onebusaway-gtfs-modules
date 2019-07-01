@@ -38,7 +38,7 @@ import java.util.Set;
 
 public class VerifyBusService implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(CountAndTestSubway.class);
+    private final Logger _log = LoggerFactory.getLogger(VerifyBusService.class);
 
     @Override
     public String getName() {

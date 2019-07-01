@@ -34,7 +34,7 @@ on ids that are not more than 2 characters and will truncate longer ids
  */
 public class MergeRouteAndRemoveShuttles implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(MergeRouteFromReferenceStrategy.class);
+    private final Logger _log = LoggerFactory.getLogger(MergeRouteAndRemoveShuttles.class);
     @Override
     public String getName() {
         return this.getClass().getSimpleName();

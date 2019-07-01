@@ -37,7 +37,7 @@ Used for subway service as it has specific logic for the subway routes and the e
  */
 public class VerifyRouteService implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(CountAndTestSubway.class);
+    private final Logger _log = LoggerFactory.getLogger(VerifyRouteService.class);
 
     @Override
     public String getName() {

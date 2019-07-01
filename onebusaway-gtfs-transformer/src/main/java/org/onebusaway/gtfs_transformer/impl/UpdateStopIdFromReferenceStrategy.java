@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class UpdateStopIdFromReferenceStrategy implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(UpdateStopIdFromControlStrategy.class);
+    private final Logger _log = LoggerFactory.getLogger(UpdateStopIdFromReferenceStrategy.class);
 
     private static final int LOCATION_NAME_INDEX = 0;
     private static final int DIRECTION = 3;

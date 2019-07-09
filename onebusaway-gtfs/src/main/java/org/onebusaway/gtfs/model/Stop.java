@@ -76,6 +76,12 @@ public final class Stop extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, name = "mta_stop_id")
   private String mtaStopId;
 
+  // Custom extension representing (subway) stop accepts regional fare card.
+  // That is it has a fare card reader.
+  @CsvField(optional = true, name = "regional_fare_card", defaultValue = "0")
+  private int regionalFareCardAccepted;
+
+
   public Stop() {
 
   }
@@ -97,6 +103,7 @@ public final class Stop extends IdentityBean<AgencyAndId> {
     this.vehicleType = obj.vehicleType;
     this.platformCode = obj.platformCode;
     this.mtaStopId = obj.mtaStopId;
+    this.regionalFareCardAccepted = obj.regionalFareCardAccepted;
   }
 
   public AgencyAndId getId() {
@@ -235,4 +242,14 @@ public final class Stop extends IdentityBean<AgencyAndId> {
   public String getMtaStopId() { return mtaStopId; }
 
   public void setMtaStopId(String mtaStopId) { this.mtaStopId = mtaStopId; }
+
+  public int getRegionalFareCardAccepted() {
+    return regionalFareCardAccepted;
+  }
+
+  public void setRegionalFareCardAccepted(int regionalFareCardAccepted) {
+    this.regionalFareCardAccepted = regionalFareCardAccepted;
+  }
+
+
 }

@@ -68,6 +68,10 @@ public class GtfsTransformerMain {
 
   private static final String ARG_CONCURRENCY_FILE = "concurrencyFile";
 
+  private static final String ARG_OMNY_ROUTES_FILE = "omnyRoutesFile";
+
+  private static final String ARG_OMNY_STOPS_FILE = "omnyStopsFile";
+
   private static final String ARG_LOCAL_VS_EXPRESS = "localVsExpress";
 
   private static final String ARG_CHECK_STOP_TIMES = "checkStopTimes";
@@ -152,6 +156,8 @@ public class GtfsTransformerMain {
     options.addOption(ARG_REGEX_FILE, true, "Regex pattern mapping file");
     options.addOption(ARG_CONTROL_FILE, true, "file to remap stop ids and other properties");
     options.addOption(ARG_CONCURRENCY_FILE, true, "file to remap wrong way concurrencies");
+    options.addOption(ARG_OMNY_ROUTES_FILE, true, "file to add OMNY enabled routes to GTFS");
+    options.addOption(ARG_OMNY_STOPS_FILE, true, "file to add OMNY enabled stops to GTFS");
 
     options.addOption(ARG_LOCAL_VS_EXPRESS, false,
         "add additional local vs express fields");
@@ -243,6 +249,14 @@ public class GtfsTransformerMain {
         configureConcurrencyFile(transformer, option.getValue());
       }
 
+      if (name.equals(ARG_OMNY_ROUTES_FILE)) {
+        configureOmnyRoutesFile(transformer, option.getValue());
+      }
+
+      if (name.equals(ARG_OMNY_STOPS_FILE)) {
+        configureOmnyStopsFile(transformer, option.getValue());
+      }
+
       if (name.equals(ARG_LOCAL_VS_EXPRESS))
         configureLocalVsExpressUpdates(transformer);
 
@@ -328,6 +342,13 @@ public class GtfsTransformerMain {
       updater.addParameter("concurrencyFile", file);
   }
 
+  private void configureOmnyRoutesFile(GtfsTransformer updater, String file) {
+    updater.addParameter("omnyRoutesFile", file);
+  }
+
+  private void configureOmnyStopsFile(GtfsTransformer updater, String file) {
+    updater.addParameter("omnyStopsFile", file);
+  }
 
   /*****************************************************************************
    * Protected Methods

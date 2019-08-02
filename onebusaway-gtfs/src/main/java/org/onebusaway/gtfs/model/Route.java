@@ -77,6 +77,13 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, name = "regional_fare_card", defaultValue = "0")
   private int regionalFareCardAccepted;
 
+  // Custom extension for MTA
+  @CsvField(optional = true, name = "omny_enabled", defaultValue = "N")
+  private String omny_enabled;
+
+  // Custom extension for MTA
+  @CsvField(optional = true, name = "omny_eff_date", defaultValue = "NA")
+  private String omny_eff_date;
 
   public Route() {
 
@@ -97,6 +104,8 @@ public final class Route extends IdentityBean<AgencyAndId> {
     this.brandingUrl = r.brandingUrl;
     this.eligibilityRestricted = r.eligibilityRestricted;
     this.regionalFareCardAccepted = r.regionalFareCardAccepted;
+    this.omny_enabled = r.omny_enabled;
+    this.omny_eff_date = r.omny_eff_date;
   }
 
   public AgencyAndId getId() {
@@ -240,5 +249,21 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @Override
   public String toString() {
     return "<Route " + id + " " + shortName + ">";
+  }
+
+  public String getOmny_enabled() {
+    return omny_enabled;
+  }
+
+  public void setOmny_enabled(String omny_enabled) {
+    this.omny_enabled = omny_enabled;
+  }
+
+  public String getOmny_eff_date() {
+    return omny_eff_date;
+  }
+
+  public void setOmny_eff_date(String omny_eff_date) {
+    this.omny_eff_date = omny_eff_date;
   }
 }

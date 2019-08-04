@@ -34,7 +34,7 @@ public class AddOmnyBusData implements GtfsTransformStrategy {
     private static final int OMNY_ENABLED_ROUTE = 11;
     private static final int OMNY_ROUTE_EFF_DATE = 12;
 
-    private static Logger _log = LoggerFactory.getLogger(AddOmnySubwayData.class);
+    private static Logger _log = LoggerFactory.getLogger(AddOmnyBusData.class);
 
     public String getName() {
         return this.getClass().getName();

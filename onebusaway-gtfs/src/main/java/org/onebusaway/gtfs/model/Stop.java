@@ -82,7 +82,7 @@ public final class Stop extends IdentityBean<AgencyAndId> {
   private int regionalFareCardAccepted;
 
   // Custom extension for MTA
-  @CsvField(optional = true, name = "regional_fare_card_date", defaultValue = "NA")
+  @CsvField(optional = true, name = "regional_fare_card_date")
   private String regionalFareCardDate;
 
   public Stop() {
@@ -255,11 +255,12 @@ public final class Stop extends IdentityBean<AgencyAndId> {
     this.regionalFareCardAccepted = regionalFareCardAccepted;
   }
 
-  public String getOmny_eff_date() {
+
+  public String getRegionalFareCardDate() {
     return regionalFareCardDate;
   }
 
-  public void setOmny_eff_date(String omny_eff_date) {
-    this.regionalFareCardDate = omny_eff_date;
+  public void setRegionalFareCardDate(String regionalFareCardDate) {
+    this.regionalFareCardDate = regionalFareCardDate;
   }
 }

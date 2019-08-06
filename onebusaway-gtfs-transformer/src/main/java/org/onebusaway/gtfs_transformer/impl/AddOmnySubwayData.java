@@ -70,7 +70,7 @@ public class AddOmnySubwayData implements GtfsTransformStrategy {
             if (stopEnabled.equals("Y")) {
                 for (Stop stop : dao.getAllStops()) {
                     if (stop.getId().getId().equals(stopId)) {
-                        stop.setOmny_enabled(stopEnabled);
+                        stop.setRegionalFareCardAccepted(1);
                         stop.setOmny_eff_date(stopEffDate);
                          //_log.info("Setting stop enabled to Yes for stop_id {} stop name {}", stopId, stopName);
                          stop_count++;

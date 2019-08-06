@@ -70,8 +70,8 @@ public class AddOmnyBusData implements GtfsTransformStrategy {
             if (routeEnabled.equals("Y")) {
                 Route route = dao.getRouteForId(new AgencyAndId(agency, routeId));
                 if (route != null ) {
-                    route.setOmny_enabled(routeEnabled);
-                    route.setOmny_eff_date(routeEffDate);
+                    route.setRegionalFareCardAccepted(1);
+                    route.setRegionalFareCardDate(routeEffDate);
                     route_count++;
                 }
             }

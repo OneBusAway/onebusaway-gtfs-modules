@@ -71,7 +71,6 @@ public class AddOmnySubwayData implements GtfsTransformStrategy {
                 for (Stop stop : dao.getAllStops()) {
                     if (stop.getId().getId().equals(stopId)) {
                         stop.setRegionalFareCardAccepted(1);
-                        stop.setRegionalFareCardDate(stopEffDate);
                          stop_count++;
                         break;
                     }

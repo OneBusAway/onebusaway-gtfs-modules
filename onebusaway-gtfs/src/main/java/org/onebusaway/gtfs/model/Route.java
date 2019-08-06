@@ -77,10 +77,6 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, name = "regional_fare_card", defaultValue = "0")
   private int regionalFareCardAccepted;
 
-  // Custom extension for MTA
-  @CsvField(optional = true, name = "regional_fare_card_date")
-  private String regionalFareCardDate;
-
   public Route() {
 
   }
@@ -100,7 +96,6 @@ public final class Route extends IdentityBean<AgencyAndId> {
     this.brandingUrl = r.brandingUrl;
     this.eligibilityRestricted = r.eligibilityRestricted;
     this.regionalFareCardAccepted = r.regionalFareCardAccepted;
-    this.regionalFareCardDate = r.regionalFareCardDate;
   }
 
   public AgencyAndId getId() {
@@ -246,11 +241,4 @@ public final class Route extends IdentityBean<AgencyAndId> {
     return "<Route " + id + " " + shortName + ">";
   }
 
-  public String getRegionalFareCardDate() {
-    return regionalFareCardDate;
-  }
-
-  public void setRegionalFareCardDate(String regionalFareCardDate) {
-    this.regionalFareCardDate = regionalFareCardDate;
-  }
 }

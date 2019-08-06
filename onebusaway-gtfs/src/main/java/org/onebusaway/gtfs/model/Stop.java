@@ -81,9 +81,6 @@ public final class Stop extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, name = "regional_fare_card", defaultValue = "0")
   private int regionalFareCardAccepted;
 
-  // Custom extension for MTA
-  @CsvField(optional = true, name = "regional_fare_card_date")
-  private String regionalFareCardDate;
 
   public Stop() {
 
@@ -107,7 +104,6 @@ public final class Stop extends IdentityBean<AgencyAndId> {
     this.platformCode = obj.platformCode;
     this.mtaStopId = obj.mtaStopId;
     this.regionalFareCardAccepted = obj.regionalFareCardAccepted;
-    this.regionalFareCardDate = obj.regionalFareCardDate;
   }
 
   public AgencyAndId getId() {
@@ -253,14 +249,5 @@ public final class Stop extends IdentityBean<AgencyAndId> {
 
   public void setRegionalFareCardAccepted(int regionalFareCardAccepted) {
     this.regionalFareCardAccepted = regionalFareCardAccepted;
-  }
-
-
-  public String getRegionalFareCardDate() {
-    return regionalFareCardDate;
-  }
-
-  public void setRegionalFareCardDate(String regionalFareCardDate) {
-    this.regionalFareCardDate = regionalFareCardDate;
   }
 }

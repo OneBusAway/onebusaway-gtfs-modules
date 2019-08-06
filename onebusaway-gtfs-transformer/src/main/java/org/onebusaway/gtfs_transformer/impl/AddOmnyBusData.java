@@ -71,7 +71,6 @@ public class AddOmnyBusData implements GtfsTransformStrategy {
                 Route route = dao.getRouteForId(new AgencyAndId(agency, routeId));
                 if (route != null ) {
                     route.setRegionalFareCardAccepted(1);
-                    route.setRegionalFareCardDate(routeEffDate);
                     route_count++;
                 }
             }

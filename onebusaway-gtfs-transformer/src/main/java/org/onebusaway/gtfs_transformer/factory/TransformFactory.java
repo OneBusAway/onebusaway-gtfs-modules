@@ -276,6 +276,9 @@ public class TransformFactory {
         else if (opType.equals("add_omny_subway_data")) {
           handleTransformOperation(line, json, new AddOmnySubwayData());
         }
+        else if (opType.equals("add_omny_lirr_data")) {
+          handleTransformOperation(line, json, new AddOmnyLIRRData());
+        }
         else if (opType.equals("add_omny_bus_data")) {
           handleTransformOperation(line, json, new AddOmnyBusData());
         }

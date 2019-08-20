@@ -267,6 +267,9 @@ public class TransformFactory {
         else if (opType.equals("check_for_future_service")){
           handleTransformOperation(line, json, new CheckForFutureService());
         }
+        else if (opType.equals("check_for_plausible_stop_times")){
+          handleTransformOperation(line,json, new CheckForPlausibleStopTimes());
+        }
         else if (opType.equals("verify_future_route_service")){
           handleTransformOperation(line, json, new VerifyFutureRouteService());
         }

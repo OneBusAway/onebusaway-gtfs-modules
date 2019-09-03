@@ -34,6 +34,7 @@ import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Transfer;
+import org.onebusaway.gtfs.model.Translation;
 import org.onebusaway.gtfs.model.Trip;
 
 /**
@@ -166,4 +167,11 @@ public interface GtfsDao extends GenericDao {
    ****/
 
   public Collection<Area> getAllAreas();
+
+  /****
+   * {@link Translation} Methods
+   ****/
+
+  public Collection<Translation> getAllTranslations();
+
 }

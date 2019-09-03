@@ -282,6 +282,9 @@ public class TransformFactory {
         else if (opType.equals("sanitize_trip_id_for_api_access")){
           handleTransformOperation(line, json, new SanitizeTripIdForApiAccess());
         }
+        else if (opType.equals("sanitize_stop_id_for_api_access")){
+            handleTransformOperation(line, json, new SanitizeStopIdForApiAccess());
+        }
         else if (opType.equals("add_omny_subway_data")) {
           handleTransformOperation(line, json, new AddOmnySubwayData());
         }

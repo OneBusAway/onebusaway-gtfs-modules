@@ -270,6 +270,9 @@ public class TransformFactory {
         else if (opType.equals("check_for_plausible_stop_times")){
           handleTransformOperation(line,json, new CheckForPlausibleStopTimes());
         }
+        else if (opType.equals("check_for_stop_times_without_stops")){
+          handleTransformOperation(line,json, new CheckForPlausibleStopTimes());
+        }
         else if (opType.equals("verify_future_route_service")){
           handleTransformOperation(line, json, new VerifyFutureRouteService());
         }

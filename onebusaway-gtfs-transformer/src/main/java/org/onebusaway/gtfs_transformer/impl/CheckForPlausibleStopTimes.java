@@ -26,7 +26,9 @@ import org.slf4j.LoggerFactory;
 
 public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(CountAndTest.class);
+    private final int SECONDS_PER_MINUTE = 60;
+    private final int MINUTES_PER_HOUR = 60;
+    private final Logger _log = LoggerFactory.getLogger(CheckForPlausibleStopTimes.class);
 
     @Override
     public String getName() {
@@ -49,16 +51,33 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
                     oldTime = newTime;
                 }
                 //check if the bus takes more than five hours between stops
-                if(newTime.getArrivalTime() - oldTime.getDepartureTime() > 60*60*5){
-                    _log.error("Trip {} on Route {} is scheduled for unrealistic transit time between {} at {}, and {} at {}", trip.getId(), trip.getRoute(), oldTime.getId(), oldTime.getDepartureTime(), newTime.getId(), newTime.getDepartureTime());
-                    //es.publishMessage(getTopic(), "Trip " + trip.getId() + " on Route "+ trip.getRoute() +" is scheduled for unrealistic transit time between " + oldTime.getId()+ " at " + oldTime.getDepartureTime() + ", and " +  newTime.getId() + " at " + newTime.getDepartureTime()););
+                if(newTime.getArrivalTime() - oldTime.getDepartureTime() > 5*MINUTES_PER_HOUR*SECONDS_PER_MINUTE){
+                    _log.error("Trip {} on Route {} is scheduled for unrealistic transit time between trip {} at {}, and trip {} at {}", trip.getId(), trip.getRoute(), oldTime.getId(), humanReadableTime(oldTime.getDepartureTime()), newTime.getId(), humanReadableTime(newTime.getArrivalTime()));
+                    //es.publishMessage(getTopic(), "Trip " + trip.getId() + " on Route "+ trip.getRoute() +" is scheduled for unrealistic transit time when traveling between stoptime" + oldTime.getId()+ " at " + oldTime.getDepartureTime() + ", and stoptime" +  newTime.getId() + " at " + newTime.getDepartureTime());
                 }
                 oldTime= newTime;
             }
-
         }
     }
-    private String getTopic() {
-        return System.getProperty("sns.topic");
+
+    private String humanReadableTime(int time){
+        String output = "";
+        int hours;
+        int minutes;
+        int seconds;
+        hours = time/(MINUTES_PER_HOUR*SECONDS_PER_MINUTE);
+        minutes = (time - hours*MINUTES_PER_HOUR*SECONDS_PER_MINUTE)/SECONDS_PER_MINUTE;
+        seconds = (time - hours*MINUTES_PER_HOUR*SECONDS_PER_MINUTE - minutes*SECONDS_PER_MINUTE);
+        output = intTimeToString(hours) + ":" + intTimeToString(minutes) + ":" + intTimeToString(seconds);
+        return output;
+    }
+
+    private String intTimeToString(int time){
+        String output = "";
+        if (time/10 == 0){
+            output += "0";
+        }
+        output += time;
+        return output;
     }
 }

@@ -53,7 +53,10 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
                 //check if the bus takes more than five hours between stops
                 if(newTime.getArrivalTime() - oldTime.getDepartureTime() > 5*MINUTES_PER_HOUR*SECONDS_PER_MINUTE){
                     _log.error("Trip {} on Route {} is scheduled for unrealistic transit time between trip {} at {}, and trip {} at {}", trip.getId(), trip.getRoute(), oldTime.getId(), humanReadableTime(oldTime.getDepartureTime()), newTime.getId(), humanReadableTime(newTime.getArrivalTime()));
-                    //es.publishMessage(getTopic(), "Trip " + trip.getId() + " on Route "+ trip.getRoute() +" is scheduled for unrealistic transit time when traveling between stoptime" + oldTime.getId()+ " at " + oldTime.getDepartureTime() + ", and stoptime" +  newTime.getId() + " at " + newTime.getDepartureTime());
+                    es.publishMessage(getTopic(), "Trip " + trip.getId() + " on Route "+ trip.getRoute() +" is scheduled for unrealistic transit time when traveling between stoptime" + oldTime.getId()+ " at " + oldTime.getDepartureTime() + ", and stoptime" +  newTime.getId() + " at " + newTime.getDepartureTime());
+
+                    _log.error("Trip "+trip.getId().getId()+" on Route "+trip.getRoute().getId().getId()+" is scheduled for unrealistic transit time between trip "+ oldTime.getId()+" at "+humanReadableTime(oldTime.getDepartureTime())+", and trip "+newTime.getId()+" at " + humanReadableTime(newTime.getArrivalTime()));
+
                 }
                 oldTime= newTime;
             }
@@ -61,7 +64,7 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
     }
 
     private String humanReadableTime(int time){
-        String output = "";
+        String output;
         int hours;
         int minutes;
         int seconds;
@@ -79,5 +82,9 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
         }
         output += time;
         return output;
+    }
+
+    private String getTopic() {
+        return System.getProperty("sns.topic");
     }
 }

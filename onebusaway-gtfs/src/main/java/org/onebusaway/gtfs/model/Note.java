@@ -25,8 +25,8 @@ public final class Note extends IdentityBean<AgencyAndId> {
 
     private static final long serialVersionUID = 1L;
 
-    @CsvField(name = "note_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
-    private AgencyAndId id;
+    @CsvField(name = "note_id", optional = true)
+    private String noteId;
 
     @CsvField(name = "note_mark", optional = true)
     private String mark;
@@ -34,17 +34,16 @@ public final class Note extends IdentityBean<AgencyAndId> {
     @CsvField(name = "note_title", optional = true)
     private String title;
 
-    @CsvField(name = "note_desc", optional = true)
+    @CsvField(name = "note_description", optional = true)
     private String desc;
 
-    @Override
-    public AgencyAndId getId() {
-        return id;
+    public String getNoteId() {
+        return noteId;
     }
 
-    @Override
-    public void setId(AgencyAndId id) {
-        this.id = id;
+    public void setNoteId(String id) {
+        this.noteId = id;
+        System.out.println(this.noteId);
     }
 
     public String getMark() {
@@ -53,6 +52,7 @@ public final class Note extends IdentityBean<AgencyAndId> {
 
     public void setMark(String mark) {
         this.mark = mark;
+        System.out.println(this.mark);
     }
 
     public String getTitle() {
@@ -61,6 +61,7 @@ public final class Note extends IdentityBean<AgencyAndId> {
 
     public void setTitle(String title) {
         this.title = title;
+        System.out.println(this.title);
     }
 
     public String getDesc() {
@@ -69,10 +70,25 @@ public final class Note extends IdentityBean<AgencyAndId> {
 
     public void setDesc(String desc) {
         this.desc = desc;
+        System.out.println(this.desc);
     }
+
+
+
+    private AgencyAndId id = null;
 
     @Override
     public String toString() {
-        return "<TimetableNote " + this.id + ">";
+        return "<TimetableNote " + this.noteId + ">";
+    }
+
+    public AgencyAndId getId() {
+        return id;
+    }
+
+    public void setId(AgencyAndId id) {
+        System.out.println(id);
+        this.id = id;
+        System.out.println(this.id);
     }
 }

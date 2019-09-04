@@ -125,7 +125,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.endServiceAreaRadius = st.endServiceAreaRadius;
     this.departureBuffer = st.departureBuffer;
     this.track = st.track;
-    this.note = st.note;
+//    this.note = st.note;
   }
 
   public Integer getId() {

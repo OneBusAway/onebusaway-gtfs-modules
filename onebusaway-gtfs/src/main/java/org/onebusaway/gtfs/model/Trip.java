@@ -92,6 +92,10 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   private String fareId;
 
   // Custom extension for MNR
+  @CsvField(optional = true, name = "note_id", mapping = EntityFieldMappingFactory.class, order = -1)
+  private Note note;
+
+  // Custom extension for MNR
   @CsvField(optional = true, name = "peak_offpeak")
   private int peakOffpeak;
 
@@ -124,6 +128,7 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.tripBikesAllowed = obj.tripBikesAllowed;
     this.bikesAllowed = obj.bikesAllowed;
     this.fareId = obj.fareId;
+    this.note = obj.note;
     this.peakOffpeak = obj.peakOffpeak;
     this.mtaTripId = obj.mtaTripId;
   }
@@ -299,6 +304,14 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   
   public void setFareId(String fareId) {
 	  this.fareId = fareId;
+  }
+
+  public Note getNote() {
+    return note;
+  }
+
+  public void setNote(Note note) {
+    this.note = note;
   }
 
   public int getPeakOffpeak() {

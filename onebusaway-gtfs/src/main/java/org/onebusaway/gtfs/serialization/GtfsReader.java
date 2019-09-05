@@ -231,7 +231,7 @@ public class GtfsReader extends CsvEntityReader {
       } else if (entity instanceof Route) {
         Route route = (Route) entity;
         registerAgencyId(Route.class, route.getId());
-      } else if (entity instanceof Trip) {
+      } else if (entity instanceof Trip)   {
         Trip trip = (Trip) entity;
         registerAgencyId(Trip.class, trip.getId());
       } else if (entity instanceof Stop) {

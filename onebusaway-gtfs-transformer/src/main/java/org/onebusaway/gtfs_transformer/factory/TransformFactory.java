@@ -309,7 +309,7 @@ public class TransformFactory {
   }
 
   /****
-   * Private Method
+   * Private Method *
    ****/
 
   private void handleAddOperation(String line, JSONObject json)

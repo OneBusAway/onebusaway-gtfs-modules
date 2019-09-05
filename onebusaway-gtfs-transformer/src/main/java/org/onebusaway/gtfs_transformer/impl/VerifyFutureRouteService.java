@@ -98,7 +98,7 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
                 for (Trip refTrip : reference.getTripsForRoute(refRoute)) {
                     Set<ServiceDate> activeDates = refCalendarService.getServiceDatesForServiceId(refTrip.getServiceId());
                     if (activeDates.contains(sDate)) {
-                        if(route.getId().getId().equals("SUB_5X")) {
+                        if(route.getId().getId().equals("SUB_5X")){
                             _log.info("On {} Reference has service for this route, but ATIS has none: {}, Trip {}, Serviceid {}",
                                     testDate, route.getId(), refTrip.getId(), refTrip.getServiceId());
                         }

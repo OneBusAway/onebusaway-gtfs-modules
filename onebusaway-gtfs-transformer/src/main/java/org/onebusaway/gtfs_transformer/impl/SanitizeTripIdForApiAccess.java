@@ -37,7 +37,7 @@ public class SanitizeTripIdForApiAccess implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         _log.info("Removing the following characters from trip names: [, ], \\, (, ), _, @, and .");
         Collection<Trip> Trips = dao.getAllTrips();
-        for (Trip trip : Trips){
+        for (Trip trip : Trips ){
             trip.getId().setId(trip.getId().getId().replaceAll(sanitize_selector,""));
         }
     }

@@ -26,7 +26,7 @@ import java.util.Collection;
 
 public class SanitizeStopIdForApiAccess implements GtfsTransformStrategy {
     private final Logger _log = LoggerFactory.getLogger(SanitizeStopIdForApiAccess.class);
-    private final String sanitize_selector = "[\\[||\\]||\\@||\\.|| ||\\\\||\\(||\\)||\\_||\\-||\\/||\\\"]";
+    private final String sanitize_selector = "[\\[||\\:||\\]||\\@||\\.|| ||\\\\||\\(||\\)||\\_||\\-||\\/||\\\"]";
 
     @Override
     public String getName() {
@@ -35,7 +35,7 @@ public class SanitizeStopIdForApiAccess implements GtfsTransformStrategy {
 
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-        _log.info("Removing the following characters from trip names: [, ], \\, (, ), _, @, and .");
+        _log.info("Removing the following characters from trip names: [, :, ], \\, (, ), _, @, and .");
         Collection<Stop> Stops = dao.getAllStops();
         for (Stop stop : Stops) {
             stop.getId().setId(stop.getId().getId().replaceAll(sanitize_selector,""));

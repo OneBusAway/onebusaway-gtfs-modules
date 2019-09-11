@@ -23,6 +23,9 @@ import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.Date;
+
+import java.text.SimpleDateFormat;
 
 public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
 
@@ -38,6 +41,7 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
         for (Trip trip: dao.getAllTrips())
         {
@@ -52,36 +56,18 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
                 }
                 //check if the bus takes more than five hours between stops
                 if(newTime.getArrivalTime() - oldTime.getDepartureTime() > 5 * MINUTES_PER_HOUR * SECONDS_PER_MINUTE){
-                    _log.error("Trip {} on Route {} is scheduled for unrealistic transit time between trip {} at {}, and trip {} at {}", trip.getId(), trip.getRoute(), oldTime.getId(), humanReadableTime(oldTime.getDepartureTime()), newTime.getId(), humanReadableTime(newTime.getArrivalTime()));
-                    es.publishMessage(getTopic(), "Trip " + trip.getId() + " on Route "+ trip.getRoute() +" is scheduled for unrealistic transit time when traveling between stoptime" + oldTime.getId()+ " at " + oldTime.getDepartureTime() + ", and stoptime" +  newTime.getId() + " at " + newTime.getDepartureTime());
-
-                    _log.error("Trip "+trip.getId().getId()+" on Route "+trip.getRoute().getId().getId()+" is scheduled for unrealistic transit time between trip "+ oldTime.getId()+" at "+humanReadableTime(oldTime.getDepartureTime())+", and trip "+newTime.getId()+" at " + humanReadableTime(newTime.getArrivalTime()));
+                    Date departure = new Date(oldTime.getDepartureTime()*1000);
+                    Date arrival = new Date(newTime.getArrivalTime()*1000);
+                    String message = "Trip " + trip.getId().getId() + " on Route "+ trip.getRoute().getId() +
+                            " is scheduled for unrealistic transit time when traveling between stoptime" +
+                            oldTime.getId()+ " at " + sdf.format(departure) + ", and stoptime" +
+                            newTime.getId() + " at " + sdf.format(arrival);
+                    es.publishMessage(getTopic(), message);
 
                 }
                 oldTime= newTime;
             }
         }
-    }
-
-    private String humanReadableTime(int time){
-        String output;
-        int hours;
-        int minutes;
-        int seconds;
-        hours = time/(MINUTES_PER_HOUR*SECONDS_PER_MINUTE);
-        minutes = (time - hours*MINUTES_PER_HOUR*SECONDS_PER_MINUTE)/SECONDS_PER_MINUTE;
-        seconds = (time - hours*MINUTES_PER_HOUR*SECONDS_PER_MINUTE - minutes*SECONDS_PER_MINUTE);
-        output = intTimeToString(hours) + ":" + intTimeToString(minutes) + ":" + intTimeToString(seconds);
-        return output;
-    }
-
-    private String intTimeToString(int time){
-        String output = "";
-        if (time/10 == 0){
-            output += "0";
-        }
-        output += time;
-        return output;
     }
 
     private String getTopic() {

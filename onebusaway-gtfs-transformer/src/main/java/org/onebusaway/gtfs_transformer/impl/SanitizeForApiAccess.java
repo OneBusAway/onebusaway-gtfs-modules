@@ -80,9 +80,9 @@ public class SanitizeForApiAccess implements GtfsTransformStrategy {
 
         }
 
-        public void setIdentityBean(String identitybean){
-            this.identityBean = identitybean;
-        }
+    public void setIdentityBean(String identitybean){
+        this.identityBean = identitybean;
+    }
 
     public void setRegex(String regex){
         this.regex = regex;

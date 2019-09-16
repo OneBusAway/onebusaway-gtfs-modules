@@ -16,21 +16,19 @@
 package org.onebusaway.gtfs_transformer.impl;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
+import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.onebusaway.gtfs.model.*;
-import sun.security.jca.ServiceId;
-
 import java.util.Collection;
 
-public class SanitizeForApiAccess implements GtfsTransformStrategy {
-    private final Logger _log = LoggerFactory.getLogger(SanitizeTripIdForApiAccess.class);
 
-    private String identitybean;
+public class SanitizeForApiAccess implements GtfsTransformStrategy {
+    private final Logger _log = LoggerFactory.getLogger(SanitizeForApiAccess.class);
+
+    private String identityBean;
 
     @CsvField(optional = true)
     private String regex = "[\\[\\]\\@\\.\\ \\:\\\\\\(\\)\\_\\-\\/\\\"]";
@@ -39,46 +37,51 @@ public class SanitizeForApiAccess implements GtfsTransformStrategy {
     public String getName() {
         return this.getClass().getSimpleName();
     }
+        @Override
+        public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-    @Override
-    public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-        if (identitybean.equalsIgnoreCase("trip")) {
-            _log.info("Removing characters from "  + identitybean + " using this regex: " + regex);
-            Collection<Trip> trips = dao.getAllTrips();
-            for (Trip trip : trips) {
-                String newId = trip.getId().getId().replaceAll(regex, "");
-                if (!newId.equals(trip.getId().getId())) {
-                    trip.getId().setId(newId);
+            if (identityBean.equalsIgnoreCase("trip")) {
+                _log.info("Removing characters from "  + identityBean + " using this regex: " + regex);
+                Collection<Trip> trips = dao.getAllTrips();
+                for (Trip trip : trips) {
+                    String newId = trip.getId().getId().replaceAll(regex, "");
+                    if (!newId.equals(trip.getId().getId())) {
+                        trip.getId().setId(newId);
+                    }
                 }
             }
-        }
-        else if (identitybean.equalsIgnoreCase("stop")) {
-            _log.info("Removing characters from "  + identitybean + " using this regex: " + regex);
-            Collection<Stop> stops = dao.getAllStops();
-            for (Stop stop : stops) {
-                String newId = stop.getId().getId().replaceAll(regex, "");
-                if (!newId.equals(stop.getId().getId())) {
-                    stop.getId().setId(newId);
-                }
-            }
-        }
-        else if (identitybean.equalsIgnoreCase("route") ){
-            _log.info("Removing characters from "  + identitybean + " using this regex: " + regex);
-            Collection<Route> routes = dao.getAllRoutes();
-            for (Route route : routes) {
-                String newId = route.getId().getId().replaceAll(regex, "");
-                if (!newId.equals(route.getId().getId())) {
-                    route.getId().setId(newId);
-                }
-            }
-        }
-        else{
-            _log.error("No matching Bean Type "+identitybean);
-        }
-    }
 
-    public void setIdentitybean(String identitybean){
-        this.identitybean = identitybean;
+            if (identityBean.equalsIgnoreCase("stop")) {
+                _log.info("Removing characters from "  + identityBean + " using this regex: " + regex);
+                Collection<Stop> stops = dao.getAllStops();
+                for (Stop stop : stops) {
+                    String newId = stop.getId().getId().replaceAll(regex, "");
+                    if (!newId.equals(stop.getId().getId())) {
+                        stop.getId().setId(newId);
+                    }
+                }
+            }
+
+            if (identityBean.equalsIgnoreCase("route")) {
+                _log.info("Removing characters from "  + identityBean + " using this regex: " + regex);
+                Collection<Route> routes = dao.getAllRoutes();
+                for (Route route : routes) {
+                    String newId = route.getId().getId().replaceAll(regex, "");
+                    if (!newId.equals(route.getId().getId())) {
+                        route.getId().setId(newId);
+                    }
+                }
+            }
+
+            else{
+                _log.error("No matching Bean Type "+identityBean);
+                return;
+            }
+
+        }
+
+    public void setIdentityBean(String identitybean){
+        this.identityBean = identitybean;
     }
 
     public void setRegex(String regex){

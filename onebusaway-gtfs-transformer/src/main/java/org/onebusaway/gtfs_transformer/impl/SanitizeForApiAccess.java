@@ -21,10 +21,6 @@ import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.onebusaway.gtfs.model.*;
-import sun.security.jca.ServiceId;
-
 import java.util.Collection;
 
 public class SanitizeForApiAccess implements GtfsTransformStrategy {

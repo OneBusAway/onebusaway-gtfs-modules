@@ -41,6 +41,9 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, alwaysIncludeInOutput = true)
   private int transfers = MISSING_VALUE;
 
+  @CsvField(optional = true,name = "agency_id")
+  private String agencyId;
+
   @CsvField(optional = true)
   private int transferDuration = MISSING_VALUE;
 
@@ -180,4 +183,11 @@ public final class FareAttribute extends IdentityBean<AgencyAndId> {
 	this.seniorPrice = seniorPrice;
   }
 
+  public String getAgencyId() {
+    return agencyId;
+  }
+
+  public void setAgencyId(String agencyId) {
+    this.agencyId = agencyId;
+  }
 }

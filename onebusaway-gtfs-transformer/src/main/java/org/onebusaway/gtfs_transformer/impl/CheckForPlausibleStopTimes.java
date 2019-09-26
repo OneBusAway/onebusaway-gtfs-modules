@@ -72,7 +72,7 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
                             " is scheduled for unrealistic transit time (>1hr) when traveling between stoptime" +
                             oldTime.getId()+ " at " + sdf.format(departure) + ", and stoptime" +
                             newTime.getId() + " at " + sdf.format(arrival);
-                    _log.info(message);
+                    _log.error(message);
                     stopsWarn.add(trip);
                     collectedWarnString += ", " + trip.toString() + "at " + sdf.format(departure) +
                             "and " + sdf.format(arrival);
@@ -100,12 +100,16 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
                 stopsRemove.size() + ".\n These trips are being removed. \nTrips being removed: " +
                 collectedRemoveString.substring(2);
 
-        _log.error(collectedWarnString);
-        es.publishMessage(getTopic(), collectedWarnString);
+        _log.info(collectedWarnString);
+        _log.info(collectedRemoveString);
 
-        _log.error(collectedRemoveString);
-        es.publishMessage(getTopic(), collectedRemoveString);
+        if (stopsWarn.size() > 0) {
 
+            es.publishMessage(getTopic(), collectedWarnString);
+        }
+        if (stopsRemove.size() > 0) {
+            es.publishMessage(getTopic(), collectedRemoveString);
+        }
         for (Trip trip: stopsRemove){
             removeEntityLibrary.removeTrip(dao, trip);
         }

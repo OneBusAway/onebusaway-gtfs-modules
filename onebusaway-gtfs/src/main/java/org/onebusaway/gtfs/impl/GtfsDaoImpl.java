@@ -125,6 +125,10 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getAllEntitiesForType(Ridership.class);
   }
 
+  public Collection<Level> getAllLevels() {
+    return getAllEntitiesForType(Level.class);
+  }
+
   public Block getBlockForId(int id) {
     return getEntityForId(Block.class, id);
   }
@@ -190,6 +194,10 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   public Trip getTripForId(AgencyAndId id) {
     return getEntityForId(Trip.class, id);
+  }
+
+  public Level getLevelForId(AgencyAndId id) {
+    return getEntityForId(Level.class, id);
   }
 
   public Collection<Area> getAllAreas() {

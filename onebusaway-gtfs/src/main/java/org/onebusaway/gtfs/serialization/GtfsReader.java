@@ -66,6 +66,7 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Note.class);
     _entityClasses.add(Area.class);
     _entityClasses.add(Route.class);
+    _entityClasses.add(Level.class);
     _entityClasses.add(Stop.class);
     _entityClasses.add(Trip.class);
     _entityClasses.add(StopTime.class);
@@ -228,6 +229,9 @@ public class GtfsReader extends CsvEntityReader {
       } else if (entity instanceof Pathway) {
         Pathway pathway = (Pathway) entity;
         registerAgencyId(Pathway.class, pathway.getId());
+      } else if (entity instanceof Level) {
+        Level level = (Level) entity;
+        registerAgencyId(Level.class, level.getId());
       } else if (entity instanceof Route) {
         Route route = (Route) entity;
         registerAgencyId(Route.class, route.getId());

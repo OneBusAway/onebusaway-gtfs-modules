@@ -18,11 +18,12 @@ package org.onebusaway.gtfs_transformer.impl;
 
 import org.onebusaway.cloud.api.ExternalServices;
 import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
+import org.onebusaway.collections.tuple.Pair;
+import org.onebusaway.csv_entities.CSVLibrary;
+import org.onebusaway.csv_entities.CSVListener;
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
-import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.Route;
-import org.onebusaway.gtfs.model.ServiceCalendarDate;
-import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
@@ -31,14 +32,23 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.*;
 import java.util.Set;
 
 public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(VerifyFutureRouteService.class);
+
+    @CsvField(optional = true)
+    private String problemRoutesUrl;
+
+    @CsvField(optional = true)
+    private String problemRoutesFile;
+
 
     @Override
     public String getName() {
@@ -47,6 +57,24 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
+        Collection<String> problemRoutes = new HashSet<String>();
+        ProblemRouteListener listener = new ProblemRouteListener();
+        try {
+            if(problemRoutesUrl != null) {
+                URL url = new URL(problemRoutesUrl);
+                try (InputStream is = url.openStream()) {
+                    new CSVLibrary().parse(is, listener);
+                }
+            }
+            if (problemRoutes != null) {
+                InputStream is = new BufferedInputStream(new FileInputStream(problemRoutesFile));
+                new CSVLibrary().parse(is, listener);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        problemRoutes = listener.returnRouteIds();
+
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
 
@@ -57,19 +85,19 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
         Date nextDay = removeTime(addDays(new Date(), 2));
         Date dayAfterNext = removeTime(addDays(new Date(), 3));
 
-        tripsTomorrow = hasRouteServiceForDate(dao, reference, refCalendarService, tomorrow);
-        tripsNextDay = hasRouteServiceForDate(dao, reference, refCalendarService, nextDay);
-        tripsDayAfterNext = hasRouteServiceForDate(dao, reference, refCalendarService, dayAfterNext);
+        tripsTomorrow = hasRouteServiceForDate(dao, reference, refCalendarService, tomorrow, problemRoutes);
+        tripsNextDay = hasRouteServiceForDate(dao, reference, refCalendarService, nextDay, problemRoutes);
+        tripsDayAfterNext = hasRouteServiceForDate(dao, reference, refCalendarService, dayAfterNext, problemRoutes);
 
         _log.info("Active routes {}: {}, {}: {}, {}: {}",
                 tomorrow, tripsTomorrow, nextDay, tripsNextDay, dayAfterNext, tripsDayAfterNext);
 
     }
 
-    int hasRouteServiceForDate(GtfsMutableRelationalDao dao, GtfsMutableRelationalDao reference,
-                               CalendarService refCalendarService, Date testDate) {
+    private int hasRouteServiceForDate(GtfsMutableRelationalDao dao, GtfsMutableRelationalDao reference,
+                               CalendarService refCalendarService, Date testDate, Collection<String> problemRoutes) {
         AgencyAndId refAgencyAndId = reference.getAllTrips().iterator().next().getId();
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+        ExternalServices es = new ExternalServicesBridgeFactory().getExternalServices();
         int numTripsOnDate = 0;
         int activeRoutes = 0;
 
@@ -98,11 +126,10 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
                 for (Trip refTrip : reference.getTripsForRoute(refRoute)) {
                     Set<ServiceDate> activeDates = refCalendarService.getServiceDatesForServiceId(refTrip.getServiceId());
                     if (activeDates.contains(sDate)) {
-                        if(route.getId().getId().equals("SUB_5X")){
+                        if (problemRoutes.contains(route.getId().getId())) {
                             _log.info("On {} Reference has service for this route, but ATIS has none: {}, Trip {}, Serviceid {}",
                                     testDate, route.getId(), refTrip.getId(), refTrip.getServiceId());
-                        }
-                        else {
+                        } else {
                             _log.error("On {} Reference has service for this route but ATIS has none: {}, Trip {}, Serviceid {}",
                                     testDate, route.getId(), refTrip.getId(), refTrip.getServiceId());
                             es.publishMessage(getTopic(), "Reference has service for this route but ATIS has none. Route: "
@@ -121,7 +148,7 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
     private Date constructDate(ServiceDate date) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, date.getYear());
-        calendar.set(Calendar.MONTH, date.getMonth()-1);
+        calendar.set(Calendar.MONTH, date.getMonth() - 1);
         calendar.set(Calendar.DATE, date.getDay());
         Date date1 = calendar.getTime();
         date1 = removeTime(date1);
@@ -149,12 +176,38 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
     private ServiceDate createServiceDate(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        return new ServiceDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) +1, calendar.get(Calendar.DAY_OF_MONTH));
+        return new ServiceDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
     }
 
     private String getTopic() {
         return System.getProperty("sns.topic");
     }
 
-}
+    public void setProblemRoutesUrl(String url){
+        this.problemRoutesUrl = url;
+    }
 
+    public void setProblemRoutesFile(String url){
+        this.problemRoutesFile = url;
+    }
+
+    private class ProblemRouteListener implements CSVListener {
+
+        private Collection<String> routeIds = new HashSet<String>();
+
+        private GtfsMutableRelationalDao dao;
+
+        @Override
+        public void handleLine(List<String> list) throws Exception {
+            if (routeIds == null) {
+                routeIds = list;
+                return;
+            }
+            routeIds.add(list.get(0));
+        }
+
+        public Collection<String> returnRouteIds (){
+            return routeIds;
+        }
+    }
+}

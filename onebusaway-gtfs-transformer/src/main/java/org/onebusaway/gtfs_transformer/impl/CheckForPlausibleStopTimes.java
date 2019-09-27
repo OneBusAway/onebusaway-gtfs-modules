@@ -94,20 +94,17 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
             }
         }
 
-        collectedWarnString = "Total number of trips with transit times of greater than one hour: " +
-                stopsWarn.size() + ".\n Here are the trips and stops: " + collectedWarnString.substring(2);
-        collectedRemoveString = "Total number of trips with transit times of greater than three hours: " +
-                stopsRemove.size() + ".\n These trips are being removed. \nTrips being removed: " +
-                collectedRemoveString.substring(2);
-
-        _log.info(collectedWarnString);
-        _log.info(collectedRemoveString);
-
         if (stopsWarn.size() > 0) {
-
+            collectedWarnString = "Total number of trips with transit times of greater than one hour: " +
+                    stopsWarn.size() + ".\n Here are the trips and stops: " + collectedWarnString.substring(2);
+            _log.info(collectedWarnString);
             es.publishMessage(getTopic(), collectedWarnString);
         }
         if (stopsRemove.size() > 0) {
+            collectedRemoveString = "Total number of trips with transit times of greater than three hours: " +
+                    stopsRemove.size() + ".\n These trips are being removed. \nTrips being removed: " +
+                    collectedRemoveString.substring(2);
+            _log.info(collectedRemoveString);
             es.publishMessage(getTopic(), collectedRemoveString);
         }
         for (Trip trip: stopsRemove){

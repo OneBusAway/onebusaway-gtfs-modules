@@ -18,7 +18,6 @@ package org.onebusaway.gtfs_transformer.impl;
 
 import org.onebusaway.cloud.api.ExternalServices;
 import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
-import org.onebusaway.collections.tuple.Pair;
 import org.onebusaway.csv_entities.CSVLibrary;
 import org.onebusaway.csv_entities.CSVListener;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
@@ -66,7 +65,7 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
                     new CSVLibrary().parse(is, listener);
                 }
             }
-            if (problemRoutes != null) {
+            if (problemRoutesFile != null) {
                 InputStream is = new BufferedInputStream(new FileInputStream(problemRoutesFile));
                 new CSVLibrary().parse(is, listener);
             }

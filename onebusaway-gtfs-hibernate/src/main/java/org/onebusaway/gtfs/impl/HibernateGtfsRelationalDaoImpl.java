@@ -123,6 +123,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
+  public List<Level> getAllLevels() {
+    return _ops.find("FROM Level");
+  }
+
+  @Override
   public List<Trip> getAllTrips() {
     return _ops.find("FROM Trip");
   }
@@ -178,6 +183,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   @Override
   public Pathway getPathwayForId(AgencyAndId agencyAndId) {
     return (Pathway) _ops.get(Pathway.class, agencyAndId);
+  }
+
+  @Override
+  public Level getLevelForId(AgencyAndId agencyAndId) {
+    return (Level) _ops.get(Level.class, agencyAndId);
   }
 
   @Override

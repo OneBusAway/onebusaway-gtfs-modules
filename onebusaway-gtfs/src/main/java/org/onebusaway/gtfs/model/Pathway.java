@@ -84,6 +84,9 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   @Deprecated @CsvField(optional = true)
   private int wheelchairTraversalTime = MISSING_VALUE;
 
+  @Deprecated @CsvField(optional = true)
+  private String pathwayCode;
+
   @Override
   public AgencyAndId getId() {
     return id;
@@ -92,16 +95,6 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   @Override
   public void setId(AgencyAndId id) {
     this.id = id;
-  }
-
-  @Deprecated
-  public void setPathwayType(int pathwayType) {
-    this.pathwayType = pathwayType;
-  }
-
-  @Deprecated
-  public int getPathwayType() {
-    return pathwayType;
   }
 
   public void setFromStop(Stop fromStop) {
@@ -142,6 +135,10 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
 
   public void clearTraversalTime() {
      this.traversalTime = MISSING_VALUE;
+  }
+
+  public int getIsBidirectional() {
+    return isBidirectional;
   }
 
   public void setIsBidirectional(int isBidirectional) {
@@ -253,5 +250,26 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   public void clearWheelchairTraversalTime() {
     this.wheelchairTraversalTime = MISSING_VALUE;
   }
+
+  @Deprecated
+  public String getPathwayCode() {
+    return pathwayCode;
+  }
+
+  @Deprecated
+  public void setPathwayCode(String pathwayCode) {
+    this.pathwayCode = pathwayCode;
+  }
+
+  @Deprecated
+  public void setPathwayType(int pathwayType) {
+    this.pathwayType = pathwayType;
+  }
+
+  @Deprecated
+  public int getPathwayType() {
+    return pathwayType;
+  }
+
 
 }

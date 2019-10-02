@@ -43,6 +43,7 @@ import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Transfer;
 import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.model.Note;
 import org.onebusaway.gtfs.serialization.comparators.ServiceCalendarComparator;
 import org.onebusaway.gtfs.serialization.comparators.ServiceCalendarDateComparator;
 import org.onebusaway.gtfs.serialization.comparators.ShapePointComparator;
@@ -59,6 +60,7 @@ public class GtfsEntitySchemaFactory {
     entityClasses.add(Route.class);
     entityClasses.add(Stop.class);
     entityClasses.add(Trip.class);
+    entityClasses.add(Note.class);
     entityClasses.add(StopTime.class);
     entityClasses.add(ServiceCalendar.class);
     entityClasses.add(ServiceCalendarDate.class);
@@ -80,6 +82,7 @@ public class GtfsEntitySchemaFactory {
     comparators.put(Route.class, getComparatorForIdentityBeanType(Route.class));
     comparators.put(Stop.class, getComparatorForIdentityBeanType(Stop.class));
     comparators.put(Trip.class, getComparatorForIdentityBeanType(Trip.class));
+    comparators.put(Note.class, getComparatorForIdentityBeanType(Note.class));
     comparators.put(StopTime.class, new StopTimeComparator());
     comparators.put(ShapePoint.class, new ShapePointComparator());
     comparators.put(ServiceCalendar.class, new ServiceCalendarComparator());

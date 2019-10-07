@@ -33,13 +33,16 @@ public class SanitizeForApiAccess implements GtfsTransformStrategy {
     @CsvField(optional = true)
     private String regex = "[\\[\\]\\@\\.\\ \\:\\\\\\(\\)\\_\\-\\/\\\"]";
 
+    @CsvField(optional = true)
+    private Boolean verbose = false;
+
     @Override
     public String getName() {
         return this.getClass().getSimpleName();
     }
         @Override
         public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-
+            String output = "The following " + identityBean + " were changed: ";
             if (identityBean.equalsIgnoreCase("trip")) {
                 _log.info("Removing characters from "  + identityBean + " using this regex: " + regex);
                 Collection<Trip> trips = dao.getAllTrips();
@@ -47,44 +50,54 @@ public class SanitizeForApiAccess implements GtfsTransformStrategy {
                     String newId = trip.getId().getId().replaceAll(regex, "");
                     if (!newId.equals(trip.getId().getId())) {
                         trip.getId().setId(newId);
+                        output += trip.getId().getId() + ", ";
                     }
                 }
             }
 
-            if (identityBean.equalsIgnoreCase("stop")) {
+            else if (identityBean.equalsIgnoreCase("stop")) {
                 _log.info("Removing characters from "  + identityBean + " using this regex: " + regex);
                 Collection<Stop> stops = dao.getAllStops();
                 for (Stop stop : stops) {
                     String newId = stop.getId().getId().replaceAll(regex, "");
                     if (!newId.equals(stop.getId().getId())) {
                         stop.getId().setId(newId);
+                        output += stop.getId().getId() + ", ";
                     }
                 }
             }
 
-            if (identityBean.equalsIgnoreCase("route")) {
+            else if (identityBean.equalsIgnoreCase("route")) {
                 _log.info("Removing characters from "  + identityBean + " using this regex: " + regex);
                 Collection<Route> routes = dao.getAllRoutes();
                 for (Route route : routes) {
                     String newId = route.getId().getId().replaceAll(regex, "");
                     if (!newId.equals(route.getId().getId())) {
                         route.getId().setId(newId);
+                        output += route.getId().getId() + ", ";
                     }
                 }
             }
 
             else{
-                _log.error("No matching Bean Type "+identityBean);
+                _log.error("No matching Bean Type " + identityBean);
                 return;
             }
 
+            if(verbose) {
+                _log.info(output.substring(0, output.length() - 2));
+            }
         }
 
-    public void setIdentityBean(String identitybean){
-        this.identityBean = identitybean;
+    public void setIdentityBean(String identityBean){
+        this.identityBean = identityBean;
     }
 
     public void setRegex(String regex){
         this.regex = regex;
+    }
+
+    public void setVerbose(boolean verbose){
+        this.verbose = verbose;
     }
 }

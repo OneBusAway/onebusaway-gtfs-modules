@@ -92,6 +92,14 @@ public final class Transfer extends IdentityBean<Integer> {
     this.fromStop = fromStop;
   }
 
+  public Stop getRequiredStop() {
+    return requiredStop;
+  }
+
+  public void setRequiredStop(Stop requiredStop) {
+    this.requiredStop = requiredStop;
+  }
+
   public Route getFromRoute() {
     return fromRoute;
   }

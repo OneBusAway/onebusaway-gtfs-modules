@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.*;
 
 /* Check reference service against ATIS service and if there is service in ATIS
@@ -53,7 +52,7 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
 
-        Collection<String> problemRoutes = new HashSet<String>();
+        Collection<String> problemRoutes;
         ProblemRouteListener listener = new ProblemRouteListener();
 
         try {
@@ -192,14 +191,13 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
     }
 
 
-    private class ProblemRouteListener implements CSVListener {
+    private static class ProblemRouteListener implements CSVListener {
 
-        private Collection<String> routeIds = new HashSet<String>();
+        private Collection<String> routeIds = new HashSet<>();
 
-        private GtfsMutableRelationalDao dao;
 
         @Override
-        public void handleLine(List<String> list) throws Exception {
+        public void handleLine(List<String> list) {
             if (routeIds == null) {
                 routeIds = list;
                 return;
@@ -207,7 +205,7 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
             routeIds.add(list.get(0));
         }
 
-        public Collection<String> returnRouteIds (){
+        private Collection<String> returnRouteIds(){
             return routeIds;
         }
     }

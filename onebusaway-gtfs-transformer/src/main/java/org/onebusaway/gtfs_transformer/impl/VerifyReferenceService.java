@@ -128,7 +128,8 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
                         if (date.equals(testDate)) {
                             if (calDate.getExceptionType() == 1) {
                                 if (problemRoutes.contains(route.getId().getId())) {
-                                    _log.info("On {} ATIS has service for this route but Reference has none: {}", testDate, route.getId());
+                                    _log.info("On {} ATIS has service for this route but Reference has none: {}. Excused route, no further action",
+                                            testDate, route.getId());
                                     break reftriploop;
                                 }
                                 else {

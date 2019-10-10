@@ -97,6 +97,10 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true)
   private String track;
 
+  // Custom extension for MNR
+  @CsvField(optional = true, name = "note_id", mapping = EntityFieldMappingFactory.class, order = -1)
+  private Note note;
+
   public StopTime() {
 
   }
@@ -121,6 +125,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.endServiceAreaRadius = st.endServiceAreaRadius;
     this.departureBuffer = st.departureBuffer;
     this.track = st.track;
+    this.note = st.note;
   }
 
   public Integer getId() {
@@ -445,6 +450,14 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   public void setTrack(String track) {
     this.track = track;
+  }
+
+  public Note getNote() {
+    return note;
+  }
+
+  public void setNote(Note note) {
+    this.note = note;
   }
 
   public int compareTo(StopTime o) {

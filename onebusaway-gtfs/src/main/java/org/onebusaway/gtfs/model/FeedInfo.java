@@ -23,7 +23,7 @@ import org.onebusaway.gtfs.serialization.mappings.ServiceDateFieldMappingFactory
 @CsvFields(filename = "feed_info.txt", required = false, prefix = "feed_")
 public final class FeedInfo extends IdentityBean<String> {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   @CsvField(optional = true)
   private String id = "1";
@@ -42,6 +42,23 @@ public final class FeedInfo extends IdentityBean<String> {
 
   @CsvField(optional = true)
   private String version;
+
+  @CsvField(optional = true, name = "default_lang")
+  private String defaultLang;
+
+  public FeedInfo() {
+  }
+
+  public FeedInfo(FeedInfo fi) {
+    this.id = fi.id;
+    this.publisherName = fi.publisherName;
+    this.publisherUrl = fi.publisherUrl;
+    this.lang = fi.lang;
+    this.startDate = fi.startDate;
+    this.endDate = fi.endDate;
+    this.version = fi.version;
+    this.defaultLang = fi.defaultLang;
+  }
 
   public String getPublisherName() {
     return publisherName;
@@ -89,6 +106,14 @@ public final class FeedInfo extends IdentityBean<String> {
 
   public void setVersion(String version) {
     this.version = version;
+  }
+
+  public String getDefaultLang() {
+    return defaultLang;
+  }
+
+  public void setDefaultLang(String defaultLang) {
+    this.defaultLang = defaultLang;
   }
 
   /****

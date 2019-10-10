@@ -23,6 +23,10 @@ import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.*;
+
+
+import java.text.SimpleDateFormat;
 
 public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
 
@@ -38,11 +42,20 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+        RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        Set<Trip> stopsWarn = new HashSet<Trip>();
+        Set<Trip> stopsRemove = new HashSet<Trip>();
+        String collectedWarnString = "";
+        String collectedRemoveString = "";
+
+
 
         for (Trip trip: dao.getAllTrips())
         {
             StopTime oldTime = new StopTime();
             boolean starting = true;
+            stopLoop:
             for (StopTime newTime: dao.getStopTimesForTrip(trip))
             {
                 if (starting)
@@ -51,38 +64,54 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
                     oldTime = newTime;
                 }
                 //check if the bus takes more than five hours between stops
-                if(newTime.getArrivalTime() - oldTime.getDepartureTime() > 5 * MINUTES_PER_HOUR*SECONDS_PER_MINUTE){
-                    _log.error("Trip {} on Route {} is scheduled for unrealistic transit time between trip {} at {}, and trip {} at {}", trip.getId(), trip.getRoute(), oldTime.getId(), humanReadableTime(oldTime.getDepartureTime()), newTime.getId(), humanReadableTime(newTime.getArrivalTime()));
-                    es.publishMessage(getTopic(), "Trip " + trip.getId() + " on Route "+ trip.getRoute() +" is scheduled for unrealistic transit time when traveling between stoptime" + oldTime.getId()+ " at " + oldTime.getDepartureTime() + ", and stoptime" +  newTime.getId() + " at " + newTime.getDepartureTime());
+                int timeDelta = newTime.getArrivalTime() - oldTime.getDepartureTime();
 
-                    _log.error("Trip "+trip.getId().getId()+" on Route "+trip.getRoute().getId().getId()+" is scheduled for unrealistic transit time between trip "+ oldTime.getId()+" at "+humanReadableTime(oldTime.getDepartureTime())+", and trip "+newTime.getId()+" at " + humanReadableTime(newTime.getArrivalTime()));
-
+                if(timeDelta > 1 * MINUTES_PER_HOUR * SECONDS_PER_MINUTE){
+                    Date departure = new Date(oldTime.getDepartureTime()*1000);
+                    Date arrival = new Date(newTime.getArrivalTime()*1000);
+                    String message = "Trip " + trip.getId().getId() + " on Route "+ trip.getRoute().getId() +
+                            ".\n Route Short Name " + trip.getRouteShortName() + "\n Route Long Name \n" +
+                            "This trip is scheduled for unrealistic transit time (>1hr) when traveling between stoptime" +
+                            oldTime.getId()+ " at " + sdf.format(departure) + ", and stoptime" +
+                            newTime.getId() + " at " + sdf.format(arrival);
+                    _log.error(message);
+                    stopsWarn.add(trip);
+                    collectedWarnString += ", " + trip.toString() + "at " + sdf.format(departure) +
+                            "and " + sdf.format(arrival);
+                }
+                if(timeDelta > 3 * MINUTES_PER_HOUR * SECONDS_PER_MINUTE){
+                    Date departure = new Date(oldTime.getDepartureTime()*1000);
+                    Date arrival = new Date(newTime.getArrivalTime()*1000);
+                    String message = "Trip " + trip.getId().getId() + " on Route "+ trip.getRoute().getId() +
+                            " is scheduled for unrealistic transit time (>3hr) when traveling between stoptime" +
+                            oldTime.getId()+ " at " + sdf.format(departure) + ", and stoptime" +
+                            newTime.getId() + " at " + sdf.format(arrival) + ". This trip will be deleted.";
+                    _log.error(message);
+                    collectedRemoveString += ", " + trip.toString();
+                    stopsRemove.add(trip);
+                    break stopLoop;
                 }
                 oldTime= newTime;
             }
         }
-    }
 
-    private String humanReadableTime(int time){
-        String output;
-        int hours;
-        int minutes;
-        int seconds;
-        hours = time/(MINUTES_PER_HOUR*SECONDS_PER_MINUTE);
-        minutes = (time - hours*MINUTES_PER_HOUR*SECONDS_PER_MINUTE)/SECONDS_PER_MINUTE;
-        seconds = (time - hours*MINUTES_PER_HOUR*SECONDS_PER_MINUTE - minutes*SECONDS_PER_MINUTE);
-        output = intTimeToString(hours) + ":" + intTimeToString(minutes) + ":" + intTimeToString(seconds);
-        return output;
-    }
-
-    private String intTimeToString(int time){
-        String output = "";
-        if (time/10 == 0){
-            output += "0";
+        if (stopsWarn.size() > 0) {
+            collectedWarnString = "Total number of trips with transit times of greater than one hour: " +
+                    stopsWarn.size() + ".\n Here are the trips and stops: " + collectedWarnString.substring(2);
+            _log.info(collectedWarnString);
         }
-        output += time;
-        return output;
+        if (stopsRemove.size() > 0) {
+            collectedRemoveString = "Total number of trips with transit times of greater than three hours: " +
+                    stopsRemove.size() + ".\n These trips are being removed. \nTrips being removed: " +
+                    collectedRemoveString.substring(2);
+            _log.info(collectedRemoveString);
+            es.publishMessage(getTopic(), collectedRemoveString);
+        }
+        for (Trip trip: stopsRemove){
+            removeEntityLibrary.removeTrip(dao, trip);
+        }
     }
+
 
     private String getTopic() {
         return System.getProperty("sns.topic");

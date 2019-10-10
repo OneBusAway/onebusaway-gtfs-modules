@@ -1,0 +1,21 @@
+table_name,field_name,language,translation,record_id,record_sub_id,field_value
+agency,agency_name,es,Fake Agency Spanish,agency,,
+agency,agency_name,fr,Fake Agency French,,,Fake Agency
+stops,stop_name,es,A Spanish,A,,
+stops,stop_name,fr,A French,,,A
+routes,route_long_name,es,3 Spanish,3,,
+routes,route_long_name,fr,3 French,,,3
+trips,trip_headsign,es,headsign Spanish,3.1,,
+trips,trip_headsign,fr,headsign French,,,headsign
+stop_times,stop_headsign,es,to G Spanish,4.3,1,
+stop_times,stop_headsign,es,to H Spanish,4.3,2,
+stop_times,stop_headsign,fr,to G French,,,to G
+stop_times,stop_headsign,fr,to H French,,,to H
+feed_info,feed_publisher_name,es,Fake Feed Publisher Spanish,,,
+feed_info,feed_publisher_url,es,http://fake.example.es,,,
+feed_info,feed_publisher_name,fr,Fake Feed Publisher French,,,
+feed_info,feed_publisher_url,fr,http://fake.example.fr,,,
+wrong_table_name,agency_name,es,Fake Agency Spanish,agency,,
+agency,wrong_column_name,es,Fake Agency Spanish,agency,,
+agency,agency_name,es,No record id,,,
+

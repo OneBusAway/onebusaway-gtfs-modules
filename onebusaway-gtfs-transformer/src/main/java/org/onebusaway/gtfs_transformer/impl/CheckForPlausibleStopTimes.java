@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.*;
 
+
 import java.text.SimpleDateFormat;
 
 public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
@@ -69,10 +70,11 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
                     Date departure = new Date(oldTime.getDepartureTime()*1000);
                     Date arrival = new Date(newTime.getArrivalTime()*1000);
                     String message = "Trip " + trip.getId().getId() + " on Route "+ trip.getRoute().getId() +
-                            " is scheduled for unrealistic transit time (>1hr) when traveling between stoptime" +
+                            ".\n Route Short Name " + trip.getRouteShortName() + "\n Route Long Name \n" +
+                            "This trip is scheduled for unrealistic transit time (>1hr) when traveling between stoptime" +
                             oldTime.getId()+ " at " + sdf.format(departure) + ", and stoptime" +
                             newTime.getId() + " at " + sdf.format(arrival);
-                    _log.info(message);
+                    _log.error(message);
                     stopsWarn.add(trip);
                     collectedWarnString += ", " + trip.toString() + "at " + sdf.format(departure) +
                             "and " + sdf.format(arrival);
@@ -85,7 +87,6 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
                             oldTime.getId()+ " at " + sdf.format(departure) + ", and stoptime" +
                             newTime.getId() + " at " + sdf.format(arrival) + ". This trip will be deleted.";
                     _log.error(message);
-                    es.publishMessage(getTopic(), message);
                     collectedRemoveString += ", " + trip.toString();
                     stopsRemove.add(trip);
                     break stopLoop;
@@ -94,18 +95,18 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
             }
         }
 
-        collectedWarnString = "Total number of trips with transit times of greater than one hour: " +
-                stopsWarn.size() + ".\n Here are the trips and stops: " + collectedWarnString.substring(2);
-        collectedRemoveString = "Total number of trips with transit times of greater than three hours: " +
-                stopsRemove.size() + ".\n These trips are being removed. \nTrips being removed: " +
-                collectedRemoveString.substring(2);
-
-        _log.error(collectedWarnString);
-        es.publishMessage(getTopic(), collectedWarnString);
-
-        _log.error(collectedRemoveString);
-        es.publishMessage(getTopic(), collectedRemoveString);
-
+        if (stopsWarn.size() > 0) {
+            collectedWarnString = "Total number of trips with transit times of greater than one hour: " +
+                    stopsWarn.size() + ".\n Here are the trips and stops: " + collectedWarnString.substring(2);
+            _log.info(collectedWarnString);
+        }
+        if (stopsRemove.size() > 0) {
+            collectedRemoveString = "Total number of trips with transit times of greater than three hours: " +
+                    stopsRemove.size() + ".\n These trips are being removed. \nTrips being removed: " +
+                    collectedRemoveString.substring(2);
+            _log.info(collectedRemoveString);
+            es.publishMessage(getTopic(), collectedRemoveString);
+        }
         for (Trip trip: stopsRemove){
             removeEntityLibrary.removeTrip(dao, trip);
         }

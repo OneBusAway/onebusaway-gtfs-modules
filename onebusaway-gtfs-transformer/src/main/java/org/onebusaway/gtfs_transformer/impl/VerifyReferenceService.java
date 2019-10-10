@@ -17,6 +17,9 @@ package org.onebusaway.gtfs_transformer.impl;
 
 import org.onebusaway.cloud.api.ExternalServices;
 import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
+import org.onebusaway.csv_entities.CSVLibrary;
+import org.onebusaway.csv_entities.CSVListener;
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
@@ -27,10 +30,11 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Set;
-import java.util.List;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.*;
 
 /* Check reference service against ATIS service and if there is service in ATIS
 that isn't in reference send a notification
@@ -38,15 +42,36 @@ that isn't in reference send a notification
 public class VerifyReferenceService implements GtfsTransformStrategy {
     private final Logger _log = LoggerFactory.getLogger(VerifyReferenceService.class);
 
-    @Override
+    @CsvField(optional = true)
+    private String problemRoutesFile;
+
     public String getName() {
         return this.getClass().getSimpleName();
     }
-
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
+
+        Collection<String> problemRoutes = new HashSet<String>();
+        ProblemRouteListener listener = new ProblemRouteListener();
+
+        try {
+            if (problemRoutesFile != null) {
+                InputStream is = new BufferedInputStream(new FileInputStream(problemRoutesFile));
+                new CSVLibrary().parse(is, listener);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        problemRoutes = listener.returnRouteIds();
+
+
+        for (String route : problemRoutes){
+            _log.info("ProblemRoutes includes: " + route);
+        }
+
+
 
         int tripsToday = 0;
         int tripsTomorrow = 0;
@@ -57,17 +82,17 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
         Date nextDay = removeTime(addDays(new Date(), 2));
         Date dayAfterNext = removeTime(addDays(new Date(), 3));
 
-        tripsToday = hasRouteServiceForDate(dao, reference, refCalendarService, today);
-        tripsTomorrow = hasRouteServiceForDate(dao, reference, refCalendarService, tomorrow);
-        tripsNextDay = hasRouteServiceForDate(dao, reference, refCalendarService, nextDay);
-        tripsDayAfterNext = hasRouteServiceForDate(dao, reference, refCalendarService, dayAfterNext);
+        tripsToday = hasRouteServiceForDate(dao, reference, refCalendarService, today, problemRoutes);
+        tripsTomorrow = hasRouteServiceForDate(dao, reference, refCalendarService, tomorrow, problemRoutes);
+        tripsNextDay = hasRouteServiceForDate(dao, reference, refCalendarService, nextDay, problemRoutes);
+        tripsDayAfterNext = hasRouteServiceForDate(dao, reference, refCalendarService, dayAfterNext, problemRoutes);
 
         _log.info("Active routes {}: {}, {}: {}, {}: {}, {}: {}",
                 today, tripsToday, tomorrow, tripsTomorrow, nextDay, tripsNextDay, dayAfterNext, tripsDayAfterNext);
     }
 
     int hasRouteServiceForDate(GtfsMutableRelationalDao dao, GtfsMutableRelationalDao reference,
-                               CalendarService refCalendarService, Date testDate) {
+                               CalendarService refCalendarService, Date testDate, Collection<String> problemRoutes) {
         AgencyAndId daoAgencyAndId = dao.getAllTrips().iterator().next().getId();
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         int numTripsOnDate = 0;
@@ -102,12 +127,18 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
                         Date date = constructDate(calDate.getDate());
                         if (date.equals(testDate)) {
                             if (calDate.getExceptionType() == 1) {
-                                _log.info("On {} ATIS has service for this route but Reference has none: {}", testDate, route.getId());
-                                es.publishMessage(getTopic(), "ATIS has service for this route but Reference has none: "
-                                        + route.getId()
-                                        + " for "
-                                        + testDate);
-                                break reftriploop;
+                                if (problemRoutes.contains(route.getId().getId())) {
+                                    _log.info("On {} ATIS has service for this route but Reference has none: {}", testDate, route.getId());
+                                    break reftriploop;
+                                }
+                                else {
+                                    _log.info("On {} ATIS has service for this route but Reference has none: {}", testDate, route.getId());
+                                    es.publishMessage(getTopic(), "ATIS has service for this route but Reference has none: "
+                                            + route.getId()
+                                            + " for "
+                                            + testDate);
+                                    break reftriploop;
+                                }
                             }
                         }
                     }
@@ -155,5 +186,29 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
         return System.getProperty("sns.topic");
     }
 
+    public void setProblemRoutesFile(String problemRoutesFile){
+        this.problemRoutesFile = problemRoutesFile;
+    }
+
+
+    private class ProblemRouteListener implements CSVListener {
+
+        private Collection<String> routeIds = new HashSet<String>();
+
+        private GtfsMutableRelationalDao dao;
+
+        @Override
+        public void handleLine(List<String> list) throws Exception {
+            if (routeIds == null) {
+                routeIds = list;
+                return;
+            }
+            routeIds.add(list.get(0));
+        }
+
+        public Collection<String> returnRouteIds (){
+            return routeIds;
+        }
+    }
 
 }

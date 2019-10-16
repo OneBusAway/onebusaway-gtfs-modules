@@ -68,6 +68,8 @@ public class ServiceDateFieldMappingFactory implements FieldMappingFactory {
         BeanWrapper object, Map<String, Object> csvValues) {
 
       ServiceDate date = (ServiceDate) object.getPropertyValue(_objFieldName);
+      // date fields can be optional -- return if not present
+      if (date == null) return;
       String value = date.getAsString();
       csvValues.put(_csvFieldName, value);
     }

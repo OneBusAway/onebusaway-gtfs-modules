@@ -98,6 +98,14 @@ public class GtfsReader extends CsvEntityReader {
     addEntityHandler(new EntityHandlerImpl());
   }
 
+  public void setLastModifiedTime(Long lastModifiedTime) {
+    if (lastModifiedTime != null)
+      getContext().put("lastModifiedTime", lastModifiedTime);
+  }
+  public Long getLastModfiedTime() {
+    return (Long)getContext().get("lastModifiedTime");
+  }
+
   public List<Agency> getAgencies() {
     return _agencies;
   }
@@ -202,7 +210,8 @@ public class GtfsReader extends CsvEntityReader {
     throw new EntityReferenceNotFoundException(entityType, entityId);
   }
 
-  /****
+
+    /****
    * Private Internal Classes
    ****/
 

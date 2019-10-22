@@ -27,7 +27,7 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
 
   private static final int MISSING_VALUE = -999;
 
-  // Default, undefined infrastructure
+  @Deprecated
   public static final int MODE_LINK = 0;
 
   public static final int MODE_WALKWAY = 1;
@@ -40,9 +40,14 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
 
   public static final int MODE_ELEVATOR = 5;
 
+  public static final int MODE_FAREGATE = 6;
+
+  public static final int MODE_EXIT_GATE = 7;
+
   @CsvField(name = "pathway_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 
+  @Deprecated @CsvField(optional = true)
   private int pathwayType;
 
   @CsvField(name = "from_stop_id", mapping = EntityFieldMappingFactory.class)
@@ -51,15 +56,35 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   @CsvField(name = "to_stop_id", mapping = EntityFieldMappingFactory.class)
   private Stop toStop;
 
-  private int traversalTime;
+  private int pathwayMode;
+
+  private int isBidirectional;
 
   @CsvField(optional = true)
+  private double length = MISSING_VALUE;
+
+  @CsvField(optional = true)
+  private int traversalTime = MISSING_VALUE;
+
+  @CsvField(optional = true)
+  private int stairCount = MISSING_VALUE;
+
+  @CsvField(optional = true)
+  private double maxSlope = MISSING_VALUE;
+
+  @CsvField(optional = true)
+  private double minWidth = MISSING_VALUE;
+
+  @CsvField(optional = true)
+  private String signpostedAs;
+
+  @CsvField(optional = true)
+  private String reversedSignpostedAs;
+
+  @Deprecated @CsvField(optional = true)
   private int wheelchairTraversalTime = MISSING_VALUE;
 
-  @CsvField(optional = true, defaultValue = "0")
-  private int pathwayMode = 0;
-
-  @CsvField(optional = true)
+  @Deprecated @CsvField(optional = true)
   private String pathwayCode;
 
   @Override
@@ -72,14 +97,6 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
     this.id = id;
   }
 
-  public void setPathwayType(int pathwayType) {
-    this.pathwayType = pathwayType;
-  }
-
-  public int getPathwayType() {
-    return pathwayType;
-  }
-  
   public void setFromStop(Stop fromStop) {
     this.fromStop = fromStop;
   }
@@ -96,30 +113,6 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
     return toStop;
   }
 
-  public void setTraversalTime(int traversalTime) {
-    this.traversalTime = traversalTime;
-  }
-
-  public int getTraversalTime() {
-    return traversalTime;
-  }
-
-  public void setWheelchairTraversalTime(int wheelchairTraversalTime) {
-    this.wheelchairTraversalTime = wheelchairTraversalTime;
-  }
-
-  public int getWheelchairTraversalTime() {
-    return wheelchairTraversalTime;
-  }
-
-  public boolean isWheelchairTraversalTimeSet() {
-    return wheelchairTraversalTime != MISSING_VALUE;
-  }
-
-  public void clearWheelchairTraversalTime() {
-    this.wheelchairTraversalTime = MISSING_VALUE;
-  }
-
   public int getPathwayMode() {
     return pathwayMode;
   }
@@ -128,16 +121,155 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
     this.pathwayMode = pathwayMode;
   }
 
-  public String getPathwayCode() {
-    return pathwayCode;
+  public boolean isTraversalTimeSet() {
+    return this.traversalTime != MISSING_VALUE;
   }
 
-  public void setPathwayCode(String pathwayCode) {
-    this.pathwayCode = pathwayCode;
+  public void setTraversalTime(int traversalTime) {
+    this.traversalTime = traversalTime;
+  }
+
+  public int getTraversalTime() {
+    return traversalTime;
+  }
+
+  public void clearTraversalTime() {
+     this.traversalTime = MISSING_VALUE;
+  }
+
+  public int getIsBidirectional() {
+    return isBidirectional;
+  }
+
+  public void setIsBidirectional(int isBidirectional) {
+    this.isBidirectional = isBidirectional;
+  }
+
+  public boolean isLengthSet() {
+      return length != MISSING_VALUE;
+  }
+
+  public double getLength() {
+      return length;
+  }
+
+
+  public void setLength(double length) {
+    this.length = length;
+  }
+
+  public void clearLength() {
+      length = MISSING_VALUE;
+  }
+
+  public boolean isStairCountSet() {
+    return stairCount != MISSING_VALUE;
+  }
+
+  public int getStairCount() {
+    return stairCount;
+  }
+
+  public void setStairCount(int stairCount) {
+    this.stairCount = stairCount;
+  }
+
+  public void clearStairCount() {
+    stairCount = MISSING_VALUE;
+  }
+
+  public boolean isMaxSlopeSet() {
+    return maxSlope != MISSING_VALUE;
+  }
+
+  public double getMaxSlope() {
+    return maxSlope;
+  }
+
+  public void setMaxSlope(double maxSlope) {
+    this.maxSlope = maxSlope;
+  }
+
+  public void clearMaxSlope() {
+    maxSlope = MISSING_VALUE;
+  }
+
+  public boolean isMinWidthSet() {
+    return minWidth != MISSING_VALUE;
+  }
+
+  public double getMinWidth() {
+    return minWidth;
+  }
+
+  public void setMinWidth(double minWidth) {
+    this.minWidth = minWidth;
+  }
+
+  public void clearMinWidth() {
+    minWidth = MISSING_VALUE;
+  }
+
+  public String getSignpostedAs() {
+    return signpostedAs;
+  }
+
+  public void setSignpostedAs(String signpostedAs) {
+    this.signpostedAs = signpostedAs;
+  }
+
+  public String getReversedSignpostedAs() {
+    return reversedSignpostedAs;
+  }
+
+  public void setReversedSignpostedAs(String reversedSignpostedAs) {
+    this.reversedSignpostedAs = reversedSignpostedAs;
   }
 
   @Override
   public String toString() {
     return "<Pathway " + this.id + ">";
   }
+
+  @Deprecated
+  public void setWheelchairTraversalTime(int wheelchairTraversalTime) {
+    this.wheelchairTraversalTime = wheelchairTraversalTime;
+  }
+
+  @Deprecated
+  public int getWheelchairTraversalTime() {
+    return wheelchairTraversalTime;
+  }
+
+  @Deprecated
+  public boolean isWheelchairTraversalTimeSet() {
+    return wheelchairTraversalTime != MISSING_VALUE;
+  }
+
+  @Deprecated
+  public void clearWheelchairTraversalTime() {
+    this.wheelchairTraversalTime = MISSING_VALUE;
+  }
+
+  @Deprecated
+  public String getPathwayCode() {
+    return pathwayCode;
+  }
+
+  @Deprecated
+  public void setPathwayCode(String pathwayCode) {
+    this.pathwayCode = pathwayCode;
+  }
+
+  @Deprecated
+  public void setPathwayType(int pathwayType) {
+    this.pathwayType = pathwayType;
+  }
+
+  @Deprecated
+  public int getPathwayType() {
+    return pathwayType;
+  }
+
+
 }

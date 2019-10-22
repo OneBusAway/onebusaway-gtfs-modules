@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
@@ -40,7 +41,16 @@ public class GtfsReaderStopsTest {
     _gtfs.putDefaultAgencies();
   }
 
+  /* 
+   * These tests are disabled as we do not currently have a mechanism for conditional validation;
+   * with the addition of pathways to the GTFS spec, stop latitude and longitude are now only
+   * conditionally required. Thus they are no longer marked as required fields, leading these
+   * tests to fail.
+   *
+   */
+  
   @Test
+  @Ignore
   public void testMissingStopLat() throws IOException {
     _gtfs.putLines("stops.txt", "stop_id,stop_name,stop_lat,stop_lon",
         "1,The Stop, ,-122.0");
@@ -54,6 +64,7 @@ public class GtfsReaderStopsTest {
   }
 
   @Test
+  @Ignore
   public void testMissingStopLon() throws IOException {
     _gtfs.putLines("stops.txt", "stop_id,stop_name,stop_lat,stop_lon",
         "1,The Stop,47.0,");

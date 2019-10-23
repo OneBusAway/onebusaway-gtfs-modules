@@ -1,5 +1,8 @@
 language: java
 
+script:
+  - jdk_switcher use openjdk8
+  - # do stuff with open Java 8
 cache:
   directories:
    - $HOME/.m2

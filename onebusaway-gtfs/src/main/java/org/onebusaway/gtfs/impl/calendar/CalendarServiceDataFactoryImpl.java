@@ -116,6 +116,9 @@ public class CalendarServiceDataFactoryImpl implements
       Set<TimeZone> timeZones = new HashSet<TimeZone>();
       for (String tripAgencyId : tripAgencyIds) {
         TimeZone timeZone = data.getTimeZoneForAgencyId(tripAgencyId);
+        if (timeZone == null) {
+          timeZone = serviceIdTimeZone;
+        }
         timeZones.add(timeZone);
       }
 

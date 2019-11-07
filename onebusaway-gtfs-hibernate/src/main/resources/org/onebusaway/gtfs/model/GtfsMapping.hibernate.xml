@@ -121,7 +121,6 @@
         <property name="minWidth" />
         <property name="signpostedAs" />
         <property name="reversedSignpostedAs" />
-        <property name="pathwayType" />
         <property name="pathwayCode" />
         <property name="wheelchairTraversalTime" />
     </class>

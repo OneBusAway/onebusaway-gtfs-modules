@@ -41,23 +41,7 @@ import org.onebusaway.csv_entities.exceptions.InvalidValueEntityException;
 import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
 import org.onebusaway.gtfs.GtfsTestData;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
-import org.onebusaway.gtfs.model.Agency;
-import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.Block;
-import org.onebusaway.gtfs.model.FareAttribute;
-import org.onebusaway.gtfs.model.FareRule;
-import org.onebusaway.gtfs.model.FeedInfo;
-import org.onebusaway.gtfs.model.Frequency;
-import org.onebusaway.gtfs.model.Pathway;
-import org.onebusaway.gtfs.model.Ridership;
-import org.onebusaway.gtfs.model.Route;
-import org.onebusaway.gtfs.model.ServiceCalendar;
-import org.onebusaway.gtfs.model.ServiceCalendarDate;
-import org.onebusaway.gtfs.model.ShapePoint;
-import org.onebusaway.gtfs.model.Stop;
-import org.onebusaway.gtfs.model.StopTime;
-import org.onebusaway.gtfs.model.Transfer;
-import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.serialization.mappings.AgencyNotFoundForRouteException;
 import org.onebusaway.gtfs.services.GtfsDao;
@@ -77,11 +61,14 @@ public class GtfsReaderTest {
         "agency.txt",
         "agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url",
         "1,Agency,http://agency.gov/,America/Los_Angeles,en,555-1234,http://agency.gov/fares");
+    gtfs.putLines("levels.txt",
+            "level_id,level_index,level_name",
+            "L1,-1.3,Level One");
     gtfs.putLines(
         "stops.txt",
         "stop_id,stop_name,stop_lat,stop_lon,stop_desc,stop_code,stop_direction,location_type,parent_station,"
-            + "stop_url,wheelchair_boarding,zone_id,stop_timezone,vehicle_type,platform_code",
-        "S1,Stop,47.0,-122.0,description,123,N,1,1234,http://agency.gov/stop,1,Z,America/New_York,2,9 3/4");
+            + "stop_url,wheelchair_boarding,zone_id,stop_timezone,vehicle_type,platform_code,level_id",
+        "S1,Stop,47.0,-122.0,description,123,N,1,1234,http://agency.gov/stop,1,Z,America/New_York,2,9 3/4,L1");
     gtfs.putLines(
         "routes.txt",
         "agency_id,route_id,route_short_name,route_long_name,route_type,route_desc,route_color,route_text_color,"
@@ -127,8 +114,8 @@ public class GtfsReaderTest {
         "Test,http://agency.gov/,en,20120110,20120217,2.0");
     gtfs.putLines(
         "pathways.txt",
-        "pathway_id,pathway_type,from_stop_id,to_stop_id,traversal_time,wheelchair_traversal_time",
-        "P1,1,S1,S1,60,61");
+            "pathway_id,pathway_mode,is_bidirectional,from_stop_id,to_stop_id,traversal_time",
+            "P1,1,1,S1,S1,60");
     gtfs.putLines(
             "ridership.txt",
             "total_boardings,total_alightings,ridership_start_date,ridership_end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday,agency_id,route_id,trip_id,stop_id,average_load",
@@ -172,6 +159,12 @@ public class GtfsReaderTest {
     assertEquals(1, block.getBlockVariable());
     assertEquals(599, block.getBlockRoute());
     assertEquals(1, block.getBlockRun());
+
+    Level level = dao.getLevelForId(new AgencyAndId("1", "L1"));
+    assertNotNull(level);
+    assertEquals(new AgencyAndId("1", "L1"), level.getId());
+    assertEquals(-1.3, level.getIndex(), 0.0);
+    assertEquals("Level One", level.getName());
     
     Stop stop = dao.getStopForId(new AgencyAndId("1", "S1"));
     assertEquals(new AgencyAndId("1", "S1"), stop.getId());
@@ -189,6 +182,7 @@ public class GtfsReaderTest {
     assertEquals("America/New_York", stop.getTimezone());
     assertEquals(2, stop.getVehicleType());
     assertEquals("9 3/4", stop.getPlatformCode());
+    assertEquals(level, stop.getLevel());
 
     Route route = dao.getRouteForId(new AgencyAndId("1", "R1"));
     assertEquals(new AgencyAndId("1", "R1"), route.getId());
@@ -309,11 +303,10 @@ public class GtfsReaderTest {
 
     Pathway pathway = dao.getAllPathways().iterator().next();
     assertEquals(new AgencyAndId("1", "P1"), pathway.getId());
-    assertEquals(1, pathway.getPathwayType());
+    assertEquals(1, pathway.getPathwayMode());
     assertEquals(stop, pathway.getFromStop());
     assertEquals(stop, pathway.getToStop());
     assertEquals(60, pathway.getTraversalTime());
-    assertEquals(61, pathway.getWheelchairTraversalTime());
 
 
     riderships = dao.getRidershipForTrip(new AgencyAndId("1", "34741338"));

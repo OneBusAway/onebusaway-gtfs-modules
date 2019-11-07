@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.onebusaway.gtfs.model.Pathway.MODE_WALKWAY;
+
 public class InferPathwaysFromEntrancesStrategy implements GtfsTransformStrategy {
 
     private static final int WHEELCHAIR_BOARDING_ALLOWED = 1;
@@ -93,7 +95,7 @@ public class InferPathwaysFromEntrancesStrategy implements GtfsTransformStrategy
                     } else if (stop.getWheelchairBoarding() == 0 && station.getWheelchairBoarding() == WHEELCHAIR_BOARDING_ALLOWED) {
                         accessibleTime = wheelchairTraversalTime;
                     }
-                    pathwayUtil.createPathway(stop, entrance, PathwayUtil.PATHWAY_MODE_GENERIC, traversalTime, accessibleTime, id, null);
+                    pathwayUtil.createPathway(stop, entrance, MODE_WALKWAY, traversalTime, id, null);
                 }
             }
         }

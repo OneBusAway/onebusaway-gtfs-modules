@@ -74,7 +74,7 @@ public class GtfsTestData {
       InputStream in = loader.getResourceAsStream(path);
 
       if (in == null)
-        throw new IllegalStateException("uknown classpath resource: " + path);
+        throw new IllegalStateException("unknown classpath resource: " + path);
 
       File tmpFile = File.createTempFile("Tmp-" + path.replace('/', '_'),
           ".file");

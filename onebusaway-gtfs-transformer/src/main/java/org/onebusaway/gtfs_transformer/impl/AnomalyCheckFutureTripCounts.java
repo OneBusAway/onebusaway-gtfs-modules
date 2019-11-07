@@ -49,26 +49,29 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
     private final int aprox_hours_per_month = 28*24;
 
     @CsvField(optional = true)
-    private String datesToIgnoreUrl; //= "https://raw.githubusercontent.com/wiki/caylasavitzky/onebusaway-gtfs-modules/Testing-pulling-problem-routes.md";
+    private String datesToIgnoreUrl; // a sample url might be "https://raw.githubusercontent.com/wiki/caylasavitzky/onebusaway-gtfs-modules/Testing-pulling-problem-routes.md";
 
     @CsvField(optional = true)
     private String datesToIgnoreFile;
 
 
     @CsvField(optional = true)
-    private String holidaysUrl; //= "https://raw.githubusercontent.com/wiki/caylasavitzky/onebusaway-gtfs-modules/Testing-pulling-problem-routes.md";
+    private String holidaysUrl;
 
     @CsvField(optional = true)
     private String holidaysFile;
 
     @CsvField(optional = true)
-    private String dayAvgTripMapUrl;// = "https://raw.githubusercontent.com/wiki/caylasavitzky/onebusaway-gtfs-modules/Testing-pulling-problem-routes.md";
+    private String dayAvgTripMapUrl;
 
     @CsvField(optional = true)
     private String dayAvgTripMapFile;
 
     @CsvField(optional = true)
-    private double percentage_match = 10;
+    private double percentageMatch = 10;
+
+    @CsvField(optional = true)
+    private boolean silentMode = false;
 
 
     @Override
@@ -78,11 +81,6 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
 
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-
-        // improvements:
-        /*
-            make csv reader mroe robust
-         */
 
         Collection<Date> datesToIgnore = new HashSet<Date>();
         SetListener datesToIgnoreListener = new SetListener();
@@ -161,12 +159,6 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
 
         Map<Date, Integer> dateTripMap = getDateTripMap(dao);
 
-        /*
-        for (Map.Entry<Date,Integer> entry : dateTripMap.entrySet()){
-            _log.info(entry.getKey() + " has " + entry.getValue() + " trips");
-        }
-*/
-
 
         int dayCounter = 0;
         Map<String, ArrayList<Double>> dayAvgTripsMapUpdate = new HashMap<String, ArrayList<Double>>();
@@ -182,11 +174,13 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
                 break;
             }
             int tripCount = dateTripMap.get(day);
-            if ((tripCount < dayAvgTripsMap.get(dayOfWeekFormat.format(day))*(1+percentage_match/100)) && (tripCount > dayAvgTripsMap.get(dayOfWeekFormat.format(day))*(1-percentage_match/100))){
+            if ((tripCount < dayAvgTripsMap.get(dayOfWeekFormat.format(day))*(1+percentageMatch/100)) &&
+                    (tripCount > dayAvgTripsMap.get(dayOfWeekFormat.format(day))*(1-percentageMatch/100))){
                 _log.info(day + " has " + tripCount + " trips, and that's within reasonable expections");
                 dayAvgTripsMapUpdate.get(dayOfWeekFormat.format(day)).add((double) tripCount);
             }
-            else if (holidays.contains(day) & (tripCount < dayAvgTripsMap.get("Holiday")*(1+percentage_match/100) && (tripCount > dayAvgTripsMap.get("Holiday")*(1-percentage_match/100)))) {
+            else if (holidays.contains(day) & (tripCount < dayAvgTripsMap.get("Holiday")*(1+percentageMatch/100)
+                    && (tripCount > dayAvgTripsMap.get("Holiday")*(1-percentageMatch/100)))) {
                 _log.info(day + " has " + tripCount + " trips, is a holiday, and that's within reasonable expections");
                 dayAvgTripsMapUpdate.get("Holiday").add((double) tripCount);
             }
@@ -195,7 +189,9 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
             }
             else {
                 _log.info(day + " has " + tripCount + " trips, this may indicate a problem.");
-                es.publishMessage(getTopic(),day.toString() + " has " + tripCount + " trips, this may indicate a problem.");
+                if (!silentMode) {
+                    es.publishMessage(getTopic(), day.toString() + " has " + tripCount + " trips, this may indicate a problem.");
+                }
             }
             dayCounter ++;
         }
@@ -213,49 +209,6 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
 
 
     }
-
-    int hasServiceForDate(GtfsMutableRelationalDao dao, Date testDate) {
-        int numTripsOnDate = 0;
-        for (Trip trip : dao.getAllTrips()) {
-            //check for service
-            boolean hasCalDateException = false;
-            //are there calendar dates?
-            if (!dao.getCalendarDatesForServiceId(trip.getServiceId()).isEmpty()) {
-                //calendar dates are not empty
-                for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
-                    Date date = constructDate(calDate.getDate());
-                    if (date.equals(testDate)) {
-                        hasCalDateException = true;
-                        if (calDate.getExceptionType() == 1) {
-                            //there is service for date
-                            numTripsOnDate++;
-                            break;
-                        }
-                        if (calDate.getExceptionType() == 2) {
-                            //service has been excluded for date
-                            break;
-                        }
-                    }
-                }
-            }
-
-            //if there are no entries in calendarDates, check serviceCalendar
-            if (!hasCalDateException) {
-                ServiceCalendar servCal = dao.getCalendarForServiceId(trip.getServiceId());
-                if (servCal != null) {
-                    //check for service using calendar
-                    Date start = removeTime(servCal.getStartDate().getAsDate());
-                    Date end = removeTime(servCal.getEndDate().getAsDate());
-                    if (testDate.equals(start) || testDate.equals(end) ||
-                            (testDate.after(start) && testDate.before(end))) {
-                        numTripsOnDate++;
-                    }
-                }
-            }
-        }
-        return numTripsOnDate;
-    }
-
 
 
     private Map<Date, Integer> getDateTripMap(GtfsMutableRelationalDao dao){

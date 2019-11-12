@@ -198,18 +198,16 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
 
 
         for (String day: days) {
-            double tripsUpcoming = dayAvgTripsMapUpdate.get(day).stream().mapToDouble(a -> a).average().getAsDouble();
-            double currentAvg = dayAvgTripsMap.get(day);
-            double suggestedAvg = currentAvg+((tripsUpcoming-currentAvg)/(aprox_hours_per_month));
-            _log.info(day+","+suggestedAvg);
+            try {
+                double tripsUpcoming = dayAvgTripsMapUpdate.get(day).stream().mapToDouble(a -> a).average().getAsDouble();
+                double currentAvg = dayAvgTripsMap.get(day);
+                double suggestedAvg = currentAvg + ((tripsUpcoming - currentAvg) / (aprox_hours_per_month));
+                _log.info(day + "," + suggestedAvg);
+            } catch (Exception e) {
+
+            }
         }
-
-
-
-
-
     }
-
 
     private Map<Date, Integer> getDateTripMap(GtfsMutableRelationalDao dao){
         Map<Date, Integer> dateTripMap = new HashMap<Date, Integer>();
@@ -301,6 +299,14 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
         this.holidaysFile = url;
     }
 
+    public void setPercentageMatch(double percentageMatch) {
+        this.percentageMatch = percentageMatch;
+    }
+
+    public void setSilentMode(boolean silentMode) {
+        this.silentMode = silentMode;
+    }
+
     private class SetListener implements CSVListener {
         private Collection<Date> inputSet = new HashSet<Date>();
         private GtfsMutableRelationalDao dao;
@@ -322,7 +328,6 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
 
         @Override
         public void handleLine(List<String> list) throws Exception {
-
             inputMap.put( list.get(0),Double.parseDouble(list.get(1)));
         }
 

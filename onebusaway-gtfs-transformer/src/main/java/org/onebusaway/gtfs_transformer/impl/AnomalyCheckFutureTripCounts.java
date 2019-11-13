@@ -30,7 +30,6 @@ import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +45,6 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
 
 
     private final Logger _log = LoggerFactory.getLogger(AnomalyCheckFutureTripCounts.class);
-    private final int aprox_hours_per_month = 28*24;
 
     @CsvField(optional = true)
     private String datesToIgnoreUrl; // a sample url might be "https://raw.githubusercontent.com/wiki/caylasavitzky/onebusaway-gtfs-modules/Testing-pulling-problem-routes.md";
@@ -82,60 +80,21 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-        Collection<Date> datesToIgnore = new HashSet<Date>();
+        Collection<Date> datesToIgnore;
         SetListener datesToIgnoreListener = new SetListener();
-        try {
-            if (datesToIgnoreUrl != null) {
-                URL url = new URL(datesToIgnoreUrl);
-                try (InputStream is = url.openStream()) {
-                    new CSVLibrary().parse(is, datesToIgnoreListener);
-                }
-            }
-            if (datesToIgnoreFile != null) {
-                InputStream is = new BufferedInputStream(new FileInputStream(datesToIgnoreFile));
-                new CSVLibrary().parse(is, datesToIgnoreListener);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        datesToIgnoreListener = (SetListener) readCsvFrom(datesToIgnoreListener,datesToIgnoreUrl, datesToIgnoreFile);
         datesToIgnore = datesToIgnoreListener.returnContents();
 
 
-        Collection<Date> holidays = new HashSet<Date>();
+        Collection<Date> holidays;
         SetListener holidaysListener = new SetListener();
-        try {
-            if (holidaysUrl != null) {
-                URL url = new URL(holidaysUrl);
-                try (InputStream is = url.openStream()) {
-                    new CSVLibrary().parse(is, holidaysListener);
-                }
-            }
-            if (holidaysFile != null) {
-                InputStream is = new BufferedInputStream(new FileInputStream(holidaysFile));
-                new CSVLibrary().parse(is, holidaysListener);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        holidaysListener = (SetListener) readCsvFrom(holidaysListener,holidaysUrl,holidaysFile);
         holidays = holidaysListener.returnContents();
 
 
         Map<String, Double> dayAvgTripsMap = new HashMap<String, Double>();
         MapListener mapListener = new MapListener();
-        try {
-            if (dayAvgTripMapUrl != null) {
-                URL url = new URL(dayAvgTripMapUrl);
-                try (InputStream is = url.openStream()) {
-                    new CSVLibrary().parse(is, mapListener);
-                }
-            }
-            if (dayAvgTripMapFile != null) {
-                InputStream is = new BufferedInputStream(new FileInputStream(dayAvgTripMapFile));
-                new CSVLibrary().parse(is, mapListener);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        mapListener = (MapListener) readCsvFrom(mapListener,dayAvgTripMapUrl,dayAvgTripMapFile);
         dayAvgTripsMap = mapListener.returnContents();
 
         SimpleDateFormat dayOfWeekFormat = new SimpleDateFormat("EEEE");
@@ -151,8 +110,6 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
 
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        String agency = dao.getAllAgencies().iterator().next().getId();
-        String agencyName = dao.getAllAgencies().iterator().next().getName();
 
         String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Holiday"};
 
@@ -201,6 +158,7 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
             try {
                 double tripsUpcoming = dayAvgTripsMapUpdate.get(day).stream().mapToDouble(a -> a).average().getAsDouble();
                 double currentAvg = dayAvgTripsMap.get(day);
+                int aprox_hours_per_month = 28 * 24;
                 double suggestedAvg = currentAvg + ((tripsUpcoming - currentAvg) / (aprox_hours_per_month));
                 _log.info(day + "," + suggestedAvg);
             } catch (Exception e) {
@@ -307,9 +265,26 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
         this.silentMode = silentMode;
     }
 
-    private class SetListener implements CSVListener {
-        private Collection<Date> inputSet = new HashSet<Date>();
-        private GtfsMutableRelationalDao dao;
+    private CSVListener readCsvFrom(CSVListener listener, String urlSource, String fileSource){
+        try {
+            if (urlSource != null) {
+                URL url = new URL(urlSource);
+                try (InputStream is = url.openStream()) {
+                    new CSVLibrary().parse(is, listener);
+                }
+            }
+            if (fileSource != null) {
+                InputStream is = new BufferedInputStream(new FileInputStream(fileSource));
+                new CSVLibrary().parse(is, listener);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listener;
+    }
+
+    private static class SetListener implements CSVListener {
+        private Collection<Date> inputSet = new HashSet<>();
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
 
         @Override
@@ -317,21 +292,20 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
             inputSet.add(dateFormatter.parse(list.get(0)));
         }
 
-        public Collection<Date> returnContents (){
+        Collection<Date> returnContents(){
             return inputSet;
         }
     }
 
-    private class MapListener implements CSVListener {
-        private Map<String, Double> inputMap = new HashMap<String, Double>();
-        private GtfsMutableRelationalDao dao;
+    private static class MapListener implements CSVListener {
+        private Map<String, Double> inputMap = new HashMap<>();
 
         @Override
-        public void handleLine(List<String> list) throws Exception {
+        public void handleLine(List<String> list) {
             inputMap.put( list.get(0),Double.parseDouble(list.get(1)));
         }
 
-        public Map<String, Double> returnContents (){
+        Map<String, Double> returnContents(){
             return inputMap;
         }
     }

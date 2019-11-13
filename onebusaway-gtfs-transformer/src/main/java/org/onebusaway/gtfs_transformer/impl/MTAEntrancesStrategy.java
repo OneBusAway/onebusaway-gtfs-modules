@@ -41,9 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.onebusaway.gtfs.model.Pathway.*;
 import static org.onebusaway.gtfs_transformer.csv.CSVUtil.readCsv;
-
-import static org.onebusaway.gtfs_transformer.util.PathwayUtil.*;
 
 public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
@@ -233,8 +232,8 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 _log.error("Station {} has no entrances", group.parent.getId());
                 // mock, like we were doing before
                 Stop entrance = createNonAccessibleStreetEntrance(group.parent);
-                pathwayUtil.createPathway(entrance, group.uptown, PATHWAY_MODE_GENERIC, genericPathwayTraversalTime, -1, "GENERIC", null);
-                pathwayUtil.createPathway(entrance, group.downtown, PATHWAY_MODE_GENERIC, genericPathwayTraversalTime, -1, "GENERIC", null);
+                pathwayUtil.createPathway(entrance, group.uptown, MODE_WALKWAY, genericPathwayTraversalTime, "GENERIC", null);
+                pathwayUtil.createPathway(entrance, group.downtown, MODE_WALKWAY, genericPathwayTraversalTime, "GENERIC", null);
                 continue;
             }
 
@@ -245,49 +244,44 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                     _log.error("data issue with entrance={}", entrance.getStopId());
                     continue;
                 }
-                int pathwayMode, traversalTime, wheelchairTraversalTime;
+                int pathwayMode;
+                int traversalTime;
                 switch(entrance.getEntranceType()) {
                     case "Stair_Escalator": // treat as stair for now
                     case "Stair":
-                        pathwayMode = PATHWAY_MODE_STAIR;
+                        pathwayMode = MODE_STAIRS;
                         traversalTime = stairTraversalTime;
-                        wheelchairTraversalTime = -1;
                         break;
                     case "Ramp":
                     case "Walkway":
                     case "Road_Walkway":
-                        pathwayMode = PATHWAY_MODE_WALKWAY;
+                        pathwayMode = MODE_WALKWAY;
                         traversalTime = walkwayTraversalTime;
-                        wheelchairTraversalTime = traversalTime * 2;
                         break;
                     case "Escalator":
-                        pathwayMode = PATHWAY_MODE_ESCALATOR;
+                        pathwayMode = MODE_ESCALATOR;
                         traversalTime = escalatorTraversalTime;
-                        wheelchairTraversalTime = -1;
                         break;
                     case "Elevator":
-                        pathwayMode = PATHWAY_MODE_ELEVATOR;
+                        pathwayMode = MODE_ELEVATOR;
                         traversalTime = elevatorTraversalTime;
-                        wheelchairTraversalTime = elevatorTraversalTime;
                         break;
                     case "Door":
                     case "Entrance":
                     default:
-                        pathwayMode = PATHWAY_MODE_GENERIC;
+                        pathwayMode = MODE_WALKWAY;
                         traversalTime = genericPathwayTraversalTime;
-                        wheelchairTraversalTime = traversalTime * 2;
                 }
                 String id = entrance.getEntranceType() + "-" + i;
-                wheelchairTraversalTime = contextualAccessibility ? wheelchairTraversalTime : -1;
                 if (stopsHaveParents) {
                     if (!entrance.hasDirection() || entrance.getDirection().equals("N")) {
-                        pathwayUtil.createPathway(entranceStop, group.uptown, pathwayMode, traversalTime, wheelchairTraversalTime, id, null);
+                        pathwayUtil.createPathway(entranceStop, group.uptown, pathwayMode, traversalTime, id, null);
                     }
                     if (!entrance.hasDirection() || entrance.getDirection().equals("S")) {
-                        pathwayUtil.createPathway(entranceStop, group.downtown, pathwayMode, traversalTime, wheelchairTraversalTime, id, null);
+                        pathwayUtil.createPathway(entranceStop, group.downtown, pathwayMode, traversalTime, id, null);
                     }
                 } else {
-                    pathwayUtil.createPathway(entranceStop, group.parent, pathwayMode, traversalTime, wheelchairTraversalTime, id, null);
+                    pathwayUtil.createPathway(entranceStop, group.parent, pathwayMode, traversalTime, id, null);
                 }
                 i++;
             }
@@ -535,7 +529,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
             return;
         }
         seenElevatorPathways.add(idStr);
-        pathwayUtil.createPathway(from, to, PATHWAY_MODE_ELEVATOR, elevatorTraversalTime, elevatorTraversalTime, idStr, code);
+        pathwayUtil.createPathway(from, to, MODE_ELEVATOR, elevatorTraversalTime, idStr, code);
     }
 
     private String getTopic() {

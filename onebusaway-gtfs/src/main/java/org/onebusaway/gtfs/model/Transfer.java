@@ -36,6 +36,9 @@ public final class Transfer extends IdentityBean<Integer> {
   @CsvField(name = "from_route_id", mapping = EntityFieldMappingFactory.class, optional = true)
   private Route fromRoute;
 
+  @CsvField(name = "required_stop_id", mapping = EntityFieldMappingFactory.class, optional = true)
+  private Stop requiredStop;
+
   @CsvField(name = "from_trip_id", mapping = EntityFieldMappingFactory.class, optional = true)
   private Trip fromTrip;
 
@@ -62,6 +65,7 @@ public final class Transfer extends IdentityBean<Integer> {
     this.id = obj.id;
     this.fromStop = obj.fromStop;
     this.fromRoute = obj.fromRoute;
+    this.requiredStop = obj.requiredStop;
     this.fromTrip = obj.fromTrip;
     this.toStop = obj.toStop;
     this.toRoute = obj.toRoute;
@@ -86,6 +90,14 @@ public final class Transfer extends IdentityBean<Integer> {
 
   public void setFromStop(Stop fromStop) {
     this.fromStop = fromStop;
+  }
+
+  public Stop getRequiredStop() {
+    return requiredStop;
+  }
+
+  public void setRequiredStop(Stop requiredStop) {
+    this.requiredStop = requiredStop;
   }
 
   public Route getFromRoute() {

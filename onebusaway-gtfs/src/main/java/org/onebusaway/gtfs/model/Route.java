@@ -77,7 +77,6 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, name = "regional_fare_card", defaultValue = "0")
   private int regionalFareCardAccepted;
 
-
   public Route() {
 
   }
@@ -241,4 +240,5 @@ public final class Route extends IdentityBean<AgencyAndId> {
   public String toString() {
     return "<Route " + id + " " + shortName + ">";
   }
+
 }

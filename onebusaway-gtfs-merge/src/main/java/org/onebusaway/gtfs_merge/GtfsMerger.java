@@ -17,9 +17,12 @@ package org.onebusaway.gtfs_merge;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileTime;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -156,12 +159,19 @@ public class GtfsMerger {
      * the newest feeds are added first and older entities are potentially
      * dropped.
      */
+    long newestFile = Long.MIN_VALUE;
     for (int index = inputPaths.size() - 1; index >= 0; --index) {
       File inputPath = inputPaths.get(index);
       String prefix = getIndexAsPrefix(index, inputPaths.size());
 
-      _log.info("reading input: " + inputPath);
-
+      FileTime fileTime = null;
+      if (inputPath.isFile()) {
+        fileTime = ((FileTime) Files.readAttributes(inputPath.toPath(), "lastModifiedTime").get("lastModifiedTime"));
+        if (fileTime != null && fileTime.toMillis() > newestFile) {
+          newestFile = fileTime.toMillis();
+        }
+      }
+      _log.info("reading input: " + inputPath + " with lastModifiedTime " + fileTime);
       GtfsReader reader = new GtfsReader();
       reader.setInputLocation(inputPath);
 
@@ -184,6 +194,14 @@ public class GtfsMerger {
     GtfsWriter writer = new GtfsWriter();
     writer.setOutputLocation(outputPath);
     writer.run(mergedDao);
+    if (outputPath.isFile()) {
+      _log.info("setting merged file lastModified to " + new Date(newestFile));
+      Files.setAttribute(outputPath.toPath(),
+              "lastModifiedTime",
+              FileTime.fromMillis(newestFile));
+    } else {
+      _log.info("outputPath not a file, skipping");
+    }
   }
 
   private String getIndexAsPrefix(int index, int total) {

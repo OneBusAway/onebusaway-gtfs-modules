@@ -27,13 +27,6 @@ public class PathwayUtil {
 
     private final Logger _log = LoggerFactory.getLogger(PathwayUtil.class);
 
-    public static final int PATHWAY_MODE_GENERIC = 0;
-    public static final int PATHWAY_MODE_WALKWAY = 1;
-    public static final int PATHWAY_MODE_STAIR = 2;
-    public static final int PATHWAY_MODE_TRAVELATOR = 3;
-    public static final int PATHWAY_MODE_ESCALATOR = 4;
-    public static final int PATHWAY_MODE_ELEVATOR = 5;
-
     private String agencyId;
 
     private Collection<Pathway> newPathways;
@@ -43,11 +36,11 @@ public class PathwayUtil {
         this.newPathways = newPathways;
     }
 
-    public void createPathway(Stop from, Stop to, int mode, int traversalTime, int wheelchairTraversalTime, String id, String code) {
-        createPathway(from, to, mode, traversalTime, wheelchairTraversalTime, id, code, true);
+    public void createPathway(Stop from, Stop to, int mode, int traversalTime, String id, String code) {
+        createPathway(from, to, mode, traversalTime, id, code, true);
     }
 
-    public void createPathway(Stop from, Stop to, int mode, int traversalTime, int wheelchairTraversalTime, String id, String code, boolean reverse) {
+    public void createPathway(Stop from, Stop to, int mode, int traversalTime, String id, String code, boolean reverse) {
         if (to == null || to.getId() == null) {
             _log.error("invalid to {}", to);
             return;
@@ -61,13 +54,7 @@ public class PathwayUtil {
         pathway.setToStop(to);
         pathway.setPathwayMode(mode);
         pathway.setTraversalTime(traversalTime);
-        if (wheelchairTraversalTime > 0) {
-            pathway.setWheelchairTraversalTime(wheelchairTraversalTime);
-        }
         pathway.setId(new AgencyAndId(agencyId, to.getId().getId() + "-" + id + "-IN"));
-        if (code != null) {
-            pathway.setPathwayCode(code);
-        }
 
         if (reverse) {
             Pathway reversePathway = reverse(pathway, new AgencyAndId(agencyId, to.getId().getId() + "-" + id + "-OUT"));
@@ -82,9 +69,7 @@ public class PathwayUtil {
         q.setFromStop(p.getToStop());
         q.setToStop(p.getFromStop());
         q.setTraversalTime(p.getTraversalTime());
-        q.setWheelchairTraversalTime(p.getWheelchairTraversalTime());
         q.setPathwayMode(p.getPathwayMode());
-        q.setPathwayCode(p.getPathwayCode());
         q.setId(id);
         return q;
     }

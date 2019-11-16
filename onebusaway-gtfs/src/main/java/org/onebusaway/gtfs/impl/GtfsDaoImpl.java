@@ -19,25 +19,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
-import org.onebusaway.gtfs.model.Agency;
-import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.Area;
-import org.onebusaway.gtfs.model.Block;
-import org.onebusaway.gtfs.model.FareAttribute;
-import org.onebusaway.gtfs.model.FareRule;
-import org.onebusaway.gtfs.model.FeedInfo;
-import org.onebusaway.gtfs.model.Frequency;
-import org.onebusaway.gtfs.model.IdentityBean;
-import org.onebusaway.gtfs.model.Pathway;
-import org.onebusaway.gtfs.model.Ridership;
-import org.onebusaway.gtfs.model.Route;
-import org.onebusaway.gtfs.model.ServiceCalendar;
-import org.onebusaway.gtfs.model.ServiceCalendarDate;
-import org.onebusaway.gtfs.model.ShapePoint;
-import org.onebusaway.gtfs.model.Stop;
-import org.onebusaway.gtfs.model.StopTime;
-import org.onebusaway.gtfs.model.Transfer;
-import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.services.GenericMutableDao;
 import org.onebusaway.gtfs.services.GtfsDao;
 import org.onebusaway.gtfs.services.GtfsMutableDao;
@@ -143,6 +125,10 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getAllEntitiesForType(Ridership.class);
   }
 
+  public Collection<Level> getAllLevels() {
+    return getAllEntitiesForType(Level.class);
+  }
+
   public Block getBlockForId(int id) {
     return getEntityForId(Block.class, id);
   }
@@ -210,8 +196,16 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getEntityForId(Trip.class, id);
   }
 
+  public Level getLevelForId(AgencyAndId id) {
+    return getEntityForId(Level.class, id);
+  }
+
   public Collection<Area> getAllAreas() {
     return getAllEntitiesForType(Area.class);
+  }
+
+  public Collection<Translation> getAllTranslations() {
+    return getAllEntitiesForType(Translation.class);
   }
 
   /****

@@ -18,8 +18,11 @@ package org.onebusaway.gtfs_transformer;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -190,6 +193,13 @@ public class GtfsTransformer {
 
     for (File path : _gtfsInputDirectories) {
       _log.info("reading gtfs from " + path);
+      if (path.isFile()) {
+        FileTime fileTime = ((FileTime)Files.readAttributes(path.toPath(), "lastModifiedTime").get("lastModifiedTime"));
+        if (fileTime != null) {
+          _log.info("found lastModifiedTime of " + new Date(fileTime.toMillis()));
+          _reader.setLastModifiedTime(fileTime.toMillis());
+        }
+      }
       _reader.setInputLocation(path);
       _reader.run();
     }
@@ -244,6 +254,10 @@ public class GtfsTransformer {
     _writer.setEntitySchemaFactory(schemaFactory);
 
     _writer.run(_dao);
+
+    if (_outputDirectory.isFile()) {
+      _log.info("preserving lastModified time of " + new Date(_reader.getLastModfiedTime()));
+    }
   }
 
   private class DaoInterceptor extends GenericMutableDaoWrapper {

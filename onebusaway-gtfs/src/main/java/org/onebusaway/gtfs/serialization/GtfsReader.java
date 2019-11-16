@@ -30,26 +30,7 @@ import org.onebusaway.csv_entities.CsvTokenizerStrategy;
 import org.onebusaway.csv_entities.EntityHandler;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.impl.GtfsDaoImpl;
-import org.onebusaway.gtfs.model.Agency;
-import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.Area;
-import org.onebusaway.gtfs.model.Block;
-import org.onebusaway.gtfs.model.FareAttribute;
-import org.onebusaway.gtfs.model.FareRule;
-import org.onebusaway.gtfs.model.FeedInfo;
-import org.onebusaway.gtfs.model.Frequency;
-import org.onebusaway.gtfs.model.IdentityBean;
-import org.onebusaway.gtfs.model.Note;
-import org.onebusaway.gtfs.model.Pathway;
-import org.onebusaway.gtfs.model.Ridership;
-import org.onebusaway.gtfs.model.Route;
-import org.onebusaway.gtfs.model.ServiceCalendar;
-import org.onebusaway.gtfs.model.ServiceCalendarDate;
-import org.onebusaway.gtfs.model.ShapePoint;
-import org.onebusaway.gtfs.model.Stop;
-import org.onebusaway.gtfs.model.StopTime;
-import org.onebusaway.gtfs.model.Transfer;
-import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.services.GenericMutableDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,6 +66,7 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Note.class);
     _entityClasses.add(Area.class);
     _entityClasses.add(Route.class);
+    _entityClasses.add(Level.class);
     _entityClasses.add(Stop.class);
     _entityClasses.add(Trip.class);
     _entityClasses.add(StopTime.class);
@@ -97,6 +79,7 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Transfer.class);
     _entityClasses.add(FeedInfo.class);
     _entityClasses.add(Ridership.class);
+    _entityClasses.add(Translation.class);
 
     CsvTokenizerStrategy tokenizerStrategy = new CsvTokenizerStrategy();
     tokenizerStrategy.getCsvParser().setTrimInitialWhitespace(true);
@@ -114,6 +97,14 @@ public class GtfsReader extends CsvEntityReader {
     ctx.put(KEY_CONTEXT, _context);
 
     addEntityHandler(new EntityHandlerImpl());
+  }
+
+  public void setLastModifiedTime(Long lastModifiedTime) {
+    if (lastModifiedTime != null)
+      getContext().put("lastModifiedTime", lastModifiedTime);
+  }
+  public Long getLastModfiedTime() {
+    return (Long)getContext().get("lastModifiedTime");
   }
 
   public List<Agency> getAgencies() {
@@ -220,7 +211,8 @@ public class GtfsReader extends CsvEntityReader {
     throw new EntityReferenceNotFoundException(entityType, entityId);
   }
 
-  /****
+
+    /****
    * Private Internal Classes
    ****/
 
@@ -246,6 +238,9 @@ public class GtfsReader extends CsvEntityReader {
       } else if (entity instanceof Pathway) {
         Pathway pathway = (Pathway) entity;
         registerAgencyId(Pathway.class, pathway.getId());
+      } else if (entity instanceof Level) {
+        Level level = (Level) entity;
+        registerAgencyId(Level.class, level.getId());
       } else if (entity instanceof Route) {
         Route route = (Route) entity;
         registerAgencyId(Route.class, route.getId());

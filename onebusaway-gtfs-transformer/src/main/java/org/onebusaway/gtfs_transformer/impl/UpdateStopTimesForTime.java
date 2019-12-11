@@ -71,29 +71,18 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
         }
         _log.info("Decreasing times: {}, TripsToRemove: {}", negativeTimes, tripsToRemove.size());
 
+        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+        String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
+        es.publishMetric(getNamespace(), "TripsWithDecreasingStopTimes", "feed", feed, tripsToRemove.size());
 
         StringBuffer illegalTripList = new StringBuffer();
         for (Trip trip : tripsToRemove) {
+            es.publishMetric(getNamespace(), "TripWithDecreasingStopTimes",
+                    new String[] {"feed", "tripId"},
+                    new String[] {feed, trip.getId().toString()},
+                    tripsToRemove.size());
             illegalTripList.append(trip.getId().toString()).append(" ");
             removeEntityLibrary.removeTrip(dao, trip);
-        }
-
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        if (tripsToRemove.size() > 0) {
-            // here we assume es is always present, even if its a no-op
-            // an exception will be thrown otherwise
-            es.publishMessage(getTopic(), "Agency: "
-                    + dao.getAllAgencies().iterator().next().getId()
-                    + " "
-                    + dao.getAllAgencies().iterator().next().getName()
-                    + " Illegal (decreasing stop times) Trip Count: "
-                    + tripsToRemove.size() + "\n"
-                    + " Negative Stop Times: " + negativeTimes + "\n\n"
-                    + "Trips removed: " + illegalTripList.toString());
-            es.publishMetric(getNamespace(), "negativeStopTimes", null, null, negativeTimes);
-
-        } else {
-            es.publishMetric(getNamespace(), "negativeStopTimes", null, null, 0);
         }
     }
 

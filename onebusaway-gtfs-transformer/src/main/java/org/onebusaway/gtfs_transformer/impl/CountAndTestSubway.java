@@ -130,36 +130,21 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
         _log.info("ATIS Stops: {}, Reference: {}, ATIS match to reference: {}", dao.getAllStops().size(), reference.getAllStops().size(), matches);
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        if (curSerTrips < 1) {
-            es.publishMessage(getTopic(), "Agency: "
-                    + agency
-                    + " "
-                    + name
-                    + " has no current service.");
-        }
+        String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
+
+        es.publishMetric(getNamespace(),"TripsInServiceToday","feed", feed,curSerTrips);
 
         if (countNoHs > 0) {
-            es.publishMessage(getTopic(), "Agency: "
-                    + agency
-                    + " "
-                    + name
-                    + " has trips w/out headsign: "
-                    + countNoHs);
-            es.publishMetric(getNamespace(), "noHeadsigns", null, null, countNoHs);
             _log.error("There are trips with no headsign");
         }
+        es.publishMetric(getNamespace(), "TripsWithoutHeadsigns", "feed", feed, countNoHs);
 
         HashSet<String> ids = new HashSet<String>();
         for (Stop stop : dao.getAllStops()) {
             //check for duplicate stop ids.
             if (ids.contains(stop.getId().getId())) {
                 _log.error("Duplicate stop ids! Agency {} stop id {}", agency, stop.getId().getId());
-                es.publishMessage(getTopic(), "Agency: "
-                        + agency
-                        + " "
-                        + name
-                        + " has duplicate stop id: "
-                        + stop.getId());
+                es.publishMetric(getNamespace(),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
                 throw new IllegalStateException(
                         "There are duplicate stop ids!");
             }

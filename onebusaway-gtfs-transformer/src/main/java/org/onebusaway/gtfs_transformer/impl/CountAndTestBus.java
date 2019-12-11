@@ -238,49 +238,38 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         _log.info("ATIS Stops: {}, Reference: {}, ATIS match to reference: {}", dao.getAllStops().size(), reference.getAllStops().size(), matches);
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        es.publishMetric(getNamespace(), "ATISBusTripsThisWeek", null, null, atisTripsThisWeek);
-        es.publishMetric(getNamespace(), "refBusTripsThisWeek", null, null, refTripsThisWeek);
-        es.publishMetric(getNamespace(), "matchingBusTripsThisWeek", null, null, matchingTripsThisWeek);
-        es.publishMetric(getNamespace(), "SdonBusTripsThisWeek", null, null, refTripsThisWeekWithSdon);
-        es.publishMetric(getNamespace(), "A9BusTripsThisWeek", null, null, refTripsThisWeekWoutSdonWithA9);
-        es.publishMetric(getNamespace(), "B9BusTripsThisWeek", null, null, refTripsThisWeekWoutSdonWithB9);
-        es.publishMetric(getNamespace(), "E9BusTripsThisWeek", null, null, refTripsThisWeekWoutSdonWithE9);
-        es.publishMetric(getNamespace(), "H9BusTripsThisWeek", null, null, refTripsThisWeekWoutSdonWithH9);
+        String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
+
+        es.publishMetric(getNamespace(), "ATISBusTripsThisWeek", "feed",feed, atisTripsThisWeek);
+        es.publishMetric(getNamespace(), "refBusTripsThisWeek", "feed",feed, refTripsThisWeek);
+        es.publishMetric(getNamespace(), "matchingBusTripsThisWeek", "feed",feed, matchingTripsThisWeek);
+        es.publishMetric(getNamespace(), "SdonBusTripsThisWeek","feed",feed, refTripsThisWeekWithSdon);
+        es.publishMetric(getNamespace(), "A9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithA9);
+        es.publishMetric(getNamespace(), "B9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithB9);
+        es.publishMetric(getNamespace(), "E9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithE9);
+        es.publishMetric(getNamespace(), "H9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithH9);
 
         if (curSerTrips < 1) {
-            es.publishMessage(getTopic(), "Agency: "
-                    + agency
-                    + " "
-                    + name
-                    + " has no current service!");
             throw new IllegalStateException(
                     "There is no current service!!");
         }
+        es.publishMetric(getNamespace(),"TripsInServiceToday","feed", feed,curSerTrips);
 
         if (countNoHs > 0) {
-            es.publishMessage(getTopic(), "Agency: "
-                    + agency
-                    + " "
-                    + name
-                    + " has trips w/out headsign: "
-                    + countNoHs);
-            es.publishMetric(getNamespace(), "noHeadsigns", null, null, countNoHs);
             _log.error("There are trips with no headsign");
         }
+        es.publishMetric(getNamespace(), "TripsWithoutHeadsigns", "feed", feed, countNoHs);
 
         HashSet<String> ids = new HashSet<String>();
         for (Stop stop : dao.getAllStops()) {
             //check for duplicate stop ids.
             if (ids.contains(stop.getId().getId())) {
-                _log.error("Duplicate stop ids! Agency {} stop id {}", agency, stop.getId().getId());
-                es.publishMessage(getTopic(), "Agency: "
-                        + agency
-                        + " "
-                        + name
-                        + " has duplicate stop id: "
-                        + stop.getId());
-                throw new IllegalStateException(
-                        "There are duplicate stop ids!");
+                if (ids.contains(stop.getId().getId())) {
+                    _log.error("Duplicate stop ids! Agency {} stop id {}", agency, stop.getId().getId());
+                    es.publishMetric(getNamespace(),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
+                    throw new IllegalStateException(
+                            "There are duplicate stop ids!");
+                }
             }
             else {
                 ids.add(stop.getId().getId());

@@ -170,6 +170,7 @@ public class CountAndTest implements GtfsTransformStrategy {
             }
         }
 
+
         es.publishMetric(getNamespace(),"TripsInServiceToday","feed", feed,curSerTrips);
         es.publishMetric(getNamespace(),"TripsInServiceTomorrow","feed", feed,tomSerTrips);
 

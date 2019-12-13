@@ -120,14 +120,12 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+        String feed=dao.getAllFeedInfos().iterator().next().getPublisherName();
         File entrancesFile = new File(entrancesCsv);
         if(!entrancesFile.exists()) {
-            es.publishMessage(getTopic(), "For Agency: "
-                    + dao.getAllAgencies().iterator().next().getId()
-                    + " "
-                    + dao.getAllAgencies().iterator().next().getName()
-                    + " Entrances file does not exist:  "
-                    + entrancesFile.getName());
+            es.publishMetric(getNamespace(),"MissingControlFiles",
+                    new String[]{"feed","controlFileName"},
+                    new String[]{feed,entrancesCsv},1);
             throw new IllegalStateException(
                     "Entrances file does not exist: " + entrancesFile.getName());
         }
@@ -135,12 +133,9 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         if (elevatorsCsv != null) {
             File elevatorsFile = new File(elevatorsCsv);
             if(!elevatorsFile.exists()) {
-                es.publishMessage(getTopic(), "For Agency: "
-                        + dao.getAllAgencies().iterator().next().getId()
-                        + " "
-                        + dao.getAllAgencies().iterator().next().getName()
-                        + " Elevators file does not exist:  "
-                        + elevatorsFile.getName());
+                es.publishMetric(getNamespace(),"MissingControlFiles",
+                        new String[]{"feed","controlFileName"},
+                        new String[]{feed,elevatorsCsv},1);
                 throw new IllegalStateException(
                         "Elevators file does not exist: " + elevatorsFile.getName());
             }
@@ -582,6 +577,9 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
     public void setContextualAccessibility(boolean contextualAccessibility) {
         this.contextualAccessibility = contextualAccessibility;
+    }
+    private String getNamespace(){
+        return System.getProperty("cloudwatch.namespace");
     }
 }
 

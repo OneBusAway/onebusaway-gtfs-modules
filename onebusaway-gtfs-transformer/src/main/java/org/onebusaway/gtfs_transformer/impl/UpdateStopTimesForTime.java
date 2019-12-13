@@ -77,10 +77,6 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
 
         StringBuffer illegalTripList = new StringBuffer();
         for (Trip trip : tripsToRemove) {
-            es.publishMetric(getNamespace(), "TripWithDecreasingStopTimes",
-                    new String[] {"feed", "tripId"},
-                    new String[] {feed, trip.getId().toString()},
-                    tripsToRemove.size());
             illegalTripList.append(trip.getId().toString()).append(" ");
             removeEntityLibrary.removeTrip(dao, trip);
         }

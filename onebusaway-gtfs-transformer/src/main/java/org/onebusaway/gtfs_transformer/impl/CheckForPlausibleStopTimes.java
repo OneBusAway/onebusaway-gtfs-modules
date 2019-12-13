@@ -107,7 +107,7 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
                     collectedRemoveString.substring(2);
             _log.info(collectedRemoveString);
         }
-        es.publishMetric(getNamespace(), "TripsWithRemovedForTransitTime", "feed", feed, stopsWarn.size());
+        es.publishMetric(getNamespace(), "TripsWithRemovedForTransitTime", "feed", feed, stopsRemove.size());
         for (Trip trip: stopsRemove){
             removeEntityLibrary.removeTrip(dao, trip);
         }

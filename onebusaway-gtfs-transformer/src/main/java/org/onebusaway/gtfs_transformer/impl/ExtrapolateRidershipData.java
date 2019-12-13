@@ -62,15 +62,12 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
         File controlFile = new File((String) context.getParameter("controlFile"));
-
+        String feed=dao.getAllFeedInfos().iterator().next().getPublisherName();
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         if(!controlFile.exists()) {
-            es.publishMessage(getTopic(), "Agency: "
-                    + dao.getAllAgencies().iterator().next().getId()
-                    + " "
-                    + dao.getAllAgencies().iterator().next().getName()
-                    + " Control file does not exist: "
-                    + controlFile.getName());
+            es.publishMetric(getNamespace(),"MissingControlFiles",
+                    new String[]{"feed","controlFileName"},
+                    new String[]{feed,controlFile.getName()},1);
             throw new IllegalStateException(
                     "Control file does not exist: " + controlFile.getName());
         }
@@ -397,6 +394,9 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
             //_log.error("Converted time: {}", time);
         }
         return time;
+    }
+    private String getNamespace(){
+        return System.getProperty("cloudwatch.namespace");
     }
 }
 

@@ -51,18 +51,13 @@ public class UpdateStopIdById implements GtfsTransformStrategy {
 
         ArrayList<Stop> stopsToDelete = new ArrayList<>();
         ArrayList<String> existingStops = new ArrayList<>();
+        String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
 
         for (Stop stop : dao.getAllStops()) {
             if (stop.getMtaStopId() != null) {
                 if (existingStops.contains(stop.getMtaStopId())) {
-                    es.publishMessage(getTopic(), "Agency: "
-                            + dao.getAllAgencies().iterator().next().getId()
-                            + " "
-                            + dao.getAllAgencies().iterator().next().getName()
-                            + " has duplicate stop id: "
-                            + stop.getMtaStopId());
-                    _log.info("MtaStopId {} already exists", stop.getMtaStopId());
+                    _log.info("MtaStopId {} already exists. Deleting Stop", stop.getMtaStopId());
                     stopsToDelete.add(stop);
                 }
                 else {
@@ -75,6 +70,7 @@ public class UpdateStopIdById implements GtfsTransformStrategy {
                 }
             }
         }
+        es.publishMetric(getNamespace(), "DuplicateStopCount", "feed", feed, stopsToDelete.size());
         for (Stop stop : stopsToDelete) {
             removeEntityLibrary.removeStop(dao, stop);
         }

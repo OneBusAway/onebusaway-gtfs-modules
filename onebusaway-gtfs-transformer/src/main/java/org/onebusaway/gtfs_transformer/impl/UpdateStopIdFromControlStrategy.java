@@ -61,12 +61,9 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
         if(!controlFile.exists()) {
-            es.publishMessage(getTopic(), "Agency: "
-                    + dao.getAllAgencies().iterator().next().getId()
-                    + " "
-                    + dao.getAllAgencies().iterator().next().getName()
-                    + " Control file does not exist: "
-                    + controlFile.getName());
+            es.publishMetric(getNamespace(),"MissingControlFiles",
+                    new String[]{"feed","controlFileName"},
+                    new String[]{feed,controlFile.getName()},1);
             throw new IllegalStateException(
                     "Control file does not exist: " + controlFile.getName());
         }
@@ -189,5 +186,8 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
 
     private String getTopic() {
         return System.getProperty("sns.topic");
+    }
+    private String getNamespace(){
+        return System.getProperty("cloudwatch.namespace");
     }
 }

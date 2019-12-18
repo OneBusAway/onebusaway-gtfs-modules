@@ -47,12 +47,14 @@ public class VerifyRouteService implements GtfsTransformStrategy {
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
+        String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
 
         AgencyAndId refAgencyAndId = reference.getAllTrips().iterator().next().getId();
 
         int curSerRoute = 0;
+        int alarmingRoutes = 0;
         boolean missingRoute = false;
         boolean missingService = false;
         Date today = removeTime(new Date());
@@ -94,9 +96,7 @@ public class VerifyRouteService implements GtfsTransformStrategy {
                         if (!route.getId().getId().contains("X")) {
                             missingService = true;
                             _log.info("Reference has service for this route today but ATIS has none: {}", route.getId());
-                            es.publishMessage(getTopic(), "Route: "
-                                    + route.getId()
-                                    + " has no current service!");
+                            alarmingRoutes++;
                         }
                         break reftriploop;
                     }
@@ -104,16 +104,25 @@ public class VerifyRouteService implements GtfsTransformStrategy {
             }
         }
 
+        int referenceRoutesInAtis = 0;
+        int referenceRoutesNotInAtis = 0;
         //check that every route in reference GTFS is also in ATIS gtfs
         for (Route route : reference.getAllRoutes()) {
             if (!ATISrouteIds.contains(route.getId().getId())) {
                 missingRoute = true;
                 _log.error("ATIS GTFS missing route {}", route.getId());
-                es.publishMessage(getTopic(), "Route: "
-                        + route.getId()
-                        + " is missing in ATIS GTFS");
+                referenceRoutesNotInAtis++;
+            }
+            else{
+                referenceRoutesInAtis++;
             }
         }
+
+        es.publishMetric(getNamespace(), "RoutesMissingTripsFromAtisButInRefToday", "feed", feed, alarmingRoutes);
+        es.publishMetric(getNamespace(), "RoutesContainingTripsToday", "feed", feed, curSerRoute);
+        es.publishMetric(getNamespace(), "RoutesInReferenceButNotAtis", "feed", feed, referenceRoutesNotInAtis);
+        es.publishMetric(getNamespace(), "RoutesInReferenceAndAtis", "feed", feed, referenceRoutesInAtis);
+
 
         if (missingService || missingRoute) {
             throw new IllegalStateException(
@@ -150,6 +159,9 @@ public class VerifyRouteService implements GtfsTransformStrategy {
 
     private String getTopic() {
         return System.getProperty("sns.topic");
+    }
+    private String getNamespace() {
+        return System.getProperty("cloudwatch.namespace");
     }
 
 }

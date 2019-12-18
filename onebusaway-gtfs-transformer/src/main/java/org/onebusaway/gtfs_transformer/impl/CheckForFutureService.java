@@ -47,6 +47,7 @@ public class CheckForFutureService implements GtfsTransformStrategy {
         Date nextDay = removeTime(addDays(new Date(), 2));
         Date dayAfterNext = removeTime(addDays(new Date(), 3));
 
+        String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         String agency = dao.getAllAgencies().iterator().next().getId();
         String agencyName = dao.getAllAgencies().iterator().next().getName();
@@ -55,32 +56,19 @@ public class CheckForFutureService implements GtfsTransformStrategy {
         tripsNextDay = hasServiceForDate(dao, nextDay);
         tripsDayAfterNext = hasServiceForDate(dao,dayAfterNext);
 
+        es.publishMetric(getNamespace(), "TripsTomorrow", "feed", feed, tripsTomorrow);
+        es.publishMetric(getNamespace(), "TripsIn2Days", "feed", feed, tripsNextDay);
+        es.publishMetric(getNamespace(), "TripsIn3Days", "feed", feed, tripsDayAfterNext);
+
+
         if (tripsTomorrow == 0) {
             _log.error("Agency {} {} is missing service for tomorrow {}", agency, agencyName, tomorrow);
-            es.publishMessage(getTopic(), "Agency: "
-                    + agency
-                    + " "
-                    + agencyName
-                    + " is missing service for tomorrow "
-                    + tomorrow);
         }
         if (tripsNextDay == 0) {
             _log.error("Agency {} {} is missing service for the day after tomorrow {}", agency, agencyName, nextDay);
-            es.publishMessage(getTopic(), "Agency: "
-                    + agency
-                    + " "
-                    + agencyName
-                    + " is missing service for the day after tomorrow "
-                    + nextDay);
         }
         if (tripsDayAfterNext == 0) {
             _log.error("Agency {} {} is missing service in 3 days {}", agency, agencyName, dayAfterNext);
-            es.publishMessage(getTopic(), "Agency: "
-                    + agency
-                    + " "
-                    + agencyName
-                    + " is missing service in 3 days "
-                    + dayAfterNext);
         }
 
     }
@@ -157,5 +145,8 @@ public class CheckForFutureService implements GtfsTransformStrategy {
 
     private String getTopic() {
         return System.getProperty("sns.topic");
+    }
+    private String getNamespace() {
+        return System.getProperty("cloudwatch.namespace");
     }
 }

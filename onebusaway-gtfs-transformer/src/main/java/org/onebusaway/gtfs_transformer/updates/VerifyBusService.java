@@ -49,11 +49,13 @@ public class VerifyBusService implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+        String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
 
         AgencyAndId refAgencyAndId = reference.getAllTrips().iterator().next().getId();
 
         int curSerRoute = 0;
+        int alarmingRoutes = 0;
         Date today = removeTime(new Date());
         //list of all routes in ATIS
         Set<String> ATISrouteIds = new HashSet<>();
@@ -85,14 +87,14 @@ public class VerifyBusService implements GtfsTransformStrategy {
                     Set<ServiceDate> activeDates = refCalendarService.getServiceDatesForServiceId(refTrip.getServiceId());
                     if (activeDates.contains(sToday)) {
                         _log.info("Reference has service for this bus route today but ATIS does not: {}", route.getId());
-                        es.publishMessage(getTopic(), "Reference has bus service for route: "
-                                + route.getId()
-                                + " today, but ATIS has none.");
-                        break reftriploop;
+                        //This would be the site to add to a bulk metric, missingBus:
+                        alarmingRoutes ++;
                     }
                 }
             }
         }
+        es.publishMetric(getNamespace(), "RoutesMissingTripsFromAtisButInRefToday", "feed", feed, alarmingRoutes);
+        es.publishMetric(getNamespace(), "RoutesContainingTripsToday", "feed", feed, curSerRoute);
     }
 
     private Date constructDate(ServiceDate date) {
@@ -126,4 +128,7 @@ public class VerifyBusService implements GtfsTransformStrategy {
         return System.getProperty("sns.topic");
     }
 
+    private String getNamespace() {
+        return System.getProperty("cloudwatch.namespace");
+    }
 }

@@ -76,10 +76,12 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
+        String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
+        ExternalServices es = new ExternalServicesBridgeFactory().getExternalServices();
 
-        int tripsTomorrow = 0;
-        int tripsNextDay = 0;
-        int tripsDayAfterNext = 0;
+        int[] tripsTomorrow;
+        int[] tripsNextDay;
+        int[] tripsDayAfterNext;
         Date tomorrow = removeTime(addDays(new Date(), 1));
         Date nextDay = removeTime(addDays(new Date(), 2));
         Date dayAfterNext = removeTime(addDays(new Date(), 3));
@@ -90,15 +92,21 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
         _log.info("Active routes {}: {}, {}: {}, {}: {}",
                 tomorrow, tripsTomorrow, nextDay, tripsNextDay, dayAfterNext, tripsDayAfterNext);
+        es.publishMetric(getNamespace(), "RoutesContainingTripsTomorrow", "feed", feed, tripsTomorrow[0]);
+        es.publishMetric(getNamespace(), "RoutesMissingTripsFromAtisButInRefTomorrow", "feed", feed, tripsTomorrow[1]);
+        es.publishMetric(getNamespace(), "RoutesContainingTripsIn2Days", "feed", feed, tripsNextDay[0]);
+        es.publishMetric(getNamespace(), "RoutesMissingTripsFromAtisButInRefIn2Days", "feed", feed, tripsNextDay[1]);
+        es.publishMetric(getNamespace(), "RoutesContainingTripsIn3Days", "feed", feed, tripsDayAfterNext[0]);
+        es.publishMetric(getNamespace(), "RoutesMissingTripsFromAtisButInRefIn3Days", "feed", feed, tripsDayAfterNext[1]);
 
     }
 
-    private int hasRouteServiceForDate(GtfsMutableRelationalDao dao, GtfsMutableRelationalDao reference,
+    private int[] hasRouteServiceForDate(GtfsMutableRelationalDao dao, GtfsMutableRelationalDao reference,
                                CalendarService refCalendarService, Date testDate, Collection<String> problemRoutes) {
         AgencyAndId refAgencyAndId = reference.getAllTrips().iterator().next().getId();
-        ExternalServices es = new ExternalServicesBridgeFactory().getExternalServices();
         int numTripsOnDate = 0;
         int activeRoutes = 0;
+        int alarmingRoutes = 0;
 
         //check for route specific current service
         for (Route route : dao.getAllRoutes()) {
@@ -128,20 +136,18 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
                         if (problemRoutes.contains(route.getId().getId())) {
                             _log.info("On {} Reference has service for this route, but ATIS has none: {}, Trip {}, Serviceid {}",
                                     testDate, route.getId(), refTrip.getId(), refTrip.getServiceId());
+                            alarmingRoutes++;
                         } else {
                             _log.error("On {} Reference has service for this route but ATIS has none: {}, Trip {}, Serviceid {}",
                                     testDate, route.getId(), refTrip.getId(), refTrip.getServiceId());
-                            es.publishMessage(getTopic(), "Reference has service for this route but ATIS has none. Route: "
-                                    + route.getId()
-                                    + " has no service for "
-                                    + testDate);
+                            alarmingRoutes++;
                         }
                         break reftriploop;
                     }
                 }
             }
         }
-        return activeRoutes;
+        return new int[] {activeRoutes,alarmingRoutes};
     }
 
     private Date constructDate(ServiceDate date) {
@@ -208,5 +214,8 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
         public Collection<String> returnRouteIds (){
             return routeIds;
         }
+    }
+    private String getNamespace() {
+        return System.getProperty("cloudwatch.namespace");
     }
 }

@@ -61,7 +61,7 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
         if(!controlFile.exists()) {
-            es.publishMetric(getNamespace(),"MissingControlFiles",
+            es.publishMultiDimensionalMetric(getNamespace(),"MissingControlFiles",
                     new String[]{"feed","controlFileName"},
                     new String[]{feed,controlFile.getName()},1);
             throw new IllegalStateException(

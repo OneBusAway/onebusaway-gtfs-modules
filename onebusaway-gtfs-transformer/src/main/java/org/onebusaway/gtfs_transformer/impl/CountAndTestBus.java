@@ -187,7 +187,6 @@ public class CountAndTestBus implements GtfsTransformStrategy {
                     }
                     else {
                         leftOverNoMatchThisWeek++;
-                        _log.info(refTrip.getId().getId());
                     }
                 } else {
                     matchingTripsThisWeek++;
@@ -247,7 +246,8 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         es.publishMetric(getNamespace(), "A9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithA9);
         es.publishMetric(getNamespace(), "B9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithB9);
         es.publishMetric(getNamespace(), "E9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithE9);
-        es.publishMetric(getNamespace(), "H9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithH9);
+        es.publishMetric(getNamespace(), "H9BusTripsWitThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithH9);
+        es.publishMetric(getNamespace(), "OtherTripsWithoutMatchThisWeek", "feed",feed, leftOverNoMatchThisWeek);
 
         if (curSerTrips < 1) {
             throw new IllegalStateException(
@@ -266,7 +266,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
             if (ids.contains(stop.getId().getId())) {
                 if (ids.contains(stop.getId().getId())) {
                     _log.error("Duplicate stop ids! Agency {} stop id {}", agency, stop.getId().getId());
-                    es.publishMetric(getNamespace(),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
+                    es.publishMultiDimensionalMetric(getNamespace(),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
                     throw new IllegalStateException(
                             "There are duplicate stop ids!");
                 }

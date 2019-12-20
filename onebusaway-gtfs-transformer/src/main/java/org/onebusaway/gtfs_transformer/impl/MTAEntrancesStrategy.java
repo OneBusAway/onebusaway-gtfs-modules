@@ -123,7 +123,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         String feed=dao.getAllFeedInfos().iterator().next().getPublisherName();
         File entrancesFile = new File(entrancesCsv);
         if(!entrancesFile.exists()) {
-            es.publishMetric(getNamespace(),"MissingControlFiles",
+            es.publishMultiDimensionalMetric(getNamespace(),"MissingControlFiles",
                     new String[]{"feed","controlFileName"},
                     new String[]{feed,entrancesCsv},1);
             throw new IllegalStateException(
@@ -133,7 +133,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         if (elevatorsCsv != null) {
             File elevatorsFile = new File(elevatorsCsv);
             if(!elevatorsFile.exists()) {
-                es.publishMetric(getNamespace(),"MissingControlFiles",
+                es.publishMultiDimensionalMetric(getNamespace(),"MissingControlFiles",
                         new String[]{"feed","controlFileName"},
                         new String[]{feed,elevatorsCsv},1);
                 throw new IllegalStateException(

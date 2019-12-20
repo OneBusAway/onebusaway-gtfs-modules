@@ -144,7 +144,7 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
             //check for duplicate stop ids.
             if (ids.contains(stop.getId().getId())) {
                 _log.error("Duplicate stop ids! Agency {} stop id {}", agency, stop.getId().getId());
-                es.publishMetric(getNamespace(),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
+                es.publishMultiDimensionalMetric(getNamespace(),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
                 throw new IllegalStateException(
                         "There are duplicate stop ids!");
             }

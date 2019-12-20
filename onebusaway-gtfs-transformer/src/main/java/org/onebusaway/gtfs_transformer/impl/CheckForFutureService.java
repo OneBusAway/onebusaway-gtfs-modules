@@ -20,6 +20,7 @@ import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.services.AwsContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -47,7 +48,7 @@ public class CheckForFutureService implements GtfsTransformStrategy {
         Date nextDay = removeTime(addDays(new Date(), 2));
         Date dayAfterNext = removeTime(addDays(new Date(), 3));
 
-        String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
+        String feed = AwsContextService.getLikelyFeedName(dao);
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         String agency = dao.getAllAgencies().iterator().next().getId();
         String agencyName = dao.getAllAgencies().iterator().next().getName();
@@ -56,9 +57,9 @@ public class CheckForFutureService implements GtfsTransformStrategy {
         tripsNextDay = hasServiceForDate(dao, nextDay);
         tripsDayAfterNext = hasServiceForDate(dao,dayAfterNext);
 
-        es.publishMetric(getNamespace(), "TripsTomorrow", "feed", feed, tripsTomorrow);
-        es.publishMetric(getNamespace(), "TripsIn2Days", "feed", feed, tripsNextDay);
-        es.publishMetric(getNamespace(), "TripsIn3Days", "feed", feed, tripsDayAfterNext);
+        es.publishMetric(AwsContextService.getNamespace(), "TripsTomorrow", "feed", feed, tripsTomorrow);
+        es.publishMetric(AwsContextService.getNamespace(), "TripsIn2Days", "feed", feed, tripsNextDay);
+        es.publishMetric(AwsContextService.getNamespace(), "TripsIn3Days", "feed", feed, tripsDayAfterNext);
 
 
         if (tripsTomorrow == 0) {
@@ -141,12 +142,5 @@ public class CheckForFutureService implements GtfsTransformStrategy {
         calendar.set(Calendar.MILLISECOND, 0);
         date = calendar.getTime();
         return date;
-    }
-
-    private String getTopic() {
-        return System.getProperty("sns.topic");
-    }
-    private String getNamespace() {
-        return System.getProperty("cloudwatch.namespace");
     }
 }

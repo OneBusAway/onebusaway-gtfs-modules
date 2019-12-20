@@ -19,6 +19,7 @@ import org.onebusaway.cloud.api.ExternalServices;
 import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.services.AwsContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
 
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-        String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
+        String feed = AwsContextService.getLikelyFeedName(dao);
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -100,24 +101,16 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
                     stopsWarn.size() + ".\n Here are the trips and stops: " + collectedWarnString.substring(2);
             _log.info(collectedWarnString);
         }
-        es.publishMetric(getNamespace(), "TripsWith1-3HrTransitTime", "feed", feed, stopsWarn.size());
+        es.publishMetric(AwsContextService.getNamespace(), "TripsWith1-3HrTransitTime", "feed", feed, stopsWarn.size());
         if (stopsRemove.size() > 0) {
             collectedRemoveString = "Total number of trips with transit times of greater than three hours: " +
                     stopsRemove.size() + ".\n These trips are being removed. \nTrips being removed: " +
                     collectedRemoveString.substring(2);
             _log.info(collectedRemoveString);
         }
-        es.publishMetric(getNamespace(), "TripsWithRemovedForTransitTime", "feed", feed, stopsRemove.size());
+        es.publishMetric(AwsContextService.getNamespace(), "TripsWithRemovedForTransitTime", "feed", feed, stopsRemove.size());
         for (Trip trip: stopsRemove){
             removeEntityLibrary.removeTrip(dao, trip);
         }
-    }
-
-
-    private String getTopic() {
-        return System.getProperty("sns.topic");
-    }
-    private String getNamespace() {
-        return System.getProperty("cloudwatch.namespace");
     }
 }

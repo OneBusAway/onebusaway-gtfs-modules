@@ -25,6 +25,7 @@ import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
 import org.onebusaway.gtfs_transformer.impl.CountAndTestSubway;
+import org.onebusaway.gtfs_transformer.services.AwsContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -47,7 +48,7 @@ public class VerifyRouteService implements GtfsTransformStrategy {
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
-        String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
+        String feed = AwsContextService.getLikelyFeedName(dao);
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
 
@@ -118,10 +119,10 @@ public class VerifyRouteService implements GtfsTransformStrategy {
             }
         }
 
-        es.publishMetric(getNamespace(), "RoutesMissingTripsFromAtisButInRefToday", "feed", feed, alarmingRoutes);
-        es.publishMetric(getNamespace(), "RoutesContainingTripsToday", "feed", feed, curSerRoute);
-        es.publishMetric(getNamespace(), "RoutesInReferenceButNotAtis", "feed", feed, referenceRoutesNotInAtis);
-        es.publishMetric(getNamespace(), "RoutesInReferenceAndAtis", "feed", feed, referenceRoutesInAtis);
+        es.publishMetric(AwsContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefToday", "feed", feed, alarmingRoutes);
+        es.publishMetric(AwsContextService.getNamespace(), "RoutesContainingTripsToday", "feed", feed, curSerRoute);
+        es.publishMetric(AwsContextService.getNamespace(), "RoutesInReferenceButNotAtis", "feed", feed, referenceRoutesNotInAtis);
+        es.publishMetric(AwsContextService.getNamespace(), "RoutesInReferenceAndAtis", "feed", feed, referenceRoutesInAtis);
 
 
         if (missingService || missingRoute) {
@@ -156,12 +157,4 @@ public class VerifyRouteService implements GtfsTransformStrategy {
         calendar.setTime(date);
         return new ServiceDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) +1, calendar.get(Calendar.DAY_OF_MONTH));
     }
-
-    private String getTopic() {
-        return System.getProperty("sns.topic");
-    }
-    private String getNamespace() {
-        return System.getProperty("cloudwatch.namespace");
-    }
-
 }

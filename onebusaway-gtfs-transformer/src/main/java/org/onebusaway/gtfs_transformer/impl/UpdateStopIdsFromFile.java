@@ -20,6 +20,7 @@ import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.services.AwsContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -51,7 +52,7 @@ public class UpdateStopIdsFromFile implements GtfsTransformStrategy {
         String feed=dao.getAllFeedInfos().iterator().next().getPublisherName();
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         if(!controlFile.exists()) {
-            es.publishMultiDimensionalMetric(getNamespace(), "MissingControlFiles",
+            es.publishMultiDimensionalMetric(AwsContextService.getNamespace(), "MissingControlFiles",
                     new String[] {"feed","controlFileName"},
                     new String[] {feed,controlFile.getName()},1);
             throw new IllegalStateException(
@@ -96,10 +97,4 @@ public class UpdateStopIdsFromFile implements GtfsTransformStrategy {
         _log.info("Complete with {} matched and {} unmatched and {} duplicates", matched, unmatched, duplicate);
     }
 
-    private String getTopic() {
-        return System.getProperty("sns.topic");
-    }
-    private String getNamespace(){
-        return System.getProperty("cloudwatch.namespace");
-    }
 }

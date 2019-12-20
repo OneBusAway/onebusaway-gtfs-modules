@@ -18,9 +18,11 @@ package org.onebusaway.gtfs_transformer.impl;
 
 import org.onebusaway.cloud.api.ExternalServices;
 import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
+import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.services.AwsContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -72,8 +74,8 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
         _log.info("Decreasing times: {}, TripsToRemove: {}", negativeTimes, tripsToRemove.size());
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
-        es.publishMetric(getNamespace(), "TripsWithDecreasingStopTimes", "feed", feed, tripsToRemove.size());
+        String feed = AwsContextService.getLikelyFeedName(dao);
+        es.publishMetric(AwsContextService.getNamespace(), "TripsWithDecreasingStopTimes", "feed", feed, tripsToRemove.size());
 
         StringBuffer illegalTripList = new StringBuffer();
         for (Trip trip : tripsToRemove) {
@@ -82,11 +84,4 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
         }
     }
 
-    private String getTopic() {
-        return System.getProperty("sns.topic");
-    }
-
-    private String getNamespace() {
-        return System.getProperty("cloudwatch.namespace");
-    }
 }

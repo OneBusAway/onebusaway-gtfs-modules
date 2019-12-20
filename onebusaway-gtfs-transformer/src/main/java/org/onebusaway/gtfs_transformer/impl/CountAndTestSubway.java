@@ -20,6 +20,7 @@ import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.services.AwsContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.onebusaway.gtfs_transformer.updates.UpdateLibrary;
@@ -130,21 +131,21 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
         _log.info("ATIS Stops: {}, Reference: {}, ATIS match to reference: {}", dao.getAllStops().size(), reference.getAllStops().size(), matches);
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
+        String feed = AwsContextService.getLikelyFeedName(dao);
 
-        es.publishMetric(getNamespace(),"TripsInServiceToday","feed", feed,curSerTrips);
+        es.publishMetric(AwsContextService.getNamespace(),"TripsInServiceToday","feed", feed,curSerTrips);
 
         if (countNoHs > 0) {
             _log.error("There are trips with no headsign");
         }
-        es.publishMetric(getNamespace(), "TripsWithoutHeadsigns", "feed", feed, countNoHs);
+        es.publishMetric(AwsContextService.getNamespace(), "TripsWithoutHeadsigns", "feed", feed, countNoHs);
 
         HashSet<String> ids = new HashSet<String>();
         for (Stop stop : dao.getAllStops()) {
             //check for duplicate stop ids.
             if (ids.contains(stop.getId().getId())) {
                 _log.error("Duplicate stop ids! Agency {} stop id {}", agency, stop.getId().getId());
-                es.publishMultiDimensionalMetric(getNamespace(),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
+                es.publishMultiDimensionalMetric(AwsContextService.getNamespace(),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
                 throw new IllegalStateException(
                         "There are duplicate stop ids!");
             }
@@ -173,13 +174,5 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
         Date date1 = calendar.getTime();
         date1 = removeTime(date1);
         return date1;
-    }
-
-    private String getTopic() {
-        return System.getProperty("sns.topic");
-    }
-
-    private String getNamespace() {
-        return System.getProperty("cloudwatch.namespace");
     }
 }

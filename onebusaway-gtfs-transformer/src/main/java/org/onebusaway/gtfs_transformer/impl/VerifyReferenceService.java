@@ -25,6 +25,7 @@ import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
+import org.onebusaway.gtfs_transformer.services.AwsContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -51,7 +52,7 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
-        String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
+        String feed = AwsContextService.getLikelyFeedName(dao);
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
 
         Collection<String> problemRoutes;
@@ -90,14 +91,14 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
 
         _log.info("Active routes {}: {}, {}: {}, {}: {}, {}: {}",
                 today, tripsToday, tomorrow, tripsTomorrow, nextDay, tripsNextDay, dayAfterNext, tripsDayAfterNext);
-        es.publishMetric(getNamespace(), "RoutesContainingTripsToday", "feed", feed, tripsTomorrow[0]);
-        es.publishMetric(getNamespace(), "RoutesMissingTripsFromRefButInAtisToday", "feed", feed, tripsTomorrow[1]);
-        es.publishMetric(getNamespace(), "RoutesContainingTripsTomorrow", "feed", feed, tripsTomorrow[0]);
-        es.publishMetric(getNamespace(), "RoutesMissingTripsFromRefButInAtisTomorrow", "feed", feed, tripsTomorrow[1]);
-        es.publishMetric(getNamespace(), "RoutesContainingTripsIn2Days", "feed", feed, tripsNextDay[0]);
-        es.publishMetric(getNamespace(), "RoutesMissingTripsFromRefButInAtisIn2Days", "feed", feed, tripsNextDay[1]);
-        es.publishMetric(getNamespace(), "RoutesContainingTripsIn3Days", "feed", feed, tripsDayAfterNext[0]);
-        es.publishMetric(getNamespace(), "RoutesMissingTripsFromRefButInAtisIn3Days", "feed", feed, tripsDayAfterNext[1]);
+        es.publishMetric(AwsContextService.getNamespace(), "RoutesContainingTripsToday", "feed", feed, tripsTomorrow[0]);
+        es.publishMetric(AwsContextService.getNamespace(), "RoutesMissingTripsFromRefButInAtisToday", "feed", feed, tripsTomorrow[1]);
+        es.publishMetric(AwsContextService.getNamespace(), "RoutesContainingTripsTomorrow", "feed", feed, tripsTomorrow[0]);
+        es.publishMetric(AwsContextService.getNamespace(), "RoutesMissingTripsFromRefButInAtisTomorrow", "feed", feed, tripsTomorrow[1]);
+        es.publishMetric(AwsContextService.getNamespace(), "RoutesContainingTripsIn2Days", "feed", feed, tripsNextDay[0]);
+        es.publishMetric(AwsContextService.getNamespace(), "RoutesMissingTripsFromRefButInAtisIn2Days", "feed", feed, tripsNextDay[1]);
+        es.publishMetric(AwsContextService.getNamespace(), "RoutesContainingTripsIn3Days", "feed", feed, tripsDayAfterNext[0]);
+        es.publishMetric(AwsContextService.getNamespace(), "RoutesMissingTripsFromRefButInAtisIn3Days", "feed", feed, tripsDayAfterNext[1]);
     }
 
     int[] hasRouteServiceForDate(GtfsMutableRelationalDao dao, GtfsMutableRelationalDao reference,
@@ -217,9 +218,5 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
         private Collection<String> returnRouteIds(){
             return routeIds;
         }
-    }
-
-    private String getNamespace() {
-        return System.getProperty("cloudwatch.namespace");
     }
 }

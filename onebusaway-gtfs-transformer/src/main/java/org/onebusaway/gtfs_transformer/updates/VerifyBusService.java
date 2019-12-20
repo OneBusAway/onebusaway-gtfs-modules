@@ -26,6 +26,7 @@ import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
 import org.onebusaway.gtfs_transformer.impl.CountAndTestSubway;
+import org.onebusaway.gtfs_transformer.services.AwsContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class VerifyBusService implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        String feed = dao.getAllFeedInfos().iterator().next().getPublisherName();
+        String feed = AwsContextService.getLikelyFeedName(dao);
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
 
         AgencyAndId refAgencyAndId = reference.getAllTrips().iterator().next().getId();
@@ -93,8 +94,8 @@ public class VerifyBusService implements GtfsTransformStrategy {
                 }
             }
         }
-        es.publishMetric(getNamespace(), "RoutesMissingTripsFromAtisButInRefToday", "feed", feed, alarmingRoutes);
-        es.publishMetric(getNamespace(), "RoutesContainingTripsToday", "feed", feed, curSerRoute);
+        es.publishMetric(AwsContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefToday", "feed", feed, alarmingRoutes);
+        es.publishMetric(AwsContextService.getNamespace(), "RoutesContainingTripsToday", "feed", feed, curSerRoute);
     }
 
     private Date constructDate(ServiceDate date) {
@@ -122,13 +123,5 @@ public class VerifyBusService implements GtfsTransformStrategy {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         return new ServiceDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) +1, calendar.get(Calendar.DAY_OF_MONTH));
-    }
-
-    private String getTopic() {
-        return System.getProperty("sns.topic");
-    }
-
-    private String getNamespace() {
-        return System.getProperty("cloudwatch.namespace");
     }
 }

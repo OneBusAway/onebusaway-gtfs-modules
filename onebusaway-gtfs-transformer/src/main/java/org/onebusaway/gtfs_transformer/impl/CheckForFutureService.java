@@ -30,7 +30,7 @@ import java.util.Date;
 
 public class CheckForFutureService implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(CountAndTest.class);
+    private final Logger _log = LoggerFactory.getLogger(CheckForFutureService.class);
 
     @Override
     public String getName() {

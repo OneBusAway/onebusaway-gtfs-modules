@@ -158,6 +158,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         int refTripsThisWeekWithSdon = 0;
         int refTripsThisWeekWoutSdonWithA9 = 0;
         int refTripsThisWeekWoutSdonWithE9 = 0;
+        int refTripsThisWeekWoutSdonWithD9 = 0;
         int refTripsThisWeekWoutSdonWithB9 = 0;
         int refTripsThisWeekWoutSdonWithH9 = 0;
         int checkMatchesThisWeek = 0;
@@ -179,6 +180,9 @@ public class CountAndTestBus implements GtfsTransformStrategy {
                     }
                     else if (refTrip.getId().getId().contains("B9")) {
                         refTripsThisWeekWoutSdonWithB9++;
+                    }
+                    else if (refTrip.getId().getId().contains("D9")) {
+                        refTripsThisWeekWoutSdonWithD9++;
                     }
                     else if (refTrip.getId().getId().contains("E9")) {
                         refTripsThisWeekWoutSdonWithE9++;
@@ -246,6 +250,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         es.publishMetric(CloudContextService.getLikelyFeedName(dao), "SdonBusTripsThisWeek","feed",feed, refTripsThisWeekWithSdon);
         es.publishMetric(CloudContextService.getLikelyFeedName(dao), "A9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithA9);
         es.publishMetric(CloudContextService.getLikelyFeedName(dao), "B9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithB9);
+        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "D9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithD9);
         es.publishMetric(CloudContextService.getLikelyFeedName(dao), "E9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithE9);
         es.publishMetric(CloudContextService.getLikelyFeedName(dao), "H9BusTripsWitThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithH9);
         es.publishMetric(CloudContextService.getLikelyFeedName(dao), "OtherTripsWithoutMatchThisWeek", "feed",feed, leftOverNoMatchThisWeek);
@@ -268,8 +273,6 @@ public class CountAndTestBus implements GtfsTransformStrategy {
                 if (ids.contains(stop.getId().getId())) {
                     _log.error("Duplicate stop ids! Agency {} stop id {}", agency, stop.getId().getId());
                     es.publishMultiDimensionalMetric(CloudContextService.getLikelyFeedName(dao),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
-                    throw new IllegalStateException(
-                            "There are duplicate stop ids!");
                 }
             }
             else {

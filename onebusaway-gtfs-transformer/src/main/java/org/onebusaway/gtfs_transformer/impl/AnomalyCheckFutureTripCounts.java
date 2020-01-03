@@ -27,16 +27,17 @@ import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 
@@ -69,7 +70,7 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
     private double percentageMatch = 10;
 
     @CsvField(optional = true)
-    private boolean silentMode = false;
+    private boolean silentMode = true;
 
 
     @Override
@@ -78,7 +79,7 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
     }
 
     @Override
-    public void run(TransformContext context, GtfsMutableRelationalDao dao) {
+    public void run(TransformContext context, GtfsMutableRelationalDao dao){
 
         Collection<Date> datesToIgnore;
         SetListener datesToIgnoreListener = new SetListener();
@@ -105,7 +106,7 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
             _log.info("ignore: " + date.toString());
         }
         for (String key : dayAvgTripsMap.keySet()){
-            System.out.println("key: " + key + " value: " + dayAvgTripsMap.get(key));
+            _log.info("key: " + key + " value: " + dayAvgTripsMap.get(key));
         }
 
 
@@ -124,53 +125,66 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
         for (String day:days){
             dayAvgTripsMapUpdate.put(day, new ArrayList<Double>());
         }
-
-        while (true) {
-            Date day = removeTime(addDays(new Date(), dayCounter));
-            if (dateTripMap.get(day) == null){
-                break;
-            }
-            int tripCount = dateTripMap.get(day);
-            if ((tripCount < dayAvgTripsMap.get(dayOfWeekFormat.format(day))*(1+percentageMatch/100)) &&
-                    (tripCount > dayAvgTripsMap.get(dayOfWeekFormat.format(day))*(1-percentageMatch/100))){
-                _log.info(day + " has " + tripCount + " trips, and that's within reasonable expections");
-                dayAvgTripsMapUpdate.get(dayOfWeekFormat.format(day)).add((double) tripCount);
-            }
-            else if (holidays.contains(day) & (tripCount < dayAvgTripsMap.get("Holiday")*(1+percentageMatch/100)
-                    && (tripCount > dayAvgTripsMap.get("Holiday")*(1-percentageMatch/100)))) {
-                _log.info(day + " has " + tripCount + " trips, is a holiday, and that's within reasonable expections");
-                dayAvgTripsMapUpdate.get("Holiday").add((double) tripCount);
-            }
-            else if (datesToIgnore.contains(day)) {
-                _log.info(day + " has " + tripCount + " trips, and we are ignoring this possible anomoly");
+        Date dateDay = removeTime(addDays(new Date(), dayCounter));
+        while (dateTripMap.get(dateDay) != null) {
+            int tripCount = dateTripMap.get(dateDay);
+            if(dayAvgTripMapFile == null && dayAvgTripMapUrl == null){
+                _log.info("On {} there are {} trips",dateDay.toString(),tripCount);
             }
             else {
-                _log.info(day + " has " + tripCount + " trips, this may indicate a problem.");
-                if (!silentMode) {
-                    es.publishMessage(getTopic(), day.toString() + " has " + tripCount + " trips, this may indicate a problem.");
+                if ((tripCount < dayAvgTripsMap.get(dayOfWeekFormat.format(dateDay)) * (1 + percentageMatch / 100)) &&
+                        (tripCount > dayAvgTripsMap.get(dayOfWeekFormat.format(dateDay)) * (1 - percentageMatch / 100)) &&
+                        !holidays.contains(dateDay)) {
+                    _log.info(dateDay + " has " + tripCount + " trips, and that's within reasonable expections");
+                    dayAvgTripsMapUpdate.get(dayOfWeekFormat.format(dateDay)).add((double) tripCount);
+                } else if (holidays.contains(dateDay) & (tripCount < dayAvgTripsMap.get("Holiday") * (1 + percentageMatch / 100)
+                        && (tripCount > dayAvgTripsMap.get("Holiday") * (1 - percentageMatch / 100)))) {
+                    _log.info(dateDay + " has " + tripCount + " trips, is a holiday, and that's within reasonable expections");
+                    dayAvgTripsMapUpdate.get("Holiday").add((double) tripCount);
+                } else if (datesToIgnore.contains(dateDay)) {
+                    _log.info(dateDay + " has " + tripCount + " trips, and we are ignoring this possible anomoly");
+                } else {
+                    _log.info(dateDay + " has " + tripCount + " trips, this may indicate a problem.");
+                    if (!silentMode) {
+                        es.publishMessage(CloudContextService.getTopic(), dateDay.toString() + " has " + tripCount + " trips, this may indicate a problem.");
+                    }
                 }
             }
             dayCounter ++;
+            dateDay = removeTime(addDays(new Date(), dayCounter));
         }
 
+        String out = "" ;
 
-        for (String day: days) {
+        for (String stringDay : days) {
+            double tripsUpcoming;
             try {
-                double tripsUpcoming = dayAvgTripsMapUpdate.get(day).stream().mapToDouble(a -> a).average().getAsDouble();
-                double currentAvg = dayAvgTripsMap.get(day);
-                int aprox_hours_per_month = 28 * 24;
-                double suggestedAvg = currentAvg + ((tripsUpcoming - currentAvg) / (aprox_hours_per_month));
-                _log.info(day + "," + suggestedAvg);
-            } catch (Exception e) {
-
+                tripsUpcoming = dayAvgTripsMapUpdate.get(stringDay).stream().mapToDouble(a -> a).average().getAsDouble();
             }
+            catch(NoSuchElementException exception) {
+                tripsUpcoming = dayAvgTripsMap.get(stringDay);
+            }
+
+            double currentAvg = dayAvgTripsMap.get(stringDay);
+            int aprox_hours_per_month = 28 * 24;
+            double suggestedAvg = currentAvg + ((tripsUpcoming - currentAvg) / (aprox_hours_per_month));
+            out += stringDay + "," + suggestedAvg + "\n";
+        }
+
+        _log.info(out);
+        try {
+            Files.deleteIfExists(Paths.get(dayAvgTripMapFile));
+            Files.write(Paths.get(dayAvgTripMapFile), out.getBytes());
+        }
+        catch(IOException io){
+            _log.error(io.getMessage());
         }
     }
 
     private Map<Date, Integer> getDateTripMap(GtfsMutableRelationalDao dao){
         Map<Date, Integer> dateTripMap = new HashMap<Date, Integer>();
         for (Trip trip : dao.getAllTrips()) {
-            //_log.info(trip.toString());
+            _log.debug(trip.toString());
             //check for service
             boolean hasCalDateException = false;
             //are there calendar dates?
@@ -180,7 +194,6 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
                 if (dateTripMap.get(date) == null) {
                     dateTripMap.put(date, 1);
                 } else {
-                    //Update this code so you are not using primitives and can just change object value rather than many puts depending on speed cost-- benchmark it!
                     dateTripMap.put(date, dateTripMap.get(date) + 1);
                 }
             }
@@ -229,10 +242,6 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
         return date;
     }
 
-    private String getTopic() {
-        return System.getProperty("sns.topic");
-    }
-
     public void setDatesToIgnoreUrl(String url){
         this.datesToIgnoreUrl = url;
     }
@@ -278,7 +287,7 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
                 new CSVLibrary().parse(is, listener);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            _log.error(e.getMessage());
         }
         return listener;
     }

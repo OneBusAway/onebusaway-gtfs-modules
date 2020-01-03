@@ -19,7 +19,7 @@ package org.onebusaway.gtfs_transformer.services;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 
-public class AwsContextService {
+public class CloudContextService {
     public static String getLikelyFeedName(GtfsMutableRelationalDao dao){
         String feedName = "";
         try {

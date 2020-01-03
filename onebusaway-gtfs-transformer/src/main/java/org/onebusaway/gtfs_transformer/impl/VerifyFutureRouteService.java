@@ -26,7 +26,7 @@ import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
-import org.onebusaway.gtfs_transformer.services.AwsContextService;
+import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -42,6 +42,8 @@ import java.util.Set;
 public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(VerifyFutureRouteService.class);
+    int ACTIVE_ROUTES = 0;
+    int ALARMING_ROUTES = 1;
 
     @CsvField(optional = true)
     private String problemRoutesUrl;
@@ -77,7 +79,7 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
-        String feed = AwsContextService.getLikelyFeedName(dao);
+        String feed = CloudContextService.getLikelyFeedName(dao);
         ExternalServices es = new ExternalServicesBridgeFactory().getExternalServices();
 
         int[] tripsTomorrow;
@@ -93,12 +95,12 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
         _log.info("Active routes {}: {}, {}: {}, {}: {}",
                 tomorrow, tripsTomorrow, nextDay, tripsNextDay, dayAfterNext, tripsDayAfterNext);
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesContainingTripsTomorrow", "feed", feed, tripsTomorrow[0]);
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefTomorrow", "feed", feed, tripsTomorrow[1]);
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesContainingTripsIn2Days", "feed", feed, tripsNextDay[0]);
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefIn2Days", "feed", feed, tripsNextDay[1]);
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesContainingTripsIn3Days", "feed", feed, tripsDayAfterNext[0]);
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefIn3Days", "feed", feed, tripsDayAfterNext[1]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsTomorrow", "feed", feed, tripsTomorrow[ACTIVE_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefTomorrow", "feed", feed, tripsTomorrow[ALARMING_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsIn2Days", "feed", feed, tripsNextDay[ACTIVE_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefIn2Days", "feed", feed, tripsNextDay[ALARMING_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsIn3Days", "feed", feed, tripsDayAfterNext[ACTIVE_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefIn3Days", "feed", feed, tripsDayAfterNext[ALARMING_ROUTES]);
 
     }
 

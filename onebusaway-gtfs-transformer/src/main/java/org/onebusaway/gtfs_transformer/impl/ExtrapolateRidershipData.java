@@ -21,7 +21,7 @@ import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.services.AwsContextService;
+import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.time.Duration;
 import java.time.LocalTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Set;
@@ -63,10 +62,10 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
         File controlFile = new File((String) context.getParameter("controlFile"));
-        String feed = AwsContextService.getLikelyFeedName(dao);
+        String feed = CloudContextService.getLikelyFeedName(dao);
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         if(!controlFile.exists()) {
-            es.publishMultiDimensionalMetric(AwsContextService.getNamespace(),"MissingControlFiles",
+            es.publishMultiDimensionalMetric(CloudContextService.getNamespace(),"MissingControlFiles",
                     new String[]{"feed","controlFileName"},
                     new String[]{feed,controlFile.getName()},1);
             throw new IllegalStateException(

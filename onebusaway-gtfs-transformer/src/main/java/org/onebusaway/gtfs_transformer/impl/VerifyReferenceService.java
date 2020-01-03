@@ -25,7 +25,7 @@ import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
-import org.onebusaway.gtfs_transformer.services.AwsContextService;
+import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -40,6 +40,8 @@ import java.util.*;
 that isn't in reference send a notification
  */
 public class VerifyReferenceService implements GtfsTransformStrategy {
+    int ACTIVE_ROUTES = 0;
+    int ALARMING_ROUTES = 1;
     private final Logger _log = LoggerFactory.getLogger(VerifyReferenceService.class);
 
     @CsvField(optional = true)
@@ -52,7 +54,7 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
-        String feed = AwsContextService.getLikelyFeedName(dao);
+        String feed = CloudContextService.getLikelyFeedName(dao);
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
 
         Collection<String> problemRoutes;
@@ -91,14 +93,14 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
 
         _log.info("Active routes {}: {}, {}: {}, {}: {}, {}: {}",
                 today, tripsToday, tomorrow, tripsTomorrow, nextDay, tripsNextDay, dayAfterNext, tripsDayAfterNext);
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesContainingTripsToday", "feed", feed, tripsTomorrow[0]);
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesMissingTripsFromRefButInAtisToday", "feed", feed, tripsTomorrow[1]);
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesContainingTripsTomorrow", "feed", feed, tripsTomorrow[0]);
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesMissingTripsFromRefButInAtisTomorrow", "feed", feed, tripsTomorrow[1]);
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesContainingTripsIn2Days", "feed", feed, tripsNextDay[0]);
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesMissingTripsFromRefButInAtisIn2Days", "feed", feed, tripsNextDay[1]);
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesContainingTripsIn3Days", "feed", feed, tripsDayAfterNext[0]);
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesMissingTripsFromRefButInAtisIn3Days", "feed", feed, tripsDayAfterNext[1]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsToday", "feed", feed, tripsTomorrow[ACTIVE_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromRefButInAtisToday", "feed", feed, tripsTomorrow[ALARMING_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsTomorrow", "feed", feed, tripsTomorrow[ACTIVE_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromRefButInAtisTomorrow", "feed", feed, tripsTomorrow[ALARMING_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsIn2Days", "feed", feed, tripsNextDay[ACTIVE_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromRefButInAtisIn2Days", "feed", feed, tripsNextDay[ALARMING_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsIn3Days", "feed", feed, tripsDayAfterNext[ACTIVE_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromRefButInAtisIn3Days", "feed", feed, tripsDayAfterNext[ALARMING_ROUTES]);
     }
 
     int[] hasRouteServiceForDate(GtfsMutableRelationalDao dao, GtfsMutableRelationalDao reference,

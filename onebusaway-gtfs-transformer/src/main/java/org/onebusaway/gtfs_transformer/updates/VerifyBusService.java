@@ -25,8 +25,7 @@ import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
-import org.onebusaway.gtfs_transformer.impl.CountAndTestSubway;
-import org.onebusaway.gtfs_transformer.services.AwsContextService;
+import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -50,7 +49,7 @@ public class VerifyBusService implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        String feed = AwsContextService.getLikelyFeedName(dao);
+        String feed = CloudContextService.getLikelyFeedName(dao);
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
 
         AgencyAndId refAgencyAndId = reference.getAllTrips().iterator().next().getId();
@@ -94,8 +93,8 @@ public class VerifyBusService implements GtfsTransformStrategy {
                 }
             }
         }
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefToday", "feed", feed, alarmingRoutes);
-        es.publishMetric(AwsContextService.getNamespace(), "RoutesContainingTripsToday", "feed", feed, curSerRoute);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefToday", "feed", feed, alarmingRoutes);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsToday", "feed", feed, curSerRoute);
     }
 
     private Date constructDate(ServiceDate date) {

@@ -20,7 +20,7 @@ import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.services.AwsContextService;
+import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -155,14 +155,14 @@ public class CountAndTest implements GtfsTransformStrategy {
                 dao.getAllStopTimes().size(), countSt, countNoSt, countNoHs);
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        String feed = AwsContextService.getLikelyFeedName(dao);
+        String feed = CloudContextService.getLikelyFeedName(dao);
 
         HashSet<String> ids = new HashSet<String>();
         for (Stop stop : dao.getAllStops()) {
             //check for duplicate stop ids.
             if (ids.contains(stop.getId().getId())) {
                 _log.error("Duplicate stop ids! Agency {} stop id {}", agency, stop.getId().getId());
-                es.publishMultiDimensionalMetric(AwsContextService.getNamespace(),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
+                es.publishMultiDimensionalMetric(CloudContextService.getNamespace(),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
                 throw new IllegalStateException(
                         "There are duplicate stop ids!");
             }
@@ -172,8 +172,8 @@ public class CountAndTest implements GtfsTransformStrategy {
         }
 
 
-        es.publishMetric(AwsContextService.getNamespace(),"TripsInServiceToday","feed", feed,curSerTrips);
-        es.publishMetric(AwsContextService.getNamespace(),"TripsInServiceTomorrow","feed", feed,tomSerTrips);
+        es.publishMetric(CloudContextService.getNamespace(),"TripsInServiceToday","feed", feed,curSerTrips);
+        es.publishMetric(CloudContextService.getNamespace(),"TripsInServiceTomorrow","feed", feed,tomSerTrips);
 
 
 
@@ -185,7 +185,7 @@ public class CountAndTest implements GtfsTransformStrategy {
         if (countNoHs > 0) {
             _log.error("There are trips with no headsign");
         }
-        es.publishMetric(AwsContextService.getNamespace(), "TripsWithoutHeadsigns", "feed", feed, countNoHs);
+        es.publishMetric(CloudContextService.getNamespace(), "TripsWithoutHeadsigns", "feed", feed, countNoHs);
     }
 
     private Date removeTime(Date date) {

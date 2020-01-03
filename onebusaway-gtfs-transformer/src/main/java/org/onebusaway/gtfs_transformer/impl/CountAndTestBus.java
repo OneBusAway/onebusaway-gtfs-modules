@@ -22,7 +22,7 @@ import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
-import org.onebusaway.gtfs_transformer.services.AwsContextService;
+import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -238,28 +238,28 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         _log.info("ATIS Stops: {}, Reference: {}, ATIS match to reference: {}", dao.getAllStops().size(), reference.getAllStops().size(), matches);
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        String feed = AwsContextService.getLikelyFeedName(dao);
+        String feed = CloudContextService.getLikelyFeedName(dao);
 
-        es.publishMetric(AwsContextService.getLikelyFeedName(dao), "ATISBusTripsThisWeek", "feed",feed, atisTripsThisWeek);
-        es.publishMetric(AwsContextService.getLikelyFeedName(dao), "refBusTripsThisWeek", "feed",feed, refTripsThisWeek);
-        es.publishMetric(AwsContextService.getLikelyFeedName(dao), "matchingBusTripsThisWeek", "feed",feed, matchingTripsThisWeek);
-        es.publishMetric(AwsContextService.getLikelyFeedName(dao), "SdonBusTripsThisWeek","feed",feed, refTripsThisWeekWithSdon);
-        es.publishMetric(AwsContextService.getLikelyFeedName(dao), "A9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithA9);
-        es.publishMetric(AwsContextService.getLikelyFeedName(dao), "B9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithB9);
-        es.publishMetric(AwsContextService.getLikelyFeedName(dao), "E9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithE9);
-        es.publishMetric(AwsContextService.getLikelyFeedName(dao), "H9BusTripsWitThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithH9);
-        es.publishMetric(AwsContextService.getLikelyFeedName(dao), "OtherTripsWithoutMatchThisWeek", "feed",feed, leftOverNoMatchThisWeek);
+        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "ATISBusTripsThisWeek", "feed",feed, atisTripsThisWeek);
+        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "refBusTripsThisWeek", "feed",feed, refTripsThisWeek);
+        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "matchingBusTripsThisWeek", "feed",feed, matchingTripsThisWeek);
+        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "SdonBusTripsThisWeek","feed",feed, refTripsThisWeekWithSdon);
+        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "A9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithA9);
+        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "B9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithB9);
+        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "E9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithE9);
+        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "H9BusTripsWitThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithH9);
+        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "OtherTripsWithoutMatchThisWeek", "feed",feed, leftOverNoMatchThisWeek);
 
         if (curSerTrips < 1) {
             throw new IllegalStateException(
                     "There is no current service!!");
         }
-        es.publishMetric(AwsContextService.getLikelyFeedName(dao),"TripsInServiceToday","feed", feed,curSerTrips);
+        es.publishMetric(CloudContextService.getLikelyFeedName(dao),"TripsInServiceToday","feed", feed,curSerTrips);
 
         if (countNoHs > 0) {
             _log.error("There are trips with no headsign");
         }
-        es.publishMetric(AwsContextService.getLikelyFeedName(dao), "TripsWithoutHeadsigns", "feed", feed, countNoHs);
+        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "TripsWithoutHeadsigns", "feed", feed, countNoHs);
 
         HashSet<String> ids = new HashSet<String>();
         for (Stop stop : dao.getAllStops()) {
@@ -267,7 +267,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
             if (ids.contains(stop.getId().getId())) {
                 if (ids.contains(stop.getId().getId())) {
                     _log.error("Duplicate stop ids! Agency {} stop id {}", agency, stop.getId().getId());
-                    es.publishMultiDimensionalMetric(AwsContextService.getLikelyFeedName(dao),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
+                    es.publishMultiDimensionalMetric(CloudContextService.getLikelyFeedName(dao),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
                     throw new IllegalStateException(
                             "There are duplicate stop ids!");
                 }

@@ -157,6 +157,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         int refTripsThisWeekWithSdon = 0;
         int refTripsThisWeekWoutSdonWithA9 = 0;
         int refTripsThisWeekWoutSdonWithE9 = 0;
+        int refTripsThisWeekWoutSdonWithD9 = 0;
         int refTripsThisWeekWoutSdonWithB9 = 0;
         int refTripsThisWeekWoutSdonWithH9 = 0;
         int checkMatchesThisWeek = 0;
@@ -179,6 +180,9 @@ public class CountAndTestBus implements GtfsTransformStrategy {
                     else if (refTrip.getId().getId().contains("B9")) {
                         refTripsThisWeekWoutSdonWithB9++;
                     }
+                    else if (refTrip.getId().getId().contains("D9")) {
+                        refTripsThisWeekWoutSdonWithD9++;
+                    }
                     else if (refTrip.getId().getId().contains("E9")) {
                         refTripsThisWeekWoutSdonWithE9++;
                     }
@@ -187,7 +191,6 @@ public class CountAndTestBus implements GtfsTransformStrategy {
                     }
                     else {
                         leftOverNoMatchThisWeek++;
-                        _log.info(refTrip.getId().getId());
                     }
                 } else {
                     matchingTripsThisWeek++;
@@ -244,6 +247,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         es.publishMetric(getNamespace(), "SdonBusTripsThisWeek", null, null, refTripsThisWeekWithSdon);
         es.publishMetric(getNamespace(), "A9BusTripsThisWeek", null, null, refTripsThisWeekWoutSdonWithA9);
         es.publishMetric(getNamespace(), "B9BusTripsThisWeek", null, null, refTripsThisWeekWoutSdonWithB9);
+        es.publishMetric(getNamespace(), "D9BusTripsThisWeek", null, null, refTripsThisWeekWoutSdonWithD9);
         es.publishMetric(getNamespace(), "E9BusTripsThisWeek", null, null, refTripsThisWeekWoutSdonWithE9);
         es.publishMetric(getNamespace(), "H9BusTripsThisWeek", null, null, refTripsThisWeekWoutSdonWithH9);
 
@@ -273,14 +277,6 @@ public class CountAndTestBus implements GtfsTransformStrategy {
             //check for duplicate stop ids.
             if (ids.contains(stop.getId().getId())) {
                 _log.error("Duplicate stop ids! Agency {} stop id {}", agency, stop.getId().getId());
-                es.publishMessage(getTopic(), "Agency: "
-                        + agency
-                        + " "
-                        + name
-                        + " has duplicate stop id: "
-                        + stop.getId());
-                throw new IllegalStateException(
-                        "There are duplicate stop ids!");
             }
             else {
                 ids.add(stop.getId().getId());

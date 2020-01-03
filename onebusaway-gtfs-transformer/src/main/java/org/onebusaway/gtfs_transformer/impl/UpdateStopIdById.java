@@ -52,17 +52,13 @@ public class UpdateStopIdById implements GtfsTransformStrategy {
         ArrayList<Stop> stopsToDelete = new ArrayList<>();
         ArrayList<String> existingStops = new ArrayList<>();
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+        String agency = dao.getAllAgencies().iterator().next().getId();
+        String name = dao.getAllAgencies().iterator().next().getName();
 
         for (Stop stop : dao.getAllStops()) {
             if (stop.getMtaStopId() != null) {
                 if (existingStops.contains(stop.getMtaStopId())) {
-                    es.publishMessage(getTopic(), "Agency: "
-                            + dao.getAllAgencies().iterator().next().getId()
-                            + " "
-                            + dao.getAllAgencies().iterator().next().getName()
-                            + " has duplicate stop id: "
-                            + stop.getMtaStopId());
-                    _log.info("MtaStopId {} already exists", stop.getMtaStopId());
+                    _log.info("There is another stop with the same mta_id. This stop will be removed: Agency {} {} ATIS stop id: {} MTA stop id: {}", agency, name, stop.getId().getId(), stop.getMtaStopId());
                     stopsToDelete.add(stop);
                 }
                 else {

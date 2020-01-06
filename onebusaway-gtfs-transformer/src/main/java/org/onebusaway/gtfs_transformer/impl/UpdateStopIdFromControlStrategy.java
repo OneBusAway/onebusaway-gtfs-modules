@@ -22,6 +22,7 @@ import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -59,13 +60,11 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
         File controlFile = new File((String)context.getParameter("controlFile"));
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+        String feed = CloudContextService.getLikelyFeedName(dao);
         if(!controlFile.exists()) {
-            es.publishMessage(getTopic(), "Agency: "
-                    + dao.getAllAgencies().iterator().next().getId()
-                    + " "
-                    + dao.getAllAgencies().iterator().next().getName()
-                    + " Control file does not exist: "
-                    + controlFile.getName());
+            es.publishMultiDimensionalMetric(CloudContextService.getNamespace(),"MissingControlFiles",
+                    new String[]{"feed","controlFileName"},
+                    new String[]{feed,controlFile.getName()},1);
             throw new IllegalStateException(
                     "Control file does not exist: " + controlFile.getName());
         }
@@ -184,9 +183,5 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
             _daoAgencyId = dao.getAllAgencies().iterator().next().getId();
         }
         return _daoAgencyId;
-    }
-
-    private String getTopic() {
-        return System.getProperty("sns.topic");
     }
 }

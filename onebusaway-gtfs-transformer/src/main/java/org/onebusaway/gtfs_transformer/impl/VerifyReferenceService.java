@@ -40,8 +40,8 @@ import java.util.*;
 that isn't in reference send a notification
  */
 public class VerifyReferenceService implements GtfsTransformStrategy {
-    int ACTIVE_ROUTES = 0;
-    int ALARMING_ROUTES = 1;
+    private final int ACTIVE_ROUTES = 0;
+    private final int ALARMING_ROUTES = 1;
     private final Logger _log = LoggerFactory.getLogger(VerifyReferenceService.class);
 
     @CsvField(optional = true)

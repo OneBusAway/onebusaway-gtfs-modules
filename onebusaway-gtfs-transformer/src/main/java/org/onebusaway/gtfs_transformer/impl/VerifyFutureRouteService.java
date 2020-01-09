@@ -42,8 +42,8 @@ import java.util.Set;
 public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(VerifyFutureRouteService.class);
-    int ACTIVE_ROUTES = 0;
-    int ALARMING_ROUTES = 1;
+    private final int ACTIVE_ROUTES = 0;
+    private final int ALARMING_ROUTES = 1;
 
     @CsvField(optional = true)
     private String problemRoutesUrl;

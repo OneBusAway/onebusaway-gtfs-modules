@@ -19,6 +19,7 @@ import org.onebusaway.cloud.api.ExternalServices;
 import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -40,6 +41,7 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
 
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
+        String feed = CloudContextService.getLikelyFeedName(dao);
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -72,7 +74,7 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
                             " is scheduled for unrealistic transit time (>1hr) when traveling between stoptime" +
                             oldTime.getId()+ " at " + sdf.format(departure) + ", and stoptime" +
                             newTime.getId() + " at " + sdf.format(arrival);
-                    _log.error(message);
+                    _log.warn(message);
                     stopsWarn.add(trip);
                     collectedWarnString += ", " + trip.toString() + "at " + sdf.format(departure) +
                             "and " + sdf.format(arrival);
@@ -85,7 +87,6 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
                             oldTime.getId()+ " at " + sdf.format(departure) + ", and stoptime" +
                             newTime.getId() + " at " + sdf.format(arrival) + ". This trip will be deleted.";
                     _log.error(message);
-                    es.publishMessage(getTopic(), message);
                     collectedRemoveString += ", " + trip.toString();
                     stopsRemove.add(trip);
                     break stopLoop;
@@ -94,26 +95,22 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
             }
         }
 
+
         if (stopsWarn.size() > 0) {
             collectedWarnString = "Total number of trips with transit times of greater than one hour: " +
                     stopsWarn.size() + ".\n Here are the trips and stops: " + collectedWarnString.substring(2);
             _log.info(collectedWarnString);
-            es.publishMessage(getTopic(), collectedWarnString);
         }
+        es.publishMetric(CloudContextService.getNamespace(), "TripsWith1-3HrTransitTime", "feed", feed, stopsWarn.size());
         if (stopsRemove.size() > 0) {
             collectedRemoveString = "Total number of trips with transit times of greater than three hours: " +
                     stopsRemove.size() + ".\n These trips are being removed. \nTrips being removed: " +
                     collectedRemoveString.substring(2);
             _log.info(collectedRemoveString);
-            es.publishMessage(getTopic(), collectedRemoveString);
         }
+        es.publishMetric(CloudContextService.getNamespace(), "TripsWithRemovedForTransitTime", "feed", feed, stopsRemove.size());
         for (Trip trip: stopsRemove){
             removeEntityLibrary.removeTrip(dao, trip);
         }
-    }
-
-
-    private String getTopic() {
-        return System.getProperty("sns.topic");
     }
 }

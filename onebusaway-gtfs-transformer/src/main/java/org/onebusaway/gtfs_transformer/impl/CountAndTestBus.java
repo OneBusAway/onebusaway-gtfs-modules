@@ -244,27 +244,27 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         String feed = CloudContextService.getLikelyFeedName(dao);
 
-        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "ATISBusTripsThisWeek", "feed",feed, atisTripsThisWeek);
-        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "refBusTripsThisWeek", "feed",feed, refTripsThisWeek);
-        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "matchingBusTripsThisWeek", "feed",feed, matchingTripsThisWeek);
-        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "SdonBusTripsThisWeek","feed",feed, refTripsThisWeekWithSdon);
-        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "A9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithA9);
-        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "B9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithB9);
-        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "D9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithD9);
-        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "E9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithE9);
-        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "H9BusTripsWitThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithH9);
-        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "OtherTripsWithoutMatchThisWeek", "feed",feed, leftOverNoMatchThisWeek);
+        es.publishMetric(CloudContextService.getNamespace(), "ATISBusTripsThisWeek", "feed",feed, atisTripsThisWeek);
+        es.publishMetric(CloudContextService.getNamespace(), "refBusTripsThisWeek", "feed",feed, refTripsThisWeek);
+        es.publishMetric(CloudContextService.getNamespace(), "matchingBusTripsThisWeek", "feed",feed, matchingTripsThisWeek);
+        es.publishMetric(CloudContextService.getNamespace(), "SdonBusTripsThisWeek","feed",feed, refTripsThisWeekWithSdon);
+        es.publishMetric(CloudContextService.getNamespace(), "A9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithA9);
+        es.publishMetric(CloudContextService.getNamespace(), "B9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithB9);
+        es.publishMetric(CloudContextService.getNamespace(), "D9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithD9);
+        es.publishMetric(CloudContextService.getNamespace(), "E9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithE9);
+        es.publishMetric(CloudContextService.getNamespace(), "H9BusTripsWitThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithH9);
+        es.publishMetric(CloudContextService.getNamespace(), "OtherTripsWithoutMatchThisWeek", "feed",feed, leftOverNoMatchThisWeek);
 
         if (curSerTrips < 1) {
             throw new IllegalStateException(
                     "There is no current service!!");
         }
-        es.publishMetric(CloudContextService.getLikelyFeedName(dao),"TripsInServiceToday","feed", feed,curSerTrips);
+        es.publishMetric(CloudContextService.getNamespace(),"TripsInServiceToday","feed", feed,curSerTrips);
 
         if (countNoHs > 0) {
             _log.error("There are trips with no headsign");
         }
-        es.publishMetric(CloudContextService.getLikelyFeedName(dao), "TripsWithoutHeadsigns", "feed", feed, countNoHs);
+        es.publishMetric(CloudContextService.getNamespace(), "TripsWithoutHeadsigns", "feed", feed, countNoHs);
 
         HashSet<String> ids = new HashSet<String>();
         for (Stop stop : dao.getAllStops()) {

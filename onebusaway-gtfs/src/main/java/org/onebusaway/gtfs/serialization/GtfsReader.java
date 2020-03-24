@@ -17,6 +17,7 @@
 package org.onebusaway.gtfs.serialization;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import org.onebusaway.csv_entities.CsvEntityReader;
 import org.onebusaway.csv_entities.CsvInputSource;
 import org.onebusaway.csv_entities.CsvTokenizerStrategy;
 import org.onebusaway.csv_entities.EntityHandler;
+import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.impl.GtfsDaoImpl;
 import org.onebusaway.gtfs.model.*;
@@ -68,6 +70,8 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Route.class);
     _entityClasses.add(Level.class);
     _entityClasses.add(Stop.class);
+    _entityClasses.add(Location.class);
+    _entityClasses.add(LocationGroupElement.class);
     _entityClasses.add(Trip.class);
     _entityClasses.add(StopTime.class);
     _entityClasses.add(ServiceCalendar.class);
@@ -153,6 +157,16 @@ public class GtfsReader extends CsvEntityReader {
 
   public void setOverwriteDuplicates(boolean overwriteDuplicates) {
     _overwriteDuplicates = overwriteDuplicates;
+  }
+
+  public void readEntities(Class<?> entityClass, Reader reader) throws IOException, CsvEntityIOException {
+    if (entityClass == Location.class) {
+      for (Location location : new LocationsGeoJSONReader(reader, getDefaultAgencyId()).read()) {
+        injectEntity(location);
+      }
+    } else {
+      super.readEntities(entityClass, reader);
+    }
   }
 
   public void run() throws IOException {
@@ -259,6 +273,9 @@ public class GtfsReader extends CsvEntityReader {
       } else if (entity instanceof Area) {
         Area area = (Area) entity;
         registerAgencyId(Area.class, area.getId());
+      } else if (entity instanceof Location) {
+        Location location = (Location) entity;
+        registerAgencyId(Location.class, location.getId());
       }
 
       if (entity instanceof IdentityBean<?>) {

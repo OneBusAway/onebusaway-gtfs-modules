@@ -35,9 +35,9 @@ public interface StopTimeProxy {
 
   public void setStopSequence(int stopSequence);
 
-  public Stop getStop();
+  public Stoplike getStop();
 
-  public void setStop(Stop stop);
+  public void setStop(Stoplike stop);
 
   public boolean isArrivalTimeSet();
 

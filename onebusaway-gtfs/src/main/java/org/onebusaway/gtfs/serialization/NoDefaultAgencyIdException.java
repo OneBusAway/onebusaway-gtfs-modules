@@ -19,6 +19,7 @@ import org.onebusaway.csv_entities.exceptions.CsvEntityException;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Route;
+import org.onebusaway.gtfs.model.Trip;
 
 /**
  * Indicates that no default agency id (see

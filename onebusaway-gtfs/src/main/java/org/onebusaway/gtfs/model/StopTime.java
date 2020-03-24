@@ -20,6 +20,7 @@ import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.StoplikeFieldMappingFactory;
 
 @CsvFields(filename = "stop_times.txt")
 public final class StopTime extends IdentityBean<Integer> implements
@@ -35,19 +36,28 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(name = "trip_id", mapping = EntityFieldMappingFactory.class)
   private Trip trip;
 
-  @CsvField(name = "stop_id", mapping = EntityFieldMappingFactory.class)
-  private Stop stop;
+  @CsvField(name = "stop_id", mapping = StoplikeFieldMappingFactory.class)
+  private Stoplike stop;
 
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int arrivalTime = MISSING_VALUE;
 
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int departureTime = MISSING_VALUE;
-  
+
+  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
+  private int minArrivalTime = MISSING_VALUE;
+
+  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
+  private int maxDepartureTime = MISSING_VALUE;
+
   @CsvField(optional = true)
   private int timepoint = MISSING_VALUE;
 
   private int stopSequence;
+
+  @CsvField(optional = true)
+  private Integer toStopSequence;
 
   @CsvField(optional = true)
   private String stopHeadsign;
@@ -111,12 +121,17 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.dropOffType = st.dropOffType;
     this.id = st.id;
     this.pickupType = st.pickupType;
+    this.minArrivalTime = st.minArrivalTime;
+    this.maxDepartureTime = st.maxDepartureTime;
+    this.continuousPickup = st.continuousPickup;
+    this.continuousDropOff = st.continuousDropOff;
     this.routeShortName = st.routeShortName;
     this.shapeDistTraveled = st.shapeDistTraveled;
     this.farePeriodId = st.farePeriodId;
     this.stop = st.stop;
     this.stopHeadsign = st.stopHeadsign;
     this.stopSequence = st.stopSequence;
+    this.toStopSequence = st.toStopSequence;
     this.timepoint = st.timepoint;
     this.trip = st.trip;
     this.startServiceArea = st.startServiceArea;
@@ -173,14 +188,22 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.stopSequence = stopSequence;
   }
 
-  public Stop getStop() {
+  public Integer getToStopSequence() {
+    return toStopSequence;
+  }
+
+  public void setToStopSequence(Integer toStopSequence) {
+    this.toStopSequence = toStopSequence;
+  }
+
+  public Stoplike getStop() {
     if (proxy != null) {
       return proxy.getStop();
     }
     return stop;
   }
 
-  public void setStop(Stop stop) {
+  public void setStop(Stoplike stop) {
     if (proxy != null) {
       proxy.setStop(stop);
       return;
@@ -253,7 +276,23 @@ public final class StopTime extends IdentityBean<Integer> implements
     }
     this.departureTime = MISSING_VALUE;
   }
-  
+
+  public int getMinArrivalTime() {
+    return minArrivalTime;
+  }
+
+  public void setMinArrivalTime(int minArrivalTime) {
+    this.minArrivalTime = minArrivalTime;
+  }
+
+  public int getMaxDepartureTime() {
+    return maxDepartureTime;
+  }
+
+  public void setMaxDepartureTime(int maxDepartureTime) {
+    this.maxDepartureTime = maxDepartureTime;
+  }
+
   @Override
   public boolean isTimepointSet() {
     if (proxy != null) {

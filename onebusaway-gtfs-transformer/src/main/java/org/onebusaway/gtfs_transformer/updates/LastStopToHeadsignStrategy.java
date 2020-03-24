@@ -17,6 +17,7 @@ package org.onebusaway.gtfs_transformer.updates;
 
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
+import org.onebusaway.gtfs.model.Stoplike;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
@@ -38,7 +39,7 @@ public class LastStopToHeadsignStrategy implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         for (Trip trip: dao.getAllTrips()){
             List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
-            Stop lastStop = stopTimes.get(stopTimes.size() - 1).getStop();
+            Stoplike lastStop = stopTimes.get(stopTimes.size() - 1).getStop();
 
             trip.setTripHeadsign(lastStop.getName());
         }

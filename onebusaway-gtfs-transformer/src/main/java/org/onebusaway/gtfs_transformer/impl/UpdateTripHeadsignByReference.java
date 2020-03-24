@@ -50,7 +50,7 @@ public class UpdateTripHeadsignByReference implements GtfsTransformStrategy {
         for (Trip trip : dao.getAllTrips()) {
             List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
             if (stopTimes != null && stopTimes.size() > 0) {
-                Stop stop = stopTimes.get(stopTimes.size()-1).getStop();
+                Stop stop = (Stop) stopTimes.get(stopTimes.size()-1).getStop();
                 Stop gtfsStop = reference.getStopForId(new AgencyAndId(getReferenceAgencyId(reference), stop.getMtaStopId()));
                 if (gtfsStop == null && !missingStops.contains(stop.getMtaStopId())) {
                     _log.info("Stop {} is missing reference stop {} for agency {}", stop.getId(), stop.getMtaStopId(), getReferenceAgencyId(reference));

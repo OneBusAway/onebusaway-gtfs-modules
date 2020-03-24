@@ -26,6 +26,7 @@ import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
+import org.onebusaway.gtfs.model.Stoplike;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.match.TypedEntityMatch;
@@ -165,19 +166,28 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
       return;
     }
 
-    Stop firstStop = stopTimes.get(0).getStop();
-    Stop lastStop = stopTimes.get(stopTimes.size() - 1).getStop();
+    Stoplike firstStop = stopTimes.get(0).getStop();
+    Stoplike lastStop = stopTimes.get(stopTimes.size() - 1).getStop();
     String id = shapeId.getId() + "-" + firstStop.getId().getId() + "-"
         + lastStop.getId().getId();
     AgencyAndId newShapeId = new AgencyAndId(shapeId.getAgencyId(), id);
     trip.setShapeId(newShapeId);
 
+    if (!(firstStop instanceof Stop)) {
+      //TODO Correct error type
+      throw new Error(firstStop + " must be stop");
+    }
+    if (!(lastStop instanceof Stop)) {
+      //TODO Correct error type
+      throw new Error(firstStop + " must be stop");
+    }
+
     if (!newShapeIds.add(newShapeId)) {
       return;
     }
 
-    int shapePointFrom = getClosestShapePointToStop(points, firstStop);
-    int shapePointTo = getClosestShapePointToStop(points, lastStop);
+    int shapePointFrom = getClosestShapePointToStop(points, (Stop) firstStop);
+    int shapePointTo = getClosestShapePointToStop(points, (Stop) lastStop);
     for (int index = shapePointFrom; index <= shapePointTo; ++index) {
       ShapePoint point = new ShapePoint(points.get(index));
       point.setId(0);

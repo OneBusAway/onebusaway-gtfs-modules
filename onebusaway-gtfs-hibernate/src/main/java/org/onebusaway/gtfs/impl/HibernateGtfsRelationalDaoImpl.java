@@ -236,6 +236,16 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
+  public Collection<LocationGroupElement> getAllLocationGroups() {
+    return _ops.find("FROM LocationGroup");
+  }
+
+  @Override
+  public Collection<Location> getAllLocations() {
+    return _ops.find("FROM Location");
+  }
+
+  @Override
   public Collection<Translation> getAllTranslations() {
     return _ops.find("from Translation");
   }

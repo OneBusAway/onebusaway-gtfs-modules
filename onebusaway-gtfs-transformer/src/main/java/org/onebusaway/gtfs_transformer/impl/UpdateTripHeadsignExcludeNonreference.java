@@ -18,6 +18,7 @@ package org.onebusaway.gtfs_transformer.impl;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
+import org.onebusaway.gtfs.model.Stoplike;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
@@ -53,7 +54,7 @@ public class UpdateTripHeadsignExcludeNonreference implements GtfsTransformStrat
         for (Trip trip : dao.getAllTrips()) {
             List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
             if (stopTimes != null && stopTimes.size() > 0) {
-                Stop lastStop = stopTimes.get(stopTimes.size()-1).getStop();
+                Stoplike lastStop = stopTimes.get(stopTimes.size()-1).getStop();
                 Stop referenceStop = reference.getStopForId(lastStop.getId());
                 if (trip.getTripHeadsign() == null || referenceStop != null) {
                     String tripHeadSign = stopTimes.get(stopTimes.size()-1).getStop().getName();

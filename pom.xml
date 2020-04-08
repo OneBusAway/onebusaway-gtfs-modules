@@ -124,6 +124,7 @@
         <configuration>
           <!-- Turn off Java 8 strict Javadoc checking -->
           <additionalparam>-Xdoclint:none</additionalparam>
+          <source>8</source>
         </configuration>
         <executions>
           <!-- Compress Javadoc into JAR and include that JAR when deploying. -->

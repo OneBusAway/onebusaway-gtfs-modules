@@ -294,6 +294,9 @@ public class TransformFactory {
         else if (opType.equals("add_omny_bus_data")) {
           handleTransformOperation(line, json, new AddOmnyBusData());
         }
+        else if (opType.equals("update_stop_vehicle_types")) {
+          handleTransformOperation(line, json, new UpdateStopVehicleTypesStrategy());
+        }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);
         } else {

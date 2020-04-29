@@ -21,34 +21,45 @@ import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFac
 import org.onebusaway.gtfs.serialization.mappings.StoplikeFieldMappingFactory;
 
 @CsvFields(filename = "location_groups.txt", required = false, prefix = "location_group_")
-public class LocationGroupElement extends IdentityBean<AgencyAndId> implements Stoplike {
+public class LocationGroupElement extends IdentityBean<Integer> {
 
     private static final long serialVersionUID = 1L;
 
-    @CsvField(mapping = DefaultAgencyIdFieldMappingFactory.class)
-    private AgencyAndId id;
+    @CsvField(ignore = true)
+    private int id;
+
+    @CsvField(name = "location_group_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
+    private AgencyAndId locationGroupId;
 
     @CsvField(name = "location_id", mapping = StoplikeFieldMappingFactory.class)
-    private Stoplike locationId;
+    private Stoplike location;
 
     @CsvField(optional = true)
     private String name;
 
     @Override
-    public AgencyAndId getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(AgencyAndId id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Stoplike getLocationId() {
-        return locationId;
+    public AgencyAndId getLocationGroupId() {
+        return locationGroupId;
     }
 
-    public void setLocationId(Stoplike locationId) {
-        this.locationId = locationId;
+    public void setLocationGroupId(AgencyAndId locationGroupId) {
+        this.locationGroupId = locationGroupId;
+    }
+
+    public Stoplike getLocation() {
+        return location;
+    }
+
+    public void setLocation(Stoplike location) {
+        this.location = location;
     }
 
     public String getName() {

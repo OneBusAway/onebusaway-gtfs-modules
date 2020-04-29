@@ -276,6 +276,16 @@ public class GtfsReader extends CsvEntityReader {
       } else if (entity instanceof Location) {
         Location location = (Location) entity;
         registerAgencyId(Location.class, location.getId());
+      } else if (entity instanceof LocationGroupElement) {
+        LocationGroupElement locationGroupElement = (LocationGroupElement) entity;
+        LocationGroup locationGroup = _entityStore.getEntityForId(LocationGroup.class, locationGroupElement.getLocationGroupId());
+        if (locationGroup == null) {
+          locationGroup = new LocationGroup();
+          locationGroup.setId(locationGroupElement.getLocationGroupId());
+          locationGroup.setName(locationGroupElement.getName());
+          _entityStore.saveEntity(locationGroup);
+        }
+        locationGroup.addLocation(locationGroupElement.getLocation());
       }
 
       if (entity instanceof IdentityBean<?>) {

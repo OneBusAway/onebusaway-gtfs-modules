@@ -56,7 +56,7 @@ public class StoplikeFieldMappingImpl extends EntityFieldMappingImpl {
                 if (stop != null) return stop;
                 Object location =  _context.getEntity(Location.class, id);
                 if (location != null) return location;
-                Object locationGroup =  _context.getEntity(LocationGroupElement.class, id);
+                Object locationGroup =  _context.getEntity(LocationGroup.class, id);
                 if (locationGroup != null) return locationGroup;
             }
             throw new ConversionException("Could not convert " + value + " of type "

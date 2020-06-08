@@ -292,7 +292,7 @@ public class TransformFactory {
           handleTransformOperation(line, json, new AddOmnySubwayData());
         }
         else if (opType.equals("add_omny_lirr_data")) {
-          handleTransformOperation(line, json, new AddStopZoneId());
+          handleTransformOperation(line, json, new AddOmnyLIRRData());
         }
         else if (opType.equals("add_omny_bus_data")) {
           handleTransformOperation(line, json, new AddOmnyBusData());

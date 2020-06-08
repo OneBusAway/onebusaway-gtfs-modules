@@ -237,6 +237,9 @@ public class TransformFactory {
         else if (opType.equals("update_route_name")) {
           handleTransformOperation(line, json, new UpdateRouteNames());
         }
+        else if (opType.equals("validate_gtfs")) {
+          handleTransformOperation(line, json, new ValidateGTFS());
+        }
         else if (opType.equals("count_and_test")) {
           handleTransformOperation(line, json, new CountAndTest());
         }
@@ -289,10 +292,13 @@ public class TransformFactory {
           handleTransformOperation(line, json, new AddOmnySubwayData());
         }
         else if (opType.equals("add_omny_lirr_data")) {
-          handleTransformOperation(line, json, new AddOmnyLIRRData());
+          handleTransformOperation(line, json, new AddStopZoneId());
         }
         else if (opType.equals("add_omny_bus_data")) {
           handleTransformOperation(line, json, new AddOmnyBusData());
+        }
+        else if (opType.equals("verify_route_ids")) {
+          handleTransformOperation(line, json, new VerifyRouteIds());
         }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);

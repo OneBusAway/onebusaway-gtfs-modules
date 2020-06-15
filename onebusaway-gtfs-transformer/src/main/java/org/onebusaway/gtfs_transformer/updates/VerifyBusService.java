@@ -25,7 +25,7 @@ import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
-import org.onebusaway.gtfs_transformer.impl.CountAndTestSubway;
+import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -49,11 +49,13 @@ public class VerifyBusService implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+        String feed = CloudContextService.getLikelyFeedName(dao);
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
 
         AgencyAndId refAgencyAndId = reference.getAllTrips().iterator().next().getId();
 
         int curSerRoute = 0;
+        int alarmingRoutes = 0;
         Date today = removeTime(new Date());
         //list of all routes in ATIS
         Set<String> ATISrouteIds = new HashSet<>();
@@ -85,14 +87,14 @@ public class VerifyBusService implements GtfsTransformStrategy {
                     Set<ServiceDate> activeDates = refCalendarService.getServiceDatesForServiceId(refTrip.getServiceId());
                     if (activeDates.contains(sToday)) {
                         _log.info("Reference has service for this bus route today but ATIS does not: {}", route.getId());
-                        es.publishMessage(getTopic(), "Reference has bus service for route: "
-                                + route.getId()
-                                + " today, but ATIS has none.");
-                        break reftriploop;
+                        //This would be the site to add to a bulk metric, missingBus:
+                        alarmingRoutes ++;
                     }
                 }
             }
         }
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefToday", "feed", feed, alarmingRoutes);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsToday", "feed", feed, curSerRoute);
     }
 
     private Date constructDate(ServiceDate date) {
@@ -121,9 +123,4 @@ public class VerifyBusService implements GtfsTransformStrategy {
         calendar.setTime(date);
         return new ServiceDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) +1, calendar.get(Calendar.DAY_OF_MONTH));
     }
-
-    private String getTopic() {
-        return System.getProperty("sns.topic");
-    }
-
 }

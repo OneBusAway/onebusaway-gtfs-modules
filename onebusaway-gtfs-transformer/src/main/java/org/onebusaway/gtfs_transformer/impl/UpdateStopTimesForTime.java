@@ -21,6 +21,7 @@ import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -71,37 +72,15 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
         }
         _log.info("Decreasing times: {}, TripsToRemove: {}", negativeTimes, tripsToRemove.size());
 
+        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+        String feed = CloudContextService.getLikelyFeedName(dao);
+        es.publishMetric(CloudContextService.getNamespace(), "TripsWithDecreasingStopTimes", "feed", feed, tripsToRemove.size());
 
         StringBuffer illegalTripList = new StringBuffer();
         for (Trip trip : tripsToRemove) {
             illegalTripList.append(trip.getId().toString()).append(" ");
             removeEntityLibrary.removeTrip(dao, trip);
         }
-
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        if (tripsToRemove.size() > 0) {
-            // here we assume es is always present, even if its a no-op
-            // an exception will be thrown otherwise
-            es.publishMessage(getTopic(), "Agency: "
-                    + dao.getAllAgencies().iterator().next().getId()
-                    + " "
-                    + dao.getAllAgencies().iterator().next().getName()
-                    + " Illegal (decreasing stop times) Trip Count: "
-                    + tripsToRemove.size() + "\n"
-                    + " Negative Stop Times: " + negativeTimes + "\n\n"
-                    + "Trips removed: " + illegalTripList.toString());
-            es.publishMetric(getNamespace(), "negativeStopTimes", null, null, negativeTimes);
-
-        } else {
-            es.publishMetric(getNamespace(), "negativeStopTimes", null, null, 0);
-        }
     }
 
-    private String getTopic() {
-        return System.getProperty("sns.topic");
-    }
-
-    private String getNamespace() {
-        return System.getProperty("cloudwatch.namespace");
-    }
 }

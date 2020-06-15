@@ -20,6 +20,7 @@ import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -30,7 +31,7 @@ import java.util.Date;
 
 public class CheckForFutureService implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(CountAndTest.class);
+    private final Logger _log = LoggerFactory.getLogger(CheckForFutureService.class);
 
     @Override
     public String getName() {
@@ -47,6 +48,7 @@ public class CheckForFutureService implements GtfsTransformStrategy {
         Date nextDay = removeTime(addDays(new Date(), 2));
         Date dayAfterNext = removeTime(addDays(new Date(), 3));
 
+        String feed = CloudContextService.getLikelyFeedName(dao);
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         String agency = dao.getAllAgencies().iterator().next().getId();
         String agencyName = dao.getAllAgencies().iterator().next().getName();
@@ -55,32 +57,19 @@ public class CheckForFutureService implements GtfsTransformStrategy {
         tripsNextDay = hasServiceForDate(dao, nextDay);
         tripsDayAfterNext = hasServiceForDate(dao,dayAfterNext);
 
+        es.publishMetric(CloudContextService.getNamespace(), "TripsTomorrow", "feed", feed, tripsTomorrow);
+        es.publishMetric(CloudContextService.getNamespace(), "TripsIn2Days", "feed", feed, tripsNextDay);
+        es.publishMetric(CloudContextService.getNamespace(), "TripsIn3Days", "feed", feed, tripsDayAfterNext);
+
+
         if (tripsTomorrow == 0) {
             _log.error("Agency {} {} is missing service for tomorrow {}", agency, agencyName, tomorrow);
-            es.publishMessage(getTopic(), "Agency: "
-                    + agency
-                    + " "
-                    + agencyName
-                    + " is missing service for tomorrow "
-                    + tomorrow);
         }
         if (tripsNextDay == 0) {
             _log.error("Agency {} {} is missing service for the day after tomorrow {}", agency, agencyName, nextDay);
-            es.publishMessage(getTopic(), "Agency: "
-                    + agency
-                    + " "
-                    + agencyName
-                    + " is missing service for the day after tomorrow "
-                    + nextDay);
         }
         if (tripsDayAfterNext == 0) {
             _log.error("Agency {} {} is missing service in 3 days {}", agency, agencyName, dayAfterNext);
-            es.publishMessage(getTopic(), "Agency: "
-                    + agency
-                    + " "
-                    + agencyName
-                    + " is missing service in 3 days "
-                    + dayAfterNext);
         }
 
     }
@@ -153,9 +142,5 @@ public class CheckForFutureService implements GtfsTransformStrategy {
         calendar.set(Calendar.MILLISECOND, 0);
         date = calendar.getTime();
         return date;
-    }
-
-    private String getTopic() {
-        return System.getProperty("sns.topic");
     }
 }

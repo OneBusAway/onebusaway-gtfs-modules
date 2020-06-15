@@ -237,6 +237,9 @@ public class TransformFactory {
         else if (opType.equals("update_route_name")) {
           handleTransformOperation(line, json, new UpdateRouteNames());
         }
+        else if (opType.equals("validate_gtfs")) {
+          handleTransformOperation(line, json, new ValidateGTFS());
+        }
         else if (opType.equals("count_and_test")) {
           handleTransformOperation(line, json, new CountAndTest());
         }
@@ -273,6 +276,9 @@ public class TransformFactory {
         else if (opType.equals("check_for_stop_times_without_stops")){
           handleTransformOperation(line,json, new CheckForPlausibleStopTimes());
         }
+        else if (opType.equals("anomaly_check_future_trip_counts")){
+          handleTransformOperation(line,json, new AnomalyCheckFutureTripCounts());
+        }
         else if (opType.equals("verify_future_route_service")){
           handleTransformOperation(line, json, new VerifyFutureRouteService());
         }
@@ -290,6 +296,9 @@ public class TransformFactory {
         }
         else if (opType.equals("add_omny_bus_data")) {
           handleTransformOperation(line, json, new AddOmnyBusData());
+        }
+        else if (opType.equals("verify_route_ids")) {
+          handleTransformOperation(line, json, new VerifyRouteIds());
         }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);

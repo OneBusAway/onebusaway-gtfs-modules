@@ -26,6 +26,7 @@ import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
+import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -41,6 +42,8 @@ import java.util.Set;
 public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(VerifyFutureRouteService.class);
+    private final int ACTIVE_ROUTES = 0;
+    private final int ALARMING_ROUTES = 1;
 
     @CsvField(optional = true)
     private String problemRoutesUrl;
@@ -76,10 +79,12 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
+        String feed = CloudContextService.getLikelyFeedName(dao);
+        ExternalServices es = new ExternalServicesBridgeFactory().getExternalServices();
 
-        int tripsTomorrow = 0;
-        int tripsNextDay = 0;
-        int tripsDayAfterNext = 0;
+        int[] tripsTomorrow;
+        int[] tripsNextDay;
+        int[] tripsDayAfterNext;
         Date tomorrow = removeTime(addDays(new Date(), 1));
         Date nextDay = removeTime(addDays(new Date(), 2));
         Date dayAfterNext = removeTime(addDays(new Date(), 3));
@@ -90,15 +95,21 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
         _log.info("Active routes {}: {}, {}: {}, {}: {}",
                 tomorrow, tripsTomorrow, nextDay, tripsNextDay, dayAfterNext, tripsDayAfterNext);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsTomorrow", "feed", feed, tripsTomorrow[ACTIVE_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefTomorrow", "feed", feed, tripsTomorrow[ALARMING_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsIn2Days", "feed", feed, tripsNextDay[ACTIVE_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefIn2Days", "feed", feed, tripsNextDay[ALARMING_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsIn3Days", "feed", feed, tripsDayAfterNext[ACTIVE_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefIn3Days", "feed", feed, tripsDayAfterNext[ALARMING_ROUTES]);
 
     }
 
-    private int hasRouteServiceForDate(GtfsMutableRelationalDao dao, GtfsMutableRelationalDao reference,
+    private int[] hasRouteServiceForDate(GtfsMutableRelationalDao dao, GtfsMutableRelationalDao reference,
                                CalendarService refCalendarService, Date testDate, Collection<String> problemRoutes) {
         AgencyAndId refAgencyAndId = reference.getAllTrips().iterator().next().getId();
-        ExternalServices es = new ExternalServicesBridgeFactory().getExternalServices();
         int numTripsOnDate = 0;
         int activeRoutes = 0;
+        int alarmingRoutes = 0;
 
         //check for route specific current service
         for (Route route : dao.getAllRoutes()) {
@@ -128,20 +139,18 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
                         if (problemRoutes.contains(route.getId().getId())) {
                             _log.info("On {} Reference has service for this route, but ATIS has none: {}, Trip {}, Serviceid {}",
                                     testDate, route.getId(), refTrip.getId(), refTrip.getServiceId());
+                            alarmingRoutes++;
                         } else {
                             _log.error("On {} Reference has service for this route but ATIS has none: {}, Trip {}, Serviceid {}",
                                     testDate, route.getId(), refTrip.getId(), refTrip.getServiceId());
-                            es.publishMessage(getTopic(), "Reference has service for this route but ATIS has none. Route: "
-                                    + route.getId()
-                                    + " has no service for "
-                                    + testDate);
+                            alarmingRoutes++;
                         }
                         break reftriploop;
                     }
                 }
             }
         }
-        return activeRoutes;
+        return new int[] {activeRoutes,alarmingRoutes};
     }
 
     private Date constructDate(ServiceDate date) {

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2018 Cambridge Systematics, Inc.
+ * Copyright (C) 2019 Cambridge Systematics, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class CountAndTest implements GtfsTransformStrategy {
+public class ValidateGTFS implements GtfsTransformStrategy {
 
-    private final Logger _log = LoggerFactory.getLogger(CountAndTest.class);
+    private final Logger _log = LoggerFactory.getLogger(ValidateGTFS.class);
 
     @Override
     public String getName() {
@@ -144,13 +144,13 @@ public class CountAndTest implements GtfsTransformStrategy {
 
             if (trip.getTripHeadsign() == null) {
                 countNoHs++;
-                _log.error("Trip {} has no headsign", trip.getId());
             }
+
         }
 
         _log.info("Agency: {}, {}. Routes: {}, Trips: {}, Current Service: {}, " +
-                "Stops: {}, Stop times {}, Trips w/ st: {}, Trips w/out st: {}, " +
-                "Total trips w/out headsign: {}", agency, name, dao.getAllRoutes().size(),
+                        "Stops: {}, Stop times {}, Trips w/ st: {}, Trips w/out st: {}, " +
+                        "Total trips w/out headsign: {}", agency, name, dao.getAllRoutes().size(),
                 dao.getAllTrips().size(), curSerTrips, dao.getAllStops().size(),
                 dao.getAllStopTimes().size(), countSt, countNoSt, countNoHs);
 
@@ -161,21 +161,26 @@ public class CountAndTest implements GtfsTransformStrategy {
         for (Stop stop : dao.getAllStops()) {
             //check for duplicate stop ids.
             if (ids.contains(stop.getId().getId())) {
-                _log.error("Duplicate stop ids! Agency {} stop id {}", agency, stop.getId().getId());
-                es.publishMultiDimensionalMetric(CloudContextService.getNamespace(),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
-                throw new IllegalStateException(
-                        "There are duplicate stop ids!");
+                _log.error("Duplicate stop ids! Agency {} stop id {} stop code {}", agency, stop.getId().getId(), stop.getCode());
             }
             else {
                 ids.add(stop.getId().getId());
             }
         }
 
+        HashSet<String> codes = new HashSet<String>();
+        for (Stop stop : dao.getAllStops()) {
+            //check for duplicate stop ids.
+            if (codes.contains(stop.getCode())) {
+                _log.error("Duplicate stop codes! Agency {} stop codes {}", agency, stop.getCode());
+            }
+            else {
+                codes.add(stop.getCode());
+            }
+        }
 
         es.publishMetric(CloudContextService.getNamespace(),"TripsInServiceToday","feed", feed,curSerTrips);
         es.publishMetric(CloudContextService.getNamespace(),"TripsInServiceTomorrow","feed", feed,tomSerTrips);
-
-
 
         if (curSerTrips + tomSerTrips < 1) {
             throw new IllegalStateException(

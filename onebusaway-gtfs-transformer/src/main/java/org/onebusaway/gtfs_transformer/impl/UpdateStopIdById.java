@@ -21,6 +21,7 @@ import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -51,18 +52,15 @@ public class UpdateStopIdById implements GtfsTransformStrategy {
 
         ArrayList<Stop> stopsToDelete = new ArrayList<>();
         ArrayList<String> existingStops = new ArrayList<>();
+        String feed = CloudContextService.getLikelyFeedName(dao);
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+        String agency = dao.getAllAgencies().iterator().next().getId();
+        String name = dao.getAllAgencies().iterator().next().getName();
 
         for (Stop stop : dao.getAllStops()) {
             if (stop.getMtaStopId() != null) {
                 if (existingStops.contains(stop.getMtaStopId())) {
-                    es.publishMessage(getTopic(), "Agency: "
-                            + dao.getAllAgencies().iterator().next().getId()
-                            + " "
-                            + dao.getAllAgencies().iterator().next().getName()
-                            + " has duplicate stop id: "
-                            + stop.getMtaStopId());
-                    _log.info("MtaStopId {} already exists", stop.getMtaStopId());
+                    _log.info("There is another stop with the same mta_id. This stop will be removed: Agency {} {} ATIS stop id: {} MTA stop id: {}", agency, name, stop.getId().getId(), stop.getMtaStopId());
                     stopsToDelete.add(stop);
                 }
                 else {
@@ -75,17 +73,10 @@ public class UpdateStopIdById implements GtfsTransformStrategy {
                 }
             }
         }
+        es.publishMetric(CloudContextService.getNamespace(), "DuplicateStopCount", "feed", feed, stopsToDelete.size());
         for (Stop stop : stopsToDelete) {
             removeEntityLibrary.removeStop(dao, stop);
         }
 
-    }
-
-    private String getTopic() {
-        return System.getProperty("sns.topic");
-    }
-
-    private String getNamespace() {
-        return System.getProperty("cloudwatch.namespace");
     }
 }

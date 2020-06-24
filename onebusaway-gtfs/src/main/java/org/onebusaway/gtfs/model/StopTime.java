@@ -35,8 +35,8 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(name = "trip_id", mapping = EntityFieldMappingFactory.class)
   private Trip trip;
 
-  @CsvField(name = "stop_id", mapping = EntityFieldMappingFactory.class)
-  private Stop stop;
+  @CsvField(optional = true, name = "stop_id", mapping = EntityFieldMappingFactory.class)
+  private Stop stop = null;
 
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int arrivalTime = MISSING_VALUE;

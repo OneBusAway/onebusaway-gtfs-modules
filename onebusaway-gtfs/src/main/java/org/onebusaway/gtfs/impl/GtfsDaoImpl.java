@@ -244,22 +244,6 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
   @Override
   public void saveEntity(Object entity) {
     if (packStopTimes && entity.getClass().equals(StopTime.class)) {
-      StopTime st = (StopTime) entity;
-      //TODO stick this in a validator on stopTime
-      if(st.getStop() == null || st.getStartServiceArea() == null || st.getEndServiceArea() == null) {
-        System.out.println("---------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------");
-        System.out.println("---------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------");
-        System.out.println("---------------------------FOUND STOP TIME "+((StopTime) entity).getId()+"----------------------");
-        System.out.println("---------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------");
-        System.out.println("---------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!----------------------");
-        try {
-          throw(new Exception("STOP TIME STOP IS NULL"));
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-
-
       stopTimes.add((StopTime) entity);
       return;
     } else if (packShapePoints && entity.getClass().equals(ShapePoint.class)) {

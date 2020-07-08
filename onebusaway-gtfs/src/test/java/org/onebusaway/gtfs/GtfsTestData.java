@@ -37,6 +37,8 @@ public class GtfsTestData {
   
   public static final String TEST_AGENCY_GTFS = "org/onebusaway/gtfs/testagency";
 
+  public static final String TEST_STOPTIMES_GTFS = "org/onebusaway/gtfs/test_stop_times.zip";
+
   public static File getCaltrainGtfs() {
     return getResourceAsTemporaryFile(CALTRAIN_GTFS);
   }
@@ -52,6 +54,10 @@ public class GtfsTestData {
   public static File getTestAgencyGtfs() {
     return new File("src/test/resources",TEST_AGENCY_GTFS);
     //return getResourceAsTemporaryFile(TEST_AGENCY_GTFS);
+  }
+
+  public static File getTestStopTimesGtfs() {
+    return getResourceAsTemporaryFile(TEST_STOPTIMES_GTFS);
   }
 
   public static <T extends GenericMutableDao> void readGtfs(T entityStore,

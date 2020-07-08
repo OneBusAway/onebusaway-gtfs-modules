@@ -18,8 +18,11 @@ package org.onebusaway.gtfs.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.impl.GtfsDaoImpl;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
+
+import java.util.NoSuchElementException;
 
 @CsvFields(filename = "stop_times.txt")
 public final class StopTime extends IdentityBean<Integer> implements
@@ -35,6 +38,8 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(name = "trip_id", mapping = EntityFieldMappingFactory.class)
   private Trip trip;
 
+  /* stop is optional to accommodate gtfs-flex
+  However, a valid stop now must have a stop, startServiceArea, or endServiceArea */
   @CsvField(optional = true, name = "stop_id", mapping = EntityFieldMappingFactory.class)
   private Stop stop = null;
 
@@ -492,5 +497,11 @@ public final class StopTime extends IdentityBean<Integer> implements
         + "-"
         + StopTimeFieldMappingFactory.getSecondsAsString(getDepartureTime())
         + ")";
+  }
+
+  public void validateStopTime() {
+    if (this.getStop() == null &&  this.getStartServiceArea() == null && this.getEndServiceArea() == null) {
+      throw new NoSuchElementException(this + " a stopTime in stop_times.txt cannot be missing stop_id and start_service_area_id and end_service_area_id");
+    }
   }
 }

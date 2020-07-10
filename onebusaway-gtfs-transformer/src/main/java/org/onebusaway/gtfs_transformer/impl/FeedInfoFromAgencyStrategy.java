@@ -33,6 +33,7 @@ public class FeedInfoFromAgencyStrategy implements GtfsTransformStrategy {
 
   private static Logger _log = LoggerFactory.getLogger(FeedInfoFromAgencyStrategy.class);
   private String agencyId;
+  private String feedVersion;
 
   @CsvField(optional = true)
   private String defaultLang = "en";
@@ -52,9 +53,14 @@ public class FeedInfoFromAgencyStrategy implements GtfsTransformStrategy {
         foundAgency = true;
         _log.info("creating feed info from matched agency " + agencyId);
         FeedInfo info = getFeedInfoFromAgency(dao, agency);
+
         // if version already present leave it alone
         if (info.getVersion() == null) {
-          addCreationTime(info, context);
+          if(feedVersion!=null){
+            info.setVersion(feedVersion);
+          } else {
+            addCreationTime(info, context);
+          }
           dao.saveOrUpdateEntity(info);
         } else {
           _log.info("found feedVersion " + info.getVersion() + ", abandoning");
@@ -103,4 +109,6 @@ public class FeedInfoFromAgencyStrategy implements GtfsTransformStrategy {
   public void setDefaultLang(String lang) {
     this.defaultLang = lang;
   }
+
+  public void setFeedVersion(String feedVersion){this.feedVersion = feedVersion;}
 }

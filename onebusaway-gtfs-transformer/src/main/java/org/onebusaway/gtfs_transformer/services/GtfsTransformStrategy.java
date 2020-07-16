@@ -15,10 +15,13 @@
  */
 package org.onebusaway.gtfs_transformer.services;
 
+import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 
 public interface GtfsTransformStrategy {
 
   public String getName();
   public void run(TransformContext context, GtfsMutableRelationalDao dao);
+  public default void updateReadSchema(DefaultEntitySchemaFactory factory) {};
+  public default void updateWriteSchema(DefaultEntitySchemaFactory factory) {};
 }

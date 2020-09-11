@@ -45,7 +45,7 @@ public class RouteWriter {
             writer.close();
         }
         catch (IOException exception){
-            _log.error("Issue writing listOfRoutes in ModTask/NycGtfsModTask for later use in FixedRouteValidationTask");
+            _log.error("Issue writing " + ARG_ROUTES_OUTPUT_NAME);
         }
     }
 }

@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.onebusaway</groupId>
     <artifactId>onebusaway</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
   </parent>
 
   <artifactId>onebusaway-gtfs-modules</artifactId>

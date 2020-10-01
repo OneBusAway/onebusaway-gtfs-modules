@@ -10,3 +10,5 @@ pom.xml.releaseBackup
 /onebusaway-gtfs-transformer/pom.xml.versionsBackup
 /onebusaway-gtfs-modules.iml
 /pom.xml.versionsBackup
+
+*.iml

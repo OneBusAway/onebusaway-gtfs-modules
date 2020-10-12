@@ -81,6 +81,9 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true)
   private String reversedSignpostedAs;
 
+  @CsvField(optional = true)
+  private int isAccessible = MISSING_VALUE;
+  
   @Deprecated @CsvField(optional = true)
   private int wheelchairTraversalTime = MISSING_VALUE;
 
@@ -153,7 +156,6 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
       return length;
   }
 
-
   public void setLength(double length) {
     this.length = length;
   }
@@ -210,6 +212,22 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
     minWidth = MISSING_VALUE;
   }
 
+  public boolean isIsAccessibleSet() {
+    return isAccessible != MISSING_VALUE;
+  }
+
+  public int getIsAccessible() {
+    return isAccessible;
+  }
+
+  public void setIsAccessible(int v) {
+    this.isAccessible = v;
+  }
+
+  public void clearIsAccessible() {
+    isAccessible = MISSING_VALUE;
+  }
+  
   public String getSignpostedAs() {
     return signpostedAs;
   }

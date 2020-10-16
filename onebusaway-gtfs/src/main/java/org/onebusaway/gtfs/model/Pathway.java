@@ -213,19 +213,19 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   }
 
   public boolean isIsAccessibleSet() {
-	  return isAccessible != MISSING_VALUE;
+    return isAccessible != MISSING_VALUE;
   }
 
   public int getIsAccessible() {
-	  return isAccessible;
+    return isAccessible;
   }
 
   public void setIsAccessible(int v) {
-	  this.isAccessible = v;
+    this.isAccessible = v;
   }
 
   public void clearIsAccessible() {
-	  isAccessible = MISSING_VALUE;
+    isAccessible = MISSING_VALUE;
   }
   
   public String getSignpostedAs() {

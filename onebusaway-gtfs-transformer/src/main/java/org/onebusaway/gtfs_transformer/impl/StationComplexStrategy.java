@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.onebusaway.gtfs.model.Pathway.MODE_WALKWAY;
+import static org.onebusaway.gtfs.model.Pathway.MODE_STAIRS;
 
 public class StationComplexStrategy implements GtfsTransformStrategy {
 
@@ -110,7 +110,7 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
                     if (s != null && s.getParentStation() != null && t != null) {
                         if (!s.equals(t)) {
                             String id = String.format("complex-%s-%s", s.getId().getId(), t.getId().getId());
-                            util.createPathway(s, t, MODE_WALKWAY, genericPathwayTraversalTime, id, null, false);
+                            util.createPathway(s, t, MODE_STAIRS, genericPathwayTraversalTime, id, null, false);
                         }
                     } else {
                         _log.error("Illegal Stop {}", s);

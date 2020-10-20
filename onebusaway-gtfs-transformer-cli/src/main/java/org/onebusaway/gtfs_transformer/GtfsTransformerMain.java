@@ -35,6 +35,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.commons.cli.UnrecognizedOptionException;
+import org.onebusaway.gtfs_transformer.cache.CacheKey;
+import org.onebusaway.gtfs_transformer.cache.DiskCache;
 import org.onebusaway.gtfs_transformer.updates.EnsureStopTimesIncreaseUpdateStrategy;
 import org.onebusaway.gtfs_transformer.updates.LocalVsExpressUpdateStrategy;
 import org.onebusaway.gtfs_transformer.updates.RemoveDuplicateTripsStrategy;
@@ -197,6 +199,10 @@ public class GtfsTransformerMain {
       System.exit(-1);
     }
 
+	CacheKey key = new CacheKey(cli, originalArgs);
+    if(DiskCache.get(key, new File(args[args.length - 1])))
+    	return;
+	
     List<File> paths = new ArrayList<File>();
     for (int i = 0; i < args.length - 1; ++i) {
       paths.add(new File(args[i]));
@@ -273,6 +279,8 @@ public class GtfsTransformerMain {
     }
 
     transformer.run();
+    
+    DiskCache.put(key, new File(args[args.length - 1]));
   }
 
   private Option[] getOptionsInCommandLineOrder(CommandLine cli,

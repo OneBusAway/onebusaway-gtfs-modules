@@ -243,7 +243,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         			 (group.uptown != null && stopIdsWithPathways.contains(group.uptown.getId())) ||
         			 (group.downtown != null && stopIdsWithPathways.contains(group.downtown.getId()))
         			)) {
-                _log.info("Parent stop {} or its platforms already has pathways from other sources; skipping.", group.parent.getId());
+                _log.info("Stop {} already has pathways from other sources; skipping.", group);
         		continue;
         	}
 
@@ -328,7 +328,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         			 (group.uptown != null && stopIdsWithPathways.contains(group.uptown.getId())) ||
         			 (group.downtown != null && stopIdsWithPathways.contains(group.downtown.getId()))
         			)) {
-                _log.info("Parent stop {} or its platforms already has pathways from other sources; skipping.", group.parent.getId());
+                _log.info("Stop {} already has pathways from other sources; skipping.", group);
         		continue;
         	}
         	
@@ -509,6 +509,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
             if (!(o instanceof StopGroup))
                 return false;
             return parent.equals(((StopGroup) o).parent);
+        }
+        
+        public String toString() {
+        	return parent + " -> (" + uptown + "," + downtown + ")";
         }
     }
 

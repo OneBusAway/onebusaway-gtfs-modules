@@ -52,6 +52,8 @@ public class GtfsTransformerMain {
    * Generic Arguments
    ****/
 
+  private static final String ARG_USE_CACHE = "cache";
+
   private static final String ARG_AGENCY_ID = "agencyId";
 
   private static final String ARG_MODIFICATIONS = "modifications";
@@ -163,6 +165,7 @@ public class GtfsTransformerMain {
     options.addOption(ARG_OMNY_ROUTES_FILE, true, "file to add OMNY enabled routes to GTFS");
     options.addOption(ARG_OMNY_STOPS_FILE, true, "file to add OMNY enabled stops to GTFS");
     options.addOption(ARG_VERIFY_ROUTES_FILE, true, "file to check route names vs route ids in GTFS");
+    options.addOption(ARG_USE_CACHE, true, "whether to cache the result and try to use pre-computed results when available");
 
     options.addOption(ARG_LOCAL_VS_EXPRESS, false,
         "add additional local vs express fields");
@@ -199,9 +202,7 @@ public class GtfsTransformerMain {
       System.exit(-1);
     }
 
-	CacheKey key = new CacheKey(cli, originalArgs);
-    if(DiskCache.get(key, new File(args[args.length - 1])))
-    	return;
+	CacheKey key = null;
 	
     List<File> paths = new ArrayList<File>();
     for (int i = 0; i < args.length - 1; ++i) {
@@ -276,11 +277,25 @@ public class GtfsTransformerMain {
       if (name.equals(ARG_OVERWRITE_DUPLICATES)) {
         transformer.getReader().setOverwriteDuplicates(true);
       }
+      
+      if (name.equals(ARG_USE_CACHE)) {
+    	boolean enabled = Boolean.parseBoolean(option.getValue());
+    	if(!enabled)
+    		continue;
+    	
+        key = new CacheKey(cli, originalArgs);
+        
+        // get result from cache if enabled
+        if(DiskCache.get(key, new File(args[args.length - 1])))
+         return;
+      }
     }
 
     transformer.run();
     
-    DiskCache.put(key, new File(args[args.length - 1]));
+    // store result in cache if enabled
+    if(key != null)
+    	DiskCache.put(key, new File(args[args.length - 1]));
   }
 
   private Option[] getOptionsInCommandLineOrder(CommandLine cli,

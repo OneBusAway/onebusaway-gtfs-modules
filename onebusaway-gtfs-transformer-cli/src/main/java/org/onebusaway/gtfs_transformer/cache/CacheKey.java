@@ -93,9 +93,14 @@ public class CacheKey {
 				if(candidateFile != null && candidateFile.exists() && candidateFile.isFile()) {
 					files.add(candidateFile);
 				} else {
-					JSONObject root = new JSONObject(value);
-					if(root != null)
-						walkJSON(root, files);
+					try {
+						JSONObject root = new JSONObject(value);
+						if(root != null)
+							walkJSON(root, files);
+					} catch(Exception e) {
+						// not JSON
+						continue;
+					}
 				}
 			}
 		}

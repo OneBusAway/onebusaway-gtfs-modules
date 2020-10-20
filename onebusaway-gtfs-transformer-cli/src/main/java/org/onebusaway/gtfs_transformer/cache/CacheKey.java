@@ -121,7 +121,8 @@ public class CacheKey {
 
 		// now go through the files and find JSON files--dive into those looking for files
 		if(!files.isEmpty()) {
-			for(File file : files) {
+			for(int f = 0; f < files.size(); f++) {
+				File file = files.get(f);
 				if(file.getName().endsWith(".json")) {
 					files.addAll(findInputsInJSON(file));
 				}

@@ -19,6 +19,7 @@ import org.onebusaway.cloud.api.ExternalServices;
 import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Pathway;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -125,7 +126,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        String feed=dao.getAllFeedInfos().iterator().next().getPublisherName();
+        Collection<FeedInfo> feedInfos = dao.getAllFeedInfos();
+        String feed = null;
+        if(feedInfos.size() > 0)
+         feed = feedInfos.iterator().next().getPublisherName();
         File entrancesFile = new File(entrancesCsv);
         if(!entrancesFile.exists()) {
             es.publishMultiDimensionalMetric(getNamespace(),"MissingControlFiles",
@@ -243,7 +247,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         			 (group.uptown != null && stopIdsWithPathways.contains(group.uptown.getId())) ||
         			 (group.downtown != null && stopIdsWithPathways.contains(group.downtown.getId()))
         			)) {
-                _log.info("Parent stop {} or its platforms already has pathways from other sources; skipping.", group.parent.getId());
+                _log.info("Stop {} already has pathways from other sources; skipping.", group);
         		continue;
         	}
 
@@ -275,7 +279,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                     case "Ramp":
                     case "Walkway":
                     case "Road_Walkway":
-                        pathwayMode = MODE_WALKWAY;
+                        pathwayMode = MODE_STAIRS; // after discussion with MTA, most of these include stairs
                         traversalTime = walkwayTraversalTime;
                         break;
                     case "Escalator":
@@ -289,7 +293,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                     case "Door":
                     case "Entrance":
                     default:
-                        pathwayMode = MODE_WALKWAY;
+                        pathwayMode = MODE_STAIRS; // after discussion with MTA, most of these include stairs
                         traversalTime = genericPathwayTraversalTime;
                 }
                 String id = entrance.getEntranceType() + "-" + i;
@@ -328,7 +332,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         			 (group.uptown != null && stopIdsWithPathways.contains(group.uptown.getId())) ||
         			 (group.downtown != null && stopIdsWithPathways.contains(group.downtown.getId()))
         			)) {
-                _log.info("Parent stop {} or its platforms already has pathways from other sources; skipping.", group.parent.getId());
+                _log.info("Stop {} already has pathways from other sources; skipping.", group);
         		continue;
         	}
         	
@@ -509,6 +513,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
             if (!(o instanceof StopGroup))
                 return false;
             return parent.equals(((StopGroup) o).parent);
+        }
+        
+        public String toString() {
+        	return parent + " -> (" + uptown + "," + downtown + ")";
         }
     }
 

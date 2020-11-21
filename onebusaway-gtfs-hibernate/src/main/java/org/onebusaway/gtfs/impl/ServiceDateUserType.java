@@ -25,6 +25,7 @@ import java.text.ParseException;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 
@@ -53,22 +54,7 @@ public class ServiceDateUserType implements UserType {
   }
 
   @Override
-  public boolean isMutable() {
-    return false;
-  }
-
-  @Override
-  public Object deepCopy(Object value) throws HibernateException {
-    if (value == null) {
-      return null;
-    }
-    return new ServiceDate((ServiceDate) value);
-  }
-
-  @Override
-  public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor sessionImplementor, Object owner)
-      throws HibernateException, SQLException {
-
+  public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor sharedSessionContractImplementor, Object owner) throws HibernateException, SQLException {
     String value = rs.getString(names[0]);
 
     if (rs.wasNull())
@@ -82,9 +68,7 @@ public class ServiceDateUserType implements UserType {
   }
 
   @Override
-  public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor sessionImplementor)
-      throws HibernateException, SQLException {
-
+  public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor sharedSessionContractImplementor) throws HibernateException, SQLException {
     if (value == null) {
       st.setNull(index, SQL_TYPES[0]);
     } else {
@@ -92,6 +76,20 @@ public class ServiceDateUserType implements UserType {
       st.setString(index, serviceDate.getAsString());
     }
   }
+
+  @Override
+  public boolean isMutable() {
+    return false;
+  }
+
+  @Override
+  public Object deepCopy(Object value) throws HibernateException {
+    if (value == null) {
+      return null;
+    }
+    return new ServiceDate((ServiceDate) value);
+  }
+
 
   @Override
   public Object assemble(Serializable cached, Object owner)

@@ -95,16 +95,11 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(ignore = true)
   private transient StopTimeProxy proxy = null;
 
-  /** Support for booking rules in GTFS-Flex 2.1
-   * Open quesions:
-   * 1. What Java data type maps to OTP's ID? -> Looks like I need to define new type Rule
-   * 2. What is correct mapping factory class? -> StoplikeFieldMappingFactory
-   * seems to be only an extention of original EntityFieldMappingFactory.
-   */
-  @CsvField(optional = true, name = 'pickup_booking_rule_id', mapping = StoplikeFieldMappingFactory.class)
+  /** Support for booking rules in GTFS-Flex 2.1 */
+  @CsvField(optional = true, name = "pickup_booking_rule_id", mapping = EntityFieldMappingFactory.class)
   private BookingRule pickupBookingRule;
 
-  @CsvField(optional = true, name = 'drop_off_booking_rule_id', mapping = StoplikeFieldMappingFactory.class)
+  @CsvField(optional = true, name = "drop_off_booking_rule_id", mapping = EntityFieldMappingFactory.class)
   private BookingRule dropOffBookingRule;
 
   /** This is a Conveyal extension to the GTFS spec to support Seattle on/off peak fares. */
@@ -517,14 +512,14 @@ public final class StopTime extends IdentityBean<Integer> implements
     return this.getStopSequence() - o.getStopSequence();
   }
 
-  public ??? getPickupBookingRule() {
+  public BookingRule getPickupBookingRule() {
     if (proxy != null) {
       return proxy.getPickupBookingRule();
     }
     return pickupBookingRule;
   }
 
-  public void setPickupBookingRule(??? pickupBookingRule) {
+  public void setPickupBookingRule(BookingRule pickupBookingRule) {
     if (proxy != null) {
       proxy.setPickupBookingRule(pickupBookingRule);
       return;
@@ -532,16 +527,16 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.pickupBookingRule = pickupBookingRule;
   }
 
-  public ??? getDropOffBookingRule() {
+  public BookingRule getDropOffBookingRule() {
     if (proxy != null) {
       return proxy.getDropOffBookingRule();
     }
     return dropOffBookingRule;
   }
 
-  public void setDropOffBookingRule(??? dropOffBookingRule) {
+  public void setDropOffBookingRule(BookingRule dropOffBookingRule) {
     if (proxy != null) {
-      proxy.setdropOffBookingRule(dropOffBookingRule);
+      proxy.setDropOffBookingRule(dropOffBookingRule);
       return;
     }
     this.dropOffBookingRule = dropOffBookingRule;

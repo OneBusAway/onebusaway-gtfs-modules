@@ -86,4 +86,12 @@ public interface StopTimeProxy {
   public void setShapeDistTraveled(double shapeDistTraveled);
 
   public void clearShapeDistTraveled();
+
+  public BookingRule getPickupBookingRule();
+
+  public void setPickupBookingRule(BookingRule pickupBookingRule);
+
+  public BookingRule getDropOffBookingRule();
+
+  public void setDropOffBookingRule(BookingRule dropOffBookingRule);
 }

@@ -19,6 +19,7 @@ import org.onebusaway.cloud.api.ExternalServices;
 import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Pathway;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -62,7 +63,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     private static final int LOCATION_TYPE_PAYGATE = 3;
     private static final int LOCATION_TYPE_GENERIC = 4;
 
-
     private static final int WHEELCHAIR_ACCESSIBLE = 1;
     private static final int NOT_WHEELCHAIR_ACCESSIBLE = 2;
 
@@ -73,6 +73,9 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     private static final List<String> accessibleEntranceTypes = Arrays.asList(
             "Ramp", "Walkway", "Road_Walkway", "Elevator", "Door", "Entrance", "Tunnel");
 
+    @CsvField(ignore = true)
+    private Set<AgencyAndId> stopIdsWithPathways = new HashSet<AgencyAndId>();
+    
     @CsvField(ignore = true)
     private String agencyId;
 
@@ -98,6 +101,9 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     private boolean contextualAccessibility;
 
     @CsvField(optional = true)
+    private boolean skipStopsWithExistingPathways = true;
+    
+    @CsvField(optional = true)
     private int genericPathwayTraversalTime = 60;
 
     @CsvField(optional = true)
@@ -120,7 +126,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        String feed=dao.getAllFeedInfos().iterator().next().getPublisherName();
+        Collection<FeedInfo> feedInfos = dao.getAllFeedInfos();
+        String feed = null;
+        if(feedInfos.size() > 0)
+         feed = feedInfos.iterator().next().getPublisherName();
         File entrancesFile = new File(entrancesCsv);
         if(!entrancesFile.exists()) {
             es.publishMultiDimensionalMetric(getNamespace(),"MissingControlFiles",
@@ -148,10 +157,14 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
         pathwayUtil = new PathwayUtil(agencyId, newPathways);
 
-        Map<String, StopGroup> stopGroups = new HashMap<>();
+        for (Pathway pathway : dao.getAllPathways()) {
+        	stopIdsWithPathways.add(pathway.getFromStop().getId());
+        	stopIdsWithPathways.add(pathway.getToStop().getId());
+        }
 
+        Map<String, StopGroup> stopGroups = new HashMap<>();
         // For every stop that's not a station, add an entrance which is not wheelchair accessible, and a pathway.
-        for (Stop stop : dao.getAllStops()) {
+        for (Stop stop : dao.getAllStops()) {    
             if (stopsHaveParents) {
                 // Put stop into a stop-group with parent, uptown, downtown
                 String gid = stop.getLocationType() == LOCATION_TYPE_STOP ? stop.getParentStation() : stop.getId().getId();
@@ -167,6 +180,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 } else if (stop.getId().getId().endsWith("N")) {
                     group.uptown = stop;
                 } else {
+                	// it's a pathway, ignore
+                	if(stop.getLocationType() >= 2)
+                		continue;
+                	
                     _log.error("unexpected stop not of parent type but of {} for stop {}", stop.getLocationType(), stop.getId());
                     continue;
 
@@ -223,10 +240,22 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         }
 
         for (StopGroup group : stopGroups.values()) {
-            if (group.entrances.isEmpty() && createMissingLinks) {
+        	// pathways for any given station are supposed to be complete, so if we have at least one already there,
+        	// there should be no more. Therefore, we can skip this stop completely. 
+        	if(skipStopsWithExistingPathways &&
+        			 (group.parent != null && stopIdsWithPathways.contains(group.parent.getId()) || 
+        			 (group.uptown != null && stopIdsWithPathways.contains(group.uptown.getId())) ||
+        			 (group.downtown != null && stopIdsWithPathways.contains(group.downtown.getId()))
+        			)) {
+                _log.info("Stop {} already has pathways from other sources; skipping.", group);
+        		continue;
+        	}
+
+             if (group.entrances.isEmpty() && createMissingLinks) {
                 _log.error("Station {} has no entrances", group.parent.getId());
                 // mock, like we were doing before
                 Stop entrance = createNonAccessibleStreetEntrance(group.parent);
+                                
                 pathwayUtil.createPathway(entrance, group.uptown, MODE_WALKWAY, genericPathwayTraversalTime, "GENERIC", null);
                 pathwayUtil.createPathway(entrance, group.downtown, MODE_WALKWAY, genericPathwayTraversalTime, "GENERIC", null);
                 continue;
@@ -250,7 +279,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                     case "Ramp":
                     case "Walkway":
                     case "Road_Walkway":
-                        pathwayMode = MODE_WALKWAY;
+                        pathwayMode = MODE_STAIRS; // after discussion with MTA, most of these include stairs
                         traversalTime = walkwayTraversalTime;
                         break;
                     case "Escalator":
@@ -264,7 +293,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                     case "Door":
                     case "Entrance":
                     default:
-                        pathwayMode = MODE_WALKWAY;
+                        pathwayMode = MODE_STAIRS; // after discussion with MTA, most of these include stairs
                         traversalTime = genericPathwayTraversalTime;
                 }
                 String id = entrance.getEntranceType() + "-" + i;
@@ -296,6 +325,17 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         int unknown = 0;
 
         for (StopGroup group : stopGroups.values()) {
+        	// pathways for any given station are supposed to be complete, so if we have at least one already there,
+        	// there should be no more. Therefore, we can skip this stop completely. 
+        	if(skipStopsWithExistingPathways &&
+        			 (group.parent != null && stopIdsWithPathways.contains(group.parent.getId()) || 
+        			 (group.uptown != null && stopIdsWithPathways.contains(group.uptown.getId())) ||
+        			 (group.downtown != null && stopIdsWithPathways.contains(group.downtown.getId()))
+        			)) {
+                _log.info("Stop {} already has pathways from other sources; skipping.", group);
+        		continue;
+        	}
+        	
             Stop entrance = null;
 
             // elevator is defined by ID, type, and direction iff it includes platform
@@ -311,7 +351,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                     _log.debug("unknown type={}, elev={}", e.getLoc(), e.getId());
                     continue;
                 }
-                if (entrance == null && type.shouldCreateStreetEntrance()) {
+                if (entrance == null && type.shouldCreateStreetEntrance()) {     
                     entrance = createAccessibleStreetEntrance(group.parent);
                 }
 
@@ -474,6 +514,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 return false;
             return parent.equals(((StopGroup) o).parent);
         }
+        
+        public String toString() {
+        	return parent + " -> (" + uptown + "," + downtown + ")";
+        }
     }
 
     // Utility functions
@@ -575,6 +619,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         this.createMissingLinks = createMissingLinks;
     }
 
+    public void setSkipStopsWithExistingPathways(boolean skipStopsWithExistingPathways) {
+        this.skipStopsWithExistingPathways = skipStopsWithExistingPathways;
+    }
+    
     public void setContextualAccessibility(boolean contextualAccessibility) {
         this.contextualAccessibility = contextualAccessibility;
     }

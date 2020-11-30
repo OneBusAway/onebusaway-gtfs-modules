@@ -196,7 +196,7 @@ public class GtfsTransformerMain {
       printHelp();
       System.exit(-1);
     }
-
+	
     List<File> paths = new ArrayList<File>();
     for (int i = 0; i < args.length - 1; ++i) {
       paths.add(new File(args[i]));

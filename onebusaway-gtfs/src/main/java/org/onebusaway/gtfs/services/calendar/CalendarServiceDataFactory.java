@@ -17,8 +17,6 @@ package org.onebusaway.gtfs.services.calendar;
 
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.ServiceCalendar;
-import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.model.calendar.CalendarServiceData;
 
 import java.util.Collection;
@@ -29,8 +27,6 @@ import java.util.TimeZone;
 public interface CalendarServiceDataFactory {
   public CalendarServiceData createData();
   public CalendarServiceData updateData(Collection<Agency> allAgencies,
-                                        Collection<ServiceCalendar> calendars,
-                                        Collection<ServiceCalendarDate> calendarDates,
                                         Map<AgencyAndId, List<String>> tripAgencyIdsReferencingServiceId,
                                         Map<String, TimeZone> timeZoneMapByAgencyId);
 }

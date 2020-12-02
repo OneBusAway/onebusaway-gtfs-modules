@@ -83,9 +83,45 @@ public class CalendarServiceDataFactoryImpl implements
   @Override
   public CalendarServiceData createData() {
 
+    Collection<ServiceCalendar> allCalendars = _dao.getAllCalendars();
+    Collection<ServiceCalendarDate> calendarDates = _dao.getAllCalendarDates();
+
+    Set<AgencyAndId> serviceIds = new HashSet<AgencyAndId>();
+    serviceIds.addAll(getCalendarsByServiceId(allCalendars).keySet());
+    serviceIds.addAll(getCalendarDatesByServiceId(calendarDates).keySet());
+    Map<AgencyAndId, List<String>> tripAgencyIdsReferencingServiceId = new HashMap<AgencyAndId, List<String>>();
+    for (AgencyAndId serviceId : serviceIds) {
+      tripAgencyIdsReferencingServiceId.put(serviceId, _dao.getTripAgencyIdsReferencingServiceId(serviceId));
+    }
+    Map<String, TimeZone> timeZoneMapByAgencyId = new HashMap<String, TimeZone>();
+
+    for (Agency a : _dao.getAllAgencies()) {
+      timeZoneMapByAgencyId.put(a.getId(), TimeZone.getTimeZone(a.getTimezone()));
+    }
+
+    return updateData(_dao.getAllAgencies(),
+            allCalendars,
+            calendarDates,
+            tripAgencyIdsReferencingServiceId,
+            timeZoneMapByAgencyId);
+  }
+
+
+  /*
+   * refactored to not use internal state but have state passed in.  Thus the logic can be used
+   * outside of this class.
+   * @TODO clean up this method signature to reflect its public usage
+   */
+  @Override
+  public CalendarServiceData updateData(Collection<Agency> allAgencies,
+                                        Collection<ServiceCalendar> calendars,
+                                        Collection<ServiceCalendarDate> calendarDates,
+                                        Map<AgencyAndId, List<String>> tripAgencyIdsReferencingServiceId,
+                                        Map<String, TimeZone> timeZoneMapByAgencyId) {
+
     CalendarServiceData data = new CalendarServiceData();
 
-    setTimeZonesForAgencies(data);
+    setTimeZonesForAgencies(data, allAgencies);
 
     List<AgencyAndId> serviceIds = _dao.getAllServiceIds();
 
@@ -111,19 +147,23 @@ public class CalendarServiceDataFactoryImpl implements
 
       data.putServiceDatesForServiceId(serviceId, serviceDates);
 
-      List<String> tripAgencyIds = _dao.getTripAgencyIdsReferencingServiceId(serviceId);
+      List<String> tripAgencyIds = tripAgencyIdsReferencingServiceId.get(serviceId);
 
       Set<TimeZone> timeZones = new HashSet<TimeZone>();
       for (String tripAgencyId : tripAgencyIds) {
-        TimeZone timeZone = data.getTimeZoneForAgencyId(tripAgencyId);
+        TimeZone timeZone = timeZoneMapByAgencyId.get(AgencyAndId.convertFromString(tripAgencyId).getAgencyId());
+        if (timeZone == null) {
+          throw new IllegalStateException("no timezone for agency " + AgencyAndId.convertFromString(tripAgencyId).getAgencyId());
+        }
         timeZones.add(timeZone);
       }
 
       for (TimeZone timeZone : timeZones) {
 
         List<Date> dates = new ArrayList<Date>(serviceDates.size());
-        for (ServiceDate serviceDate : serviceDates)
+        for (ServiceDate serviceDate : serviceDates) {
           dates.add(serviceDate.getAsDate(timeZone));
+        }
 
         LocalizedServiceId id = new LocalizedServiceId(serviceId, timeZone);
         data.putDatesForLocalizedServiceId(id, dates);
@@ -148,7 +188,10 @@ public class CalendarServiceDataFactoryImpl implements
   }
 
   private void setTimeZonesForAgencies(CalendarServiceData data) {
-    for (Agency agency : _dao.getAllAgencies()) {
+    setTimeZonesForAgencies(data, _dao.getAllAgencies());
+  }
+  private void setTimeZonesForAgencies(CalendarServiceData data, Collection<Agency> allAgencies) {
+    for (Agency agency : allAgencies) {
       TimeZone timeZone = TimeZone.getTimeZone(agency.getTimezone());
       if (timeZone.getID().equals("GMT")
           && !agency.getTimezone().toUpperCase().equals("GMT")) {

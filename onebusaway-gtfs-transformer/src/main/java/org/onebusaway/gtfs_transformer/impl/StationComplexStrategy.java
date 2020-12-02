@@ -15,9 +15,6 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
-import org.onebusaway.csv_entities.schema.FieldMapping;
-import org.onebusaway.csv_entities.schema.FieldMappingFactory;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.Pathway;
 import org.onebusaway.gtfs.model.Stop;
@@ -40,13 +37,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.onebusaway.gtfs.model.Pathway.MODE_STAIRS;
-
 public class StationComplexStrategy implements GtfsTransformStrategy {
 
     private enum Type {
         PATHWAYS,
         PARENT_STATION
+    }
+    
+    private enum PathwayType {
+    	MODE_LINK,
+    	MODE_WALKWAY,
+    	MODE_STAIRS,
+    	MODE_MOVING_SIDEWALK,
+    	MODE_ESCALATOR,
+    	MODE_ELEVATOR,
+    	MODE_FAREGATE,
+    	MODE_EXIT_GATE
     }
 
     private final Logger _log = LoggerFactory.getLogger(StationComplexStrategy.class);
@@ -63,7 +69,7 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
     private Type typeInternal = Type.PATHWAYS;
 
     @CsvField(optional = true)
-    private String type = null;
+    private PathwayType pathwayType = PathwayType.MODE_STAIRS;
 
     public String getName() {
         return this.getClass().getName();
@@ -110,7 +116,7 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
                     if (s != null && s.getParentStation() != null && t != null) {
                         if (!s.equals(t)) {
                             String id = String.format("complex-%s-%s", s.getId().getId(), t.getId().getId());
-                            util.createPathway(s, t, MODE_STAIRS, genericPathwayTraversalTime, id, null, false);
+                            util.createPathway(s, t, pathwayType.ordinal(), genericPathwayTraversalTime, id, null, false);
                         }
                     } else {
                         _log.error("Illegal Stop {}", s);
@@ -162,8 +168,12 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
         this.genericPathwayTraversalTime = genericPathwayTraversalTime;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPathwayType(String type) {
         this.typeInternal = Type.valueOf(type);
+    }
+
+    
+    public void setType(String type) {
+        this.pathwayType = PathwayType.valueOf(type);
     }
 }

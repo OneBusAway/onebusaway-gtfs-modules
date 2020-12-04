@@ -115,7 +115,7 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
                 for (Stop t : complex) {
                     if (s != null && s.getParentStation() != null && t != null) {
                         if (!s.equals(t)) {
-                            String id = String.format("complex-%s-%s", s.getId().getId(), t.getId().getId());
+                            String id = String.format("complex-%s-%s-%s", pathwayType.name(), s.getId().getId(), t.getId().getId());
                             util.createPathway(s, t, pathwayType.ordinal(), genericPathwayTraversalTime, id, null, false);
                         }
                     } else {

@@ -45,11 +45,27 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int departureTime = MISSING_VALUE;
 
+  /**
+   * @deprecated
+   * GTFS-Flex v2.1 renamed this field. Use {@link #startPickupDropOffWindow} instead.
+   */
+  @Deprecated
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int minArrivalTime = MISSING_VALUE;
 
+  @CsvField(optional = true, name = "start_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class)
+  private int startPickupDropOffWindow = MISSING_VALUE;
+
+  /**
+   * @deprecated
+   * GTFS-Flex v2.1 renamed this field. Use {@link #endPickupDropOffWindow} instead.
+   */
+  @Deprecated
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int maxDepartureTime = MISSING_VALUE;
+
+  @CsvField(optional = true, name = "end_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class)
+  private int endPickupDropOffWindow = MISSING_VALUE;
 
   @CsvField(optional = true)
   private int timepoint = MISSING_VALUE;
@@ -129,7 +145,9 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.id = st.id;
     this.pickupType = st.pickupType;
     this.minArrivalTime = st.minArrivalTime;
+    this.startPickupDropOffWindow = st.startPickupDropOffWindow;
     this.maxDepartureTime = st.maxDepartureTime;
+    this.endPickupDropOffWindow = st.endPickupDropOffWindow;
     this.continuousPickup = st.continuousPickup;
     this.continuousDropOff = st.continuousDropOff;
     this.routeShortName = st.routeShortName;
@@ -286,20 +304,36 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.departureTime = MISSING_VALUE;
   }
 
+  @Deprecated
   public int getMinArrivalTime() {
     return minArrivalTime;
   }
 
+  @Deprecated
   public void setMinArrivalTime(int minArrivalTime) {
     this.minArrivalTime = minArrivalTime;
   }
 
+  public int getStartPickupDropOffWindow() { return startPickupDropOffWindow; }
+
+  public void setStartPickupDropOffWindow(int startPickupDropOffWindow) {
+    this.startPickupDropOffWindow = startPickupDropOffWindow;
+  }
+
+  @Deprecated
   public int getMaxDepartureTime() {
     return maxDepartureTime;
   }
 
+  @Deprecated
   public void setMaxDepartureTime(int maxDepartureTime) {
     this.maxDepartureTime = maxDepartureTime;
+  }
+
+  public int getEndPickupDropOffWindow() { return endPickupDropOffWindow; }
+
+  public void setEndPickupDropOffWindow(int endPickupDropOffWindow) {
+    this.endPickupDropOffWindow = endPickupDropOffWindow;
   }
 
   @Override

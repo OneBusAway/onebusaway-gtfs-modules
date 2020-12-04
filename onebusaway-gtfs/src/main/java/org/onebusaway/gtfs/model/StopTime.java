@@ -314,7 +314,13 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.minArrivalTime = minArrivalTime;
   }
 
-  public int getStartPickupDropOffWindow() { return startPickupDropOffWindow; }
+  public int getStartPickupDropOffWindow() {
+    if (startPickupDropOffWindow != MISSING_VALUE) {
+      return startPickupDropOffWindow;
+    } else {
+      return minArrivalTime;
+    }
+  }
 
   public void setStartPickupDropOffWindow(int startPickupDropOffWindow) {
     this.startPickupDropOffWindow = startPickupDropOffWindow;
@@ -330,7 +336,13 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.maxDepartureTime = maxDepartureTime;
   }
 
-  public int getEndPickupDropOffWindow() { return endPickupDropOffWindow; }
+  public int getEndPickupDropOffWindow() {
+    if (endPickupDropOffWindow != MISSING_VALUE) {
+      return endPickupDropOffWindow;
+    } else {
+      return maxDepartureTime;
+    }
+  }
 
   public void setEndPickupDropOffWindow(int endPickupDropOffWindow) {
     this.endPickupDropOffWindow = endPickupDropOffWindow;

@@ -16,6 +16,7 @@
 package org.onebusaway.gtfs_transformer.impl;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
+import org.onebusaway.csv_entities.schema.EnumFieldMappingFactory;
 import org.onebusaway.gtfs.model.Pathway;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.services.GtfsDao;
@@ -65,10 +66,10 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
     @CsvField(optional = true)
     private int genericPathwayTraversalTime = 60;
 
-    @CsvField(ignore = true)
+    @CsvField(ignore = true, mapping = EnumFieldMappingFactory.class)
     private Type typeInternal = Type.PATHWAYS;
 
-    @CsvField(optional = true)
+    @CsvField(optional = true, mapping = EnumFieldMappingFactory.class)
     private PathwayType pathwayType = PathwayType.MODE_STAIRS;
 
     public String getName() {
@@ -168,12 +169,11 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
         this.genericPathwayTraversalTime = genericPathwayTraversalTime;
     }
 
-    public void setPathwayType(String type) {
-        this.typeInternal = Type.valueOf(type);
+    public void setType(Type type) {
+        this.typeInternal = type;
     }
 
-    
-    public void setType(String type) {
-        this.pathwayType = PathwayType.valueOf(type);
+    public void setPathwayType(PathwayType type) {
+        this.pathwayType = type;
     }
 }

@@ -211,7 +211,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         if (elevatorsCsv != null) {
             readElevatorData(stopGroups, getComplexList(dao));
         }
-                
+           
         for (Stop s : newStops) {
             dao.saveEntity(s);
         }
@@ -361,11 +361,11 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                     _log.debug("unknown type={}, elev={}", e.getLoc(), e.getId());
                     continue;
                 }
+
                 if (entrance == null && type.shouldCreateStreetEntrance()) {     
                     entrance = createAccessibleStreetEntrance(group.parent);
                 }
-
-
+                
                 Stop platform = null;
                 if (e.getDirection() != null) {
                     if (e.getDirection().equals("N")) {
@@ -377,30 +377,39 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                     }
                 }
                 
+                
+                // if this platform is part of a complex, connect the mezzanines together across the complex      
+                // only if the user hasn't already done so by naming the mezzes
+            	if(type.mezzanineNames != null) {
+	                List<String> newMezzanineNames = new ArrayList<>();
+	                for(String name : type.mezzanineNames) {                	
+	                	boolean partOfComplex = false;
+
+	                	for(String complexId : complexIdToStops.keySet()) {
+	                    	List<Stop> stopsInComplex = complexIdToStops.get(complexId);
+	                    	if(stopsInComplex.contains(platform)) {
+	                    		newMezzanineNames.add(complexId + "-mezz-" + name);
+	                    		partOfComplex = true;
+	                    		break;
+	                    	}
+	                    }
+
+	                	// if this isn't part of a complex, prefix the mezz name with the
+	                	// parent stop ID as we would have before
+	                    if(!partOfComplex)
+	                    	newMezzanineNames.add(group.parent.getId().getId() + "-mezz-" + name);
+	                }
+	                type.mezzanineNames = newMezzanineNames;
+            	}
+                
                 if (type.shouldCreateMezzanine()) {
                     for (String name : type.mezzanineNames) {
                         Stop m = mezzByName.get(name);
                         if (m == null) {
-                            m = createMezzanine(group.parent, name);
+                            m = createMezzanineWithId(group.parent, 
+                            		new AgencyAndId(platform.getId().getAgencyId(), name));
                             mezzByName.put(name, m);
                         }
-                    }
-
-                    // if we're linking to a platform and that platform is part of a complex,
-                    // we need to create a complex mezzanine which connects all elevators that
-                    // serve platforms that are part of the complex
-                    for(String complexId : complexIdToStops.keySet()) {
-                    	List<Stop> stopsInComplex = complexIdToStops.get(complexId);
-
-                    	if(stopsInComplex.contains(platform)) {
-                    		AgencyAndId mezzName = new AgencyAndId(platform.getId().getAgencyId(), "mezz-" + complexId);
-                            Stop m = mezzByName.get(AgencyAndId.convertToString(mezzName));
-                            if (m == null) {
-                        		m = createMezzanineWithId(group.parent, mezzName);
-                                mezzByName.put(AgencyAndId.convertToString(mezzName), m);
-                            }
-                    		break;
-                    	}
                     }
                 }
 
@@ -421,24 +430,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                     for (String name : type.mezzanineNames) {
                         Stop mezz = mezzByName.get(name);
                         String id = id_base + "_" + name;
-                        
-                        // if we're adding a *to platform elevator and the platform is part of a complex,
-                        // link to the complex mezzanine that is connected to other platforms in the complex
-                        // vs. the default mezzanine
-                        boolean foundInComplex = false;
-                        for(String complexId : complexIdToStops.keySet()) {
-                        	List<Stop> stopsInComplex = complexIdToStops.get(complexId);
-
-                        	if(stopsInComplex.contains(platform)) {
-                        		Stop complexMezz = mezzByName.get(AgencyAndId.convertToString(new AgencyAndId(platform.getId().getAgencyId(), "mezz-" + complexId)));
-                                createElevPathways(complexMezz, platform, code, id, seenElevatorPathways);
-                                foundInComplex = true;
-                        		break;
-                        	}
-                        }
-                        
-                        if(!foundInComplex)
-                        	createElevPathways(mezz, platform, code, id, seenElevatorPathways);
+                        createElevPathways(mezz, platform, code, id, seenElevatorPathways);
                     }
                 }
 
@@ -482,7 +474,8 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         List<String> mezzanineNames;
 
         boolean shouldCreateStreetEntrance() {
-            return this == STREET_TO_MEZZ || this == STREET_TO_MEZZ_TO_PLATFORM || this == STREET_TO_PLATFORM || this == MEZZ_TO_MEZZ_TO_STREET_TO_PLATFORM;
+            return this == STREET_TO_MEZZ || this == MEZZ_TO_MEZZ_TO_STREET || this == STREET_TO_MEZZ_TO_PLATFORM 
+            		|| this == STREET_TO_PLATFORM || this == MEZZ_TO_MEZZ_TO_STREET_TO_PLATFORM;
         }
 
         boolean shouldCreateMezzanine() {
@@ -617,10 +610,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         return createStop(parent, LOCATION_TYPE_ENTRANCE, WHEELCHAIR_ACCESSIBLE, "ent-acs");
     }
 
-    private Stop createMezzanine(Stop parent, String name) {
-        return createStop(parent, LOCATION_TYPE_GENERIC, WHEELCHAIR_ACCESSIBLE, "mezz-" + name);
-    }
-
     private Stop createMezzanineWithId(Stop parent, AgencyAndId id) {
         return createStop(id, parent, LOCATION_TYPE_GENERIC, WHEELCHAIR_ACCESSIBLE);
     }
@@ -652,6 +641,12 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
             return;
         }
         seenElevatorPathways.add(idStr);
+
+        if(from == null || to == null) {
+        	_log.error("The from or to vertex is null");
+        	return;
+        }
+        	
         pathwayUtil.createPathway(from, to, MODE_ELEVATOR, elevatorTraversalTime, idStr, code);
     }
 

@@ -22,6 +22,7 @@ import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Pathway;
 import org.onebusaway.gtfs.model.Stop;
+import org.onebusaway.gtfs.services.GtfsDao;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.csv.MTAElevator;
 import org.onebusaway.gtfs_transformer.csv.MTAEntrance;
@@ -31,7 +32,10 @@ import org.onebusaway.gtfs_transformer.util.PathwayUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,6 +45,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.onebusaway.gtfs.model.Pathway.*;
 import static org.onebusaway.gtfs_transformer.csv.CSVUtil.readCsv;
@@ -68,6 +73,8 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
     private static final String DEFAULT_MEZZ = "default";
 
+    private static final String STOP_SEPARATOR = " ";
+
     private static final Logger _log = LoggerFactory.getLogger(MTAEntrancesStrategy.class);
 
     private static final List<String> accessibleEntranceTypes = Arrays.asList(
@@ -93,6 +100,9 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
     private String entrancesCsv;
 
+    @CsvField(optional = true)
+    private String accessibleComplexFile;
+    
     // control a few things so this can be reused for the railroads:
     private boolean stopsHaveParents;
 
@@ -184,7 +194,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 	if(stop.getLocationType() >= 2)
                 		continue;
                 	
-                    _log.error("unexpected stop not of parent type but of {} for stop {}", stop.getLocationType(), stop.getId());
+                    _log.error("unexpected stop not of parent type but of {} for stop {}: {}", stop.getLocationType(), stop.getId(), stop.getName());
                     continue;
 
                 }
@@ -199,9 +209,9 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         readEntranceData(stopGroups);
 
         if (elevatorsCsv != null) {
-            readElevatorData(stopGroups);
+            readElevatorData(stopGroups, getComplexList(dao));
         }
-
+                
         for (Stop s : newStops) {
             dao.saveEntity(s);
         }
@@ -209,6 +219,8 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         for (Pathway pathway : newPathways) {
             dao.saveEntity(pathway);
         }
+        
+        
     }
 
     /*
@@ -312,7 +324,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         }
     }
 
-    private void readElevatorData(Map<String, StopGroup> stopGroups) {
+    private void readElevatorData(Map<String, StopGroup> stopGroups, Map<String, List<Stop>> complexIdToStops) {
         List<MTAElevator> elevators = getElevators();
         for (MTAElevator e : elevators) {
             StopGroup g = stopGroups.get(e.getStopId());
@@ -323,7 +335,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         }
 
         int unknown = 0;
-
         for (StopGroup group : stopGroups.values()) {
         	// pathways for any given station are supposed to be complete, so if we have at least one already there,
         	// there should be no more. Therefore, we can skip this stop completely. 
@@ -342,7 +353,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
             Set<String> seenElevatorPathways = new HashSet<>();
 
             Map<String, Stop> mezzByName = new HashMap<>();
-
             for (MTAElevator e : group.elevators) {
                 ElevatorPathwayType type = ElevatorPathwayType.valueOf(e.getLoc());
                 type.resolveElevatorNames(e);
@@ -355,15 +365,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                     entrance = createAccessibleStreetEntrance(group.parent);
                 }
 
-                if (type.shouldCreateMezzanine()) {
-                    for (String name : type.mezzanineNames) {
-                        Stop m = mezzByName.get(name);
-                        if (m == null) {
-                            m = createMezzanine(group.parent, name);
-                            mezzByName.put(name, m);
-                        }
-                    }
-                }
 
                 Stop platform = null;
                 if (e.getDirection() != null) {
@@ -375,6 +376,34 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                         _log.error("Unexpected direction={}, elev={}", e.getDirection(), e.getId());
                     }
                 }
+                
+                if (type.shouldCreateMezzanine()) {
+                    for (String name : type.mezzanineNames) {
+                        Stop m = mezzByName.get(name);
+                        if (m == null) {
+                            m = createMezzanine(group.parent, name);
+                            mezzByName.put(name, m);
+                        }
+                    }
+
+                    // if we're linking to a platform and that platform is part of a complex,
+                    // we need to create a complex mezzanine which connects all elevators that
+                    // serve platforms that are part of the complex
+                    for(String complexId : complexIdToStops.keySet()) {
+                    	List<Stop> stopsInComplex = complexIdToStops.get(complexId);
+
+                    	if(stopsInComplex.contains(platform)) {
+                    		AgencyAndId mezzName = new AgencyAndId(platform.getId().getAgencyId(), "mezz-" + complexId);
+                            Stop m = mezzByName.get(AgencyAndId.convertToString(mezzName));
+                            if (m == null) {
+                        		m = createMezzanineWithId(group.parent, mezzName);
+                                mezzByName.put(AgencyAndId.convertToString(mezzName), m);
+                            }
+                    		break;
+                    	}
+                    }
+                }
+
 
                 String code = e.getId();
 
@@ -392,7 +421,24 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                     for (String name : type.mezzanineNames) {
                         Stop mezz = mezzByName.get(name);
                         String id = id_base + "_" + name;
-                        createElevPathways(mezz, platform, code, id, seenElevatorPathways);
+                        
+                        // if we're adding a *to platform elevator and the platform is part of a complex,
+                        // link to the complex mezzanine that is connected to other platforms in the complex
+                        // vs. the default mezzanine
+                        boolean foundInComplex = false;
+                        for(String complexId : complexIdToStops.keySet()) {
+                        	List<Stop> stopsInComplex = complexIdToStops.get(complexId);
+
+                        	if(stopsInComplex.contains(platform)) {
+                        		Stop complexMezz = mezzByName.get(AgencyAndId.convertToString(new AgencyAndId(platform.getId().getAgencyId(), "mezz-" + complexId)));
+                                createElevPathways(complexMezz, platform, code, id, seenElevatorPathways);
+                                foundInComplex = true;
+                        		break;
+                        	}
+                        }
+                        
+                        if(!foundInComplex)
+                        	createElevPathways(mezz, platform, code, id, seenElevatorPathways);
                     }
                 }
 
@@ -490,7 +536,37 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         }
     }
 
+    private Map<String, List<Stop>> getComplexList(GtfsDao dao) {
+        Map<String, Stop> stops = getStopMap(dao);
+        Map<String, List<Stop>> complexes = new HashMap<String, List<Stop>>();
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(this.accessibleComplexFile)))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                List<Stop> complex = new ArrayList<>();
+                for (String id : line.split(STOP_SEPARATOR)) {
+                    Stop stop = stops.get(id);
+                    if (stop == null)
+                        _log.info("null stop: {}", id);
+                    complex.add(stop);
+                }
+                complexes.put("complex-" + UUID.randomUUID(), complex);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return complexes;
+    }
 
+    private Map<String, Stop> getStopMap(GtfsDao dao) {
+        Map<String, Stop> map = new HashMap<>();
+        for (Stop stop : dao.getAllStops()) {
+            if (stop.getLocationType() == 0) {
+                map.put(stop.getId().getId(), stop);
+            }
+        }
+        return map;
+    }
+    
     /**
      * StopGroup: collect uptown, downtown, and parent stop together.
      */
@@ -545,12 +621,20 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         return createStop(parent, LOCATION_TYPE_GENERIC, WHEELCHAIR_ACCESSIBLE, "mezz-" + name);
     }
 
+    private Stop createMezzanineWithId(Stop parent, AgencyAndId id) {
+        return createStop(id, parent, LOCATION_TYPE_GENERIC, WHEELCHAIR_ACCESSIBLE);
+    }
+
     private Stop createStop(Stop stop, int locationType, int wheelchairAccessible, String suffix) {
-        if (stop == null) return null;
-        Stop entrance = new Stop();
         AgencyAndId id = new AgencyAndId();
         id.setAgencyId(agencyId);
         id.setId(stop.getId().getId() + "-" + suffix);
+        return createStop(id, stop, locationType, wheelchairAccessible);
+    }
+    
+    private Stop createStop(AgencyAndId id, Stop stop, int locationType, int wheelchairAccessible) {
+        if (stop == null) return null;
+        Stop entrance = new Stop();
         entrance.setId(id);
         entrance.setName(stop.getName());
         entrance.setLat(stop.getLat());
@@ -591,6 +675,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         this.entrancesCsv = entrancesCsv;
     }
 
+    public void setAccessibleComplexFile(String accessibleCsv) {
+    	this.accessibleComplexFile = accessibleCsv;
+    }
+    
     public void setGenericPathwayTraversalTime(int genericPathwayTraversalTime) {
         this.genericPathwayTraversalTime = genericPathwayTraversalTime;
     }

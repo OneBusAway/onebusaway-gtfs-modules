@@ -23,6 +23,8 @@ import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 @CsvFields(filename = "booking_rules.txt", required = false)
 public final class BookingRule extends IdentityBean<AgencyAndId> {
 
+  private static final long serialVersionUID = 1L;
+
   @CsvField(name = "booking_rule_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 

@@ -38,6 +38,7 @@ public class GtfsEntitySchemaFactory {
     entityClasses.add(FeedInfo.class);
     entityClasses.add(Agency.class);
     entityClasses.add(Block.class);
+    entityClasses.add(BookingRule.class);
     entityClasses.add(ShapePoint.class);
     entityClasses.add(Route.class);
     entityClasses.add(Level.class);

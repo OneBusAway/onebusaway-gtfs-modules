@@ -112,10 +112,10 @@ public final class StopTime extends IdentityBean<Integer> implements
   private transient StopTimeProxy proxy = null;
 
   /** Support for booking rules in GTFS-Flex 2.1 */
-  @CsvField(optional = true, name = "pickup_booking_rule_id", mapping = EntityFieldMappingFactory.class)
+  @CsvField(optional = true, name = "pickup_booking_rule_id", mapping = EntityFieldMappingFactory.class, order = -2)
   private BookingRule pickupBookingRule;
 
-  @CsvField(optional = true, name = "drop_off_booking_rule_id", mapping = EntityFieldMappingFactory.class)
+  @CsvField(optional = true, name = "drop_off_booking_rule_id", mapping = EntityFieldMappingFactory.class, order = -2)
   private BookingRule dropOffBookingRule;
 
   /** This is a Conveyal extension to the GTFS spec to support Seattle on/off peak fares. */

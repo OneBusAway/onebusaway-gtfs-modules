@@ -27,12 +27,6 @@ import java.util.List;
 
 public class AddOmnySubwayData implements GtfsTransformStrategy {
 
-    //stops
-    private static final int STOP_ID = 0;
-    private static final int STOP_NAME = 1;
-    private static final int OMNY_ENABLED_STOP = 9;
-    private static final int OMNY_STOP_EFF_DATE = 10;
-
     private static Logger _log = LoggerFactory.getLogger(AddOmnySubwayData.class);
 
     public String getName() {
@@ -44,38 +38,10 @@ public class AddOmnySubwayData implements GtfsTransformStrategy {
 
         int stop_count=0;
 
-        File stopsFile = new File((String)context.getParameter("omnyStopsFile"));
-        if(!stopsFile.exists()) {
-            throw new IllegalStateException(
-                    "OMNY Stops file does not exist: " + stopsFile.getName());
-        }
-
-        List<String> stopLines = new InputLibrary().readList((String) context.getParameter("omnyStopsFile"));
-        _log.info("Length of stop file: {}", stopLines.size());
-
-        for (String stopInfo : stopLines) {
-            String[] stopArray = stopInfo.split(",");
-            if (stopArray == null || stopArray.length < 2) {
-                _log.info("bad line {}", stopInfo);
-                continue;
-            }
-
-            String stopId = stopArray[STOP_ID];
-            String stopName = stopArray[STOP_NAME];
-            String stopEnabled = stopArray[OMNY_ENABLED_STOP];
-            String stopEffDate = stopArray[OMNY_STOP_EFF_DATE];
-
-            //dao.getStopForId doesn't work so I have to iteratate over all the stops to get the one we want
-            //See MOTP-1232
-            if (stopEnabled.equals("Y")) {
-                for (Stop stop : dao.getAllStops()) {
-                    if (stop.getId().getId().equals(stopId)) {
-                        stop.setRegionalFareCardAccepted(1);
-                         stop_count++;
-                        break;
-                    }
-                }
-            }
+        // Per MOTP-1770 all stops are now OMNY enabled. 
+        for (Stop stop : dao.getAllStops()) {
+        	stop.setRegionalFareCardAccepted(1);
+        	stop_count++;
         }
 
         _log.info("Set {} stops to omny_enabled Y", stop_count);

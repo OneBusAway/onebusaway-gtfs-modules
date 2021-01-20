@@ -126,7 +126,13 @@ public class CalendarServiceDataFactoryImpl implements
 
         List<Date> dates = new ArrayList<Date>(serviceDates.size());
         for (ServiceDate serviceDate : serviceDates)
-          dates.add(serviceDate.getAsDate(timeZone));
+          try {
+            if (timeZone == null)
+              timeZone = TimeZone.getDefault();
+            dates.add(serviceDate.getAsDate(timeZone));
+          } catch (Exception any) {
+            _log.error(" calendar load failed for " + serviceDate + " for serviceId " + serviceId);
+          }
 
         LocalizedServiceId id = new LocalizedServiceId(serviceId, timeZone);
         data.putDatesForLocalizedServiceId(id, dates);

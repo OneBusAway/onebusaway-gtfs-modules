@@ -39,6 +39,7 @@ import org.onebusaway.gtfs_transformer.updates.EnsureStopTimesIncreaseUpdateStra
 import org.onebusaway.gtfs_transformer.updates.LocalVsExpressUpdateStrategy;
 import org.onebusaway.gtfs_transformer.updates.RemoveDuplicateTripsStrategy;
 import org.onebusaway.gtfs_transformer.updates.RemoveRepeatedStopTimesStrategy;
+import org.onebusaway.gtfs_transformer.updates.TrivialStopTimeInterpolationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +80,8 @@ public class GtfsTransformerMain {
   private static final String ARG_CHECK_STOP_TIMES = "checkStopTimes";
 
   private static final String ARG_REMOVE_REPEATED_STOP_TIMES = "removeRepeatedStopTimes";
+
+  private static final String INTERPOLATE_REPEATED_STOP_TIMES = "interpolateRepeatedStopTimes";
 
   private static final String ARG_REMOVE_DUPLICATE_TRIPS = "removeDuplicateTrips";
 
@@ -216,6 +219,9 @@ public class GtfsTransformerMain {
       if (name.equals(ARG_REMOVE_REPEATED_STOP_TIMES))
         configureRemoveRepeatedStopTimes(transformer);
 
+      if (name.equals(INTERPOLATE_REPEATED_STOP_TIMES))
+        configureInterpolateStopTimes(transformer);
+
       if (name.equals(ARG_REMOVE_DUPLICATE_TRIPS))
         configureRemoveDuplicateTrips(transformer);
 
@@ -307,6 +313,10 @@ public class GtfsTransformerMain {
 
   private void configureRemoveRepeatedStopTimes(GtfsTransformer updater) {
     updater.addTransform(new RemoveRepeatedStopTimesStrategy());
+  }
+
+  public void configureInterpolateStopTimes(GtfsTransformer updater) {
+    updater.addTransform(new TrivialStopTimeInterpolationStrategy());
   }
 
   private void configureRemoveDuplicateTrips(GtfsTransformer updater) {

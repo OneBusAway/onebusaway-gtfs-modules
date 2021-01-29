@@ -310,8 +310,8 @@ public class TransformFactory {
           handleTransformOperation(line, json, new RemoveEmptyBlockTripsStrategy());
           handleTransformOperation(line, json, new EnsureStopTimesIncreaseUpdateStrategy());
           handleTransformOperation(line, json, new NoTripsWithBlockIdAndFrequenciesStrategy());
-//          configureStopNameUpdates(_transformer, baseUrl
-//                  + "/KingCountyMetroStopNameModifications.mediawiki");
+          configureStopNameUpdates(_transformer, baseUrl
+                  + "/KingCountyMetroStopNameModifications.mediawiki");
         }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);
@@ -856,23 +856,23 @@ public class TransformFactory {
 //    }
 //  }
 
-//  private void configureStopNameUpdates(GtfsTransformer transformer, String path) {
-//
-//    if (path == null)
-//      return;
-//
-//    try {
-//      StopNameUpdateStrategyFactory factory = new StopNameUpdateStrategyFactory();
-//
-//      if (path.startsWith("http")) {
-//        GtfsTransformStrategy strategy = factory.createFromUrl(new URL(path));
-//        transformer.addTransform(strategy);
-//      } else {
-//        GtfsTransformStrategy strategy = factory.createFromFile(new File(path));
-//        transformer.addTransform(strategy);
-//      }
-//    } catch (IOException ex) {
-//      throw new IllegalStateException(ex);
-//    }
-//  }
+  private void configureStopNameUpdates(GtfsTransformer transformer, String path) {
+
+    if (path == null)
+      return;
+
+    try {
+      StopNameUpdateStrategyFactory factory = new StopNameUpdateStrategyFactory();
+
+      if (path.startsWith("http")) {
+        GtfsTransformStrategy strategy = factory.createFromUrl(new URL(path));
+        transformer.addTransform(strategy);
+      } else {
+        GtfsTransformStrategy strategy = factory.createFromFile(new File(path));
+        transformer.addTransform(strategy);
+      }
+    } catch (IOException ex) {
+      throw new IllegalStateException(ex);
+    }
+  }
 }

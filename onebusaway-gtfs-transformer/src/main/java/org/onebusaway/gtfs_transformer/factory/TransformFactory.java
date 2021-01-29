@@ -300,6 +300,21 @@ public class TransformFactory {
         else if (opType.equals("verify_route_ids")) {
           handleTransformOperation(line, json, new VerifyRouteIds());
         }
+        else if (opType.equals("KCMSuite")){
+          String baseUrl = "https://raw.github.com/wiki/camsys/onebusaway-application-modules";
+
+          handleTransformOperation(line, json, new RemoveMergedTripsStrategy());
+          handleTransformOperation(line, json, new DeduplicateStopsStrategy());
+          handleTransformOperation(line, json, new DeduplicateRoutesStrategy());
+          handleTransformOperation(line, json, new RemoveRepeatedStopTimesStrategy());
+          handleTransformOperation(line, json, new RemoveEmptyBlockTripsStrategy());
+          handleTransformOperation(line, json, new EnsureStopTimesIncreaseUpdateStrategy());
+          handleTransformOperation(line, json, new NoTripsWithBlockIdAndFrequenciesStrategy());
+          configureCalendarUpdates(_transformer, baseUrl
+                  + "/KingCountyMetroCalendarModifications.mediawiki");
+          configureStopNameUpdates(_transformer, baseUrl
+                  + "/KingCountyMetroStopNameModifications.mediawiki");
+        }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);
         } else {
@@ -808,6 +823,58 @@ public class TransformFactory {
         setter.setValue(wrapper, propertyName);
       }
       return instance;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  private void configureCalendarUpdates(GtfsTransformer transformer, String path) {
+
+    if (path == null)
+      return;
+
+    try {
+      CalendarUpdateStrategy updateStrategy = new CalendarUpdateStrategy();
+
+      TripScheduleModificationFactoryBean factory = new TripScheduleModificationFactoryBean();
+      factory.setPath(path);
+
+      TripScheduleModificationStrategy modification = factory.createModificationStrategy();
+      updateStrategy.addModificationStrategy(modification);
+
+      transformer.addTransform(updateStrategy);
+
+    } catch (IOException ex) {
+      throw new IllegalStateException(ex);
+    }
+  }
+
+  private void configureStopNameUpdates(GtfsTransformer transformer, String path) {
+
+    if (path == null)
+      return;
+
+    try {
+      StopNameUpdateStrategyFactory factory = new StopNameUpdateStrategyFactory();
+
+      if (path.startsWith("http")) {
+        GtfsTransformStrategy strategy = factory.createFromUrl(new URL(path));
+        transformer.addTransform(strategy);
+      } else {
+        GtfsTransformStrategy strategy = factory.createFromFile(new File(path));
+        transformer.addTransform(strategy);
+      }
+    } catch (IOException ex) {
+      throw new IllegalStateException(ex);
     }
   }
 }

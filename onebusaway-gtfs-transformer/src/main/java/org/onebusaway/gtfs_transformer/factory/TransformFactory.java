@@ -312,8 +312,6 @@ public class TransformFactory {
           handleTransformOperation(line, json, new EnsureStopTimesIncreaseUpdateStrategy());
           handleTransformOperation(line, json, new NoTripsWithBlockIdAndFrequenciesStrategy());
 
-          //configureCalendarUpdates(transformer, baseUrl
-          //                + "/KingCountyMetroCalendarModifications.mediawiki");
 
           configureStopNameUpdates(_transformer, baseUrl
                   + "/KingCountyMetroStopNameModifications.mediawiki");
@@ -326,7 +324,6 @@ public class TransformFactory {
             throw new RuntimeException(e);
           }
 
-          //configureInterlinedRoutesUpdates(_transformer);
           _transformer.addTransform(new LocalVsExpressUpdateStrategy());
         }
         else if (opType.equals("transform")) {

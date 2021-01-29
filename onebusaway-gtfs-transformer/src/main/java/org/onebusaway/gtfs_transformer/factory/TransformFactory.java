@@ -29,6 +29,7 @@ import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
 import org.onebusaway.csv_entities.schema.*;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs_transformer.GtfsTransformer;
+import org.onebusaway.gtfs_transformer.GtfsTransformerLibrary;
 import org.onebusaway.gtfs_transformer.TransformSpecificationException;
 import org.onebusaway.gtfs_transformer.TransformSpecificationMissingArgumentException;
 import org.onebusaway.gtfs_transformer.collections.ServiceIdKey;
@@ -310,8 +311,23 @@ public class TransformFactory {
           handleTransformOperation(line, json, new RemoveEmptyBlockTripsStrategy());
           handleTransformOperation(line, json, new EnsureStopTimesIncreaseUpdateStrategy());
           handleTransformOperation(line, json, new NoTripsWithBlockIdAndFrequenciesStrategy());
+
+          //configureCalendarUpdates(transformer, baseUrl
+          //                + "/KingCountyMetroCalendarModifications.mediawiki");
+
           configureStopNameUpdates(_transformer, baseUrl
                   + "/KingCountyMetroStopNameModifications.mediawiki");
+
+
+          try {
+            GtfsTransformerLibrary.configureTransformation(_transformer, baseUrl
+                    + "/KingCountyMetroModifications.mediawiki");
+          } catch (TransformSpecificationException e) {
+            throw new RuntimeException(e);
+          }
+
+          //configureInterlinedRoutesUpdates(_transformer);
+          _transformer.addTransform(new LocalVsExpressUpdateStrategy());
         }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);

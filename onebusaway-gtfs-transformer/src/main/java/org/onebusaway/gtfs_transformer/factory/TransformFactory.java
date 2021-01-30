@@ -875,7 +875,7 @@ public class TransformFactory {
       return;
 
     try {
-      StopNameUpdateStrategyFactory factory = new StopNameUpdateStrategyFactory();
+      StopNameUpdateFactoryStrategy factory = new StopNameUpdateFactoryStrategy();
 
       if (path.startsWith("http")) {
         GtfsTransformStrategy strategy = factory.createFromUrl(new URL(path));

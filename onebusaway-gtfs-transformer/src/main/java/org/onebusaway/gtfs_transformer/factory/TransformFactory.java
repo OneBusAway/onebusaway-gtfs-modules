@@ -305,7 +305,18 @@ public class TransformFactory {
           String baseUrl = "https://raw.github.com/wiki/camsys/onebusaway-application-modules";
 
           handleTransformOperation(line, json, new RemoveMergedTripsStrategy());
+
+
           handleTransformOperation(line, json, new DeduplicateStopsStrategy());
+//          EntitiesTransformStrategy strategy = getStrategy(EntitiesTransformStrategy.class);
+//          TypedEntityMatch match = getMatch(line, json);
+//          DeduplicateStopsStrategy mod = new DeduplicateStopsStrategy();
+//          strategy.addModification(match, mod);
+
+          //GenerateEntitiesTransformStrategy("DeduplicateStopsStrategy");
+          //handleTransformOperation(line, json, new DeduplicateStopsStrategy());
+
+
           handleTransformOperation(line, json, new DeduplicateRoutesStrategy());
           handleTransformOperation(line, json, new RemoveRepeatedStopTimesStrategy());
           handleTransformOperation(line, json, new RemoveEmptyBlockTripsStrategy());

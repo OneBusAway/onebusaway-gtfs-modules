@@ -30,13 +30,21 @@ import org.onebusaway.gtfs_transformer.services.EntityTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.onebusaway.gtfs_transformer.updates.UpdateLibrary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class DeduplicateRoutesStrategy implements
-        EntityTransformStrategy {
+public class DeduplicateRoutesStrategy implements GtfsTransformStrategy {
+
+    private static Logger _log = LoggerFactory.getLogger(org.onebusaway.gtfs_transformer.updates.DeduplicateServiceIdsStrategy.class);
 
     @Override
-    public void run(TransformContext context, GtfsMutableRelationalDao dao,
-                    Object entity) {
+    public String getName() {
+        return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public void run(TransformContext context, GtfsMutableRelationalDao dao) {
+
 
         Map<AgencyAndId, List<Route>> routesById = new FactoryMap<AgencyAndId, List<Route>>(
                 new ArrayList<Route>());

@@ -118,9 +118,7 @@ public class GtfsReaderTest {
             "P1,1,1,S1,S1,60");
     gtfs.putLines(
             "ridership.txt",
-            "total_boardings,total_alightings,ridership_start_date,ridership_end_date" +
-                    ",monday,tuesday,wednesday,thursday,friday,saturday,sunday,agency_id" +
-                    ",route_id,trip_id,stop_id,average_load",
+            "total_boardings,total_alightings,ridership_start_date,ridership_end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday,agency_id,route_id,trip_id,stop_id,average_load",
             "0,0,20180101,20180601,1,1,1,1,1,0,0,1,1,34741338,538,15.2",
             "0,0,20180101,20180601,1,1,1,1,1,0,0,1,1,34741338,558,14.4",
             "0,0,20180101,20180601,1,1,1,1,1,0,0,1,1,34741339,2010,1.3");

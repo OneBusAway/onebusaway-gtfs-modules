@@ -325,12 +325,12 @@ public class TransformFactory {
 
 
           configureStopNameUpdates(_transformer, baseUrl
-                  + "/KingCountyMetroStopNameModifications.mediawiki");
+                  + "/KingCountyMetroStopNameModifications.md");
 
 
           try {
             GtfsTransformerLibrary.configureTransformation(_transformer, baseUrl
-                    + "/KingCountyMetroModifications.mediawiki");
+                    + "/KingCountyMetroModifications.md");
           } catch (TransformSpecificationException e) {
             throw new RuntimeException(e);
           }

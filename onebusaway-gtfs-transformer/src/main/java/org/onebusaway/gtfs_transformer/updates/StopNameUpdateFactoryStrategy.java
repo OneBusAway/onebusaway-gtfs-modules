@@ -99,7 +99,7 @@ public class StopNameUpdateFactoryStrategy {
         @Override
         public void run(TransformContext context, GtfsMutableRelationalDao dao) {
             for (Map.Entry<Integer, String> entry : _stopNamesByStopId.entrySet()) {
-                AgencyAndId id = new AgencyAndId("KCM",
+                AgencyAndId id = new AgencyAndId(getPreferredAgencyId(),
                         Integer.toString(entry.getKey()));
                 String name = entry.getValue();
                 Stop stop = dao.getStopForId(id);
@@ -110,6 +110,11 @@ public class StopNameUpdateFactoryStrategy {
                 }
                 stop.setName(name);
             }
+        }
+
+        private String getPreferredAgencyId() {
+            // TODO pull this in from configuration or system param
+            return "1";
         }
     }
 

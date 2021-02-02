@@ -305,32 +305,17 @@ public class TransformFactory {
           String baseUrl = "https://raw.github.com/wiki/camsys/onebusaway-application-modules";
 
           handleTransformOperation(line, json, new RemoveMergedTripsStrategy());
-
-
-          handleTransformOperation(line, json, new DeduplicateStopsStrategy());
-//          EntitiesTransformStrategy strategy = getStrategy(EntitiesTransformStrategy.class);
-//          TypedEntityMatch match = getMatch(line, json);
-//          DeduplicateStopsStrategy mod = new DeduplicateStopsStrategy();
-//          strategy.addModification(match, mod);
-
-          //GenerateEntitiesTransformStrategy("DeduplicateStopsStrategy");
-          //handleTransformOperation(line, json, new DeduplicateStopsStrategy());
-
-
-          handleTransformOperation(line, json, new DeduplicateRoutesStrategy());
           handleTransformOperation(line, json, new RemoveRepeatedStopTimesStrategy());
           handleTransformOperation(line, json, new RemoveEmptyBlockTripsStrategy());
           handleTransformOperation(line, json, new EnsureStopTimesIncreaseUpdateStrategy());
-          handleTransformOperation(line, json, new NoTripsWithBlockIdAndFrequenciesStrategy());
-
 
           configureStopNameUpdates(_transformer, baseUrl
-                  + "/KingCountyMetroStopNameModifications.mediawiki");
+                  + "/KingCountyMetroStopNameModifications.md");
 
 
           try {
             GtfsTransformerLibrary.configureTransformation(_transformer, baseUrl
-                    + "/KingCountyMetroModifications.mediawiki");
+                    + "/KingCountyMetroModifications.md");
           } catch (TransformSpecificationException e) {
             throw new RuntimeException(e);
           }

@@ -15,6 +15,7 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
+import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
@@ -37,13 +38,19 @@ public class AddOmnySubwayData implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
         int stop_count=0;
+        int route_count=0;
 
-        // Per MOTP-1770 all stops are now OMNY enabled. 
+        // Per MOTP-1770 all stops/routes are now OMNY enabled. 
         for (Stop stop : dao.getAllStops()) {
         	stop.setRegionalFareCardAccepted(1);
         	stop_count++;
         }
 
-        _log.info("Set {} stops to omny_enabled Y", stop_count);
+        for (Route route : dao.getAllRoutes()) {
+        	route.setRegionalFareCardAccepted(1);
+        	route_count++;
+        }
+        
+        _log.info("Set {} stops and {} routes to omny_enabled Y", stop_count, route_count);
     }
 }

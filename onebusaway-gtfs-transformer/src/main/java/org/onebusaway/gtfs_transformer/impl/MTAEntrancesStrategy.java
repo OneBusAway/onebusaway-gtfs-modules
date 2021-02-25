@@ -178,6 +178,17 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
             if (stopsHaveParents) {
                 // Put stop into a stop-group with parent, uptown, downtown
                 String gid = stop.getLocationType() == LOCATION_TYPE_STOP ? stop.getParentStation() : stop.getId().getId();
+                if(gid == null) {
+                	gid = stop.getId().getId();  
+                	
+                	// don't fret about this one, it's a shuttle stop
+                	if(stop.getName().contains("SHUTTLE BUS STOP"))
+                		continue;
+
+                    _log.warn("stop {} didn't have a parent set--using own stop ID.", stop.getName());
+                	continue;
+                }
+                
                 StopGroup group = stopGroups.get(gid);
                 if (group == null) {
                     group = new StopGroup();
@@ -192,6 +203,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 } else {
                 	// it's a pathway, ignore
                 	if(stop.getLocationType() >= 2)
+                		continue;
+                	
+                	// don't fret about this one, it's a shuttle stop
+                	if(stop.getName().contains("SHUTTLE BUS STOP"))
                 		continue;
                 	
                     _log.error("unexpected stop not of parent type but of {} for stop {}: {}", stop.getLocationType(), stop.getId(), stop.getName());
@@ -311,10 +326,18 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 String id = entrance.getEntranceType() + "-" + i;
                 if (stopsHaveParents) {
                     if (!entrance.hasDirection() || entrance.getDirection().equals("N")) {
-                        pathwayUtil.createPathway(entranceStop, group.uptown, pathwayMode, traversalTime, id, null);
+                    	if(group.uptown != null) {
+                            pathwayUtil.createPathway(entranceStop, group.uptown, pathwayMode, traversalTime, id, null);                    		
+                    	} else {
+                    		_log.warn("Entrance file refers to stop {} and direction {} which is not in the GTFS. Check your data.", entrance.getStopId(), entrance.getDirection());
+                    	}
                     }
                     if (!entrance.hasDirection() || entrance.getDirection().equals("S")) {
-                        pathwayUtil.createPathway(entranceStop, group.downtown, pathwayMode, traversalTime, id, null);
+                    	if(group.downtown != null) {
+                    		pathwayUtil.createPathway(entranceStop, group.downtown, pathwayMode, traversalTime, id, null);
+                    	} else {
+                    		_log.warn("Entrance file refers to stop {} and direction {} which is not in the GTFS. Check your data.", entrance.getStopId(), entrance.getDirection());
+                    	}
                     }
                 } else {
                     pathwayUtil.createPathway(entranceStop, group.parent, pathwayMode, traversalTime, id, null);
@@ -369,9 +392,17 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                 Stop platform = null;
                 if (e.getDirection() != null) {
                     if (e.getDirection().equals("N")) {
-                        platform = group.uptown;
+                        platform = group.uptown;                        
+                        if(platform == null) {
+                    		_log.warn("Elevator file refers to platform {} and direction {} which is not in the GTFS. Check your data.", e.getStopId(), e.getDirection());
+                    		continue;
+                        }
                     } else if (e.getDirection().equals("S")) {
                         platform = group.downtown;
+                        if(platform == null) {
+                    		_log.warn("Elevator file refers to platform {} and direction {} which is not in the GTFS. Check your data.", e.getStopId(), e.getDirection());
+                    		continue;
+                        }
                     } else {
                         _log.error("Unexpected direction={}, elev={}", e.getDirection(), e.getId());
                     }

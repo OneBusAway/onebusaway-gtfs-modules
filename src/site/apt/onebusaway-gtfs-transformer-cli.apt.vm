@@ -95,6 +95,14 @@ can be used.
 each file name in the GTFS specification.  For example, the snippet above will match any entry in `routes.txt` with a
 `route_short_name` value of `574`.
 
+* Regular Expressions
+
+  Property matching also supports regular expressions that allow you to match  property values conforming to a regexp pattern. For example, the snippet below will match any entry in `stops.txt` with a `stop_id` starting with `de:08`.
+
++---+
+{"op":..., "match":{"file":"stops.txt", "stop_id":"m/^de:08.*/"}}
++---+
+
 * Compound Property Expressions
 
   Property matching also supports compound property expressions that allow you to match across GTFS relational

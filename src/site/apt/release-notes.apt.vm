@@ -13,9 +13,9 @@ Release Notes
 
   * Bug fix to ensure fare_attributes.txt transfers column is always included in GTFS output - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/50}issue}}
 
-  * Support for "<<<path(...)>>>" expressions in GTFS transformer <<<update>>> ops - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/48}issue}}
+  * Support for "<<<path>>>" expressions in GTFS transformer <<<update>>> ops - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/48}issue}}
 
-  * Support for "<<<s/.../.../>>>" expressions in GTFS transformer <<<update>>> ops - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/52}issue}}
+  * Support for "<<<substitute>>>" expressions in GTFS transformer <<<update>>> ops - {{{https://github.com/OneBusAway/onebusaway-gtfs-modules/issues/52}issue}}
 
   * Full Documentation: {{${site_base_url}/onebusaway-gtfs-modules/${currentVersion}/}}
 
@@ -136,11 +136,11 @@ Release Notes
   
   * Mark Hibernate GTFS classes as mutable (see {{{https://groups.google.com/group/onebusaway-developers/browse_thread/thread/219d40f7a99c9709}discussion}})
   
-  * Add <<<getStopsForStation()>>> method to {{{./apidocs/org/onebusaway/gtfs/services/GtfsRelationalDao.html#getStopsForStation(org.onebusaway.gtfs.model.Stop)}GtfsRelationalDao}} (see {{{https://groups.google.com/group/onebusaway-developers/browse_thread/thread/95f4335fcc0d056e}discussion}})
+  * Add <<<getStopsForStation>>> method to {{{./apidocs/org/onebusaway/gtfs/services/GtfsRelationalDao.html#getStopsForStation}GtfsRelationalDao}} (see {{{https://groups.google.com/group/onebusaway-developers/browse_thread/thread/95f4335fcc0d056e}discussion}})
   
-  * Add <<<makeReadOnly()>>> method to {{{./apidocs/org/onebusaway/gtfs/model/calendar/CalendarServiceData.html#makeReadOnly()}CalendarServiceData}}
+  * Add <<<makeReadOnly>>> method to {{{./apidocs/org/onebusaway/gtfs/model/calendar/CalendarServiceData.html#makeReadOnly()}CalendarServiceData}}
   
-  * {{{./apidocs/org/onebusaway/gtfs/model/calendar/ServiceDate.html#parseString(java.lang.String)}ServiceDate.parseString()}} now throws a ParseException
+  * {{{./apidocs/org/onebusaway/gtfs/model/calendar/ServiceDate.html#parseString}ServiceDate.parseString()}} now throws a ParseException
   
   * Add {{{./apidocs/org/onebusaway/gtfs_transformer/updates/CalendarSimplicationStrategy.html}CalendarSimplicationStrategy}} for simplifying redundant trips / calendar entries - see {{{./onebusaway-gtfs-transformer-cli.html#Merge_Trips_and_Refactor_Calendar_Entries}usage instructions}}
   
@@ -152,7 +152,7 @@ Release Notes
 
   * More documentation for {{{./onebusaway-gtfs-transformer-cli.html}onebusaway-gtfs-transformer-cli}}.
   
-  * Add <<<getAllShapeIds()>>> method to {{{./apidocs/org/onebusaway/gtfs/services/GtfsRelationalDao.html#getAllShapeIds()}GtfsRelationalDao}}
+  * Add <<<getAllShapeIds>>> method to {{{./apidocs/org/onebusaway/gtfs/services/GtfsRelationalDao.html#getAllShapeIds()}GtfsRelationalDao}}
   
   * Add <<<journeyDuration>>> property to {{{./apidocs/org/onebusaway/gtfs/model/FareAttribute.html}FareAttribute}} 
   

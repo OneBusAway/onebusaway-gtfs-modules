@@ -15,24 +15,15 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Route;
+import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.util.List;
-
 public class AddOmnyBusData implements GtfsTransformStrategy {
-
-    //routes
-    private static final int ROUTE_ID = 1;
-    private static final int ROUTE_NAME = 2;
-    private static final int OMNY_ENABLED_ROUTE = 11;
-    private static final int OMNY_ROUTE_EFF_DATE = 12;
 
     private static Logger _log = LoggerFactory.getLogger(AddOmnyBusData.class);
 
@@ -43,38 +34,20 @@ public class AddOmnyBusData implements GtfsTransformStrategy {
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
+        int stop_count=0;
         int route_count=0;
-        String agency = dao.getAllTrips().iterator().next().getId().getAgencyId();
 
-        File routesFile = new File((String)context.getParameter("omnyRoutesFile"));
-        if(!routesFile.exists()) {
-            throw new IllegalStateException(
-                    "OMNY Routes file does not exist: " + routesFile.getName());
+        // Per MOTP-1770 all stops/routes are now OMNY enabled. 
+        for (Stop stop : dao.getAllStops()) {
+        	stop.setRegionalFareCardAccepted(1);
+        	stop_count++;
         }
 
-        List<String> routeLines = new InputLibrary().readList((String) context.getParameter("omnyRoutesFile"));
-        _log.info("Length of route file: {}", routeLines.size());
-
-        for (String routeInfo : routeLines) {
-            String[] routeArray = routeInfo.split(",");
-            if (routeArray == null || routeArray.length < 2) {
-                _log.info("bad line {}", routeInfo);
-                continue;
-            }
-
-            String routeId = routeArray[ROUTE_ID];
-            String routeName = routeArray[ROUTE_NAME];
-            String routeEnabled = routeArray[OMNY_ENABLED_ROUTE];
-            String routeEffDate = routeArray[OMNY_ROUTE_EFF_DATE];
-
-            if (routeEnabled.equals("Y")) {
-                Route route = dao.getRouteForId(new AgencyAndId(agency, routeId));
-                if (route != null ) {
-                    route.setRegionalFareCardAccepted(1);
-                    route_count++;
-                }
-            }
+        for (Route route : dao.getAllRoutes()) {
+        	route.setRegionalFareCardAccepted(1);
+        	route_count++;
         }
-        _log.info("Set {} routes to omny_enabled Y", route_count);
+        
+        _log.info("Set {} stops and {} routes to omny_enabled Y", stop_count, route_count);
     }
 }

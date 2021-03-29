@@ -29,6 +29,7 @@ import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
 import org.onebusaway.csv_entities.schema.*;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs_transformer.GtfsTransformer;
+import org.onebusaway.gtfs_transformer.GtfsTransformerLibrary;
 import org.onebusaway.gtfs_transformer.TransformSpecificationException;
 import org.onebusaway.gtfs_transformer.TransformSpecificationMissingArgumentException;
 import org.onebusaway.gtfs_transformer.collections.ServiceIdKey;
@@ -299,6 +300,27 @@ public class TransformFactory {
         }
         else if (opType.equals("verify_route_ids")) {
           handleTransformOperation(line, json, new VerifyRouteIds());
+        }
+        else if (opType.equals("KCMSuite")){
+          String baseUrl = "https://raw.github.com/wiki/camsys/onebusaway-application-modules";
+
+          handleTransformOperation(line, json, new RemoveMergedTripsStrategy());
+          handleTransformOperation(line, json, new RemoveRepeatedStopTimesStrategy());
+          handleTransformOperation(line, json, new RemoveEmptyBlockTripsStrategy());
+          handleTransformOperation(line, json, new EnsureStopTimesIncreaseUpdateStrategy());
+
+          configureStopNameUpdates(_transformer, baseUrl
+                  + "/KingCountyMetroStopNameModifications.md");
+
+
+          try {
+            GtfsTransformerLibrary.configureTransformation(_transformer, baseUrl
+                    + "/KingCountyMetroModifications.md");
+          } catch (TransformSpecificationException e) {
+            throw new RuntimeException(e);
+          }
+
+          _transformer.addTransform(new LocalVsExpressUpdateStrategy());
         }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);
@@ -808,6 +830,58 @@ public class TransformFactory {
         setter.setValue(wrapper, propertyName);
       }
       return instance;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+//  private void configureCalendarUpdates(GtfsTransformer transformer, String path) {
+//
+//    if (path == null)
+//      return;
+//
+//    try {
+//      CalendarUpdateStrategy updateStrategy = new CalendarUpdateStrategy();
+//
+//      TripScheduleModificationFactoryBean factory = new TripScheduleModificationFactoryBean();
+//      factory.setPath(path);
+//
+//      TripScheduleModificationStrategy modification = factory.createModificationStrategy();
+//      updateStrategy.addModificationStrategy(modification);
+//
+//      transformer.addTransform(updateStrategy);
+//
+//    } catch (IOException ex) {
+//      throw new IllegalStateException(ex);
+//    }
+//  }
+
+  private void configureStopNameUpdates(GtfsTransformer transformer, String path) {
+
+    if (path == null)
+      return;
+
+    try {
+      StopNameUpdateFactoryStrategy factory = new StopNameUpdateFactoryStrategy();
+
+      if (path.startsWith("http")) {
+        GtfsTransformStrategy strategy = factory.createFromUrl(new URL(path));
+        transformer.addTransform(strategy);
+      } else {
+        GtfsTransformStrategy strategy = factory.createFromFile(new File(path));
+        transformer.addTransform(strategy);
+      }
+    } catch (IOException ex) {
+      throw new IllegalStateException(ex);
     }
   }
 }

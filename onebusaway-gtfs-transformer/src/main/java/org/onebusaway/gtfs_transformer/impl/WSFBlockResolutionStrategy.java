@@ -362,7 +362,7 @@ class WSFScheduleService {
       String arriveTerminal) {
     long start = System.currentTimeMillis();
     StringBuffer url = new StringBuffer(
-        "http://www.wsdot.wa.gov/ferries/api/schedule/rest/schedule");
+        "https://www.wsdot.wa.gov/ferries/api/schedule/rest/schedule");
     url.append("/" + formatDate(serviceDate));
     url.append("/" + departTerminal);
     url.append("/" + arriveTerminal);
@@ -384,7 +384,7 @@ class WSFScheduleService {
         _log.info("wsf call complete in " + (finish-start)/1000 + "s for call=" + url);
       }
     } catch (Exception e) {
-      _log.error("Exception processing WSF API: " + e);
+      _log.error("Exception processing WSF API for api call:'" + url.toString() + "', " + e);
       return null;
     }
 

@@ -43,6 +43,7 @@ public class GtfsEntitySchemaFactory {
     entityClasses.add(Route.class);
     entityClasses.add(Level.class);
     entityClasses.add(Stop.class);
+    entityClasses.add(LocationGroupElement.class);
     entityClasses.add(Trip.class);
     entityClasses.add(Note.class);
     entityClasses.add(StopTime.class);
@@ -54,6 +55,7 @@ public class GtfsEntitySchemaFactory {
     entityClasses.add(Pathway.class);
     entityClasses.add(Transfer.class);
     entityClasses.add(Ridership.class);
+    entityClasses.add(BookingRule.class);
     return entityClasses;
   }
 

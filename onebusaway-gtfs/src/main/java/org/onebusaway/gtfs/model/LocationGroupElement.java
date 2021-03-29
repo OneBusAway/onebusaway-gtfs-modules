@@ -18,7 +18,7 @@ package org.onebusaway.gtfs.model;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
-import org.onebusaway.gtfs.serialization.mappings.StoplikeFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.StopLocationFieldMappingFactory;
 
 @CsvFields(filename = "location_groups.txt", required = false, prefix = "location_group_")
 public class LocationGroupElement extends IdentityBean<Integer> {
@@ -31,8 +31,8 @@ public class LocationGroupElement extends IdentityBean<Integer> {
     @CsvField(name = "location_group_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
     private AgencyAndId locationGroupId;
 
-    @CsvField(name = "location_id", mapping = StoplikeFieldMappingFactory.class)
-    private Stoplike location;
+    @CsvField(name = "location_id", mapping = StopLocationFieldMappingFactory.class)
+    private StopLocation location;
 
     @CsvField(optional = true)
     private String name;
@@ -54,11 +54,11 @@ public class LocationGroupElement extends IdentityBean<Integer> {
         this.locationGroupId = locationGroupId;
     }
 
-    public Stoplike getLocation() {
+    public StopLocation getLocation() {
         return location;
     }
 
-    public void setLocation(Stoplike location) {
+    public void setLocation(StopLocation location) {
         this.location = location;
     }
 

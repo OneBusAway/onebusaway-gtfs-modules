@@ -20,7 +20,7 @@ import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
-import org.onebusaway.gtfs.serialization.mappings.StoplikeFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.StopLocationFieldMappingFactory;
 
 @CsvFields(filename = "stop_times.txt")
 public final class StopTime extends IdentityBean<Integer> implements
@@ -36,8 +36,8 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(name = "trip_id", mapping = EntityFieldMappingFactory.class)
   private Trip trip;
 
-  @CsvField(name = "stop_id", mapping = StoplikeFieldMappingFactory.class)
-  private Stoplike stop;
+  @CsvField(name = "stop_id", mapping = StopLocationFieldMappingFactory.class)
+  private StopLocation stop;
 
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int arrivalTime = MISSING_VALUE;
@@ -223,14 +223,14 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.toStopSequence = toStopSequence;
   }
 
-  public Stoplike getStop() {
+  public StopLocation getStop() {
     if (proxy != null) {
       return proxy.getStop();
     }
     return stop;
   }
 
-  public void setStop(Stoplike stop) {
+  public void setStop(StopLocation stop) {
     if (proxy != null) {
       proxy.setStop(stop);
       return;

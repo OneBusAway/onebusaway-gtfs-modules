@@ -22,8 +22,8 @@ import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsReaderContext;
 
-public class StoplikeFieldMappingImpl extends EntityFieldMappingImpl {
-    public StoplikeFieldMappingImpl(Class<?> entityType, String csvFieldName, String objFieldName, Class<?> objFieldType, boolean required) {
+public class StopLocationFieldMappingImpl extends EntityFieldMappingImpl {
+    public StopLocationFieldMappingImpl(Class<?> entityType, String csvFieldName, String objFieldName, Class<?> objFieldType, boolean required) {
         super(entityType, csvFieldName, objFieldName, objFieldType, required);
     }
 
@@ -46,7 +46,7 @@ public class StoplikeFieldMappingImpl extends EntityFieldMappingImpl {
             if (type == String.class) {
                 if (value instanceof String)
                     return (String) value;
-            } else if (type == Stoplike.class) {
+            } else if (type == StopLocation.class) {
                 String entityId = value.toString();
 
 

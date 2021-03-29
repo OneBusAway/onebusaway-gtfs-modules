@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.onebusaway.gtfs.model.BookingRule;
-import org.onebusaway.gtfs.model.Stoplike;
+import org.onebusaway.gtfs.model.StopLocation;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.StopTimeProxy;
 import org.onebusaway.gtfs.model.Trip;
@@ -33,7 +33,7 @@ public class StopTimeArray extends AbstractList<StopTime> {
 
   private Trip[] trips = new Trip[0];
 
-  private Stoplike[] stops = new Stoplike[0];
+  private StopLocation[] stops = new StopLocation[0];
 
   private int[] arrivalTimes = new int[0];
 
@@ -204,12 +204,12 @@ public class StopTimeArray extends AbstractList<StopTime> {
     }
 
     @Override
-    public Stoplike getStop() {
+    public StopLocation getStop() {
       return stops[index];
     }
 
     @Override
-    public void setStop(Stoplike stop) {
+    public void setStop(StopLocation stop) {
       stops[index] = stop;
     }
 

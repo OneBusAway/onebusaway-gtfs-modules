@@ -15,7 +15,12 @@
  */
 package org.onebusaway.gtfs.model;
 
-public interface Stoplike {
+/**
+ * A StopLocation describes a place where a vehicle can be boarded or alighted, which is not
+ * necessarily a marked stop, but can be of other shapes, such as a service area for flexible
+ * transit. StopLocations are referred to in stop times, in stop column.
+ */
+public interface StopLocation {
     AgencyAndId getId();
 
     String getName();

@@ -23,25 +23,25 @@ import org.onebusaway.gtfs.serialization.GtfsReaderContext;
 
 /**
  * {@link FieldMappingFactory} that produces a {@link FieldMapping} instance
- * capable of mapping a CSV stoplike string entity id to an concrete entity instance, and vice
- * versa. Assumes field entity type subclasses {@link IdentityBean} and the
- * target entity can be found with
+ * capable of mapping a CSV stopLocation string entity id to an concrete entity
+ * instance, and vice versa. Assumes field entity type subclasses
+ * {@link IdentityBean} and the target entity can be found with
  * {@link GtfsReaderContext#getEntity(Class, java.io.Serializable)}.
  *
  * @author bdferris
  * @see IdentityBean
  * @see GtfsReaderContext#getEntity(Class, java.io.Serializable)
  */
-public class StoplikeFieldMappingFactory implements FieldMappingFactory {
+public class StopLocationFieldMappingFactory implements FieldMappingFactory {
 
-    public StoplikeFieldMappingFactory() {
+    public StopLocationFieldMappingFactory() {
 
     }
 
     public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
                                            Class<?> entityType, String csvFieldName, String objFieldName,
                                            Class<?> objFieldType, boolean required) {
-        return new StoplikeFieldMappingImpl(entityType, csvFieldName, objFieldName,
+        return new StopLocationFieldMappingImpl(entityType, csvFieldName, objFieldName,
                 objFieldType, required);
     }
 }

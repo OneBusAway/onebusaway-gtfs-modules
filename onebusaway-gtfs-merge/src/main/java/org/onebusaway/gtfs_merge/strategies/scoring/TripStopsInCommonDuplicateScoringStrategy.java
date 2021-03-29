@@ -19,9 +19,8 @@ import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
-import org.onebusaway.gtfs.model.Stoplike;
+import org.onebusaway.gtfs.model.StopLocation;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
@@ -31,25 +30,25 @@ import org.onebusaway.gtfs_merge.util.CacheByEntity.CacheGetter;
 public class TripStopsInCommonDuplicateScoringStrategy
     implements DuplicateScoringStrategy<Trip> {
 
-  private CacheByEntity<Trip, SortedSet<Stoplike>> _cache = new CacheByEntity<>(getStops);
+  private CacheByEntity<Trip, SortedSet<StopLocation>> _cache = new CacheByEntity<>(getStops);
 
   @Override
   public double score(GtfsMergeContext context, Trip source, Trip target) {
-    SortedSet<Stoplike> sourceStops = getStopsForTrip(context.getSource(), source);
-    SortedSet<Stoplike> targetStops = getStopsForTrip(context.getTarget(), target);
+    SortedSet<StopLocation> sourceStops = getStopsForTrip(context.getSource(), source);
+    SortedSet<StopLocation> targetStops = getStopsForTrip(context.getTarget(), target);
     return DuplicateScoringSupport.scoreElementOverlap(sourceStops,
         targetStops);
   }
 
-  private SortedSet<Stoplike> getStopsForTrip(GtfsRelationalDao dao, Trip trip) {
+  private SortedSet<StopLocation> getStopsForTrip(GtfsRelationalDao dao, Trip trip) {
     return _cache.getItemForEntity(dao, trip);
   }
 
   // It's sufficient that they're sorted in SOME way
-  private static final Comparator<Stoplike> stopComparator = Comparator.comparingInt(Object::hashCode);
+  private static final Comparator<StopLocation> stopComparator = Comparator.comparingInt(Object::hashCode);
 
-  private static CacheGetter<Trip, SortedSet<Stoplike>> getStops = (dao, trip) -> {
-    SortedSet<Stoplike> stops = new TreeSet<>(stopComparator);
+  private static CacheGetter<Trip, SortedSet<StopLocation>> getStops = (dao, trip) -> {
+    SortedSet<StopLocation> stops = new TreeSet<>(stopComparator);
 
     for (StopTime stopTime : dao.getStopTimesForTrip(trip)) {
       stops.add(stopTime.getStop());

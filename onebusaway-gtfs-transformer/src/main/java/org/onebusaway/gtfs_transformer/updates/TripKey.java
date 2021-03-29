@@ -23,14 +23,14 @@ import java.util.Map;
 import org.onebusaway.collections.FactoryMap;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.Stop;
-import org.onebusaway.gtfs.model.Stoplike;
+import org.onebusaway.gtfs.model.StopLocation;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 
 class TripKey {
 
-  private final Stoplike[] _stops;
+  private final StopLocation[] _stops;
   private final int[] _arrivalTimes;
   private final int[] _departureTimes;
 
@@ -49,7 +49,7 @@ class TripKey {
   public static TripKey getTripKeyForTrip(GtfsMutableRelationalDao dao,
       Trip trip) {
     List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
-    Stoplike[] stops = new Stop[stopTimes.size()];
+    StopLocation[] stops = new Stop[stopTimes.size()];
     int[] arrivalTimes = new int[stopTimes.size()];
     int[] departureTimes = new int[stopTimes.size()];
     for (int i = 0; i < stopTimes.size(); i++) {
@@ -61,7 +61,7 @@ class TripKey {
     return new TripKey(stops, arrivalTimes, departureTimes);
   }
 
-  public TripKey(Stoplike[] stops, int[] arrivalTimes, int[] departureTimes) {
+  public TripKey(StopLocation[] stops, int[] arrivalTimes, int[] departureTimes) {
     _stops = stops;
     _arrivalTimes = arrivalTimes;
     _departureTimes = departureTimes;

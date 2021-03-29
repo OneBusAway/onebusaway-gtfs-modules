@@ -18,12 +18,12 @@ package org.onebusaway.gtfs.model;
 import java.util.HashSet;
 import java.util.Set;
 
-public class LocationGroup extends IdentityBean<AgencyAndId> implements Stoplike {
+public class LocationGroup extends IdentityBean<AgencyAndId> implements StopLocation {
     private static final long serialVersionUID = 1L;
 
     private AgencyAndId id;
 
-    private Set<Stoplike> locations = new HashSet<>();
+    private Set<StopLocation> locations = new HashSet<>();
 
     private String name;
 
@@ -36,11 +36,11 @@ public class LocationGroup extends IdentityBean<AgencyAndId> implements Stoplike
       this.id = id;
     }
 
-    public Set<Stoplike> getLocations() {
+    public Set<StopLocation> getLocations() {
       return locations;
     }
 
-    public void addLocation(Stoplike location) {
+    public void addLocation(StopLocation location) {
       this.locations.add(location);
     }
 

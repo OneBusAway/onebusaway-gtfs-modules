@@ -19,7 +19,7 @@ import org.geojson.GeoJsonObject;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 
 @CsvFields(filename = "locations.geojson", required = false)
-public class Location extends IdentityBean<AgencyAndId> implements Stoplike {
+public class Location extends IdentityBean<AgencyAndId> implements StopLocation {
     private AgencyAndId id;
 
     private String name;

@@ -27,7 +27,7 @@ import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
-import org.onebusaway.gtfs.model.Stoplike;
+import org.onebusaway.gtfs.model.StopLocation;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
@@ -163,8 +163,8 @@ public class SubsectionTripTransformStrategy implements GtfsTransformStrategy {
       return;
     }
 
-    Stoplike firstStop = stopTimes.get(0).getStop();
-    Stoplike lastStop = stopTimes.get(stopTimes.size() - 1).getStop();
+    StopLocation firstStop = stopTimes.get(0).getStop();
+    StopLocation lastStop = stopTimes.get(stopTimes.size() - 1).getStop();
     String id = shapeId.getId() + "-" + firstStop.getId().getId() + "-"
         + lastStop.getId().getId();
     AgencyAndId newShapeId = new AgencyAndId("1", id);

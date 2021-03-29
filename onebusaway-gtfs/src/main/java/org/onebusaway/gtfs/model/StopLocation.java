@@ -23,5 +23,9 @@ package org.onebusaway.gtfs.model;
 public interface StopLocation {
     AgencyAndId getId();
 
+    void setId(AgencyAndId id);
+
     String getName();
+
+    void setName(String name);
 }

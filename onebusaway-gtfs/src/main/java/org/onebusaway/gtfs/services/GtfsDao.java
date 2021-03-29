@@ -160,6 +160,8 @@ public interface GtfsDao extends GenericDao {
 
   public Collection<Location> getAllLocations();
 
+  public Collection<BookingRule> getAllBookingRules();
+
   /****
    * {@link Translation} Methods
    ****/

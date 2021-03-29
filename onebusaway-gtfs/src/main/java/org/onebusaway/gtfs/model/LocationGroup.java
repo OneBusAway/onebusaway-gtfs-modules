@@ -40,6 +40,10 @@ public class LocationGroup extends IdentityBean<AgencyAndId> implements StopLoca
       return locations;
     }
 
+    private void setLocations(Set<StopLocation> locations) {
+      this.locations = locations;
+    }
+
     public void addLocation(StopLocation location) {
       this.locations.add(location);
     }

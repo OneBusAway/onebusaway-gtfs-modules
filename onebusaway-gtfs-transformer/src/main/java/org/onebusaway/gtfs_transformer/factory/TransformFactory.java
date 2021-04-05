@@ -81,6 +81,8 @@ public class TransformFactory {
 
   private static final String ARG_COLLECTION = "collection";
 
+  private static final String ARG_PATH = "path";
+
   private static final Set<String> _excludeForObjectSpec = new HashSet<String>(
       Arrays.asList(ARG_FILE, ARG_CLASS));
 
@@ -301,43 +303,8 @@ public class TransformFactory {
         else if (opType.equals("verify_route_ids")) {
           handleTransformOperation(line, json, new VerifyRouteIds());
         }
-        else if (opType.equals("remove_merged_trips")){
-            handleTransformOperation(line, json, new RemoveMergedTripsStrategy());
-        }
-        else if (opType.equals("deduplicate_stops")){
-            handleTransformOperation(line, json, new DeduplicateStopsStrategy());
-        }
-        else if (opType.equals("deduplicate_routes")){
-            handleTransformOperation(line, json, new DeduplicateRoutesStrategy());
-        }
-        else if (opType.equals("remove_repeated_stop_times")){
-            handleTransformOperation(line, json, new RemoveRepeatedStopTimesStrategy());
-        }
-        else if (opType.equals("remove_empty_block_trips")){
-            handleTransformOperation(line, json, new RemoveEmptyBlockTripsStrategy());
-        }
-        else if (opType.equals("ensure_stop_times_increase")){
-            handleTransformOperation(line, json, new EnsureStopTimesIncreaseUpdateStrategy());
-        }
-        else if (opType.equals("no_trips_with_block_id_and_frequencies")){
-            handleTransformOperation(line, json, new NoTripsWithBlockIdAndFrequenciesStrategy());
-        }
-        else if (opType.equals("KCMSuite")){
-          String baseUrl = "https://raw.github.com/wiki/camsys/onebusaway-application-modules";
-
-
-          configureStopNameUpdates(_transformer, baseUrl
-                  + "/KingCountyMetroStopNameModifications.md");
-
-
-          try {
-            GtfsTransformerLibrary.configureTransformation(_transformer, baseUrl
-                    + "/KingCountyMetroModifications.md");
-          } catch (TransformSpecificationException e) {
-            throw new RuntimeException(e);
-          }
-
-          _transformer.addTransform(new LocalVsExpressUpdateStrategy());
+        else if (opType.equals("configure_stop_name_updates")){
+            configureStopNameUpdates(_transformer, json.getString(ARG_PATH));
         }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);
@@ -884,8 +851,10 @@ public class TransformFactory {
 
   private void configureStopNameUpdates(GtfsTransformer transformer, String path) {
 
-    if (path == null)
+    if (path == null) {
+      _log.error("missing path to configure stop names");
       return;
+    }
 
     try {
       StopNameUpdateFactoryStrategy factory = new StopNameUpdateFactoryStrategy();

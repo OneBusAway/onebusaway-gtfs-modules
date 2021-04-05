@@ -137,7 +137,7 @@ public class GtfsTransformerMain {
       System.err.println(ex.getMessage());
       System.exit(-1);
     } catch (Exception ex) {
-      ex.printStackTrace();
+       ex.printStackTrace();
       System.exit(-1);
     }
   }

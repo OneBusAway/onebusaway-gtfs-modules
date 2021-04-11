@@ -35,9 +35,9 @@ public interface StopTimeProxy {
 
   public void setStopSequence(int stopSequence);
 
-  public Stop getStop();
+  public StopLocation getStop();
 
-  public void setStop(Stop stop);
+  public void setStop(StopLocation stop);
 
   public boolean isArrivalTimeSet();
 
@@ -86,4 +86,12 @@ public interface StopTimeProxy {
   public void setShapeDistTraveled(double shapeDistTraveled);
 
   public void clearShapeDistTraveled();
+
+  public BookingRule getPickupBookingRule();
+
+  public void setPickupBookingRule(BookingRule pickupBookingRule);
+
+  public BookingRule getDropOffBookingRule();
+
+  public void setDropOffBookingRule(BookingRule dropOffBookingRule);
 }

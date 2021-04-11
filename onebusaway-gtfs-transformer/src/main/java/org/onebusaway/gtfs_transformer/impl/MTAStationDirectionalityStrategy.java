@@ -15,6 +15,7 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
+import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.csv.MTAStationDirection;
@@ -66,9 +67,9 @@ public class MTAStationDirectionalityStrategy implements GtfsTransformStrategy {
         }
 
         for (StopTime st : dao.getAllStopTimes()) {
-            MTAStationDirection dir = dirByStation.get(st.getStop().getParentStation());
+            MTAStationDirection dir = dirByStation.get(((Stop) st.getStop()).getParentStation());
             if (dir == null) {
-                _log.debug("Missing station ID = {}", st.getStop().getParentStation());
+                _log.debug("Missing station ID = {}", ((Stop) st.getStop()).getParentStation());
                 continue;
             }
             String stopId = st.getStop().getId().getId();

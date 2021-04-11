@@ -37,6 +37,8 @@ public class GtfsTestData {
   
   public static final String TEST_AGENCY_GTFS = "org/onebusaway/gtfs/testagency";
 
+  public static final String LOCATIONS_GEOJSON = "org/onebusaway/gtfs/locations.geojson";
+
   public static File getCaltrainGtfs() {
     return getResourceAsTemporaryFile(CALTRAIN_GTFS);
   }
@@ -47,6 +49,10 @@ public class GtfsTestData {
 
   public static File getBartGtfs() {
     return getResourceAsTemporaryFile(BART_GTFS);
+  }
+
+  public static File getLocationsGeojson() {
+    return getResourceAsTemporaryFile(LOCATIONS_GEOJSON);
   }
 
   public static File getTestAgencyGtfs() {

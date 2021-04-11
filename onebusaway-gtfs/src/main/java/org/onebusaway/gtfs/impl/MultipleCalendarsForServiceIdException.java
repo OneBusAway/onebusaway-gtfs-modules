@@ -21,7 +21,7 @@ import org.onebusaway.gtfs.model.ServiceCalendar;
 
 /**
  * Indicates that multiple {@link ServiceCalendar} entities, as loaded from
- * {@link calendars.txt}, were found with the same
+ * calendars.txt, were found with the same
  * {@link ServiceCalendar#getServiceId()} value, a violation of the GTFS spec.
  * 
  * @author bdferris

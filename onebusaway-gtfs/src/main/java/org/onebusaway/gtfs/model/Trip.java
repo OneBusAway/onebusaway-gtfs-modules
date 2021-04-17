@@ -77,6 +77,19 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true)
   private String continuousDropOffMessage;
 
+  @CsvField(optional = true)
+  private Double meanDurationFactor;
+
+  @CsvField(optional = true)
+  private Double meanDurationOffset;
+
+  @CsvField(optional = true)
+  private Double safeDurationFactor;
+
+  @CsvField(optional = true)
+  private Double safeDurationOffset;
+
+
   @Deprecated
   @CsvField(optional = true, defaultValue = "0")
   private int tripBikesAllowed = 0;
@@ -125,6 +138,10 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.drtDropOffMessage = obj.drtDropOffMessage;
     this.continuousPickupMessage = obj.continuousPickupMessage;
     this.continuousDropOffMessage = obj.continuousDropOffMessage;
+    this.meanDurationFactor = obj.meanDurationFactor;
+    this.meanDurationOffset = obj.meanDurationOffset;
+    this.safeDurationFactor = obj.safeDurationFactor;
+    this.safeDurationOffset = obj.safeDurationOffset;
     this.tripBikesAllowed = obj.tripBikesAllowed;
     this.bikesAllowed = obj.bikesAllowed;
     this.fareId = obj.fareId;
@@ -267,6 +284,38 @@ public final class Trip extends IdentityBean<AgencyAndId> {
 
   public void setContinuousDropOffMessage(String continuousDropOffMessage) {
     this.continuousDropOffMessage = continuousDropOffMessage;
+  }
+
+  public Double getMeanDurationFactor() {
+    return meanDurationFactor;
+  }
+
+  public void setMeanDurationFactor(Double meanDurationFactor) {
+    this.meanDurationFactor = meanDurationFactor;
+  }
+
+  public Double getMeanDurationOffset() {
+    return meanDurationOffset;
+  }
+
+  public void setMeanDurationOffset(Double meanDurationOffset) {
+    this.meanDurationOffset = meanDurationOffset;
+  }
+
+  public Double getSafeDurationFactor() {
+    return safeDurationFactor;
+  }
+
+  public void setSafeDurationFactor(Double safeDurationFactor) {
+    this.safeDurationFactor = safeDurationFactor;
+  }
+
+  public Double getSafeDurationOffset() {
+    return safeDurationOffset;
+  }
+
+  public void setSafeDurationOffset(Double safeDurationOffset) {
+    this.safeDurationOffset = safeDurationOffset;
   }
 
   @Deprecated

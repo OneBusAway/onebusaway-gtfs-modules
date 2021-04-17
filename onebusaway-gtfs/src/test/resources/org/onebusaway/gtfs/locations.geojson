@@ -1,0 +1,25 @@
+
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "si_Wendenschlossstrasse",
+      "properties": {
+        "name": "Wendenschlossstrasse"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [13.576526641845703,52.44413508398945],
+            [13.575839996337889,52.429169943434495],
+            [13.590774536132812,52.4105872618342],
+            [13.60879898071289,52.43225757383383],
+            [13.576526641845703,52.44413508398945]
+          ]
+        ]
+      }
+    }
+  ]
+}

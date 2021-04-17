@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.hibernate.SessionFactory;
 import org.onebusaway.gtfs.model.*;
@@ -233,6 +234,33 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   @Override
   public Collection<Area> getAllAreas() {
     return _ops.find("from Area");
+  }
+
+  @Override
+  public Collection<LocationGroupElement> getAllLocationGroupElements() {
+    Collection<LocationGroup> groups = _ops.find("FROM LocationGroup");
+    return groups.stream().flatMap(group -> group.getLocations().stream().map(stopLocation -> {
+      LocationGroupElement locationGroupElement = new LocationGroupElement();
+      locationGroupElement.setLocationGroupId(group.getId());
+      locationGroupElement.setName(group.getName());
+      locationGroupElement.setLocation(stopLocation);
+      return locationGroupElement;
+    })).collect(Collectors.toList());
+  }
+
+  @Override
+  public Collection<LocationGroup> getAllLocationGroups() {
+    return _ops.find("FROM LocationGroup");
+  }
+
+  @Override
+  public Collection<Location> getAllLocations() {
+    return _ops.find("FROM Location");
+  }
+
+  @Override
+  public Collection<BookingRule> getAllBookingRules() {
+    return _ops.find("from BookingRule");
   }
 
   @Override

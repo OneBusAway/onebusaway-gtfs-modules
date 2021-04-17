@@ -185,29 +185,46 @@
         </component>
     </class>
 
-    <class name="org.onebusaway.gtfs.model.Stop" table="gtfs_stops">
+    <class name="org.onebusaway.gtfs.model.StopLocation">
         <composite-id name="id" class="org.onebusaway.gtfs.model.AgencyAndId">
             <key-property name="agencyId" length="50" />
             <key-property name="id" />
         </composite-id>
-        <property name="code" />
-        <property name="name" />
-        <property name="desc" column="description" />
-        <property name="direction" />
-        <property name="lat" />
-        <property name="lon" />
-        <property name="zoneId" />
-        <property name="url" />
-        <property name="locationType" />
-        <property name="parentStation" />
-        <property name="timezone" />
-        <property name="vehicleType" />
-        <property name="wheelchairBoarding" />
-        <property name="platformCode" />
-        <many-to-one name="level">
-            <column name="level_agencyId" length="50" />
-            <column name="level_id" />
-        </many-to-one>
+        <property name="name"/>
+        <union-subclass name="org.onebusaway.gtfs.model.Stop" table="gtfs_stops">
+            <property name="code" />
+            <property name="desc" column="description" />
+            <property name="direction" />
+            <property name="lat" />
+            <property name="lon" />
+            <property name="zoneId" />
+            <property name="url" />
+            <property name="locationType" />
+            <property name="parentStation" />
+            <property name="timezone" />
+            <property name="vehicleType" />
+            <property name="wheelchairBoarding" />
+            <property name="platformCode" />
+            <many-to-one name="level">
+                <column name="level_agencyId" length="50" />
+                <column name="level_id" />
+            </many-to-one>
+        </union-subclass>
+        <union-subclass name="org.onebusaway.gtfs.model.Location" table="gtfs_locations">
+            <property name="geometry" />
+        </union-subclass>
+        <union-subclass name="org.onebusaway.gtfs.model.LocationGroup" table="gtfs_location_groups">
+            <set name="locations" >
+                <key>
+                    <column name="stop_agencyId" length="50" />
+                    <column name="stop_id" />
+                </key>
+                <many-to-many class="org.onebusaway.gtfs.model.StopLocation">
+                    <column name="agencyId" length="50" />
+                    <column name="id" />
+                </many-to-many>
+            </set>
+        </union-subclass>
     </class>
 
     <class name="org.onebusaway.gtfs.model.StopTime" table="gtfs_stop_times">
@@ -320,6 +337,27 @@
 
         <property name="index" />
         <property name="name" />
+    </class>
+
+    <class name="org.onebusaway.gtfs.model.BookingRule" table="gtfs_booking_rules">
+        <composite-id name="id" class="org.onebusaway.gtfs.model.AgencyAndId">
+            <key-property name="agencyId" length="50" />
+            <key-property name="id" />
+        </composite-id>
+        <property name="type" />
+        <property name="priorNoticeDurationMin" />
+        <property name="priorNoticeDurationMax" />
+        <property name="priorNoticeLastDay" />
+        <property name="priorNoticeLastTime" />
+        <property name="priorNoticeStartDay" />
+        <property name="priorNoticeStartTime" />
+        <property name="priorNoticeServiceId" />
+        <property name="message" />
+        <property name="pickupMessage" />
+        <property name="dropOffMessage" />
+        <property name="phoneNumber" />
+        <property name="infoUrl" />
+        <property name="url" />
     </class>
 
 </hibernate-mapping>

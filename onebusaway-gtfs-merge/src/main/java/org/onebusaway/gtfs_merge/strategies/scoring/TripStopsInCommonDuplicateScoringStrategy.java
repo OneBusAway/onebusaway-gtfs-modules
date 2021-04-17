@@ -19,8 +19,8 @@ import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
+import org.onebusaway.gtfs.model.StopLocation;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
@@ -30,38 +30,29 @@ import org.onebusaway.gtfs_merge.util.CacheByEntity.CacheGetter;
 public class TripStopsInCommonDuplicateScoringStrategy
     implements DuplicateScoringStrategy<Trip> {
 
-  private CacheByEntity<Trip, SortedSet<Stop>> _cache = new CacheByEntity<Trip, SortedSet<Stop>>(
-      getStops);
+  private CacheByEntity<Trip, SortedSet<StopLocation>> _cache = new CacheByEntity<>(getStops);
 
   @Override
   public double score(GtfsMergeContext context, Trip source, Trip target) {
-    SortedSet<Stop> sourceStops = getStopsForTrip(context.getSource(), source);
-    SortedSet<Stop> targetStops = getStopsForTrip(context.getTarget(), target);
+    SortedSet<StopLocation> sourceStops = getStopsForTrip(context.getSource(), source);
+    SortedSet<StopLocation> targetStops = getStopsForTrip(context.getTarget(), target);
     return DuplicateScoringSupport.scoreElementOverlap(sourceStops,
         targetStops);
   }
 
-  private SortedSet<Stop> getStopsForTrip(GtfsRelationalDao dao, Trip trip) {
+  private SortedSet<StopLocation> getStopsForTrip(GtfsRelationalDao dao, Trip trip) {
     return _cache.getItemForEntity(dao, trip);
   }
 
   // It's sufficient that they're sorted in SOME way
-  private static final Comparator<Stop> stopComparator = new Comparator<Stop>() {
-    @Override
-    public int compare(Stop s, Stop t) {
-      return s.hashCode() - t.hashCode();
-    }
-  };
+  private static final Comparator<StopLocation> stopComparator = Comparator.comparingInt(Object::hashCode);
 
-  private static CacheGetter<Trip, SortedSet<Stop>> getStops = new CacheGetter<Trip, SortedSet<Stop>>() {
-    @Override
-    public SortedSet<Stop> getItemForEntity(GtfsRelationalDao dao, Trip trip) {
-      SortedSet<Stop> stops = new TreeSet<Stop>(stopComparator);
+  private static CacheGetter<Trip, SortedSet<StopLocation>> getStops = (dao, trip) -> {
+    SortedSet<StopLocation> stops = new TreeSet<>(stopComparator);
 
-      for (StopTime stopTime : dao.getStopTimesForTrip(trip)) {
-        stops.add(stopTime.getStop());
-      }
-      return stops;
+    for (StopTime stopTime : dao.getStopTimesForTrip(trip)) {
+      stops.add(stopTime.getStop());
     }
+    return stops;
   };
 }

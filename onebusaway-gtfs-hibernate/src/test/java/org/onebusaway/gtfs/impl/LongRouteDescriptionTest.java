@@ -23,8 +23,6 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,14 +41,9 @@ public class LongRouteDescriptionTest {
 
   @BeforeClass
   public static void setup() throws IOException {
-
     Configuration config = new Configuration();
     config = config.configure("org/onebusaway/gtfs/hibernate-configuration.xml");
-    ServiceRegistry serviceRegistry
-            = new ServiceRegistryBuilder().applySettings(
-                    config.getProperties()
-    ).buildServiceRegistry();
-    _sessionFactory = config.buildSessionFactory(serviceRegistry);
+    _sessionFactory = config.buildSessionFactory();
 
     _dao = new HibernateGtfsRelationalDaoImpl(_sessionFactory);
 

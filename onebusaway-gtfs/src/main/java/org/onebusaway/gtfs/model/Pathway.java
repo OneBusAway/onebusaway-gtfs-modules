@@ -48,7 +48,7 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   private AgencyAndId id;
 
   @Deprecated @CsvField(optional = true)
-  private int pathwayType;
+  private int pathwayType = MISSING_VALUE;
 
   @CsvField(name = "from_stop_id", mapping = EntityFieldMappingFactory.class)
   private Stop fromStop;
@@ -56,8 +56,10 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   @CsvField(name = "to_stop_id", mapping = EntityFieldMappingFactory.class)
   private Stop toStop;
 
+  @CsvField
   private int pathwayMode;
 
+  @CsvField
   private int isBidirectional;
 
   @CsvField(optional = true)
@@ -287,6 +289,16 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   @Deprecated
   public int getPathwayType() {
     return pathwayType;
+  }
+
+  @Deprecated
+  public boolean isPathwayTypeSet() {
+    return pathwayType != MISSING_VALUE;
+  }
+
+  @Deprecated
+  public void clearPathwayType() {
+    this.pathwayType = MISSING_VALUE;
   }
 
 

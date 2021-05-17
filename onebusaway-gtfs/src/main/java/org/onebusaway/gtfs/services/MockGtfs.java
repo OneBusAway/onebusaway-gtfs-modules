@@ -318,6 +318,89 @@ public class MockGtfs {
     putFile("stop_times.txt", b.build());
   }
 
+  /**
+   * Accept shape_dist_traveled and timepoints for testing.
+   * @param tripIds
+   * @param stopIds
+   * @param distances
+   * @param timepoints
+   */
+  public void putStopTimesWithDistances(String tripIds, String stopIds, String distances, String timepoints) {
+    List<String> tripIdColumn = new ArrayList<String>();
+    List<String> stopIdColumn = new ArrayList<String>();
+    List<String> arrivalTimeColumn = new ArrayList<String>();
+    List<String> departureTimeColumn = new ArrayList<String>();
+    List<String> stopSequenceColumn = new ArrayList<String>();
+    List<String> timepointColumn = new ArrayList<String>();
+    List<String> shapeDistColumn = new ArrayList<String>();
+
+    String[] expandedTimepoints = timepoints == null || timepoints.isEmpty()
+            ? new String[0]
+            : timepoints.split(",");
+
+
+    String[] expandedTripIds = tripIds.isEmpty() ? new String[0]
+            : tripIds.split(",");
+    List<List<String>> expandedStopIds = new ArrayList<List<String>>();
+    if (!stopIds.isEmpty()) {
+      for (String stopIdsEntry : stopIds.split("\\|")) {
+        expandedStopIds.add(Arrays.asList(stopIdsEntry.split(",")));
+      }
+    }
+
+    if (expandedTripIds.length > 1) {
+      // not implemented yet
+      throw new UnsupportedOperationException("Multiple trips not currently supported");
+    }
+
+    if (expandedStopIds.size() != 1
+            && expandedStopIds.size() != expandedTripIds.length) {
+      throw new IllegalArgumentException("given " + expandedTripIds.length
+              + " trip_id values, expected either 1 or " + expandedTripIds.length
+              + " stop_id lists, but instead found " + expandedStopIds.size());
+    }
+
+    String[] expandedShapeDistances = distances.isEmpty() ? new String[0]
+            : distances.split(",");
+
+    int startTime = 9 * 60 * 60;
+    for (int i = 0; i < expandedTripIds.length; ++i) {
+      String tripId = expandedTripIds[i];
+      List<String> specificStopIds = expandedStopIds.get(expandedStopIds.size() == 1
+              ? 0 : i);
+      int t = startTime;
+      for (int stopSequence = 0; stopSequence < specificStopIds.size(); stopSequence++) {
+        String stopId = specificStopIds.get(stopSequence);
+        tripIdColumn.add(tripId);
+        stopIdColumn.add(stopId);
+        stopSequenceColumn.add(Integer.toString(stopSequence));
+        String timeString = StopTimeFieldMappingFactory.getSecondsAsString(t);
+        arrivalTimeColumn.add(timeString);
+        departureTimeColumn.add(timeString);
+        if (expandedTimepoints.length != 1) {
+          if (expandedTimepoints.length > stopSequence) {
+            timepointColumn.add(expandedTimepoints[stopSequence]);
+          } else {
+            timepointColumn.add("0");
+          }
+        }
+        shapeDistColumn.add(expandedShapeDistances[stopSequence]);
+        t += 5 * 60;
+      }
+      startTime += 30 * 60;
+    }
+
+    TableBuilder b = new TableBuilder(tripIdColumn.size());
+    b.addColumnSpec("trip_id", tripIdColumn);
+    b.addColumnSpec("stop_id", stopIdColumn);
+    b.addColumnSpec("arrival_time", arrivalTimeColumn);
+    b.addColumnSpec("departure_time", departureTimeColumn);
+    b.addColumnSpec("stop_sequence", stopSequenceColumn);
+    b.addColumnSpec("timepoint", timepointColumn);
+    b.addColumnSpec("shape_dist_traveled", shapeDistColumn);
+    putFile("stop_times.txt", b.build());
+  }
+
   public void putDefaultStopTimes() {
     putDefaultTrips();
     putDefaultStops();

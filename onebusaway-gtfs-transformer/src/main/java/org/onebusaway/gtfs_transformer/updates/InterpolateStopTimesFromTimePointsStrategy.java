@@ -32,8 +32,16 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
- * inspired by and ported from onebusaway-application-modules
+ * Delete all stop times (arrival and departure) that are not timepoints
+ * and re-interpolate those times with second precision.
+ *
+ * For GTFS that has stops close together but also has minute precision on
+ * arrival/departure times.  These stops travel distance over no time which
+ * can cause issues with downstream systems.
+ *
+ * Inspired by and ported from onebusaway-application-modules
  * StopTimeEntriesFactory.
+ *
  */
 public class InterpolateStopTimesFromTimePointsStrategy implements
         GtfsTransformStrategy {

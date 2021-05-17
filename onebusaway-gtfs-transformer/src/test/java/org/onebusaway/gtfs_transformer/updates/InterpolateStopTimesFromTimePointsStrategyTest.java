@@ -101,6 +101,57 @@ public class InterpolateStopTimesFromTimePointsStrategyTest {
 
   }
 
+  @Test
+  /**
+   * ensure we handle first stop on trip not a timepoint.
+   */
+  public void runFirstStopNonTimepoint() throws Exception {
+    _gtfs.putAgencies(1);
+    _gtfs.putStops(7);
+    _gtfs.putRoutes(1);
+    _gtfs.putTrips(1, "r0", "sid0");
+    _gtfs.putStopTimesWithDistances("t0",
+            "51609,42319,5247,5249,56096,16117",
+            "0,340.1,2242.3,3166,8591.6,15005.6",
+            "0,1,0,1,1,0");
+    GtfsMutableRelationalDao dao = _gtfs.read();
+
+    _strategy.run(_context, dao);
+
+    Collection<Trip> allTrips = dao.getAllTrips();
+    assertEquals(1, allTrips.size());
+    Trip trip = allTrips.iterator().next();
+    List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
+    assertEquals(6, stopTimes.size());
+
+    assertEquals(0, stopTimes.get(0).getTimepoint());
+    assertTrue(stopTimes.get(0).isArrivalTimeSet());
+    assertTrue(stopTimes.get(0).isShapeDistTraveledSet());
+    assertEquals(0, stopTimes.get(0).getShapeDistTraveled(), 0.001);
+    assertEquals(time(9,5), stopTimes.get(0).getArrivalTime());
+
+    assertEquals(1, stopTimes.get(1).getTimepoint());
+    assertTrue(stopTimes.get(1).isArrivalTimeSet());
+    assertEquals(time(9,5), stopTimes.get(1).getArrivalTime());
+
+    assertEquals(0, stopTimes.get(2).getTimepoint());
+    assertTrue(stopTimes.get(2).isArrivalTimeSet());
+    assertEquals(time(9, 11, 43), stopTimes.get(2).getArrivalTime());
+
+    assertEquals(1, stopTimes.get(3).getTimepoint());
+    assertTrue(stopTimes.get(3).isArrivalTimeSet());
+    assertEquals(time(9,15), stopTimes.get(3).getArrivalTime());
+
+    assertEquals(1, stopTimes.get(4).getTimepoint());
+    assertTrue(stopTimes.get(4).isArrivalTimeSet());
+    assertEquals(time(9,20), stopTimes.get(4).getArrivalTime());
+
+    assertEquals(0, stopTimes.get(5).getTimepoint());
+    assertTrue(stopTimes.get(5).isArrivalTimeSet());
+    assertEquals(time(9,20), stopTimes.get(5).getArrivalTime());
+
+  }
+
   public static int time(int hour, int minute) {
     return time(hour, minute, 0);
   }

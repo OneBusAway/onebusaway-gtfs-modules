@@ -150,6 +150,10 @@ public class StopTimeArray extends AbstractList<StopTime> {
     this.shapeDistTraveled = Arrays.copyOf(this.shapeDistTraveled, newLength);
     this.pickupBookingRules = Arrays.copyOf(this.pickupBookingRules, newLength);
     this.dropOffBookingRules = Arrays.copyOf(this.dropOffBookingRules, newLength);
+    this.safeOffsets = Arrays.copyOf(this.safeOffsets, newLength);
+    this.safeFactors = Arrays.copyOf(this.safeFactors, newLength);
+    this.meanOffsets = Arrays.copyOf(this.meanOffsets, newLength);
+    this.meanFactors = Arrays.copyOf(this.meanFactors, newLength);
   }
 
   private class StopTimeIterator implements Iterator<StopTime> {

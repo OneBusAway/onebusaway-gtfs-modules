@@ -134,6 +134,19 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, name = "note_id", mapping = EntityFieldMappingFactory.class, order = -1)
   private Note note;
 
+  // See https://github.com/MobilityData/gtfs-flex/blob/master/spec/reference.md
+  @CsvField(optional = true, name = "mean_duration_factor")
+  private int meanDurationFactor = MISSING_VALUE;
+
+  @CsvField(optional = true, name = "mean_duration_offset", mapping = StopTimeFieldMappingFactory.class)
+  private int meanDurationOffset = MISSING_VALUE;
+    
+  @CsvField(optional = true, name = "safe_duration_factor")
+  private int safeDurationFactor = MISSING_VALUE;
+
+  @CsvField(optional = true, name = "safe_duration_offset", mapping = StopTimeFieldMappingFactory.class)
+  private int safeDurationOffset = MISSING_VALUE;
+  
   public StopTime() {
 
   }
@@ -168,6 +181,10 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.note = st.note;
     this.pickupBookingRule = st.pickupBookingRule;
     this.dropOffBookingRule = st.dropOffBookingRule;
+    this.safeDurationFactor= st.safeDurationFactor;
+    this.safeDurationOffset= st.safeDurationOffset;
+    this.meanDurationOffset= st.meanDurationOffset;
+    this.meanDurationFactor= st.meanDurationFactor;
   }
 
   public Integer getId() {
@@ -617,4 +634,50 @@ public final class StopTime extends IdentityBean<Integer> implements
         + StopTimeFieldMappingFactory.getSecondsAsString(getDepartureTime())
         + ")";
   }
+
+	public int getMeanDurationFactor() {
+		return meanDurationFactor;
+	}
+	
+	public void setMeanDurationFactor(int meanDurationFactor) {
+		this.meanDurationFactor = meanDurationFactor;
+	}
+	
+	public int getMeanDurationOffset() {
+		return meanDurationOffset;
+	}
+	
+	public void setMeanDurationOffset(int meanDurationOffset) {
+		this.meanDurationOffset = meanDurationOffset;
+	}
+	
+	public int getSafeDurationFactor() {
+	    if (proxy != null) {
+	        return proxy.getSafeDurationFactor();
+	      }
+	      return this.safeDurationFactor;
+	}
+	
+	public void setSafeDurationFactor(int safeDurationFactor) {
+	    if (proxy != null) {
+	        proxy.setSafeDurationFactor(safeDurationFactor);
+	        return;
+	      }
+	      this.safeDurationFactor = safeDurationFactor;
+	}
+	
+	public int getSafeDurationOffset() {
+	    if (proxy != null) {
+	        return proxy.getSafeDurationOffset();
+	      }
+	      return this.safeDurationOffset;
+	}
+	
+	public void setSafeDurationOffset(int safeDurationOffset) {
+	    if (proxy != null) {
+	        proxy.setSafeDurationOffset(safeDurationOffset);
+	        return;
+	      }
+	    this.safeDurationOffset = safeDurationOffset;
+	}
 }

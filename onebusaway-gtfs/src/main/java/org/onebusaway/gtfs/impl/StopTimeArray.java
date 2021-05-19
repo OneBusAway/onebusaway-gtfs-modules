@@ -57,6 +57,14 @@ public class StopTimeArray extends AbstractList<StopTime> {
 
   private BookingRule[] dropOffBookingRules = new BookingRule[0];
 
+  private int[] meanOffsets = new int[0];
+
+  private int[] safeOffsets = new int[0];
+  
+  private int[] meanFactors = new int[0];
+
+  private int[] safeFactors = new int[0];
+  
   public void trimToSize() {
     setLength(size);
   }
@@ -82,7 +90,12 @@ public class StopTimeArray extends AbstractList<StopTime> {
     dropOffTypes[index] = stopTime.getDropOffType();
     shapeDistTraveled[index] = stopTime.getShapeDistTraveled();
     pickupBookingRules[index] = stopTime.getPickupBookingRule();
-    dropOffBookingRules[index] = stopTime.getDropOffBookingRule();
+    dropOffBookingRules[index] = stopTime.getDropOffBookingRule();    
+    safeOffsets[index] = stopTime.getSafeDurationOffset();
+    safeFactors[index] = stopTime.getSafeDurationFactor();
+    meanOffsets[index] = stopTime.getMeanDurationOffset();
+    meanFactors[index] = stopTime.getMeanDurationFactor();
+    
     return true;
   }
 
@@ -352,6 +365,46 @@ public class StopTimeArray extends AbstractList<StopTime> {
     public void setDropOffBookingRule(BookingRule dropOffBookingRule) {
       dropOffBookingRules[index] = dropOffBookingRule;
     }
+
+	@Override
+	public int getMeanDurationFactor() {
+		return meanOffsets[index];
+	}
+
+	@Override
+	public void setMeanDurationFactor(int meanDurationFactor) {
+		meanFactors[index] = meanDurationFactor;		
+	}
+
+	@Override
+	public int getMeanDurationOffset() {
+		return meanOffsets[index];
+	}
+
+	@Override
+	public void setMeanDurationOffset(int meanDurationOffset) {
+		meanOffsets[index] = meanDurationOffset;
+	}
+
+	@Override
+	public int getSafeDurationFactor() {
+		return safeFactors[index];
+	}
+
+	@Override
+	public void setSafeDurationFactor(int safeDurationFactor) {
+		safeFactors[index] = safeDurationFactor;
+	}
+
+	@Override
+	public int getSafeDurationOffset() {
+		return safeOffsets[index];
+	}
+
+	@Override
+	public void setSafeDurationOffset(int safeDurationOffset) {
+		safeOffsets[index] = safeDurationOffset;
+	}
 
   }
 }

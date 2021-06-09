@@ -37,6 +37,7 @@ public class GtfsEntitySchemaFactory {
     List<Class<?>> entityClasses = new ArrayList<Class<?>>();
     entityClasses.add(FeedInfo.class);
     entityClasses.add(Agency.class);
+    entityClasses.add(Area.class);
     entityClasses.add(Block.class);
     entityClasses.add(BookingRule.class);
     entityClasses.add(ShapePoint.class);
@@ -63,6 +64,8 @@ public class GtfsEntitySchemaFactory {
     Map<Class<?>, Comparator<?>> comparators = new HashMap<Class<?>, Comparator<?>>();
     comparators.put(Agency.class,
         getComparatorForIdentityBeanType(Agency.class));
+    comparators.put(Area.class,
+            getComparatorForIdentityBeanType(Area.class));
     comparators.put(Block.class,
         getComparatorForIdentityBeanType(Block.class));
     comparators.put(Route.class, getComparatorForIdentityBeanType(Route.class));

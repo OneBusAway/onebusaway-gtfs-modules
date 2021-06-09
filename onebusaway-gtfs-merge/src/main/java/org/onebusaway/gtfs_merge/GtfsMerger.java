@@ -33,6 +33,7 @@ import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
 import org.onebusaway.gtfs_merge.strategies.AgencyMergeStrategy;
+import org.onebusaway.gtfs_merge.strategies.AreaMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.EntityMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.FareAttributeMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.FareRuleMergeStrategy;
@@ -56,6 +57,8 @@ public class GtfsMerger {
       "00");
 
   private EntityMergeStrategy _agencyStrategy = new AgencyMergeStrategy();
+
+  private EntityMergeStrategy _areaStrategy = new AreaMergeStrategy();
 
   private EntityMergeStrategy _stopStrategy = new StopMergeStrategy();
 
@@ -114,6 +117,10 @@ public class GtfsMerger {
 
   public void setFareRuleStrategy(EntityMergeStrategy fareRuleStrategy) {
     _fareRuleStrategy = fareRuleStrategy;
+  }
+
+  public void setAreaStrategy(AreaMergeStrategy areaStrategy) {
+    _areaStrategy = areaStrategy;
   }
 
   public EntityMergeStrategy getEntityMergeStrategyForEntityType(
@@ -213,6 +220,7 @@ public class GtfsMerger {
 
   private void buildStrategies(List<EntityMergeStrategy> strategies) {
     strategies.add(_agencyStrategy);
+    strategies.add(_areaStrategy);
     strategies.add(_stopStrategy);
     strategies.add(_serviceCalendarStrategy);
     strategies.add(_routeStrategy);
@@ -223,4 +231,5 @@ public class GtfsMerger {
     strategies.add(_fareAttributeStrategy);
     strategies.add(_fareRuleStrategy);
   }
+
 }

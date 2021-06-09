@@ -29,6 +29,14 @@ public interface StopTimeProxy {
 
   public Trip getTrip();
 
+  public Area getStartServiceArea();
+
+  public void setStartServiceArea(Area area);
+
+  public Area getEndServiceArea();
+
+  public void setEndServiceArea(Area area);
+
   public void setTrip(Trip trip);
 
   public int getStopSequence();

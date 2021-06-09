@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.onebusaway.gtfs.model.Area;
 import org.onebusaway.gtfs.model.BookingRule;
 import org.onebusaway.gtfs.model.StopLocation;
 import org.onebusaway.gtfs.model.StopTime;
@@ -34,6 +35,10 @@ public class StopTimeArray extends AbstractList<StopTime> {
   private Trip[] trips = new Trip[0];
 
   private StopLocation[] stops = new StopLocation[0];
+
+  private Area[] startServiceAreas = new Area[0];
+
+  private Area[] endServiceAreas = new Area[0];
 
   private int[] arrivalTimes = new int[0];
 
@@ -79,6 +84,8 @@ public class StopTimeArray extends AbstractList<StopTime> {
     size++;
     ensureCapacity(size);
     trips[index] = stopTime.getTrip();
+    startServiceAreas[index] = stopTime.getStartServiceArea();
+    endServiceAreas[index] = stopTime.getEndServiceArea();
     stops[index] = stopTime.getStop();
     arrivalTimes[index] = stopTime.getArrivalTime();
     departureTimes[index] = stopTime.getDepartureTime();
@@ -138,6 +145,8 @@ public class StopTimeArray extends AbstractList<StopTime> {
 
   private void setLength(int newLength) {
     this.trips = Arrays.copyOf(this.trips, newLength);
+    this.startServiceAreas = Arrays.copyOf(this.startServiceAreas, newLength);
+    this.endServiceAreas = Arrays.copyOf(this.endServiceAreas, newLength);
     this.stops = Arrays.copyOf(this.stops, newLength);
     this.arrivalTimes = Arrays.copyOf(this.arrivalTimes, newLength);
     this.departureTimes = Arrays.copyOf(this.departureTimes, newLength);
@@ -208,6 +217,22 @@ public class StopTimeArray extends AbstractList<StopTime> {
     @Override
     public void setTrip(Trip trip) {
       trips[index] = trip;
+    }
+
+    @Override
+    public Area getStartServiceArea() { return startServiceAreas[index]; }
+
+    @Override
+    public void setStartServiceArea(Area area) {
+      startServiceAreas[index] = area;
+    }
+
+    @Override
+    public Area getEndServiceArea() { return endServiceAreas[index]; }
+
+    @Override
+    public void setEndServiceArea(Area area) {
+      endServiceAreas[index] = area;
     }
 
     @Override

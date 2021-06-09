@@ -27,6 +27,9 @@ public final class Area extends IdentityBean<AgencyAndId> {
   @CsvField(name="area_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 
+  @CsvField(name="area_name", optional = true)
+  private String name;
+
   private String wkt;
 
   public Area() {
@@ -35,6 +38,7 @@ public final class Area extends IdentityBean<AgencyAndId> {
 
   public Area(Area a) {
     this.id = a.id;
+    this.name = a.name;
     this.wkt = a.wkt;
   }
 
@@ -50,6 +54,10 @@ public final class Area extends IdentityBean<AgencyAndId> {
   public void setId(AgencyAndId areaId) {
     this.id = areaId;
   }
+
+  public String getName() { return name;}
+
+  public void setName(String name) { this.name = name; }
 
   public String getWkt() {
     return wkt;

@@ -254,10 +254,13 @@ public class InterpolateStopTimesFromTimePointsStrategy implements
         int timepoints = countTimepoints(stopTimes);
         
         if (timepoints > 1) {
+          int count = 0;
           for (StopTime stopTime : stopTimes) {
-
+            count++;
             // if not a timepoint wipe out the time to force interpolation
-            if (0 == stopTime.getTimepoint()) {
+            // AND not the last stopTime
+            if (0 == stopTime.getTimepoint()
+                  && count < stopTimes.size()) {
               stopTime.clearArrivalTime();
               stopTime.clearDepartureTime();
               dao.updateEntity(stopTime);

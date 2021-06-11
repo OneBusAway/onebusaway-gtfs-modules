@@ -148,7 +148,7 @@ public class InterpolateStopTimesFromTimePointsStrategyTest {
 
     assertEquals(0, stopTimes.get(5).getTimepoint());
     assertTrue(stopTimes.get(5).isArrivalTimeSet());
-    assertEquals(time(9,20), stopTimes.get(5).getArrivalTime());
+    assertEquals(time(9,25), stopTimes.get(5).getArrivalTime());
 
   }
 

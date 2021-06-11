@@ -516,18 +516,33 @@ public final class StopTime extends IdentityBean<Integer> implements
   }
 
   public Area getStartServiceArea() {
+    if (proxy != null) {
+      return proxy.getStartServiceArea();
+    }
     return startServiceArea;
   }
 
   public void setStartServiceArea(Area startServiceArea) {
+    if (proxy != null) {
+      proxy.setStartServiceArea(startServiceArea);
+      return;
+    }
     this.startServiceArea = startServiceArea;
   }
 
   public Area getEndServiceArea() {
+    if (proxy != null) {
+      return proxy.getEndServiceArea();
+    }
     return endServiceArea;
   }
 
+
   public void setEndServiceArea(Area endServiceArea) {
+    if (proxy != null) {
+      proxy.setEndServiceArea(endServiceArea);
+      return;
+    }
     this.endServiceArea = endServiceArea;
   }
 

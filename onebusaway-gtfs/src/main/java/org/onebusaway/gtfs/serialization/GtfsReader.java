@@ -85,6 +85,7 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(FeedInfo.class);
     _entityClasses.add(Ridership.class);
     _entityClasses.add(Translation.class);
+    _entityClasses.add(Vehicle.class);
 
     CsvTokenizerStrategy tokenizerStrategy = new CsvTokenizerStrategy();
     tokenizerStrategy.getCsvParser().setTrimInitialWhitespace(true);
@@ -290,6 +291,9 @@ public class GtfsReader extends CsvEntityReader {
           _entityStore.saveEntity(locationGroup);
         }
         locationGroup.addLocation(locationGroupElement.getLocation());
+      } else if (entity instanceof Vehicle) {
+        Vehicle vehicle = (Vehicle) entity;
+        registerAgencyId(Vehicle.class, vehicle.getId());
       }
 
       if (entity instanceof IdentityBean<?>) {

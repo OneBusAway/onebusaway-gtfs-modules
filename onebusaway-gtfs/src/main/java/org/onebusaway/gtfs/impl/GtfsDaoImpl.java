@@ -125,6 +125,8 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getAllEntitiesForType(Ridership.class);
   }
 
+  public Collection<Vehicle> getAllVehicles() { return getAllEntitiesForType(Vehicle.class); }
+
   public Collection<Level> getAllLevels() {
     return getAllEntitiesForType(Level.class);
   }

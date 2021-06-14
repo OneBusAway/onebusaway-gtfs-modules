@@ -57,6 +57,7 @@ public class GtfsEntitySchemaFactory {
     entityClasses.add(Transfer.class);
     entityClasses.add(Ridership.class);
     entityClasses.add(BookingRule.class);
+    entityClasses.add(Vehicle.class);
     return entityClasses;
   }
 
@@ -77,6 +78,7 @@ public class GtfsEntitySchemaFactory {
     comparators.put(ServiceCalendar.class, new ServiceCalendarComparator());
     comparators.put(ServiceCalendarDate.class,
         new ServiceCalendarDateComparator());
+    comparators.put(Vehicle.class, getComparatorForIdentityBeanType(Vehicle.class));
     return comparators;
   }
 

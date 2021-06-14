@@ -24,7 +24,7 @@ import org.onebusaway.gtfs.serialization.mappings.TripAgencyIdFieldMappingFactor
 @CsvFields(filename = "trips.txt")
 public final class Trip extends IdentityBean<AgencyAndId> {
 
-  private static final long serialVersionUID = 2L;
+  private static final long serialVersionUID = 3L;
 
   @CsvField(name = "trip_id", mapping = TripAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
@@ -116,6 +116,15 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, name = "mta_trip_id")
   private String mtaTripId;
 
+  /*
+   * Custom extension representing boarding style.
+   * 0 = onboard fare payment, pay on entry
+   * 1 = offboard fare payment
+   * 2 = onboard fare payment, pay on exit
+   */
+  @CsvField(optional = true, name = "boarding_type")
+  private int boardingType;
+
   public Trip() {
 
   }
@@ -148,6 +157,7 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.note = obj.note;
     this.peakOffpeak = obj.peakOffpeak;
     this.mtaTripId = obj.mtaTripId;
+    this.boardingType = obj.boardingType;
   }
 
   public AgencyAndId getId() {
@@ -375,4 +385,9 @@ public final class Trip extends IdentityBean<AgencyAndId> {
 
   public void setMtaTripId(String mtaTripId) { this.mtaTripId = mtaTripId; }
 
+  public int getBoardingType() { return boardingType; }
+
+  public void setBoardingType(int boardingType) {
+    this.boardingType = boardingType;
+  }
 }

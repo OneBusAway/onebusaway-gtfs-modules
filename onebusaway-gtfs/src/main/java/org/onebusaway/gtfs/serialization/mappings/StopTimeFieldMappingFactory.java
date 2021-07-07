@@ -17,6 +17,8 @@
 package org.onebusaway.gtfs.serialization.mappings;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,7 +34,7 @@ import org.onebusaway.csv_entities.schema.FieldMappingFactory;
 
 public class StopTimeFieldMappingFactory implements FieldMappingFactory {
 
-  private static DecimalFormat _format = new DecimalFormat("00");
+  private static DecimalFormat _format = new DecimalFormat("00", new DecimalFormatSymbols(Locale.ENGLISH));
 
   private static Pattern _pattern = Pattern.compile("^(-{0,1}\\d+):(\\d{2}):(\\d{2})$");
 

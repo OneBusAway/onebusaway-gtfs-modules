@@ -132,7 +132,7 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         String feed = CloudContextService.getLikelyFeedName(dao);
 
-        es.publishMetric(CloudContextService.getNamespace(),"TripsInServiceToday","feed", feed,curSerTrips);
+        es.publishMetric(CloudContextService.getNamespace(),"SubwayTripsInServiceToday","feed", feed,curSerTrips);
 
         if (countNoHs > 0) {
             _log.error("There are trips with no headsign");

@@ -259,7 +259,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
             throw new IllegalStateException(
                     "There is no current service!!");
         }
-        es.publishMetric(CloudContextService.getNamespace(),"TripsInServiceToday","feed", feed,curSerTrips);
+        es.publishMetric(CloudContextService.getNamespace(),"BusTripsInServiceToday","feed", feed,curSerTrips);
 
         if (countNoHs > 0) {
             _log.error("There are trips with no headsign");

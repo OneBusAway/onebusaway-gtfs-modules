@@ -41,10 +41,8 @@ public class ValidateGTFS implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
         int countSt = 0;
-        int countCd = 0;
 
         int countNoSt = 0;
-        int countNoCd = 0;
         int curSerTrips = 0;
         int tomSerTrips = 0;
         int countNoHs = 0;
@@ -59,14 +57,6 @@ public class ValidateGTFS implements GtfsTransformStrategy {
                 countNoSt++;
             } else {
                 countSt++;
-            }
-
-            serviceAgencyAndId = trip.getServiceId();
-            if (dao.getCalendarDatesForServiceId(serviceAgencyAndId).size() == 0) {
-                countNoCd++;
-            }
-            else {
-                countCd++;
             }
 
             //check for current service
@@ -104,7 +94,6 @@ public class ValidateGTFS implements GtfsTransformStrategy {
                     }
                 }
             }
-
 
             //check for current service
             Date tomorrow = removeTime(addDays(new Date(), 1));
@@ -179,8 +168,8 @@ public class ValidateGTFS implements GtfsTransformStrategy {
             }
         }
 
-        es.publishMetric(CloudContextService.getNamespace(),"TripsInServiceToday","feed", feed,curSerTrips);
-        es.publishMetric(CloudContextService.getNamespace(),"TripsInServiceTomorrow","feed", feed,tomSerTrips);
+        es.publishMetric(CloudContextService.getNamespace(),"TripsWithServiceToday","feed", feed,curSerTrips);
+        es.publishMetric(CloudContextService.getNamespace(),"TripsWithServiceTomorrow","feed", feed,tomSerTrips);
 
         if (curSerTrips + tomSerTrips < 1) {
             throw new IllegalStateException(

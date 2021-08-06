@@ -29,11 +29,16 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-/*
-Used for subway service as it has specific logic for the subway routes and the express routes
- */
+/* checks number of routes on input GTFS and checks to see if there is service on the route
+ * sends metrics for number of active routes each day
+  * sends metrics for number of trips on each active route
+  * logs if a route has no service
+  * */
+
 public class VerifyRouteService implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(VerifyRouteService.class);
@@ -45,88 +50,83 @@ public class VerifyRouteService implements GtfsTransformStrategy {
 
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-        GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         String feed = CloudContextService.getLikelyFeedName(dao);
         ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
 
-        AgencyAndId refAgencyAndId = reference.getAllTrips().iterator().next().getId();
-
-        int curSerRoute = 0;
-        int alarmingRoutes = 0;
-        boolean missingRoute = false;
-        boolean missingService = false;
         Date today = removeTime(new Date());
-        //list of all routes in ATIS
-        Set<String> ATISrouteIds = new HashSet<>();
+        Date tomorrow = removeTime(addDays(new Date(), 1));
+        Date nextDay = removeTime(addDays(new Date(), 2));
+        Date dayAfterNext = removeTime(addDays(new Date(), 3));
 
-        //check for route specific current service
-        for (Route route : dao.getAllRoutes()) {
-            if (route.getId().getId().length() > 2) {
-                ATISrouteIds.add(route.getId().getId().substring(0,2));
-                _log.info("Adding route: {}", route.getId().getId().substring(0,2));
-            } else {
-                ATISrouteIds.add(route.getId().getId());
-                _log.info("Adding route: {}", route.getId().getId());
-            }
-            curSerRoute = 0;
-            triploop:
-            for (Trip trip1 : dao.getTripsForRoute(route)) {
-                for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip1.getServiceId())) {
-                    Date date = constructDate(calDate.getDate());
-                    if (calDate.getExceptionType() == 1 && date.equals(today)) {
-                        _log.info("ATIS has current service for route: {}", route.getId().getId());
-                        curSerRoute++;
-                        break triploop;
-                    }
-                }
-            }
-            if (curSerRoute == 0) {
-                _log.error("No current service for {}", route.getId().getId());
-                //if there is no current service, check that it should have service
-                //there are certain routes that don't run on the weekend or won't have service in reference
-                ServiceDate sToday = createServiceDate(today);
-                Route refRoute = reference.getRouteForId(new AgencyAndId(refAgencyAndId.getAgencyId(), route.getId().getId()));
-                reftriploop:
-                for (Trip refTrip : reference.getTripsForRoute(refRoute)) {
-                    Set<ServiceDate> activeDates = refCalendarService.getServiceDatesForServiceId(refTrip.getServiceId());
-                    if (activeDates.contains(sToday)) {
-                        //ignore express routes, MOTP-1184 MOTP-1259
-                        if (!route.getId().getId().contains("X")) {
-                            missingService = true;
-                            _log.info("Reference has service for this route today but ATIS has none: {}", route.getId());
-                            alarmingRoutes++;
-                        }
-                        break reftriploop;
-                    }
-                }
-            }
+        int numRoutesToday = hasRouteServiceForDate(dao, today, es);
+        if (!isWeekend(today)) {
+            es.publishMetric(CloudContextService.getNamespace(), "WeekdayActiveSubwayRoutesToday", "feed", feed, numRoutesToday);
+        }
+        int numRoutesTommorrow = hasRouteServiceForDate(dao, tomorrow, es);
+        if (!isWeekend(tomorrow)) {
+            es.publishMetric(CloudContextService.getNamespace(), "WeekdayActiveSubwayRoutesTomorrow", "feed", feed, numRoutesTommorrow);
+        }
+        int numRoutesIn2Days = hasRouteServiceForDate(dao, nextDay, es);
+        if (!isWeekend(nextDay)) {
+            es.publishMetric(CloudContextService.getNamespace(), "WeekdayActiveSubwayRoutesIn2Days", "feed", feed, numRoutesIn2Days);
+        }
+        int numRoutesIn3Days = hasRouteServiceForDate(dao, dayAfterNext, es);
+        if (!isWeekend(dayAfterNext)) {
+            es.publishMetric(CloudContextService.getNamespace(), "WeekdayActiveSubwayRoutesIn3Days", "feed", feed, numRoutesIn3Days);
         }
 
-        int referenceRoutesInAtis = 0;
-        int referenceRoutesNotInAtis = 0;
-        //check that every route in reference GTFS is also in ATIS gtfs
-        for (Route route : reference.getAllRoutes()) {
-            if (!ATISrouteIds.contains(route.getId().getId())) {
-                missingRoute = true;
-                _log.error("ATIS GTFS missing route {}", route.getId());
-                referenceRoutesNotInAtis++;
-            }
-            else{
-                referenceRoutesInAtis++;
-            }
-        }
+        _log.info("Feed for metrics: {}", feed);
+        _log.info("Active routes: {}: {}; {}: {}; {}: {}; {}: {}",
+                formatDate(today), numRoutesToday, formatDate(tomorrow), numRoutesTommorrow, formatDate(nextDay), numRoutesIn2Days, formatDate(dayAfterNext), numRoutesIn3Days);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsToday", "feed", feed, numRoutesToday);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsTomorrow", "feed", feed, numRoutesTommorrow);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsIn2Days", "feed", feed, numRoutesIn2Days);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsIn3Days", "feed", feed, numRoutesIn3Days);
 
-        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefToday", "feed", feed, alarmingRoutes);
-        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsToday", "feed", feed, curSerRoute);
-        es.publishMetric(CloudContextService.getNamespace(), "RoutesInReferenceButNotAtis", "feed", feed, referenceRoutesNotInAtis);
-        es.publishMetric(CloudContextService.getNamespace(), "RoutesInReferenceAndAtis", "feed", feed, referenceRoutesInAtis);
-
-
-        if (missingService || missingRoute) {
+        if (numRoutesToday < 3) {
             throw new IllegalStateException(
                     "Route service missing in agency: " + dao.getAllAgencies().iterator().next());
         }
+    }
+
+    private int hasRouteServiceForDate(GtfsMutableRelationalDao dao, Date testDate, ExternalServices es) {
+        int numTripsOnDate = 0;
+        int activeRoutes = 0;
+
+        //check for route specific current service
+        for (Route route : dao.getAllRoutes()) {
+            numTripsOnDate = 0;
+            triploop:
+            for (Trip trip : dao.getTripsForRoute(route)) {
+                for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
+                    Date date = constructDate(calDate.getDate());
+                    if (calDate.getExceptionType() == 1 && date.equals(testDate)) {
+                        numTripsOnDate++;
+                    }
+                }
+            }
+            if (numTripsOnDate == 0) {
+                _log.info("No service for {} on {}", route.getId().getId(), testDate);
+            }
+            else {
+                activeRoutes++;
+                _log.info("Route: {} {} Number of trips: {}", route.getId().getId(), formatDate(testDate), numTripsOnDate);
+                //this metric is published each time any route is Active (has trips on given day)
+                String metricName = "TripsOnRoute" + route.getId().getId();
+                es.publishMetric(CloudContextService.getNamespace(), metricName, "day", formatDate(testDate), numTripsOnDate);
+            }
+        }
+        return activeRoutes;
+    }
+
+    private boolean isWeekend(Date date) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        int day = cal.get(Calendar.DAY_OF_WEEK);
+        if (day == Calendar.SUNDAY || day == Calendar.SATURDAY) {
+            return true;
+        }
+        return false;
     }
 
     private Date constructDate(ServiceDate date) {
@@ -148,6 +148,18 @@ public class VerifyRouteService implements GtfsTransformStrategy {
         calendar.set(Calendar.MILLISECOND, 0);
         date = calendar.getTime();
         return date;
+    }
+
+    private Date addDays(Date date, int daysToAdd) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, daysToAdd);
+        return cal.getTime();
+    }
+
+    private String formatDate(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM dd yyyy");
+        return dateFormat.format(date);
     }
 
     private ServiceDate createServiceDate(Date date) {

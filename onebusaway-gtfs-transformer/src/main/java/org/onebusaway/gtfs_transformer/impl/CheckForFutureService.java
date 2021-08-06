@@ -29,6 +29,10 @@ import org.slf4j.LoggerFactory;
 import java.util.Calendar;
 import java.util.Date;
 
+/* Checks the numbers of Trips with service today and next four days
+ * Metrics are logged and published to AWS
+ * can be used for Bus or Subway
+ */
 public class CheckForFutureService implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(CheckForFutureService.class);
@@ -41,9 +45,11 @@ public class CheckForFutureService implements GtfsTransformStrategy {
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
+        int tripsToday = 0;
         int tripsTomorrow = 0;
         int tripsNextDay = 0;
         int tripsDayAfterNext = 0;
+        Date today = removeTime(new Date());
         Date tomorrow = removeTime(addDays(new Date(), 1));
         Date nextDay = removeTime(addDays(new Date(), 2));
         Date dayAfterNext = removeTime(addDays(new Date(), 3));
@@ -53,15 +59,25 @@ public class CheckForFutureService implements GtfsTransformStrategy {
         String agency = dao.getAllAgencies().iterator().next().getId();
         String agencyName = dao.getAllAgencies().iterator().next().getName();
 
+        tripsToday = hasServiceForDate(dao, today);
         tripsTomorrow = hasServiceForDate(dao, tomorrow);
         tripsNextDay = hasServiceForDate(dao, nextDay);
         tripsDayAfterNext = hasServiceForDate(dao,dayAfterNext);
 
+        _log.info("Feed for metrics: {}, agency id: {}", feed, agencyName);
+        es.publishMetric(CloudContextService.getNamespace(), "TripsToday", "feed", feed, tripsToday);
         es.publishMetric(CloudContextService.getNamespace(), "TripsTomorrow", "feed", feed, tripsTomorrow);
         es.publishMetric(CloudContextService.getNamespace(), "TripsIn2Days", "feed", feed, tripsNextDay);
         es.publishMetric(CloudContextService.getNamespace(), "TripsIn3Days", "feed", feed, tripsDayAfterNext);
 
+        _log.info("TripsToday: {}, feed: {}, namespace: {}", tripsToday, feed, CloudContextService.getNamespace());
+        _log.info("TripsTomorrow: {}, feed: {}, namespace: {}", tripsTomorrow, feed, CloudContextService.getNamespace());
+        _log.info("TripsIn2Days: {}, feed: {}, namespace: {}", tripsNextDay, feed, CloudContextService.getNamespace());
+        _log.info("TripsIn3Days: {}, feed: {}, namespace: {}", tripsDayAfterNext, feed, CloudContextService.getNamespace());
 
+        if (tripsToday == 0) {
+            _log.error("Agency {} {} is missing service for today {}", agency, agencyName, tomorrow);
+        }
         if (tripsTomorrow == 0) {
             _log.error("Agency {} {} is missing service for tomorrow {}", agency, agencyName, tomorrow);
         }

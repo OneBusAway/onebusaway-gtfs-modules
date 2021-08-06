@@ -39,6 +39,10 @@ import java.net.URL;
 import java.util.*;
 import java.util.Set;
 
+/* Checks the numbers of Routes running on two input GTFS files and compares them.
+ * Used for comparing ATIS to Reference GTFS and reporting differences of ATIS routes that are missing service
+ * Looks at Routes running today through next 3 days
+ */
 public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(VerifyFutureRouteService.class);
@@ -81,27 +85,33 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
         String feed = CloudContextService.getLikelyFeedName(dao);
         ExternalServices es = new ExternalServicesBridgeFactory().getExternalServices();
+        String agencyName = dao.getAllAgencies().iterator().next().getName();
 
+        int[] tripsToday;
         int[] tripsTomorrow;
         int[] tripsNextDay;
         int[] tripsDayAfterNext;
+        Date today = removeTime(new Date());
         Date tomorrow = removeTime(addDays(new Date(), 1));
         Date nextDay = removeTime(addDays(new Date(), 2));
         Date dayAfterNext = removeTime(addDays(new Date(), 3));
 
+        tripsToday = hasRouteServiceForDate(dao, reference, refCalendarService, today, problemRoutes);
         tripsTomorrow = hasRouteServiceForDate(dao, reference, refCalendarService, tomorrow, problemRoutes);
         tripsNextDay = hasRouteServiceForDate(dao, reference, refCalendarService, nextDay, problemRoutes);
         tripsDayAfterNext = hasRouteServiceForDate(dao, reference, refCalendarService, dayAfterNext, problemRoutes);
 
-        _log.info("Active routes {}: {}, {}: {}, {}: {}",
-                tomorrow, tripsTomorrow, nextDay, tripsNextDay, dayAfterNext, tripsDayAfterNext);
+        _log.info("Feed for metrics: {}, agency name: {}", feed, agencyName);
+        _log.info("Active routes {}: {}, {}: {}, {}: {}, {}: {}",
+                today, tripsToday[ACTIVE_ROUTES], tomorrow, tripsTomorrow[ACTIVE_ROUTES], nextDay, tripsNextDay[ACTIVE_ROUTES], dayAfterNext, tripsDayAfterNext[ACTIVE_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsToday", "feed", feed, tripsToday[ACTIVE_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesNoTripsInAtisButInRefToday", "feed", feed, tripsToday[ALARMING_ROUTES]);
         es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsTomorrow", "feed", feed, tripsTomorrow[ACTIVE_ROUTES]);
-        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefTomorrow", "feed", feed, tripsTomorrow[ALARMING_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesNoTripsInAtisButInRefTomorrow", "feed", feed, tripsTomorrow[ALARMING_ROUTES]);
         es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsIn2Days", "feed", feed, tripsNextDay[ACTIVE_ROUTES]);
-        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefIn2Days", "feed", feed, tripsNextDay[ALARMING_ROUTES]);
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesNoTripsInAtisButInRefIn2Days", "feed", feed, tripsNextDay[ALARMING_ROUTES]);
         es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsIn3Days", "feed", feed, tripsDayAfterNext[ACTIVE_ROUTES]);
-        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefIn3Days", "feed", feed, tripsDayAfterNext[ALARMING_ROUTES]);
-
+        es.publishMetric(CloudContextService.getNamespace(), "RoutesNoTripsInAtisButInRefIn3Days", "feed", feed, tripsDayAfterNext[ALARMING_ROUTES]);
     }
 
     private int[] hasRouteServiceForDate(GtfsMutableRelationalDao dao, GtfsMutableRelationalDao reference,

@@ -62,13 +62,13 @@ public class StopTimeArray extends AbstractList<StopTime> {
 
   private BookingRule[] dropOffBookingRules = new BookingRule[0];
 
-  private int[] meanOffsets = new int[0];
+  private double[] meanOffsets = new double[0];
 
-  private int[] safeOffsets = new int[0];
+  private double[] safeOffsets = new double[0];
   
-  private int[] meanFactors = new int[0];
+  private double[] meanFactors = new double[0];
 
-  private int[] safeFactors = new int[0];
+  private double[] safeFactors = new double[0];
   
   public void trimToSize() {
     setLength(size);
@@ -396,42 +396,42 @@ public class StopTimeArray extends AbstractList<StopTime> {
     }
 
 	@Override
-	public int getMeanDurationFactor() {
+	public double getMeanDurationFactor() {
 		return meanOffsets[index];
 	}
 
 	@Override
-	public void setMeanDurationFactor(int meanDurationFactor) {
+	public void setMeanDurationFactor(double meanDurationFactor) {
 		meanFactors[index] = meanDurationFactor;		
 	}
 
 	@Override
-	public int getMeanDurationOffset() {
+	public double getMeanDurationOffset() {
 		return meanOffsets[index];
 	}
 
 	@Override
-	public void setMeanDurationOffset(int meanDurationOffset) {
+	public void setMeanDurationOffset(double meanDurationOffset) {
 		meanOffsets[index] = meanDurationOffset;
 	}
 
 	@Override
-	public int getSafeDurationFactor() {
+	public double getSafeDurationFactor() {
 		return safeFactors[index];
 	}
 
 	@Override
-	public void setSafeDurationFactor(int safeDurationFactor) {
+	public void setSafeDurationFactor(double safeDurationFactor) {
 		safeFactors[index] = safeDurationFactor;
 	}
 
 	@Override
-	public int getSafeDurationOffset() {
+	public double getSafeDurationOffset() {
 		return safeOffsets[index];
 	}
 
 	@Override
-	public void setSafeDurationOffset(int safeDurationOffset) {
+	public void setSafeDurationOffset(double safeDurationOffset) {
 		safeOffsets[index] = safeDurationOffset;
 	}
 

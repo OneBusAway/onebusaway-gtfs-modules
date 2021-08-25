@@ -136,16 +136,16 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   // See https://github.com/MobilityData/gtfs-flex/blob/master/spec/reference.md
   @CsvField(optional = true, name = "mean_duration_factor")
-  private int meanDurationFactor = MISSING_VALUE;
+  private double meanDurationFactor = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "mean_duration_offset", mapping = StopTimeFieldMappingFactory.class)
-  private int meanDurationOffset = MISSING_VALUE;
+  @CsvField(optional = true, name = "mean_duration_offset")
+  private double meanDurationOffset = MISSING_VALUE;
     
   @CsvField(optional = true, name = "safe_duration_factor")
-  private int safeDurationFactor = MISSING_VALUE;
+  private double safeDurationFactor = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "safe_duration_offset", mapping = StopTimeFieldMappingFactory.class)
-  private int safeDurationOffset = MISSING_VALUE;
+  @CsvField(optional = true, name = "safe_duration_offset")
+  private double safeDurationOffset = MISSING_VALUE;
   
   public StopTime() {
 
@@ -650,30 +650,30 @@ public final class StopTime extends IdentityBean<Integer> implements
         + ")";
   }
 
-	public int getMeanDurationFactor() {
+	public double getMeanDurationFactor() {
 		return meanDurationFactor;
 	}
 	
-	public void setMeanDurationFactor(int meanDurationFactor) {
+	public void setMeanDurationFactor(double meanDurationFactor) {
 		this.meanDurationFactor = meanDurationFactor;
 	}
 	
-	public int getMeanDurationOffset() {
+	public double getMeanDurationOffset() {
 		return meanDurationOffset;
 	}
 	
-	public void setMeanDurationOffset(int meanDurationOffset) {
+	public void setMeanDurationOffset(double meanDurationOffset) {
 		this.meanDurationOffset = meanDurationOffset;
 	}
 	
-	public int getSafeDurationFactor() {
+	public double getSafeDurationFactor() {
 	    if (proxy != null) {
 	        return proxy.getSafeDurationFactor();
 	      }
 	      return this.safeDurationFactor;
 	}
 	
-	public void setSafeDurationFactor(int safeDurationFactor) {
+	public void setSafeDurationFactor(double safeDurationFactor) {
 	    if (proxy != null) {
 	        proxy.setSafeDurationFactor(safeDurationFactor);
 	        return;
@@ -681,14 +681,14 @@ public final class StopTime extends IdentityBean<Integer> implements
 	      this.safeDurationFactor = safeDurationFactor;
 	}
 	
-	public int getSafeDurationOffset() {
+	public double getSafeDurationOffset() {
 	    if (proxy != null) {
 	        return proxy.getSafeDurationOffset();
 	      }
 	      return this.safeDurationOffset;
 	}
 	
-	public void setSafeDurationOffset(int safeDurationOffset) {
+	public void setSafeDurationOffset(double safeDurationOffset) {
 	    if (proxy != null) {
 	        proxy.setSafeDurationOffset(safeDurationOffset);
 	        return;

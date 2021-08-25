@@ -103,19 +103,19 @@ public interface StopTimeProxy {
 
   public void setDropOffBookingRule(BookingRule dropOffBookingRule);
 
-  public int getMeanDurationFactor();
+  public double getMeanDurationFactor();
 	
-  public void setMeanDurationFactor(int meanDurationFactor);	
+  public void setMeanDurationFactor(double meanDurationFactor);	
 	
-  public int getMeanDurationOffset();
+  public double getMeanDurationOffset();
 	
-  public void setMeanDurationOffset(int meanDurationOffset);
+  public void setMeanDurationOffset(double meanDurationOffset);
 	
-  public int getSafeDurationFactor();
+  public double getSafeDurationFactor();
 	
-  public void setSafeDurationFactor(int safeDurationFactor);
+  public void setSafeDurationFactor(double safeDurationFactor);
 
-  public int getSafeDurationOffset();
+  public double getSafeDurationOffset();
 	
-  public void setSafeDurationOffset(int safeDurationOffset);
+  public void setSafeDurationOffset(double safeDurationOffset);
 }

@@ -69,8 +69,8 @@ public class GtfsMappingTest {
   public void testAgency() throws CsvEntityIOException, IOException {
 
     StringBuilder b = new StringBuilder();
-    b.append("agency_id,agency_name,agency_url,agency_timezone,agency_fare_url,agency_lang,agency_phone\n");
-    b.append("1,Agency,http://agency/,Amercia/Los_Angeles,http://agency/fare_url,en,800-555-BUS1\n");
+    b.append("agency_id,agency_name,agency_url,agency_timezone,agency_fare_url,agency_lang,agency_phone,agency_email\n");
+    b.append("1,Agency,http://agency/,Amercia/Los_Angeles,http://agency/fare_url,en,800-555-BUS1,agency@email.com\n");
 
     _reader.readEntities(Agency.class, new StringReader(b.toString()));
 
@@ -82,6 +82,7 @@ public class GtfsMappingTest {
     assertEquals("http://agency/fare_url", agency.getFareUrl());
     assertEquals("en", agency.getLang());
     assertEquals("800-555-BUS1", agency.getPhone());
+    assertEquals("agency@email.com", agency.getEmail());
   }
 
   @Test

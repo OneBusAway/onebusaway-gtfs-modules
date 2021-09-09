@@ -312,6 +312,7 @@
         <property name="directionId" />
         <property name="blockId" index="blockId" />
         <property name="wheelchairAccessible"/>
+        <property name="bikesAllowed"/>
     </class>
 
     <class name="org.onebusaway.gtfs.model.Ridership" table="gtfs_riderships">

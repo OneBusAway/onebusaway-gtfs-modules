@@ -59,8 +59,8 @@ public class GtfsReaderTest {
         "4237385,1,599,1");
     gtfs.putLines(
         "agency.txt",
-        "agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url",
-        "1,Agency,http://agency.gov/,America/Los_Angeles,en,555-1234,http://agency.gov/fares");
+        "agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_email",
+        "1,Agency,http://agency.gov/,America/Los_Angeles,en,555-1234,http://agency.gov/fares,agency@email.com");
     gtfs.putLines("levels.txt",
             "level_id,level_index,level_name",
             "L1,-1.3,Level One");
@@ -731,8 +731,8 @@ public class GtfsReaderTest {
     GtfsReader reader = new GtfsReader();
 
     StringBuilder b = new StringBuilder();
-    b.append("agency_id,agency_name,agency_url,agency_timezone,agency_fare_url,agency_lang,agency_phone\n");
-    b.append("1,Agency,http://agency/,Amercia/Los_Angeles,http://agency/fare_url,en,800-555-BUS1\n");
+    b.append("agency_id,agency_name,agency_url,agency_timezone,agency_fare_url,agency_lang,agency_phone,agency_email\n");
+    b.append("1,Agency,http://agency/,Amercia/Los_Angeles,http://agency/fare_url,en,800-555-BUS1,agency@email.com\n");
 
     reader.readEntities(Agency.class, new StringReader(b.toString()));
 
@@ -744,6 +744,7 @@ public class GtfsReaderTest {
     assertEquals("http://agency/fare_url", agency.getFareUrl());
     assertEquals("en", agency.getLang());
     assertEquals("800-555-BUS1", agency.getPhone());
+    assertEquals("agency@email.com", agency.getEmail());
   }
 
   @Test

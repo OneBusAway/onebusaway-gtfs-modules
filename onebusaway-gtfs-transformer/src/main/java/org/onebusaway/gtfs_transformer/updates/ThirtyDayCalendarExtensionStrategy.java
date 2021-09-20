@@ -43,54 +43,51 @@ public class ThirtyDayCalendarExtensionStrategy implements GtfsTransformStrategy
 
 
         // gets serviceIds for seven days ago till 31 days from now
-        Map<Date,List<IdentityBean<Integer>>> serviceIdsByDate = getServiceIdsByDate(
+        Map<Date,List<ServiceCalendar>> serviceIdsByDate = getServiceIdsByDate(
                 dao,
                 removeTime(new Date(System.currentTimeMillis() - 7 * milisPerDay)),
                 removeTime(new Date(System.currentTimeMillis() + 31 * milisPerDay)));;
 
        //  for the week 30 days from now, ensures there's an active calendar
        for (int i = 31; i > 24; i--){
-           recursivelyEnsureActiveCalendar(i, serviceIdsByDate, dao);
+           ensureActiveCalendar(i, serviceIdsByDate, dao);
        }
 
     }
 
-    private List<IdentityBean<Integer>> recursivelyEnsureActiveCalendar(int daysFromNow,
-                                                               Map<Date,List<IdentityBean<Integer>>> serviceIdsByDate,
-                                                               GtfsMutableRelationalDao dao){
-        if(daysFromNow < 0){
+    private void ensureActiveCalendar(int daysFromNow,
+                                      Map<Date,List<ServiceCalendar>> serviceIdsByDate,
+                                      GtfsMutableRelationalDao dao){
+        Date date = removeTime(new Date(System.currentTimeMillis() + daysFromNow * milisPerDay));
+        List<ServiceCalendar> activeServiceIds = getLastActiveCalendar(daysFromNow,serviceIdsByDate);
+
+        // update service ids in dao
+        for (ServiceCalendar serviceId : activeServiceIds) {
+            ServiceCalendar serviceCalendar = serviceId;
+            serviceCalendar.setEndDate(new ServiceDate(date));
+            dao.saveOrUpdateEntity(serviceCalendar);
+            dao.flush();
+        }
+
+    }
+
+
+    private List<ServiceCalendar> getLastActiveCalendar(
+            int daysFromNow,
+            Map<Date,List<ServiceCalendar>> serviceIdsByDate) {
+        if(daysFromNow < -7){
             return null;
         }
         Date date = removeTime(new Date(System.currentTimeMillis() + daysFromNow * milisPerDay));
-        List<IdentityBean<Integer>> activeServiceIds = serviceIdsByDate.get(date);
+        List<ServiceCalendar> activeServiceIds = serviceIdsByDate.get(date);
         if (activeServiceIds == null){
-            activeServiceIds = recursivelyEnsureActiveCalendar(daysFromNow-7, serviceIdsByDate,dao);
+            activeServiceIds = getLastActiveCalendar(daysFromNow-7, serviceIdsByDate);
         }
         if(activeServiceIds!=null){
-            _log.info("updating empty service ids for " + date);
-            // update service ids in dao
-            for (IdentityBean<Integer> serviceId : activeServiceIds) {
-                if(serviceId instanceof ServiceCalendar){
-                    ServiceCalendar serviceCalendar = (ServiceCalendar) serviceId;
-                    if(date.after(serviceCalendar.getEndDate().getAsDate())) {
-                        serviceCalendar.setEndDate(new ServiceDate(date));
-                        dao.saveOrUpdateEntity(serviceCalendar);
-                    }
-                }
-                if(serviceId instanceof ServiceCalendarDate){
-                    ServiceCalendarDate serviceCalendarDate = (ServiceCalendarDate) serviceId;
-                    ServiceCalendarDate newServiceCalendarDate = new ServiceCalendarDate();
-                    newServiceCalendarDate.setDate(new ServiceDate(date));
-                    newServiceCalendarDate.setServiceId(serviceCalendarDate.getServiceId());
-                    newServiceCalendarDate.setExceptionType(serviceCalendarDate.getExceptionType());
-                    dao.saveOrUpdateEntity(newServiceCalendarDate);
-                }
-                dao.flush();
-            }
+            return activeServiceIds;
         }
         return activeServiceIds;
     }
-
     private Date removeTime(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -102,21 +99,10 @@ public class ThirtyDayCalendarExtensionStrategy implements GtfsTransformStrategy
         return date;
     }
 
-    private Date constructDate(ServiceDate date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, date.getYear());
-        calendar.set(Calendar.MONTH, date.getMonth()-1);
-        calendar.set(Calendar.DATE, date.getDay());
-        Date date1 = calendar.getTime();
-        date1 = removeTime(date1);
-        return date1;
-    }
-
-
-    private Map<Date, List<IdentityBean<Integer>>> getServiceIdsByDate (GtfsMutableRelationalDao dao,
+    private Map<Date, List<ServiceCalendar>> getServiceIdsByDate (GtfsMutableRelationalDao dao,
                                                               Date minDate,
                                                               Date maxDate){
-        Map<Date,List<IdentityBean<Integer>>> serviceIdsByDate = new HashMap<>();
+        Map<Date,List<ServiceCalendar>> serviceIdsByDate = new HashMap<>();
 
 
         for(AgencyAndId serviceId : dao.getAllServiceIds()){
@@ -154,33 +140,8 @@ public class ThirtyDayCalendarExtensionStrategy implements GtfsTransformStrategy
                     index = removeTime(addDays(start, dayIndexCounter));
                 }
             }
-
-            for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(serviceId)) {
-                Date date = constructDate(calDate.getDate());
-                if(date.after(maxDate)){continue;}
-                if(minDate.after(date)){continue;}
-                if(calDate.getExceptionType() == 1){
-                    if (serviceIdsByDate.get(date) == null) {
-                        serviceIdsByDate.put(date, new ArrayList<>());
-                    }
-                    serviceIdsByDate.get(date).add(calDate);
-                }
-                if(calDate.getExceptionType() == 2){
-                    if(serviceIdsByDate.get(date) != null) {
-                        serviceIdsByDate.get(date).remove(serviceId);
-                        if (serviceIdsByDate.get(date).size() == 0) {
-                            serviceIdsByDate.remove(date);
-                        }
-                    }
-                }
-
-            }
-
         }
-        LinkedHashMap<Date,List<IdentityBean<Integer>>> sortedServiceIdsByDate = new LinkedHashMap<>();
-        serviceIdsByDate.entrySet().stream().sorted(Map.Entry.comparingByKey())
-                .forEachOrdered(x -> sortedServiceIdsByDate.put(x.getKey(), x.getValue()));
-        return sortedServiceIdsByDate;
+        return serviceIdsByDate;
     }
 
     private Date addDays(Date date, int daysToAdd) {

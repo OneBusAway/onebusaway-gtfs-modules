@@ -170,6 +170,8 @@ public class TransformFactory {
           handleStopTimesOperation(line, json);
         } else if (opType.equals("calendar_extension")) {
           handleTransformOperation(line, json, new CalendarExtensionStrategy());
+        }else if (opType.equals("thirty_day_calendar_extension")) {
+          handleTransformOperation(line, json, new ThirtyDayCalendarExtensionStrategy());
         } else if (opType.equals("calendar_simplification")) {
           handleTransformOperation(line, json, new CalendarSimplicationStrategy());
         } else if (opType.equals("deduplicate_service_ids")) {

@@ -34,7 +34,7 @@ public class CheckForLengthyRouteNames implements GtfsTransformStrategy {
     int nLongestNames = 20;
 
     @CsvField(optional=true)
-    int logIfLongerThan = 40;
+    int logIfLongerThan = 30;
 
     @Override
     public String getName() {
@@ -50,12 +50,21 @@ public class CheckForLengthyRouteNames implements GtfsTransformStrategy {
 
         Collection<Route> routes = dao.getAllRoutes();
         Stack<String> longestRouteNames = new Stack();
-        String StringOfLongestNames = "";
+        String longestNames = "";
+        String tooLongNames = "";
+        String namesWithDuplicateParts = "";
+
 
         for (Route route : routes){
             String name = route.getLongName();
             if(name.length()> logIfLongerThan){
-                StringOfLongestNames += name + ",";
+                tooLongNames += name + "\n";
+            }
+            String[] nameParts = name.split(" ");
+            for(int i = 0; i < nameParts.length -1; i++){
+                if(nameParts[i].equals(nameParts[i+1])){
+                    namesWithDuplicateParts += name + "\n";
+                }
             }
             if(longestRouteNames.size()< nLongestNames){
                 longestRouteNames.push(name);
@@ -69,10 +78,12 @@ public class CheckForLengthyRouteNames implements GtfsTransformStrategy {
         }
 
         for (String name : longestRouteNames){
-            StringOfLongestNames += name + "\n";
+            longestNames += name + "\n";
         }
 
-        _log.info("Here are some long names you may wish to whittle down: \n" + StringOfLongestNames);
+        _log.info("Route names with duplicate words: \n" + namesWithDuplicateParts);
+        _log.info("Route names that are too long: \n" + tooLongNames);
+        _log.info("Longest Route names: \n" + longestNames);
     }
 
     public void setLogIfLongerThan(int logIfLongerThan) {

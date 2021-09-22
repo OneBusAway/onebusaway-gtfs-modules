@@ -279,6 +279,9 @@ public class TransformFactory {
         else if (opType.equals("check_for_stop_times_without_stops")){
           handleTransformOperation(line,json, new CheckForPlausibleStopTimes());
         }
+        else if (opType.equals("check_for_lengthy_route_names")){
+          handleTransformOperation(line,json, new CheckForLengthyRouteNames());
+        }
         else if (opType.equals("anomaly_check_future_trip_counts")){
           handleTransformOperation(line,json, new AnomalyCheckFutureTripCounts());
         }

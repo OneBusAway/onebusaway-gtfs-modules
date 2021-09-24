@@ -282,6 +282,9 @@ public class TransformFactory {
         else if (opType.equals("check_for_lengthy_route_names")){
           handleTransformOperation(line,json, new CheckForLengthyRouteNames());
         }
+        else if (opType.equals("ensure_direction_id_exists")){
+          handleTransformOperation(line,json, new EnsureDirectionIdExists());
+        }
         else if (opType.equals("anomaly_check_future_trip_counts")){
           handleTransformOperation(line,json, new AnomalyCheckFutureTripCounts());
         }

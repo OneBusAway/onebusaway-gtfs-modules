@@ -285,6 +285,9 @@ public class TransformFactory {
         else if (opType.equals("ensure_direction_id_exists")){
           handleTransformOperation(line,json, new EnsureDirectionIdExists());
         }
+        else if (opType.equals("ensure_route_long_name_exists")){
+          handleTransformOperation(line,json, new EnsureRouteLongNameExists());
+        }
         else if (opType.equals("anomaly_check_future_trip_counts")){
           handleTransformOperation(line,json, new AnomalyCheckFutureTripCounts());
         }

@@ -44,6 +44,8 @@ public class LocationsGeoJSONReaderTest {
     Location location = locations.iterator().next();
 
     assertEquals("si_Wendenschlossstrasse", location.getId().getId());
+    assertEquals("Wendenschlossstrasse", location.getName());
+    assertEquals("A nice description", location.getDescription());
 
     assertTrue(location.getGeometry() instanceof Polygon);
 
@@ -54,5 +56,9 @@ public class LocationsGeoJSONReaderTest {
         new LngLatAlt(13.60879898071289, 52.43225757383383),
         new LngLatAlt(13.576526641845703, 52.44413508398945)
     ), location.getGeometry());
+
+    assertEquals("fare-zone-A", location.getZoneId());
+
+    assertEquals("http://example.com", location.getUrl());
   }
 }

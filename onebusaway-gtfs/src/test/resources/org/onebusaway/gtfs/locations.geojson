@@ -6,7 +6,10 @@
       "type": "Feature",
       "id": "si_Wendenschlossstrasse",
       "properties": {
-        "name": "Wendenschlossstrasse"
+        "stop_name": "Wendenschlossstrasse",
+        "stop_description": "A nice description",
+        "stop_url": "http://example.com",
+        "zone_id": "fare-zone-A"
       },
       "geometry": {
         "type": "Polygon",

@@ -49,7 +49,10 @@ public class LocationsGeoJSONReader {
       Location location = new Location();
       location.setId(new AgencyAndId(this.defaultAgencyId, feature.getId()));
       location.setGeometry(feature.getGeometry());
-      location.setName((String) feature.getProperties().get("name"));
+      location.setName((String) feature.getProperties().get("stop_name"));
+      location.setDescription((String) feature.getProperties().get("stop_description"));
+      location.setUrl((String) feature.getProperties().get("stop_url"));
+      location.setZoneId((String) feature.getProperties().get("zone_id"));
       locations.add(location);
     }
     return locations;

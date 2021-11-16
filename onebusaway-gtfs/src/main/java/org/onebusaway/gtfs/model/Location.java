@@ -26,6 +26,12 @@ public class Location extends IdentityBean<AgencyAndId> implements StopLocation 
 
     private GeoJsonObject geometry;
 
+    private String zoneId;
+
+    private String description;
+
+    private String url;
+
     @Override
     public AgencyAndId getId() {
         return id;
@@ -50,5 +56,29 @@ public class Location extends IdentityBean<AgencyAndId> implements StopLocation 
 
     public void setGeometry(GeoJsonObject geometry) {
         this.geometry = geometry;
+    }
+
+    public String getZoneId() {
+        return zoneId;
+    }
+
+    public void setZoneId(String zoneId) {
+        this.zoneId = zoneId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -198,6 +198,9 @@ public class TransformFactory {
         else if (opType.equals("update_trip_headsign_if_null")) {
           handleTransformOperation(line, json, new UpdateTripHeadsignIfNull());
         }
+        else if (opType.equals("update_trip_headsign_railroad_convention")) {
+              handleTransformOperation(line, json, new UpdateTripHeadsignRailRoadConvention());
+        }
         else if (opType.equals("merge_stop_names_from_reference")) {
           handleTransformOperation(line, json, new MergeStopNamesFromReferenceStrategy());
         }

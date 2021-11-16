@@ -170,6 +170,8 @@ public class TransformFactory {
           handleStopTimesOperation(line, json);
         } else if (opType.equals("calendar_extension")) {
           handleTransformOperation(line, json, new CalendarExtensionStrategy());
+        }else if (opType.equals("thirty_day_calendar_extension")) {
+          handleTransformOperation(line, json, new ThirtyDayCalendarExtensionStrategy());
         } else if (opType.equals("calendar_simplification")) {
           handleTransformOperation(line, json, new CalendarSimplicationStrategy());
         } else if (opType.equals("deduplicate_service_ids")) {
@@ -279,6 +281,15 @@ public class TransformFactory {
         }
         else if (opType.equals("check_for_stop_times_without_stops")){
           handleTransformOperation(line,json, new CheckForPlausibleStopTimes());
+        }
+        else if (opType.equals("check_for_lengthy_route_names")){
+          handleTransformOperation(line,json, new CheckForLengthyRouteNames());
+        }
+        else if (opType.equals("ensure_direction_id_exists")){
+          handleTransformOperation(line,json, new EnsureDirectionIdExists());
+        }
+        else if (opType.equals("ensure_route_long_name_exists")){
+          handleTransformOperation(line,json, new EnsureRouteLongNameExists());
         }
         else if (opType.equals("anomaly_check_future_trip_counts")){
           handleTransformOperation(line,json, new AnomalyCheckFutureTripCounts());

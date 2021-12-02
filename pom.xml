@@ -16,7 +16,7 @@
 
   <properties>
     <onebusaway_csv_entities_version>1.1.6</onebusaway_csv_entities_version>
-    <onebusaway_collections_version>1.2.7</onebusaway_collections_version>
+    <onebusaway_collections_version>1.2.8</onebusaway_collections_version>
   </properties>
 
   <scm>

@@ -1,5 +1,7 @@
 # onebusaway-gtfs-modules
 
+[![CI](https://github.com/OneBusAway/onebusaway-gtfs-modules/actions/workflows/ci.yml/badge.svg)](https://github.com/OneBusAway/onebusaway-gtfs-modules/actions/workflows/ci.yml)
+
 A Java library for reading and writing [GTFS](https://developers.google.com/transit/gtfs) feeds, including database support.
 
 See more documentation [on the wiki](https://github.com/OneBusAway/onebusaway-gtfs-modules/wiki).

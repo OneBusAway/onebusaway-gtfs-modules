@@ -24,6 +24,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs.services.MockGtfs;
 import org.onebusaway.gtfs_transformer.updates.UpdateLibrary;
@@ -93,6 +94,38 @@ public class GtfsTransformerTest {
     assertEquals("Outbound",
         dao.getRouteForId(new AgencyAndId("a0", "r1")).getLongName());
   }
+
+  @Test
+  public void testDefaultFlexFeatures() throws Exception {
+    GtfsRelationalDao dao = transform("{'op':'remove', 'match':{'file':'routes.txt', 'route_id':'r0'}}");
+    assertNull(dao.getRouteForId(new AgencyAndId("a0", "r0")));
+    assertNotNull(dao.getRouteForId(new AgencyAndId("a0", "r1")));
+    assertNull(dao.getTripForId(new AgencyAndId("a0", "t0")));
+    assertNotNull(dao.getTripForId(new AgencyAndId("a0", "t1")));
+    assertEquals(2, dao.getAllStopTimes().size());
+    StopTime next = dao.getAllStopTimes().iterator().next();
+    assertEquals(1, next.getContinuousPickup());
+    assertEquals(1, next.getContinuousDropOff());
+  }
+
+  @Test
+  public void testUpdateContinuousDropOff() throws Exception {
+      GtfsRelationalDao dao = transform("{'op':'update', "
+              + "'match':{'file':'stop_times.txt', 'any(continuous_drop_off)':'1'}, "
+              + "'update':{'continuous_drop_off':'2'}}");
+    StopTime next = dao.getAllStopTimes().iterator().next();
+    assertEquals(2, next.getContinuousDropOff());
+  }
+
+  @Test
+  public void testUpdateContinuousPickup() throws Exception {
+    GtfsRelationalDao dao = transform("{'op':'update', "
+            + "'match':{'file':'stop_times.txt', 'any(continuous_pickup)':'1'}, "
+            + "'update':{'continuous_pickup':'2'}}");
+    StopTime next = dao.getAllStopTimes().iterator().next();
+    assertEquals(2, next.getContinuousPickup());
+  }
+
 
   private GtfsRelationalDao transform(String transformSpec) throws Exception {
     _transformer.getTransformFactory().addModificationsFromString(transformSpec);

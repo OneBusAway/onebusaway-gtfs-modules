@@ -70,13 +70,13 @@
     <finalName>onebusaway-gtfs-transformer</finalName>
     <plugins>
       <plugin>
-        <groupId>com.mycila.maven-license-plugin</groupId>
-        <artifactId>maven-license-plugin</artifactId>
-        <configuration>
-          <excludes combine.children="append">
-            <exclude>src/test/resources/org/onebusaway/gtfs_transformer/**</exclude>
-          </excludes>
-        </configuration>
+          <groupId>com.mycila</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+            <configuration>
+              <excludes combine.children="append">
+                <exclude>src/test/resources/org/onebusaway/gtfs_transformer/**</exclude>
+              </excludes>
+            </configuration>
       </plugin>    
 
   	  <plugin>

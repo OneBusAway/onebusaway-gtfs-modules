@@ -1,6 +1,4 @@
-# onebusaway-gtfs-modules
-
-[![CI](https://github.com/OneBusAway/onebusaway-gtfs-modules/actions/workflows/ci.yml/badge.svg)](https://github.com/OneBusAway/onebusaway-gtfs-modules/actions/workflows/ci.yml)
+# onebusaway-gtfs-modules [![CI](https://github.com/OneBusAway/onebusaway-gtfs-modules/actions/workflows/ci.yml/badge.svg)](https://github.com/OneBusAway/onebusaway-gtfs-modules/actions/workflows/ci.yml)
 
 A Java library for reading and writing [GTFS](https://developers.google.com/transit/gtfs) feeds, including database support.
 

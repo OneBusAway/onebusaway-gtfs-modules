@@ -118,4 +118,8 @@ public interface StopTimeProxy {
   public double getSafeDurationOffset();
 	
   public void setSafeDurationOffset(double safeDurationOffset);
+
+  public String getFreeRunningFlag();
+
+  public void setFreeRunningFlag(String freeRunningFlag);
 }

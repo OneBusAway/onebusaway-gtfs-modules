@@ -148,6 +148,9 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   @CsvField(optional = true, name = "safe_duration_offset")
   private double safeDurationOffset = MISSING_VALUE;
+
+  @CsvField(optional = true, name = "free_running_flag")
+  private String freeRunningFlag;
   
   public StopTime() {
 
@@ -187,6 +190,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.safeDurationOffset= st.safeDurationOffset;
     this.meanDurationOffset= st.meanDurationOffset;
     this.meanDurationFactor= st.meanDurationFactor;
+    this.freeRunningFlag = st.freeRunningFlag;
   }
 
   public Integer getId() {
@@ -697,4 +701,19 @@ public final class StopTime extends IdentityBean<Integer> implements
 	      }
 	    this.safeDurationOffset = safeDurationOffset;
 	}
+
+  public String getFreeRunningFlag() {
+    if (proxy != null) {
+      return proxy.getFreeRunningFlag();
+    }
+    return freeRunningFlag;
+  }
+
+  public void setFreeRunningFlag(String freeRunningFlag) {
+    if (proxy != null) {
+      proxy.setFreeRunningFlag(freeRunningFlag);
+      return;
+    }
+    this.freeRunningFlag = freeRunningFlag;
+  }
 }

@@ -69,6 +69,8 @@ public class StopTimeArray extends AbstractList<StopTime> {
   private double[] meanFactors = new double[0];
 
   private double[] safeFactors = new double[0];
+
+  private String[] freeRunningFlags = new String[0];
   
   public void trimToSize() {
     setLength(size);
@@ -102,7 +104,8 @@ public class StopTimeArray extends AbstractList<StopTime> {
     safeFactors[index] = stopTime.getSafeDurationFactor();
     meanOffsets[index] = stopTime.getMeanDurationOffset();
     meanFactors[index] = stopTime.getMeanDurationFactor();
-    
+    freeRunningFlags[index] = stopTime.getFreeRunningFlag();
+
     return true;
   }
 
@@ -163,6 +166,7 @@ public class StopTimeArray extends AbstractList<StopTime> {
     this.safeFactors = Arrays.copyOf(this.safeFactors, newLength);
     this.meanOffsets = Arrays.copyOf(this.meanOffsets, newLength);
     this.meanFactors = Arrays.copyOf(this.meanFactors, newLength);
+    this.freeRunningFlags = Arrays.copyOf(this.freeRunningFlags, newLength);
   }
 
   private class StopTimeIterator implements Iterator<StopTime> {
@@ -220,7 +224,9 @@ public class StopTimeArray extends AbstractList<StopTime> {
     }
 
     @Override
-    public Area getStartServiceArea() { return startServiceAreas[index]; }
+    public Area getStartServiceArea() {
+      return startServiceAreas[index];
+    }
 
     @Override
     public void setStartServiceArea(Area area) {
@@ -228,7 +234,9 @@ public class StopTimeArray extends AbstractList<StopTime> {
     }
 
     @Override
-    public Area getEndServiceArea() { return endServiceAreas[index]; }
+    public Area getEndServiceArea() {
+      return endServiceAreas[index];
+    }
 
     @Override
     public void setEndServiceArea(Area area) {
@@ -294,7 +302,7 @@ public class StopTimeArray extends AbstractList<StopTime> {
     public void clearDepartureTime() {
       departureTimes[index] = StopTime.MISSING_VALUE;
     }
-    
+
     @Override
     public boolean isTimepointSet() {
       return timepoints[index] != StopTime.MISSING_VALUE;
@@ -395,45 +403,54 @@ public class StopTimeArray extends AbstractList<StopTime> {
       dropOffBookingRules[index] = dropOffBookingRule;
     }
 
-	@Override
-	public double getMeanDurationFactor() {
-		return meanOffsets[index];
-	}
+    @Override
+    public double getMeanDurationFactor() {
+      return meanOffsets[index];
+    }
 
-	@Override
-	public void setMeanDurationFactor(double meanDurationFactor) {
-		meanFactors[index] = meanDurationFactor;		
-	}
+    @Override
+    public void setMeanDurationFactor(double meanDurationFactor) {
+      meanFactors[index] = meanDurationFactor;
+    }
 
-	@Override
-	public double getMeanDurationOffset() {
-		return meanOffsets[index];
-	}
+    @Override
+    public double getMeanDurationOffset() {
+      return meanOffsets[index];
+    }
 
-	@Override
-	public void setMeanDurationOffset(double meanDurationOffset) {
-		meanOffsets[index] = meanDurationOffset;
-	}
+    @Override
+    public void setMeanDurationOffset(double meanDurationOffset) {
+      meanOffsets[index] = meanDurationOffset;
+    }
 
-	@Override
-	public double getSafeDurationFactor() {
-		return safeFactors[index];
-	}
+    @Override
+    public double getSafeDurationFactor() {
+      return safeFactors[index];
+    }
 
-	@Override
-	public void setSafeDurationFactor(double safeDurationFactor) {
-		safeFactors[index] = safeDurationFactor;
-	}
+    @Override
+    public void setSafeDurationFactor(double safeDurationFactor) {
+      safeFactors[index] = safeDurationFactor;
+    }
 
-	@Override
-	public double getSafeDurationOffset() {
-		return safeOffsets[index];
-	}
+    @Override
+    public double getSafeDurationOffset() {
+      return safeOffsets[index];
+    }
 
-	@Override
-	public void setSafeDurationOffset(double safeDurationOffset) {
-		safeOffsets[index] = safeDurationOffset;
-	}
+    @Override
+    public void setSafeDurationOffset(double safeDurationOffset) {
+      safeOffsets[index] = safeDurationOffset;
+    }
 
+    @Override
+    public String getFreeRunningFlag() {
+      return freeRunningFlags[index];
+    }
+
+    @Override
+    public void setFreeRunningFlag(String freeRunningFlag) {
+      freeRunningFlags[index] = freeRunningFlag;
+    }
   }
 }

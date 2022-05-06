@@ -67,6 +67,8 @@ public interface GtfsRelationalDao extends GtfsDao {
 
   public List<Stop> getStopsForStation(Stop station);
 
+  public List<Stop> getStopsForZoneId(String zoneId);
+
   /****
    * {@link Trip} Methods
    ****/
@@ -130,8 +132,13 @@ public interface GtfsRelationalDao extends GtfsDao {
 
   public List<FareRule> getFareRulesForFareAttribute(FareAttribute fareAttribute);
 
+  public List<FareRule> getFareRulesForRoute(Route route);
+
+  public List<FareRule> getFareRulesForZoneId(String zoneId);
+
   /***
    * {@link Ridership}
    */
   public List<Ridership> getRidershipForTrip(AgencyAndId tripId);
+
 }

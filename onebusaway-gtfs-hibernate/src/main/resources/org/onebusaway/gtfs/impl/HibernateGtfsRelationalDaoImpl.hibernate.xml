@@ -28,6 +28,9 @@
     <query name="stopsForStation" read-only="true">
         FROM Stop stop WHERE stop.parentStation = :stationId AND stop.id.agencyId = :agencyId
     </query>
+    <query name="stopsForZoneId" read-only="true">
+        FROM Stop stop WHERE stop.zoneId = :zoneId
+    </query>
     <query name="tripsByRoute" read-only="true">
         FROM Trip trip WHERE trip.route = :route
     </query>
@@ -69,6 +72,12 @@
     </query>
     <query name="fareRulesForFareAttribute" read-only="true">
         FROM FareRule fr WHERE fr.fare = :fareAttribute
+    </query>
+    <query name="fareRulesForRoute" read-only="true">
+        FROM FareRule fr WHERE fr.route = :route
+    </query>
+    <query name="fareRulesForZoneId" read-only="true">
+        FROM FareRule fr WHERE fr.originId = :zoneId OR fr.destinationId = :zoneId OR fr.containsId = :zoneId
     </query>
     <query name="ridershipsForTripId" read-only="true">
         FROM Ridership r WHERE r.tripId = :tripId

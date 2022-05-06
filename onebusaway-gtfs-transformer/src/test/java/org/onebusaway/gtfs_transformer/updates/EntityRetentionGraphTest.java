@@ -28,27 +28,32 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.serialization.GtfsReader;
+import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
+import org.onebusaway.gtfs.services.GtfsRelationalDao;
+import org.onebusaway.gtfs.services.MockGtfs;
 import org.onebusaway.gtfs_transformer.factory.EntityRetentionGraph;
 
 public class EntityRetentionGraphTest {
 
-  private GtfsRelationalDaoImpl _dao;
+  private GtfsRelationalDao _dao;
 
   private EntityRetentionGraph _graph;
 
   @Before
   public void setup() throws IOException, URISyntaxException {
-    _dao = new GtfsRelationalDaoImpl();
+    GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();
+    _dao = dao;
     _graph = new EntityRetentionGraph(_dao);
 
     GtfsReader reader = new GtfsReader();
     File path = new File(getClass().getResource(
         "/org/onebusaway/gtfs_transformer/testagency").toURI());
     reader.setInputLocation(path);
-    reader.setEntityStore(_dao);
+    reader.setEntityStore(dao);
     reader.run();
   }
 
@@ -169,6 +174,133 @@ public class EntityRetentionGraphTest {
     List<ShapePoint> shapes = _dao.getShapePointsForShapeId(aid("4"));
     assertEquals(4, shapes.size());
   }
+
+  @Test
+  public void testRetainFareRuleUp() throws IOException {
+    MockGtfs gtfs = MockGtfs.create();
+    gtfs.putMinimal();;
+    gtfs.putRoutes(2);
+    gtfs.putStops(2,"zone_id=z$0");
+    gtfs.putCalendars(1);
+    gtfs.putTrips(2,"r$0", "sid0");
+    gtfs.putLines(
+            "fare_attributes.txt",
+            "fare_id,agency_id,price,currency_type,payment_method,transfers",
+            "f0,a0,1,USD,0,0",
+            "f1,a1,2,USD,0,0");
+    gtfs.putLines(
+            "fare_rules.txt",
+            "fare_id,route_id,origin_id",
+            "f0,r0,z0",
+            "f1,r1,z1");
+
+    _dao = gtfs.read();
+    _graph = new EntityRetentionGraph(_dao);
+
+    // When we retain the fare rule up, it should retain upward the routes (+trips)
+    // and zones (+stops) referenced by the fare rule.
+    _graph.retainUp(_dao.getFareRuleForId(1));
+
+    assertTrue(_graph.isRetained(_dao.getFareRuleForId(1)));
+    assertFalse(_graph.isRetained(_dao.getFareRuleForId(2)));
+
+    assertTrue(_graph.isRetained(_dao.getFareAttributeForId(new AgencyAndId("a0", "f0"))));
+    assertFalse(_graph.isRetained(_dao.getFareAttributeForId(new AgencyAndId("a0", "f1"))));
+
+    assertTrue(_graph.isRetained(_dao.getRouteForId(new AgencyAndId("a0", "r0"))));
+    assertFalse(_graph.isRetained(_dao.getRouteForId(new AgencyAndId("a0", "r1"))));
+
+    assertTrue(_graph.isRetained(_dao.getTripForId(new AgencyAndId("a0", "t0"))));
+    assertFalse(_graph.isRetained(_dao.getTripForId(new AgencyAndId("a0", "t1"))));
+
+    assertTrue(_graph.isRetained(_dao.getStopForId(new AgencyAndId("a0", "s0"))));
+    assertFalse(_graph.isRetained(_dao.getStopForId(new AgencyAndId("a0", "s1"))));
+  }
+
+  @Test
+  public void testRetainFareRuleDown() throws IOException {
+    MockGtfs gtfs = MockGtfs.create();
+    gtfs.putMinimal();;
+    gtfs.putRoutes(2);
+    gtfs.putStops(2,"zone_id=z$0");
+    gtfs.putCalendars(1);
+    gtfs.putTrips(2,"r$0", "sid0");
+    gtfs.putLines(
+            "fare_attributes.txt",
+            "fare_id,agency_id,price,currency_type,payment_method,transfers",
+            "f0,a0,1,USD,0,0",
+            "f1,a1,2,USD,0,0");
+    gtfs.putLines(
+            "fare_rules.txt",
+            "fare_id,route_id,origin_id",
+            "f0,r0,z0",
+            "f1,r1,z1");
+
+    _dao = gtfs.read();
+    _graph = new EntityRetentionGraph(_dao);
+
+    // When we retain the fare rule down, it should retain down the route (but not trips)
+    // referenced by the rule.
+    _graph.retainDown(_dao.getFareRuleForId(1));
+
+    assertTrue(_graph.isRetained(_dao.getFareRuleForId(1)));
+    assertFalse(_graph.isRetained(_dao.getFareRuleForId(2)));
+
+    assertTrue(_graph.isRetained(_dao.getFareAttributeForId(new AgencyAndId("a0", "f0"))));
+    assertFalse(_graph.isRetained(_dao.getFareAttributeForId(new AgencyAndId("a0", "f1"))));
+
+    assertTrue(_graph.isRetained(_dao.getRouteForId(new AgencyAndId("a0", "r0"))));
+    assertFalse(_graph.isRetained(_dao.getRouteForId(new AgencyAndId("a0", "r1"))));
+
+    assertFalse(_graph.isRetained(_dao.getTripForId(new AgencyAndId("a0", "t0"))));
+    assertFalse(_graph.isRetained(_dao.getTripForId(new AgencyAndId("a0", "t1"))));
+
+    assertFalse(_graph.isRetained(_dao.getStopForId(new AgencyAndId("a0", "s0"))));
+    assertFalse(_graph.isRetained(_dao.getStopForId(new AgencyAndId("a0", "s1"))));
+  }
+
+  @Test
+  public void testConditionallyRetainFareRule() throws IOException {
+    MockGtfs gtfs = MockGtfs.create();
+    gtfs.putMinimal();;
+    gtfs.putRoutes(1);
+    gtfs.putStops(2,"zone_id=z$0");
+    gtfs.putLines(
+            "fare_attributes.txt",
+            "fare_id,agency_id,price,currency_type,payment_method,transfers",
+            "f0,a0,1,USD,0,0");
+    gtfs.putLines(
+            "fare_rules.txt",
+            "fare_id,route_id,origin_id,destination_id",
+            "f0,r0,",
+            "f0,r0,z0",
+            "f0,r0,z0,z1");
+
+    _dao = gtfs.read();
+    _graph = new EntityRetentionGraph(_dao);
+
+    _graph.retainDown(_dao.getRouteForId(new AgencyAndId("a0", "r0")));
+
+    // Only the first fare-rule should be retained because it references just the route.
+    assertTrue(_graph.isRetained(_dao.getFareRuleForId(1)));
+    assertFalse(_graph.isRetained(_dao.getFareRuleForId(2)));
+    assertFalse(_graph.isRetained(_dao.getFareRuleForId(3)));
+
+    _graph.retainDown(_dao.getStopForId(new AgencyAndId("a0", "s0")));
+
+    // The second rule should now be retained because its route+zone have been retained.
+    assertTrue(_graph.isRetained(_dao.getFareRuleForId(1)));
+    assertTrue(_graph.isRetained(_dao.getFareRuleForId(2)));
+    assertFalse(_graph.isRetained(_dao.getFareRuleForId(3)));
+
+    _graph.retainDown(_dao.getStopForId(new AgencyAndId("a0", "s1")));
+
+    // The third rule should now be retained because its route + both zone have been retained.
+    assertTrue(_graph.isRetained(_dao.getFareRuleForId(1)));
+    assertTrue(_graph.isRetained(_dao.getFareRuleForId(2)));
+    assertTrue(_graph.isRetained(_dao.getFareRuleForId(3)));
+  }
+
 
   private AgencyAndId aid(String id) {
     return new AgencyAndId("agency", id);

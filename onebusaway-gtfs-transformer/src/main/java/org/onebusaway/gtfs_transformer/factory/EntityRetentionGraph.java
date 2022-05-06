@@ -15,11 +15,16 @@
  */
 package org.onebusaway.gtfs_transformer.factory;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.FareAttribute;
+import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
@@ -35,19 +40,18 @@ import org.onebusaway.gtfs_transformer.collections.ShapeIdKey;
 
 /**
  * We have the concept of retaining up and retaining down.
- * 
+ *
  * Retain up: retain things that depend on the target object
- * 
+ *
  * Retain down: retain things that the target object depends on
- * 
+ *
  * Usually, we start by retaining some object, which starts as series of
  * "retain up" operations to grab everything that depends on that object. As
  * each object is retained up, it typically at this point also starts a
  * subsequent chain of retain down operations, so that the dependencies of that
  * object are retained as well.
- * 
+ *
  * @author bdferris
- * 
  */
 public class EntityRetentionGraph {
 
@@ -75,10 +79,10 @@ public class EntityRetentionGraph {
 
   /**
    * Retain up: retain things that depend on the target object
-   * 
+   *
    * For example, if you retain up on a {@link Route}, we would also retain up
    * on the {@link Trip} objects depending on this route
-   * 
+   *
    * @param object
    */
   public void retainUp(Object object) {
@@ -87,10 +91,10 @@ public class EntityRetentionGraph {
 
   /**
    * Retain down: retain things that the target object depends on
-   * 
+   *
    * For example, if you retain down on a {@link Route}, we would also retain
    * down on the route's {@link Agency}.
-   * 
+   *
    * @param object
    */
   public void retainDown(Object object) {
@@ -99,15 +103,15 @@ public class EntityRetentionGraph {
 
   /**
    * Retain up: retain things that depend on the target object
-   * 
+   *
    * For example, if you retain up on a {@link Route}, we would also retain up
    * on the {@link Trip} objects depending on this route
-   * 
+   *
    * Retain down: retain things that the target object depends on
-   * 
+   *
    * For example, if you retain down on a {@link Route}, we would also retain
    * down on the route's {@link Agency}.
-   * 
+   *
    * @param object
    */
   public void retain(Object object, boolean retainUp) {
@@ -141,6 +145,12 @@ public class EntityRetentionGraph {
       retainBlockId(((BlockIdKey) object).getId(), retainUp);
     else if (object instanceof Frequency)
       retainFrequency((Frequency) object, retainUp);
+    else if (object instanceof ZoneIdKey)
+      retainZoneId((ZoneIdKey) object, retainUp);
+    else if (object instanceof FareRule)
+      retainFareRule((FareRule) object, retainUp);
+    else if (object instanceof FareAttribute)
+      retainFareAttribute((FareAttribute) object, retainUp);
 
     if (retainUp)
       retainDown(object);
@@ -175,8 +185,18 @@ public class EntityRetentionGraph {
     if (retainUp) {
       for (Trip trip : _dao.getTripsForRoute(route))
         retainUp(trip);
+      // At this point, all trips, stop-times, and associated stops.
+      for (FareRule fareRule : _dao.getFareRulesForRoute(route)) {
+        retainUp(fareRule);
+      }
     } else {
       retainDown(route.getAgency());
+
+      // This is a newly-retained route, so reconsider the set of fare rules
+      // that might need to be retained as well.
+      for (FareRule rule : _dao.getFareRulesForRoute(route)) {
+        potentiallyRetainFareRuleDown(rule);
+      }
     }
   }
 
@@ -219,9 +239,13 @@ public class EntityRetentionGraph {
       String parentStationId = stop.getParentStation();
       if (parentStationId != null) {
         AgencyAndId id = stop.getId();
-        Stop parent = _dao.getStopForId(new AgencyAndId(id.getAgencyId(),
-            parentStationId));
+        Stop parent = _dao.getStopForId(
+            new AgencyAndId(id.getAgencyId(), parentStationId));
         retainDown(parent);
+      }
+
+      if (stop.getZoneId() != null) {
+        retainDown(new ZoneIdKey(stop.getZoneId()));
       }
 
       /**
@@ -237,19 +261,21 @@ public class EntityRetentionGraph {
     }
   }
 
-  private void retainServiceCalendar(ServiceCalendar calendar, boolean retainUp) {
+  private void retainServiceCalendar(ServiceCalendar calendar,
+      boolean retainUp) {
     if (retainUp) {
       // Retain up: retain things that depend on the target object
-      retainUp(new ServiceIdKey(calendar.getServiceId()));      
+      retainUp(new ServiceIdKey(calendar.getServiceId()));
     } else {
       // Retain down: retain things that the target object depends on
     }
   }
-  
-  private void retainServiceCalendarDate(ServiceCalendarDate calendarDate, boolean retainUp) {
+
+  private void retainServiceCalendarDate(ServiceCalendarDate calendarDate,
+      boolean retainUp) {
     if (retainUp) {
       // Retain up: retain things that depend on the target object
-      retainUp(new ServiceIdKey(calendarDate.getServiceId()));      
+      retainUp(new ServiceIdKey(calendarDate.getServiceId()));
     } else {
       // Retain down: retain things that the target object depends on
     }
@@ -266,7 +292,8 @@ public class EntityRetentionGraph {
       ServiceCalendar calendar = _dao.getCalendarForServiceId(serviceId);
       if (calendar != null)
         retainDown(calendar);
-      for (ServiceCalendarDate calendarDate : _dao.getCalendarDatesForServiceId(serviceId))
+      for (ServiceCalendarDate calendarDate : _dao.getCalendarDatesForServiceId(
+          serviceId))
         retainDown(calendarDate);
 
       /**
@@ -298,7 +325,6 @@ public class EntityRetentionGraph {
       if (agency != null) {
         retainDown(agency);
       }
-
     }
   }
 
@@ -320,6 +346,109 @@ public class EntityRetentionGraph {
     }
   }
 
+  private void retainZoneId(ZoneIdKey key, boolean retainUp) {
+    if (retainUp) {
+      for (Stop stop : _dao.getStopsForZoneId(key._zoneId)) {
+        retainUp(stop);
+      }
+    } else {
+      // This is a newly-retained zone id, so reconsider the set of fare rules
+      // that might need to be retained as well.
+      for (FareRule rule : _dao.getFareRulesForZoneId(key._zoneId)) {
+        potentiallyRetainFareRuleDown(rule);
+      }
+    }
+  }
+
+  /**
+   * Fare retention is subtle.  We first ask: What is the direction of the
+   * dependency relation for fare rules?
+   *
+   * In typical usage of the "retain" graph, a user will ask to retain a subset
+   * of agencies, routes, and trips, along with all of their dependencies.  We
+   * treat fare rules as something that the network depends on, in the sense
+   * that if you retained a route+trip+stop-times, you'd probably want to keep
+   * all the fare rules that apply to those trips, but you wouldn't want to
+   * pull in other fare rules that didn't apply.
+   *
+   * As such, we say routes and fare zones conditionally depend on fare rules.
+   * This perhaps counter-intuitive because zone ids, for example, are
+   * referenced by both stops AND fare rules, so you might argue a data
+   * dependency in both directions.  Here, retention is less about the strict
+   * referential data dependency and more about conceptual dependency.
+   *
+   * @param fareRule
+   * @param retainUp
+   */
+  private void retainFareRule(FareRule fareRule, boolean retainUp) {
+    if (retainUp) {
+      // Per the discussion above, routes and fare zones depend on fare rules,
+      // so we retain referenced routes and zones in the "up" direction here.
+      if (fareRule.getRoute() != null) {
+        retainUp(fareRule.getRoute());
+      }
+      List<String> zoneIds = Arrays.asList(fareRule.getOriginId(),
+          fareRule.getDestinationId(), fareRule.getContainsId());
+      for (String zoneId : zoneIds) {
+        if (zoneId == null) {
+          continue;
+        }
+        retainUp(new ZoneIdKey(zoneId));
+      }
+    } else {
+      if (fareRule.getFare() != null) {
+        retainDown(fareRule.getFare());
+      }
+      // We retain "down" on the route reference because we need to maintain
+      // referential integrity of the feed but we don't want to retain the
+      // entire network of that route.
+      if (fareRule.getRoute() != null) {
+        retainDown(fareRule.getRoute());
+      }
+    }
+  }
+
+  /**
+   * For fare-rules, we only want to retain the rules that could actually apply
+   * for the current set of retained routes + zones. More specifically, all
+   * routes + zones referenced by a rule need to be retained before we consider
+   * adding the rule.
+   */
+  private void potentiallyRetainFareRuleDown(FareRule rule) {
+    // Skip analysis if this has already been retained.
+    if (_retainedDown.contains(rule)) {
+      return;
+    }
+
+    if (rule.getRoute() != null && !_retainedDown.contains(rule.getRoute())) {
+      return;
+    }
+    List<String> zoneIds = Arrays.asList(rule.getOriginId(),
+        rule.getDestinationId(), rule.getContainsId());
+    for (String zoneId : zoneIds) {
+      if (zoneId != null && !_retainedDown.contains(new ZoneIdKey(zoneId))) {
+        return;
+      }
+    }
+    retainDown(rule);
+  }
+
+  private void retainFareAttribute(FareAttribute fareAttribute,
+      boolean retainUp) {
+    if (retainUp) {
+      for (FareRule rule : _dao.getFareRulesForFareAttribute(fareAttribute)) {
+        retainUp(rule);
+      }
+    } else {
+      if (fareAttribute.getAgencyId() != null) {
+        Agency agency = _dao.getAgencyForId(fareAttribute.getAgencyId());
+        if (agency != null) {
+          retainDown(agency);
+        }
+      }
+    }
+  }
+
   private static class BlockIdKey extends IdKey {
     public BlockIdKey(AgencyAndId id) {
       super(id);
@@ -331,4 +460,29 @@ public class EntityRetentionGraph {
     }
   }
 
+  /**
+   * Retention identifier for a fare zone.
+   */
+  private static class ZoneIdKey {
+    private final String _zoneId;
+
+    public ZoneIdKey(String zoneId) {
+      this._zoneId = zoneId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o)
+        return true;
+      if (o == null || getClass() != o.getClass())
+        return false;
+      ZoneIdKey zoneIdKey = (ZoneIdKey) o;
+      return _zoneId.equals(zoneIdKey._zoneId);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(_zoneId);
+    }
+  }
 }

@@ -61,6 +61,8 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
 
   private Map<Stop, List<Stop>> _stopsByStation = null;
 
+  private Map<String, List<Stop>> _stopsByZoneId = null;
+
   private Map<Trip, List<StopTime>> _stopTimesByTrip = null;
 
   private Map<Stop, List<StopTime>> _stopTimesByStop = null;
@@ -83,6 +85,10 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
 
   private Map<FareAttribute, List<FareRule>> _fareRulesByFareAttribute = null;
 
+  private Map<Route, List<FareRule>> _fareRulesByRoute = null;
+
+  private Map<String, List<FareRule>> _fareRulesByZoneId = null;
+
   private Map<AgencyAndId, List<Ridership>> _ridershipByTrip = null;
 
   public void clearAllCaches() {
@@ -100,6 +106,8 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
     _calendarDatesByServiceId = clearMap(_calendarDatesByServiceId);
     _calendarsByServiceId = clearMap(_calendarsByServiceId);
     _fareRulesByFareAttribute = clearMap(_fareRulesByFareAttribute);
+    _fareRulesByRoute = clearMap(_fareRulesByRoute);
+    _fareRulesByZoneId = clearMap(_fareRulesByZoneId);
     _ridershipByTrip = clearMap(_ridershipByTrip);
   }
 
@@ -163,6 +171,14 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
       }
     }
     return list(_stopsByStation.get(station));
+  }
+
+  @Override
+  public List<Stop> getStopsForZoneId(String zoneId) {
+    if (_stopsByZoneId == null) {
+      _stopsByZoneId = mapToValueList(getAllStops(), "zoneId", String.class);
+    }
+    return list(_stopsByZoneId.get(zoneId));
   }
 
   @Override
@@ -288,6 +304,44 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
           FareAttribute.class);
     }
     return list(_fareRulesByFareAttribute.get(fareAttribute));
+  }
+
+  @Override
+  public List<FareRule> getFareRulesForRoute(Route route) {
+    if (_fareRulesByRoute == null) {
+      _fareRulesByRoute = mapToValueList(getAllFareRules(), "route",
+              Route.class);
+    }
+    return list(_fareRulesByRoute.get(route));
+  }
+
+  private static Set<String> getUniqueValues(String... values) {
+    Set<String> uniqueValues = new HashSet<>();
+    for (String value : values) {
+      if (value != null) {
+        uniqueValues.add(value);
+      }
+    }
+    return uniqueValues;
+  }
+
+  @Override
+  public List<FareRule> getFareRulesForZoneId(String zoneId) {
+    if (_fareRulesByZoneId == null) {
+      _fareRulesByZoneId = new HashMap<>();
+      for (FareRule rule : getAllFareRules()) {
+        Set<String> uniqueIds = getUniqueValues(rule.getOriginId(), rule.getContainsId(), rule.getDestinationId());
+        for (String id : uniqueIds) {
+          List<FareRule> fareRules = _fareRulesByZoneId.get(id);
+          if (fareRules == null) {
+            fareRules = new ArrayList<>();
+            _fareRulesByZoneId.put(id, fareRules);
+          }
+          fareRules.add(rule);
+        }
+      }
+    }
+    return list(_fareRulesByZoneId.get(zoneId));
   }
 
   @Override

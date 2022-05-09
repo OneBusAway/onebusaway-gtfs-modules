@@ -292,6 +292,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
+  public List<Stop> getStopsForZoneId(String zoneId) {
+    return _ops.findByNamedQueryAndNamedParam("stopsForZoneId", "zoneId", zoneId);
+  }
+
+  @Override
   public List<Trip> getTripsForRoute(Route route) {
     return _ops.findByNamedQueryAndNamedParam("tripsByRoute", "route", route);
   }
@@ -378,6 +383,18 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   public List<FareRule> getFareRulesForFareAttribute(FareAttribute fareAttribute) {
     return _ops.findByNamedQueryAndNamedParam("fareRulesForFareAttribute",
         "fareAttribute", fareAttribute);
+  }
+
+  @Override
+  public List<FareRule> getFareRulesForRoute(Route route) {
+    return _ops.findByNamedQueryAndNamedParam("fareRulesForRoute",
+            "route", route);
+  }
+
+  @Override
+  public List<FareRule> getFareRulesForZoneId(String zoneId) {
+    return _ops.findByNamedQueryAndNamedParam("fareRulesForZoneId",
+            "zoneId", zoneId);
   }
 
   @Override

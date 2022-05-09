@@ -119,6 +119,11 @@ public class GtfsDataServiceImpl implements GtfsDataService {
     }
 
     @Override
+    public List<Stop> getStopsForZoneId(String zoneId) {
+        return _dao.getStopsForZoneId(zoneId);
+    }
+
+    @Override
     public FareRule getFareRuleForId(int id) {
         return _dao.getFareRuleForId(id);
     }
@@ -296,6 +301,16 @@ public class GtfsDataServiceImpl implements GtfsDataService {
     @Override
     public List<FareRule> getFareRulesForFareAttribute(FareAttribute fareAttribute) {
         return _dao.getFareRulesForFareAttribute(fareAttribute);
+    }
+
+    @Override
+    public List<FareRule> getFareRulesForRoute(Route route) {
+        return _dao.getFareRulesForRoute(route);
+    }
+
+    @Override
+    public List<FareRule> getFareRulesForZoneId(String zoneId) {
+        return _dao.getFareRulesForZoneId(zoneId);
     }
 
     @Override

@@ -58,6 +58,11 @@ public class GtfsEntitySchemaFactory {
     entityClasses.add(Ridership.class);
     entityClasses.add(BookingRule.class);
     entityClasses.add(Vehicle.class);
+    entityClasses.add(Facility.class);
+    entityClasses.add(FacilityPropertyDefinition.class);
+    entityClasses.add(FacilityProperty.class);
+    entityClasses.add(RouteNameException.class);
+    entityClasses.add(DirectionNameException.class);
     return entityClasses;
   }
 

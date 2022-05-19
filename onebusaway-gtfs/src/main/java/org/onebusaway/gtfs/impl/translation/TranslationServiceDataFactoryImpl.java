@@ -19,15 +19,7 @@ import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.EntitySchema;
 import org.onebusaway.csv_entities.schema.FieldMapping;
 import org.onebusaway.csv_entities.schema.SingleFieldMapping;
-import org.onebusaway.gtfs.model.Agency;
-import org.onebusaway.gtfs.model.Area;
-import org.onebusaway.gtfs.model.FeedInfo;
-import org.onebusaway.gtfs.model.Route;
-import org.onebusaway.gtfs.model.Stop;
-import org.onebusaway.gtfs.model.StopTime;
-import org.onebusaway.gtfs.model.Translation;
-import org.onebusaway.gtfs.model.Trip;
-import org.onebusaway.gtfs.model.Vehicle;
+import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.translation.PropertyTranslation;
 import org.onebusaway.gtfs.model.translation.TranslationServiceData;
 import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
@@ -56,6 +48,12 @@ public class TranslationServiceDataFactoryImpl implements TranslationServiceData
     private static final String AREA_TABLE_NAME = "area";
 
     private static final String VEHICLE_TABLE_NAME = "vehicle";
+
+    private static final String FACILITY_TABLE_NAME = "facilities";
+
+    private static final String FACILITY_PROPERTY_TABLE_NAME = "facilities_properties";
+
+    private static final String FACILITY_PROPERTY_DEFINITION_TABLE_NAME = "facilities_properties_definitions";
 
     private GtfsRelationalDao _dao;
 
@@ -124,6 +122,12 @@ public class TranslationServiceDataFactoryImpl implements TranslationServiceData
                 return FeedInfo.class;
             case VEHICLE_TABLE_NAME:
                 return Vehicle.class;
+            case FACILITY_TABLE_NAME:
+                return Facility.class;
+            case FACILITY_PROPERTY_TABLE_NAME:
+                return FacilityProperty.class;
+            case FACILITY_PROPERTY_DEFINITION_TABLE_NAME:
+                return FacilityPropertyDefinition.class;
         }
         return null;
     }

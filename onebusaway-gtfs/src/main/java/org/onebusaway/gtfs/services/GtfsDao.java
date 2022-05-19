@@ -168,4 +168,32 @@ public interface GtfsDao extends GenericDao {
 
   public Collection<Translation> getAllTranslations();
 
+  /****
+   * {@link Facility} Methods
+   ****/
+  public Facility getFacilityForId(AgencyAndId id);
+  public Collection<Facility> getAllFacilities();
+
+  /****
+   * {@link FacilityProperty} Methods
+   ****/
+  public FacilityProperty getFacilityPropertiesForId(AgencyAndId id);
+  public Collection<FacilityProperty> getAllFacilityProperties();
+  /****
+   * {@link FacilityPropertyDefinition} Methods
+   ****/
+  public FacilityPropertyDefinition getFacilityPropertiesDefinitionsForId(AgencyAndId id);
+  public Collection<FacilityPropertyDefinition> getAllFacilityPropertyDefinitions();
+  /****
+   * {@link RouteNameException} Methods
+   ****/
+  public RouteNameException getRouteNameExceptionForId(AgencyAndId id);
+  public Collection<RouteNameException> getAllRouteNameExceptions();
+
+  /****
+   * {@link DirectionNameException} Methods
+   ****/
+  public DirectionNameException getDirectionNameExceptionForId(AgencyAndId id);
+  public Collection<DirectionNameException> getAllDirectionNameExceptions();
+
 }

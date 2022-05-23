@@ -202,6 +202,30 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getEntityForId(Level.class, id);
   }
 
+
+
+  public Facility getFacilityForId(AgencyAndId id) { return getEntityForId(Facility.class, id);}
+  public FacilityProperty getFacilityPropertiesForId(AgencyAndId id) { return getEntityForId(FacilityProperty.class, id);}
+  public FacilityPropertyDefinition getFacilityPropertiesDefinitionsForId(AgencyAndId id) { return getEntityForId(FacilityPropertyDefinition.class, id);}
+  public RouteNameException getRouteNameExceptionForId(AgencyAndId id) { return getEntityForId(RouteNameException.class, id);}
+  public DirectionNameException getDirectionNameExceptionForId(AgencyAndId id) { return getEntityForId(DirectionNameException.class, id);}
+
+  public Collection<Facility> getAllFacilities() {
+    return getAllEntitiesForType(Facility.class);
+  }
+  public Collection<FacilityProperty> getAllFacilityProperties() {
+    return getAllEntitiesForType(FacilityProperty.class);
+  }
+  public Collection<FacilityPropertyDefinition> getAllFacilityPropertyDefinitions() {
+    return getAllEntitiesForType(FacilityPropertyDefinition.class);
+  }
+  public Collection<RouteNameException> getAllRouteNameExceptions() {
+    return getAllEntitiesForType(RouteNameException.class);
+  }
+  public Collection<DirectionNameException> getAllDirectionNameExceptions() {
+    return getAllEntitiesForType(DirectionNameException.class);
+  }
+
   public Collection<Area> getAllAreas() {
     return getAllEntitiesForType(Area.class);
   }

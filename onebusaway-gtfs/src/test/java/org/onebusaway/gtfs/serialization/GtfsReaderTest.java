@@ -16,6 +16,7 @@
  */
 package org.onebusaway.gtfs.serialization;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -770,6 +771,28 @@ public class GtfsReaderTest {
     assertEquals(1, frequency.getExactTimes());
     assertEquals(300, frequency.getHeadwaySecs());
     assertSame(trip, frequency.getTrip());
+  }
+
+  @Test
+  public void testFaresV2() throws CsvEntityIOException, IOException {
+    String agencyId = "1642";
+    GtfsRelationalDao dao = processFeed(GtfsTestData.getTurlockFaresV2(),
+      agencyId, false);
+
+    Agency agency = dao.getAgencyForId(agencyId);
+    assertEquals(agencyId, agency.getId());
+    assertEquals("Turlock Transit", agency.getName());
+    assertEquals("http://www.turlocktransit.com/", agency.getUrl());
+    assertEquals("America/Los_Angeles", agency.getTimezone());
+
+    List<FareProduct> fareProducts = new ArrayList<>(dao.getAllFareProducts());
+    assertEquals(12, fareProducts.size());
+
+    FareProduct fp = fareProducts.get(0);
+    assertEquals("1642_day_senior", fp.getId().toString());
+    assertEquals("Day Pass Seniors Age 65 and Over", fp.getName());
+    assertEquals("USD", fp.getCurrency());
+    assertEquals(1.0, fp.getAmount(), 0);
   }
 
   @Test

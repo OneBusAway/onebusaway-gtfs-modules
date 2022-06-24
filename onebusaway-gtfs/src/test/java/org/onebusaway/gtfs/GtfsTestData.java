@@ -37,6 +37,8 @@ public class GtfsTestData {
   
   public static final String TEST_AGENCY_GTFS = "org/onebusaway/gtfs/testagency";
 
+  public static final String TURLOCK_FARES_V2 = "org/onebusaway/gtfs/turlock-fares-v2";
+
   public static final String LOCATIONS_GEOJSON = "org/onebusaway/gtfs/locations.geojson";
 
   public static File getCaltrainGtfs() {
@@ -58,6 +60,10 @@ public class GtfsTestData {
   public static File getTestAgencyGtfs() {
     return new File("src/test/resources",TEST_AGENCY_GTFS);
     //return getResourceAsTemporaryFile(TEST_AGENCY_GTFS);
+  }
+
+  public static File getTurlockFaresV2() {
+    return new File("src/test/resources", TURLOCK_FARES_V2);
   }
 
   public static <T extends GenericMutableDao> void readGtfs(T entityStore,

@@ -51,6 +51,7 @@ public class GtfsEntitySchemaFactory {
     entityClasses.add(ServiceCalendar.class);
     entityClasses.add(ServiceCalendarDate.class);
     entityClasses.add(FareAttribute.class);
+    entityClasses.add(FareProduct.class);
     entityClasses.add(FareRule.class);
     entityClasses.add(Frequency.class);
     entityClasses.add(Pathway.class);

@@ -1,0 +1,10 @@
+route_id,direction_id,direction
+16616,0,Clockwise
+16615,1,Counterclockwise
+16614,0,Clockwise
+16613,1,Inbound
+16613,0,Outbound
+16612,1,Inbound
+16612,0,Outbound
+16611,1,Inbound
+16611,0,Outbound

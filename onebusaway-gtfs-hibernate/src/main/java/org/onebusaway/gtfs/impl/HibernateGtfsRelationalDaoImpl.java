@@ -167,6 +167,16 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
+  public Collection<FareProduct> getAllFareProducts() {
+    return _ops.find("FROM FareProduct");
+  }
+
+  @Override
+  public FareProduct getFareProductForId(AgencyAndId id) {
+    return _ops.get(FareProduct.class, id);
+  }
+
+  @Override
   public FareRule getFareRuleForId(int id) {
     return (FareRule) _ops.get(FareRule.class, id);
   }

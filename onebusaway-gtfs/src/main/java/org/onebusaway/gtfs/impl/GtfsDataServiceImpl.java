@@ -97,6 +97,15 @@ public class GtfsDataServiceImpl implements GtfsDataService {
     public Collection<FareAttribute> getAllFareAttributes() {
         return _dao.getAllFareAttributes();
     }
+    @Override
+    public Collection<FareProduct> getAllFareProducts() {
+        return _dao.getAllFareProducts();
+    }
+
+    @Override
+    public FareProduct getFareProductForId(AgencyAndId id) {
+        return _dao.getFareProductForId(id);
+    }
 
     @Override
     public FareAttribute getFareAttributeForId(AgencyAndId id) {

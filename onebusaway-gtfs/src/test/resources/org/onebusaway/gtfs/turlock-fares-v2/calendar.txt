@@ -1,0 +1,5 @@
+service_id,service_name,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date
+c_22034_b_31122_d_32,Year Round starting 9/27/21 (Saturday only),0,0,0,0,0,1,0,20210927,20220102
+c_22034_b_31122_d_31,Year Round starting 9/27/21 (Weekday),1,1,1,1,1,0,0,20210927,20220102
+c_20276_b_33503_d_32,Year Round ending 9/26/21 (Saturday only),0,0,0,0,0,1,0,20220103,20230101
+c_20276_b_33503_d_31,Year Round ending 9/26/21 (Weekday),1,1,1,1,1,0,0,20220103,20230101

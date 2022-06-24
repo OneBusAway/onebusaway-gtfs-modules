@@ -1,0 +1,6 @@
+rider_category_id,rider_category_name,min_age,max_age,eligibility_url
+senior,Seniors Age 65 and Over,65,,http://www.turlocktransit.com/fares.html
+disabled,Persons with Disabilities,,,http://www.turlocktransit.com/fares.html
+medicare,Medicare Cardholders,,,http://www.turlocktransit.com/fares.html
+veteran,Honorably-discharged Military Veterans,,,http://www.turlocktransit.com/fares.html
+youth,Youth Age 18 and Under,,18,http://www.turlocktransit.com/fares.html

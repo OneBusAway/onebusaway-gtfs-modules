@@ -1,0 +1,18 @@
+service_id,date,holiday_name,exception_type
+c_22034_b_31122_d_32,20220101,2022 New Years Day,2
+c_22034_b_31122_d_32,20211231,New Year's Eve,1
+c_22034_b_31122_d_32,20211225,Christmas Day,2
+c_22034_b_31122_d_32,20211224,Christmas Eve,1
+c_22034_b_31122_d_31,20211231,New Year's Eve,2
+c_22034_b_31122_d_31,20211224,Christmas Eve,2
+c_20276_b_33503_d_32,20221125,2022 Day after Thanksgiving,1
+c_20276_b_33503_d_32,20221111,2022 Veterans Day,1
+c_20276_b_33503_d_32,20220117,2022 Martin Luther King Jr Day,1
+c_20276_b_33503_d_31,20221125,2022 Day after Thanksgiving,2
+c_20276_b_33503_d_31,20221124,2022 Thanksgiving Day,2
+c_20276_b_33503_d_31,20221111,2022 Veterans Day,2
+c_20276_b_33503_d_31,20220905,2022 Labor Day,2
+c_20276_b_33503_d_31,20220704,2022 Independence Day,2
+c_20276_b_33503_d_31,20220530,2022 Memorial Day,2
+c_20276_b_33503_d_31,20220221,2022 Presidents Day,2
+c_20276_b_33503_d_31,20220117,2022 Martin Luther King Jr Day,2

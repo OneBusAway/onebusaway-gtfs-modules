@@ -78,6 +78,7 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(ServiceCalendar.class);
     _entityClasses.add(ServiceCalendarDate.class);
     _entityClasses.add(FareAttribute.class);
+    _entityClasses.add(FareProduct.class);
     _entityClasses.add(FareRule.class);
     _entityClasses.add(Frequency.class);
     _entityClasses.add(Pathway.class);

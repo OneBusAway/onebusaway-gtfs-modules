@@ -13,13 +13,19 @@ Getting the Application
 
   You can download the application here:
 
-#set( $url = 'http://nexus.onebusaway.org/service/local/artifact/maven/content?r=public&g=org.onebusaway&a=onebusaway-gtfs-hibernate-cli&v=' + ${currentVersion} )
-  
+#if( $currentVersion.endsWith("-SNAPSHOT"))
+  #set( $repository = 'snapshots' )
+#else
+  #set( $repository = 'releases' )
+#end
+
+#set( $url = 'https://repo.camsys-apps.com/' + $repository + '/org/onebusaway/onebusaway-gtfs-hibernate-cli/' + ${currentVersion} + '/onebusaway-gtfs-hibernate-cli-' + ${currentVersion} + '.jar' )
+
   {{{${url}}onebusaway-gtfs-hibernate-cli-${currentVersion}.jar}}
   
 Using the Application
 
-  You'll need a Java 1.6 runtime installed to run the client.  To run the application:
+  You'll need a Java 11 runtime installed to run the client.  To run the application:
 
 +---+
 java -classpath onebusaway-gtfs-hiberante-cli.jar:your-database-jdbc.jar \

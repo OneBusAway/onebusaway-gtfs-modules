@@ -113,6 +113,16 @@ public class GtfsDataServiceImpl implements GtfsDataService {
     }
 
     @Override
+    public Collection<FareLegRule> getAllFareLegRules() {
+        return _dao.getAllFareLegRules();
+    }
+
+    @Override
+    public FareLegRule getFareLegRuleForId(String id) {
+        return _dao.getFareLegRuleForId(id);
+    }
+
+    @Override
     public List<Route> getRoutesForAgency(Agency agency) {
         return _dao.getRoutesForAgency(agency);
     }

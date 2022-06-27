@@ -58,13 +58,25 @@ public interface GtfsDao extends GenericDao {
 
   public FareAttribute getFareAttributeForId(AgencyAndId id);
 
+
   /****
-   * {@link FareRule} Methods
+   * {@link FareLegRule } Methods
+   ***/
+  Collection<FareLegRule> getAllFareLegRules();
+
+  FareLegRule getFareLegRuleForId(String id);
+
+  /****
+   * {@link FareProduct } Methods
    ***/
 
   Collection<FareProduct> getAllFareProducts();
 
   FareProduct getFareProductForId(AgencyAndId id);
+
+  /****
+   * {@link FareRule} Methods
+   ***/
 
   public Collection<FareRule> getAllFareRules();
 

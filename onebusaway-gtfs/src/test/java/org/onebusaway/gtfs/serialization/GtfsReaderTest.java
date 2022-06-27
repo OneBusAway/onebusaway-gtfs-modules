@@ -33,6 +33,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -788,11 +789,18 @@ public class GtfsReaderTest {
     List<FareProduct> fareProducts = new ArrayList<>(dao.getAllFareProducts());
     assertEquals(12, fareProducts.size());
 
-    FareProduct fp = fareProducts.get(0);
-    assertEquals("1642_day_senior", fp.getId().toString());
-    assertEquals("Day Pass Seniors Age 65 and Over", fp.getName());
+    FareProduct fp = fareProducts.stream().sorted(Comparator.comparing(FareProduct::getId)).findFirst().get();
+    assertEquals("31-day_disabled", fp.getId());
+    assertEquals("31-Day Pass Persons with Disabilities", fp.getName());
     assertEquals("USD", fp.getCurrency());
-    assertEquals(1.0, fp.getAmount(), 0);
+    assertEquals(15.0, fp.getAmount(), 0);
+
+    List<FareLegRule> fareLegRules = new ArrayList<>(dao.getAllFareLegRules());
+    assertEquals(12, fareLegRules.size());
+
+    FareLegRule flr = fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
+    assertEquals("31-day_disabled", flr.getId());
+    assertEquals("Turlock", flr.getLegGroupId());
   }
 
   @Test

@@ -17,23 +17,22 @@ package org.onebusaway.gtfs.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
-import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 
 @CsvFields(filename = "fare_products.txt", required = false)
-public final class FareProduct extends IdentityBean<AgencyAndId> {
+public final class FareProduct extends IdentityBean<String> {
 
   private static final long serialVersionUID = 2L;
 
   private static final int MISSING_VALUE = -999;
 
-  @CsvField(name = "fare_product_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
-  private AgencyAndId id;
+  @CsvField(name = "fare_product_id")
+  private String id;
 
   @CsvField(optional = true, name = "fare_product_name")
   private String name;
 
   @CsvField(optional = true)
-  private float amount;
+  private float amount = MISSING_VALUE;
 
   @CsvField(optional = true)
   private String currency;
@@ -72,12 +71,12 @@ public final class FareProduct extends IdentityBean<AgencyAndId> {
   }
 
   @Override
-  public AgencyAndId getId() {
+  public String getId() {
     return id;
   }
 
   @Override
-  public void setId(AgencyAndId id) {
+  public void setId(String id) {
     this.id = id;
   }
 

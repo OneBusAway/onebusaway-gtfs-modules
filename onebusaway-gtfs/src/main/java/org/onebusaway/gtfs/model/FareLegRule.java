@@ -20,7 +20,7 @@ import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 public final class FareLegRule extends IdentityBean<String> {
 
   @CsvField(name = "fare_product_id")
-  private String id;
+  private String fareProductId;
   @CsvField(optional = true, name = "leg_group_id")
   private String legGroupId;
   @CsvField(optional = true, name = "network_id")
@@ -29,6 +29,14 @@ public final class FareLegRule extends IdentityBean<String> {
   private String fromAreaId;
   @CsvField(optional = true, name = "to_area_id")
   private String toAreaId;
+
+  public String getFareProductId() {
+    return fareProductId;
+  }
+
+  public void setFareProductId(String fareProductId) {
+    this.fareProductId = fareProductId;
+  }
 
   public String getLegGroupId() {
     return legGroupId;
@@ -64,12 +72,11 @@ public final class FareLegRule extends IdentityBean<String> {
 
   @Override
   public String getId() {
-    return id;
+    return String.format("%s_%s_%s_%s", networkId, fromAreaId, toAreaId, fareProductId);
   }
 
   @Override
   public void setId(String id) {
-    this.id = id;
   }
 
 }

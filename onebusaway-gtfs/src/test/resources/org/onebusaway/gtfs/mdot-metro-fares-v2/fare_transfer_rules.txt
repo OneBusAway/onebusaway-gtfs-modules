@@ -1,0 +1,4 @@
+from_leg_group_id,to_leg_group_id,is_symmetrical,duration_limit,duration_limit_type
+core_local_one_way_trip,core_local_one_way_trip,1,5400,1
+core_express_one_way_trip,core_local_one_way_trip,0,5400,1
+core_express_one_way_trip,core_express_one_way_trip,1,5400,1

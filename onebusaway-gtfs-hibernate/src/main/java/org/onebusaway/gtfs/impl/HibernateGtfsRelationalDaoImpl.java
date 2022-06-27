@@ -167,6 +167,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
+  public Collection<FareLegRule> getAllFareLegRules() {
+    return _ops.find("FROM FareLegRule");
+  }
+
+  @Override
   public Collection<FareProduct> getAllFareProducts() {
     return _ops.find("FROM FareProduct");
   }
@@ -179,6 +184,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   @Override
   public FareRule getFareRuleForId(int id) {
     return (FareRule) _ops.get(FareRule.class, id);
+  }
+
+  @Override
+  public Collection<FareTransferRule> getAllFareTransferRules() {
+    return _ops.find("FROM FareTransferRule");
   }
 
   @Override

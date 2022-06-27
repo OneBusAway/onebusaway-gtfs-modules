@@ -1,0 +1,5 @@
+rider_category_id,rider_category_name,min_age,max_age,eligibility_url
+sen,Senior,65,,https://www.mta.maryland.gov/senior-reduced-fare-program
+dis,Disability,,,https://www.mta.maryland.gov/disabled-reduced-fare-program
+stu,Student,,,https://www.mta.maryland.gov/student-fares
+mob,Mobility,,,https://www.mta.maryland.gov/mobility

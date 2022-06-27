@@ -118,11 +118,6 @@ public class GtfsDataServiceImpl implements GtfsDataService {
     }
 
     @Override
-    public FareLegRule getFareLegRuleForId(String id) {
-        return _dao.getFareLegRuleForId(id);
-    }
-
-    @Override
     public List<Route> getRoutesForAgency(Agency agency) {
         return _dao.getRoutesForAgency(agency);
     }
@@ -145,6 +140,11 @@ public class GtfsDataServiceImpl implements GtfsDataService {
     @Override
     public FareRule getFareRuleForId(int id) {
         return _dao.getFareRuleForId(id);
+    }
+
+    @Override
+    public Collection<FareTransferRule> getAllFareTransferRules() {
+        return _dao.getAllFareTransferRules();
     }
 
     @Override

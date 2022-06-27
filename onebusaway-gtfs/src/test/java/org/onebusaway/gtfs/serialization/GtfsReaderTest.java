@@ -775,7 +775,7 @@ public class GtfsReaderTest {
   }
 
   @Test
-  public void testFaresV2() throws CsvEntityIOException, IOException {
+  public void turlockFaresV2() throws CsvEntityIOException, IOException {
     String agencyId = "1642";
     GtfsRelationalDao dao = processFeed(GtfsTestData.getTurlockFaresV2(),
       agencyId, false);
@@ -799,8 +799,43 @@ public class GtfsReaderTest {
     assertEquals(12, fareLegRules.size());
 
     FareLegRule flr = fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
-    assertEquals("31-day_disabled", flr.getId());
+    assertEquals("null_null_null_31-day_disabled", flr.getId());
     assertEquals("Turlock", flr.getLegGroupId());
+  }
+  @Test
+  public void mdotMetroFaresV2() throws CsvEntityIOException, IOException {
+    String agencyId = "1";
+    GtfsRelationalDao dao = processFeed(GtfsTestData.getMdotMetroFaresV2(),
+      agencyId, false);
+
+    Agency agency = dao.getAgencyForId(agencyId);
+    assertEquals(agencyId, agency.getId());
+    assertEquals("Maryland Transit Administration Metro Subway", agency.getName());
+
+    List<FareProduct> fareProducts = new ArrayList<>(dao.getAllFareProducts());
+    assertEquals(7, fareProducts.size());
+
+    FareProduct fp = fareProducts.stream().sorted(Comparator.comparing(FareProduct::getId)).findFirst().get();
+    assertEquals("core_local_1_day_fare", fp.getId());
+    assertEquals("1-Day Pass - Core Service", fp.getName());
+    assertEquals("USD", fp.getCurrency());
+    assertEquals(4.6, fp.getAmount(), 0.01);
+
+    List<FareLegRule> fareLegRules = new ArrayList<>(dao.getAllFareLegRules());
+    assertEquals(8, fareLegRules.size());
+
+    FareLegRule flr = fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
+    assertEquals("core_null_null_core_local_1_day_fare", flr.getId());
+    assertEquals("core_local_one_way_trip", flr.getLegGroupId());
+
+    List<FareTransferRule> fareTransferRules = new ArrayList<>(dao.getAllFareTransferRules());
+    assertEquals(3, fareTransferRules.size());
+
+    FareTransferRule ftr = fareTransferRules.stream().sorted(Comparator.comparing(FareTransferRule::getId)).findFirst().get();
+    assertEquals("core_express_one_way_trip_core_express_one_way_trip_null_-999_5400", ftr.getId());
+    assertEquals("core_express_one_way_trip", ftr.getFromLegGroupId());
+    assertEquals(-999, ftr.getTransferCount());
+    assertEquals(5400, ftr.getDurationLimit());
   }
 
   @Test

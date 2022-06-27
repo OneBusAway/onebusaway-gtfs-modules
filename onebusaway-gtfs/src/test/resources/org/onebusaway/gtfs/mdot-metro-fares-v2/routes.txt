@@ -1,0 +1,2 @@
+route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color,network_id,as_route
+11682,1,METRO SUBWAYLINK,METRO SUBWAYLINK,,1,,008000,FFFFFF,core,0

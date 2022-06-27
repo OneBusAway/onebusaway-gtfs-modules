@@ -153,11 +153,6 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
   }
 
   @Override
-  public FareLegRule getFareLegRuleForId(String id) {
-    return getEntityForId(FareLegRule.class, id);
-  }
-
-  @Override
   public Collection<FareProduct> getAllFareProducts() {
     return getAllEntitiesForType(FareProduct.class);
   }
@@ -169,6 +164,11 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   public FareRule getFareRuleForId(int id) {
     return getEntityForId(FareRule.class, id);
+  }
+
+  @Override
+  public Collection<FareTransferRule> getAllFareTransferRules() {
+    return getAllEntitiesForType(FareTransferRule.class);
   }
 
   @Override

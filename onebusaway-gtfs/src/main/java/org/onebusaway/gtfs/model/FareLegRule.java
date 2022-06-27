@@ -21,12 +21,16 @@ public final class FareLegRule extends IdentityBean<String> {
 
   @CsvField(name = "fare_product_id")
   private String fareProductId;
+
   @CsvField(optional = true, name = "leg_group_id")
   private String legGroupId;
+
   @CsvField(optional = true, name = "network_id")
   private String networkId;
+
   @CsvField(optional = true, name = "from_area_id")
   private String fromAreaId;
+
   @CsvField(optional = true, name = "to_area_id")
   private String toAreaId;
 

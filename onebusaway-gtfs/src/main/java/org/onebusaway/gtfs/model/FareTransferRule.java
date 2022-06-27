@@ -22,16 +22,22 @@ public final class FareTransferRule extends IdentityBean<String> {
   private static final int MISSING_VALUE = -999;
   @CsvField(name = "from_leg_group_id", optional = true)
   private String fromLegGroupId;
+
   @CsvField(name = "to_leg_group_id", optional = true)
   private String toLegGroupId;
+
   @CsvField(name = "transfer_count", optional = true)
   private int transferCount = MISSING_VALUE;
+
   @CsvField(name = "duration_limit", optional = true)
   private int durationLimit = MISSING_VALUE;
+
   @CsvField(name = "duration_limit_type", optional = true)
   private int durationLimitType = MISSING_VALUE;
+
   @CsvField(name = "fare_transfer_type", optional = true)
   private int fareTransferType = MISSING_VALUE;
+
   @CsvField(name = "fare_product_id", optional = true)
   private String fareProductId;
 

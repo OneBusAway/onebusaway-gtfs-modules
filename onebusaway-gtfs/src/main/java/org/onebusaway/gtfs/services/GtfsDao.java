@@ -188,4 +188,5 @@ public interface GtfsDao extends GenericDao {
 
   public Collection<Translation> getAllTranslations();
 
+  Collection<StopArea> getAllStopAreas();
 }

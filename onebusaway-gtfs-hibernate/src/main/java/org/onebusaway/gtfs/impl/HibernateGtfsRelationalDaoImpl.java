@@ -288,6 +288,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
     return _ops.find("from Translation");
   }
 
+  @Override
+  public Collection<StopArea> getAllStopAreas() {
+    return _ops.find("from StopArea");
+  }
+
   /****
    * {@link GtfsRelationalDao} Interface
    ****/

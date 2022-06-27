@@ -836,6 +836,9 @@ public class GtfsReaderTest {
     assertEquals("core_express_one_way_trip", ftr.getFromLegGroupId());
     assertEquals(-999, ftr.getTransferCount());
     assertEquals(5400, ftr.getDurationLimit());
+
+    List<StopArea> stopAreas = new ArrayList<>(dao.getAllStopAreas());
+    assertEquals(0, stopAreas.size());
   }
 
   @Test

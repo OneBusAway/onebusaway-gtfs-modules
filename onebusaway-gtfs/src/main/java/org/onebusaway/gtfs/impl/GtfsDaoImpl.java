@@ -270,6 +270,11 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getAllEntitiesForType(Translation.class);
   }
 
+  @Override
+  public Collection<StopArea> getAllStopAreas() {
+    return getAllEntitiesForType(StopArea.class);
+  }
+
   /****
    * {@link GenericMutableDao} Interface
    ****/

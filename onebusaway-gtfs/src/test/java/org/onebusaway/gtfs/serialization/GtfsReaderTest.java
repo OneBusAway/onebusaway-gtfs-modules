@@ -549,6 +549,8 @@ public class GtfsReaderTest {
     assertEquals("1", fareRule.getDestinationId());
     assertNull(fareRule.getRoute());
     assertNull(fareRule.getContainsId());
+
+    assertFalse(entityStore.hasFaresV2());
   }
 
   @Test
@@ -801,6 +803,9 @@ public class GtfsReaderTest {
     FareLegRule flr = fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
     assertEquals("null_null_null_31-day_disabled", flr.getId());
     assertEquals("Turlock", flr.getLegGroupId());
+
+    assertTrue(dao.hasFaresV1());
+    assertTrue(dao.hasFaresV2());
   }
   @Test
   public void mdotMetroFaresV2() throws CsvEntityIOException, IOException {
@@ -839,6 +844,9 @@ public class GtfsReaderTest {
 
     List<StopArea> stopAreas = new ArrayList<>(dao.getAllStopAreas());
     assertEquals(0, stopAreas.size());
+
+    assertFalse(dao.hasFaresV1());
+    assertTrue(dao.hasFaresV2());
   }
 
   @Test

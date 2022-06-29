@@ -78,9 +78,9 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(StopTime.class);
     _entityClasses.add(ServiceCalendar.class);
     _entityClasses.add(ServiceCalendarDate.class);
-    _entityClasses.add(FareAttribute.class);
-    _entityClasses.add(FareLegRule.class);
     _entityClasses.add(FareProduct.class);
+    _entityClasses.add(FareLegRule.class);
+    _entityClasses.add(FareAttribute.class);
     _entityClasses.add(FareRule.class);
     _entityClasses.add(FareTransferRule.class);
     _entityClasses.add(Frequency.class);
@@ -278,6 +278,9 @@ public class GtfsReader extends CsvEntityReader {
       } else if (entity instanceof Stop) {
         Stop stop = (Stop) entity;
         registerAgencyId(Stop.class, stop.getId());
+      } else if (entity instanceof FareProduct) {
+        FareProduct product = (FareProduct) entity;
+        registerAgencyId(FareProduct.class, product.getId());
       } else if (entity instanceof FareAttribute) {
         FareAttribute fare = (FareAttribute) entity;
         registerAgencyId(FareAttribute.class, fare.getId());

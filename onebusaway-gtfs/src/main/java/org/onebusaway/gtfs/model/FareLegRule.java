@@ -17,13 +17,13 @@ package org.onebusaway.gtfs.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
-import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 
 @CsvFields(filename = "fare_leg_rules.txt", required = false)
 public final class FareLegRule extends IdentityBean<String> {
 
-  @CsvField(name = "fare_product_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
-  private AgencyAndId fareProductId;
+  @CsvField(name = "fare_product_id", mapping = EntityFieldMappingFactory.class)
+  private FareProduct fareProduct;
 
   @CsvField(optional = true, name = "leg_group_id")
   private String legGroupId;
@@ -36,14 +36,6 @@ public final class FareLegRule extends IdentityBean<String> {
 
   @CsvField(optional = true, name = "to_area_id")
   private String toAreaId;
-
-  public AgencyAndId getFareProductId() {
-    return fareProductId;
-  }
-
-  public void setFareProductId(AgencyAndId fareProductId) {
-    this.fareProductId = fareProductId;
-  }
 
   public String getLegGroupId() {
     return legGroupId;
@@ -79,11 +71,18 @@ public final class FareLegRule extends IdentityBean<String> {
 
   @Override
   public String getId() {
-    return String.format("%s:%s_%s_%s_%s", fareProductId.getAgencyId(), networkId, fromAreaId, toAreaId, fareProductId.getId());
+    return String.format("%s:%s_%s_%s_%s", fareProduct.getId().getAgencyId(), networkId, fromAreaId, toAreaId, fareProduct.getId().getId());
   }
 
   @Override
   public void setId(String id) {
   }
 
+  public FareProduct getFareProduct() {
+    return fareProduct;
+  }
+
+  public void setFareProduct(FareProduct fareProduct) {
+    this.fareProduct = fareProduct;
+  }
 }

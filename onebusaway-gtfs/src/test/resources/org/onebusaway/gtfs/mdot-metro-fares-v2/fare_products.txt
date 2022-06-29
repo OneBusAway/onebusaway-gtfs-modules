@@ -6,4 +6,3 @@ reduced_disability_local_1_day_fare,Reduced Disability 1-Day Pass - Core Service
 core_local_7_day_fare,7-Day Pass - Core Service,,charmpass,,0,7,3,1,3,2,,,,,,22.00,,,USD
 core_local_31_day_fare,31-Day Pass - Core Service,,charmpass,,0,31,3,1,3,2,,,,,,77.00,,,USD
 reduced_senior_local_31_day_fare,Reduced Senior 31-Day Pass - Core Service,sen,charmpass,,0,31,3,1,3,2,,,,,,23.00,,,USD
-reduced_disability_local_31_day_fare,Reduced Disability 31-Day Pass - Core Service,dis,charmpass,,0,31,3,1,3,2,,,,,,23.00,,,USD

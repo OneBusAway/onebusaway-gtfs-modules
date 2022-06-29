@@ -792,7 +792,7 @@ public class GtfsReaderTest {
     assertEquals(12, fareProducts.size());
 
     FareProduct fp = fareProducts.stream().sorted(Comparator.comparing(FareProduct::getId)).findFirst().get();
-    assertEquals("31-day_disabled", fp.getId());
+    assertEquals("31-day_disabled", fp.getId().getId());
     assertEquals("31-Day Pass Persons with Disabilities", fp.getName());
     assertEquals("USD", fp.getCurrency());
     assertEquals(15.0, fp.getAmount(), 0);
@@ -821,13 +821,13 @@ public class GtfsReaderTest {
     assertEquals(7, fareProducts.size());
 
     FareProduct fp = fareProducts.stream().sorted(Comparator.comparing(FareProduct::getId)).findFirst().get();
-    assertEquals("core_local_1_day_fare", fp.getId());
+    assertEquals("core_local_1_day_fare", fp.getId().getId());
     assertEquals("1-Day Pass - Core Service", fp.getName());
     assertEquals("USD", fp.getCurrency());
     assertEquals(4.6, fp.getAmount(), 0.01);
 
     List<FareLegRule> fareLegRules = new ArrayList<>(dao.getAllFareLegRules());
-    assertEquals(8, fareLegRules.size());
+    assertEquals(7, fareLegRules.size());
 
     FareLegRule flr = fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
     assertEquals("1:core_null_null_core_local_1_day_fare", flr.getId());

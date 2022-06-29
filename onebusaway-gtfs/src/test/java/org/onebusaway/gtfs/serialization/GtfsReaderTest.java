@@ -845,6 +845,10 @@ public class GtfsReaderTest {
     List<StopArea> stopAreas = new ArrayList<>(dao.getAllStopAreas());
     assertEquals(0, stopAreas.size());
 
+    List<Route> routes = new ArrayList<>(dao.getAllRoutes());
+    assertEquals(1, routes.size());
+    assertEquals("core", routes.get(0).getNetworkId());
+
     assertFalse(dao.hasFaresV1());
     assertTrue(dao.hasFaresV2());
   }

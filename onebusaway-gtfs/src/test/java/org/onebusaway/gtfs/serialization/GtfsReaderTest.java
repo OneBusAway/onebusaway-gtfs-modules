@@ -801,7 +801,7 @@ public class GtfsReaderTest {
     assertEquals(12, fareLegRules.size());
 
     FareLegRule flr = fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
-    assertEquals("null_null_null_31-day_disabled", flr.getId());
+    assertEquals("1642:null_null_null_31-day_disabled", flr.getId());
     assertEquals("Turlock", flr.getLegGroupId());
 
     assertTrue(dao.hasFaresV1());
@@ -830,7 +830,7 @@ public class GtfsReaderTest {
     assertEquals(8, fareLegRules.size());
 
     FareLegRule flr = fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
-    assertEquals("core_null_null_core_local_1_day_fare", flr.getId());
+    assertEquals("1:core_null_null_core_local_1_day_fare", flr.getId());
     assertEquals("core_local_one_way_trip", flr.getLegGroupId());
 
     List<FareTransferRule> fareTransferRules = new ArrayList<>(dao.getAllFareTransferRules());

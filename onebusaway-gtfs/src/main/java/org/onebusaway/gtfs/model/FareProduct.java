@@ -38,6 +38,42 @@ public final class FareProduct extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true)
   private String currency;
 
+  // not in the main GTFS spec yet (as of June 2022)
+  @CsvField(optional = true)
+  private int durationAmount = MISSING_VALUE;
+
+  // not in the main GTFS spec yet (as of June 2022)
+  @CsvField(optional = true)
+  private int durationUnit = MISSING_VALUE;
+
+  // not in the main GTFS spec yet (as of June 2022)
+  @CsvField(optional = true)
+  private int durationType = MISSING_VALUE;
+
+  public int getDurationAmount() {
+    return durationAmount;
+  }
+
+  public void setDurationAmount(int durationAmount) {
+    this.durationAmount = durationAmount;
+  }
+
+  public int getDurationUnit() {
+    return durationUnit;
+  }
+
+  public void setDurationUnit(int durationUnit) {
+    this.durationUnit = durationUnit;
+  }
+
+  public int getDurationType() {
+    return durationType;
+  }
+
+  public void setDurationType(int durationType) {
+    this.durationType = durationType;
+  }
+
   public String getName() {
     return name;
   }

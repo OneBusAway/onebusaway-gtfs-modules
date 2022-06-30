@@ -796,6 +796,9 @@ public class GtfsReaderTest {
     assertEquals("31-Day Pass Persons with Disabilities", fp.getName());
     assertEquals("USD", fp.getCurrency());
     assertEquals(15.0, fp.getAmount(), 0);
+    assertEquals(3, fp.getDurationUnit());
+    assertEquals(31, fp.getDurationAmount());
+    assertEquals(2, fp.getDurationType());
 
     List<FareLegRule> fareLegRules = new ArrayList<>(dao.getAllFareLegRules());
     assertEquals(12, fareLegRules.size());

@@ -74,6 +74,11 @@ public interface GtfsDao extends GenericDao {
   FareProduct getFareProductForId(AgencyAndId id);
 
   /****
+   * {@link RiderCategory} Methods
+   ***/
+  Collection<RiderCategory> getAllRiderCategories();
+
+  /****
    * {@link FareRule} Methods
    ***/
 

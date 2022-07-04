@@ -16,7 +16,6 @@
  */
 package org.onebusaway.gtfs.serialization;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -806,6 +805,16 @@ public class GtfsReaderTest {
     FareLegRule flr = fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
     assertEquals("1642:null_null_null_31-day_disabled", flr.getId());
     assertEquals("Turlock", flr.getLegGroupId());
+
+    List<RiderCategory> riderCats = new ArrayList<>(dao.getAllRiderCategories());
+    assertEquals(5, riderCats.size());
+
+    RiderCategory riderCat = riderCats.stream().sorted(Comparator.comparing(RiderCategory::getId)).filter(c -> c.getId().equals("youth")).findAny().get();
+    assertEquals("youth", riderCat.getId());
+    assertEquals("Youth Age 18 and Under", riderCat.getName());
+    assertEquals(18, riderCat.getMaxAge());
+    assertEquals(RiderCategory.MISSING_VALUE, riderCat.getMinAge());
+    assertEquals("http://www.turlocktransit.com/fares.html", riderCat.getEligibilityUrl());
 
     assertTrue(dao.hasFaresV1());
     assertTrue(dao.hasFaresV2());

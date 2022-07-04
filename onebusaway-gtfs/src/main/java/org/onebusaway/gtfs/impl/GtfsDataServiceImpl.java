@@ -108,6 +108,11 @@ public class GtfsDataServiceImpl implements GtfsDataService {
     }
 
     @Override
+    public Collection<RiderCategory> getAllRiderCategories() {
+        return _dao.getAllRiderCategories();
+    }
+
+    @Override
     public FareAttribute getFareAttributeForId(AgencyAndId id) {
         return _dao.getFareAttributeForId(id);
     }

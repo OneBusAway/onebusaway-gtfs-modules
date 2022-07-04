@@ -162,6 +162,11 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getEntityForId(FareProduct.class, id);
   }
 
+  @Override
+  public Collection<RiderCategory> getAllRiderCategories() {
+    return getAllEntitiesForType(RiderCategory.class);
+  }
+
   public FareRule getFareRuleForId(int id) {
     return getEntityForId(FareRule.class, id);
   }

@@ -798,6 +798,10 @@ public class GtfsReaderTest {
     assertEquals(3, fp.getDurationUnit());
     assertEquals(31, fp.getDurationAmount());
     assertEquals(2, fp.getDurationType());
+    RiderCategory cat = fp.getRiderCategory();
+    assertEquals("Persons with Disabilities", cat.getName());
+    assertEquals("disabled", cat.getId().getId());
+
 
     List<FareLegRule> fareLegRules = new ArrayList<>(dao.getAllFareLegRules());
     assertEquals(12, fareLegRules.size());
@@ -809,8 +813,8 @@ public class GtfsReaderTest {
     List<RiderCategory> riderCats = new ArrayList<>(dao.getAllRiderCategories());
     assertEquals(5, riderCats.size());
 
-    RiderCategory riderCat = riderCats.stream().sorted(Comparator.comparing(RiderCategory::getId)).filter(c -> c.getId().equals("youth")).findAny().get();
-    assertEquals("youth", riderCat.getId());
+    RiderCategory riderCat = riderCats.stream().sorted(Comparator.comparing(RiderCategory::getId)).filter(c -> c.getId().getId().equals("youth")).findAny().get();
+    assertEquals("youth", riderCat.getId().getId());
     assertEquals("Youth Age 18 and Under", riderCat.getName());
     assertEquals(18, riderCat.getMaxAge());
     assertEquals(RiderCategory.MISSING_VALUE, riderCat.getMinAge());

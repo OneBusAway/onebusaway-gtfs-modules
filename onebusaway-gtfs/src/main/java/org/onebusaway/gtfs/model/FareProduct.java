@@ -18,6 +18,7 @@ package org.onebusaway.gtfs.model;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 
 @CsvFields(filename = "fare_products.txt", required = false)
 public final class FareProduct extends IdentityBean<AgencyAndId> {
@@ -49,6 +50,9 @@ public final class FareProduct extends IdentityBean<AgencyAndId> {
   // not in the main GTFS spec yet (as of June 2022)
   @CsvField(optional = true)
   private int durationType = MISSING_VALUE;
+
+  @CsvField(name = "rider_category_id", optional = true, mapping = EntityFieldMappingFactory.class)
+  private RiderCategory riderCategory;
 
   public int getDurationAmount() {
     return durationAmount;
@@ -108,4 +112,11 @@ public final class FareProduct extends IdentityBean<AgencyAndId> {
     this.id = id;
   }
 
+  public RiderCategory getRiderCategory() {
+    return riderCategory;
+  }
+
+  public void setRiderCategory(RiderCategory riderCategory) {
+    this.riderCategory = riderCategory;
+  }
 }

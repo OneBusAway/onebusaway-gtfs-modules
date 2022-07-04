@@ -17,17 +17,19 @@ package org.onebusaway.gtfs.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.serialization.mappings.AgencyIdFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 
 /**
  * As of July 2022 this file is not yet part of the main GTFS spec.
  */
 @CsvFields(filename = "rider_categories.txt", required = false)
-public final class RiderCategory extends IdentityBean<String> {
+public final class RiderCategory extends IdentityBean<AgencyAndId> {
 
   public static final int MISSING_VALUE = -999;
 
-  @CsvField(name = "rider_category_id")
-  private String id;
+  @CsvField(name = "rider_category_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
+  private AgencyAndId id;
   @CsvField(name = "rider_category_name", optional = true)
   private String name;
   @CsvField(optional = true)
@@ -70,12 +72,12 @@ public final class RiderCategory extends IdentityBean<String> {
   }
 
   @Override
-  public String getId() {
+  public AgencyAndId getId() {
     return id;
   }
 
   @Override
-  public void setId(String id) {
+  public void setId(AgencyAndId id) {
     this.id = id;
   }
 }

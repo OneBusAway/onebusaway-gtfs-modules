@@ -858,6 +858,13 @@ public class GtfsReaderTest {
     assertEquals(-999, ftr.getTransferCount());
     assertEquals(5400, ftr.getDurationLimit());
 
+    List<FareContainer> containers = new ArrayList<>(dao.getAllFareContainers());
+    assertEquals(3, fareTransferRules.size());
+
+    FareContainer container = containers.stream().sorted(Comparator.comparing(FareContainer::getId)).findFirst().get();
+    assertEquals("charmcard", container.getId().getId());
+    assertEquals("CharmCard", container.getName());
+
     List<StopArea> stopAreas = new ArrayList<>(dao.getAllStopAreas());
     assertEquals(0, stopAreas.size());
 

@@ -163,6 +163,11 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
   }
 
   @Override
+  public Collection<FareContainer> getAllFareContainers() {
+    return getAllEntitiesForType(FareContainer.class);
+  }
+
+  @Override
   public Collection<RiderCategory> getAllRiderCategories() {
     return getAllEntitiesForType(RiderCategory.class);
   }

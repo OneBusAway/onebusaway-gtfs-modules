@@ -18,7 +18,7 @@ package org.onebusaway.gtfs.model;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 
-@CsvFields(filename = "stop_area.txt", required = false)
+@CsvFields(filename = "stop_areas.txt", required = false)
 public final class StopArea extends IdentityBean<String> {
 
   @CsvField(name = "area_id")

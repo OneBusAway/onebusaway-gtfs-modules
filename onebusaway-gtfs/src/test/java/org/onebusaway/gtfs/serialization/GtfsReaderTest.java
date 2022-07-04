@@ -807,8 +807,9 @@ public class GtfsReaderTest {
     assertEquals(12, fareLegRules.size());
 
     FareLegRule flr = fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
-    assertEquals("1642:null_null_null_31-day_disabled", flr.getId());
+    assertEquals("id=31-day_disabled|network=null|fromArea=null|toArea=null|container=null|category=disabled", flr.getId());
     assertEquals("Turlock", flr.getLegGroupId());
+    assertEquals("Persons with Disabilities", flr.getRiderCategory().getName());
 
     List<RiderCategory> riderCats = new ArrayList<>(dao.getAllRiderCategories());
     assertEquals(5, riderCats.size());
@@ -843,10 +844,10 @@ public class GtfsReaderTest {
     assertEquals(4.6, fp.getAmount(), 0.01);
 
     List<FareLegRule> fareLegRules = new ArrayList<>(dao.getAllFareLegRules());
-    assertEquals(7, fareLegRules.size());
+    assertEquals(21, fareLegRules.size());
 
     FareLegRule flr = fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
-    assertEquals("1:core_null_null_core_local_1_day_fare", flr.getId());
+    assertEquals("id=core_local_1_day_fare|network=core|fromArea=null|toArea=null|container=charmcard|category=null", flr.getId());
     assertEquals("core_local_one_way_trip", flr.getLegGroupId());
 
     List<FareTransferRule> fareTransferRules = new ArrayList<>(dao.getAllFareTransferRules());
@@ -861,9 +862,9 @@ public class GtfsReaderTest {
     List<FareContainer> containers = new ArrayList<>(dao.getAllFareContainers());
     assertEquals(3, fareTransferRules.size());
 
-    FareContainer container = containers.stream().sorted(Comparator.comparing(FareContainer::getId)).findFirst().get();
-    assertEquals("charmcard", container.getId().getId());
-    assertEquals("CharmCard", container.getName());
+    FareContainer container = containers.stream().filter(c -> c.getId().getId().equals("charmcard_senior")).findFirst().get();
+    assertEquals("charmcard_senior", container.getId().getId());
+    assertEquals("Senior CharmCard", container.getName());
 
     List<StopArea> stopAreas = new ArrayList<>(dao.getAllStopAreas());
     assertEquals(0, stopAreas.size());

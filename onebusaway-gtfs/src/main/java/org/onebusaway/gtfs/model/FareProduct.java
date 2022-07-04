@@ -15,10 +15,12 @@
  */
 package org.onebusaway.gtfs.model;
 
+import java.util.Optional;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.FareProductFieldMappingFactory;
 
 @CsvFields(filename = "fare_products.txt", required = false)
 public final class FareProduct extends IdentityBean<AgencyAndId> {
@@ -26,33 +28,43 @@ public final class FareProduct extends IdentityBean<AgencyAndId> {
   private static final long serialVersionUID = 2L;
 
   private static final int MISSING_VALUE = -999;
-
   @CsvField(name = "fare_product_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
-  private AgencyAndId id;
-
+  private AgencyAndId fareProductId;
   @CsvField(optional = true, name = "fare_product_name")
   private String name;
-
   @CsvField(optional = true)
   private float amount = MISSING_VALUE;
-
   @CsvField(optional = true)
   private String currency;
-
   // not in the main GTFS spec yet (as of June 2022)
   @CsvField(optional = true)
   private int durationAmount = MISSING_VALUE;
-
   // not in the main GTFS spec yet (as of June 2022)
   @CsvField(optional = true)
   private int durationUnit = MISSING_VALUE;
-
   // not in the main GTFS spec yet (as of June 2022)
   @CsvField(optional = true)
   private int durationType = MISSING_VALUE;
-
   @CsvField(name = "rider_category_id", optional = true, mapping = EntityFieldMappingFactory.class)
   private RiderCategory riderCategory;
+  @CsvField(name = "fare_container_id", optional = true, mapping = EntityFieldMappingFactory.class)
+  private FareContainer fareContainer;
+
+  public AgencyAndId getFareProductId() {
+    return fareProductId;
+  }
+
+  public void setFareProductId(AgencyAndId fareProductId) {
+    this.fareProductId = fareProductId;
+  }
+
+  public FareContainer egetFareContainer() {
+    return fareContainer;
+  }
+
+  public void setFareContainer(FareContainer fareContainer) {
+    this.fareContainer = fareContainer;
+  }
 
   public int getDurationAmount() {
     return durationAmount;
@@ -104,12 +116,13 @@ public final class FareProduct extends IdentityBean<AgencyAndId> {
 
   @Override
   public AgencyAndId getId() {
-    return id;
+    String riderCategoryId = Optional.ofNullable(riderCategory).map(c -> c.getId().getId()).orElse(null);
+    String fareContainerId = Optional.ofNullable(fareContainer).map(c -> c.getId().getId()).orElse(null);
+    return FareProductFieldMappingFactory.fareProductId(fareProductId.getAgencyId(), fareProductId.getId(), riderCategoryId, fareContainerId);
   }
 
   @Override
   public void setId(AgencyAndId id) {
-    this.id = id;
   }
 
   public RiderCategory getRiderCategory() {

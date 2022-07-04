@@ -791,7 +791,7 @@ public class GtfsReaderTest {
     assertEquals(12, fareProducts.size());
 
     FareProduct fp = fareProducts.stream().sorted(Comparator.comparing(FareProduct::getId)).findFirst().get();
-    assertEquals("31-day_disabled", fp.getId().getId());
+    assertEquals("id=31-day_disabled|category=disabled|container=null", fp.getId().getId());
     assertEquals("31-Day Pass Persons with Disabilities", fp.getName());
     assertEquals("USD", fp.getCurrency());
     assertEquals(15.0, fp.getAmount(), 0);
@@ -835,10 +835,10 @@ public class GtfsReaderTest {
     assertEquals("Maryland Transit Administration Metro Subway", agency.getName());
 
     List<FareProduct> fareProducts = new ArrayList<>(dao.getAllFareProducts());
-    assertEquals(7, fareProducts.size());
+    assertEquals(21, fareProducts.size());
 
     FareProduct fp = fareProducts.stream().sorted(Comparator.comparing(FareProduct::getId)).findFirst().get();
-    assertEquals("core_local_1_day_fare", fp.getId().getId());
+    assertEquals("id=core_local_1_day_fare|category=null|container=charmcard", fp.getId().getId());
     assertEquals("1-Day Pass - Core Service", fp.getName());
     assertEquals("USD", fp.getCurrency());
     assertEquals(4.6, fp.getAmount(), 0.01);

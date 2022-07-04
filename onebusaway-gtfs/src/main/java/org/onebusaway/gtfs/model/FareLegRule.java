@@ -19,11 +19,12 @@ import java.util.Optional;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.FareProductFieldMappingFactory;
 
 @CsvFields(filename = "fare_leg_rules.txt", required = false)
 public final class FareLegRule extends IdentityBean<String> {
 
-  @CsvField(name = "fare_product_id", mapping = EntityFieldMappingFactory.class)
+  @CsvField(name = "fare_product_id", mapping = FareProductFieldMappingFactory.class)
   private FareProduct fareProduct;
 
   @CsvField(optional = true, name = "leg_group_id")
@@ -82,7 +83,7 @@ public final class FareLegRule extends IdentityBean<String> {
     String categoryId = Optional.ofNullable(riderCategory).map(c -> c.getId().getId()).orElse(null);
     return String.format(
       "id=%s|network=%s|fromArea=%s|toArea=%s|container=%s|category=%s",
-      fareProduct.getId().getId(), networkId, fromAreaId, toAreaId, containerId, categoryId
+      fareProduct.getFareProductId().getId(), networkId, fromAreaId, toAreaId, containerId, categoryId
     );
   }
 

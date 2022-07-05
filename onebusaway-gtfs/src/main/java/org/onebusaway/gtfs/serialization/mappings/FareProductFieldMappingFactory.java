@@ -27,6 +27,17 @@ import org.onebusaway.gtfs.model.FareProduct;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsReaderContext;
 
+/**
+ * Fare products have a composite primary key of
+ *
+ *  - fare product id
+ *  - fare container id (nullable)
+ *  - rider category id (nullable)
+ *
+ *  So if you want this library to look up the fare product instance you need to supply all of these,
+ *  hence we need a custom mapping factory.
+ *
+ */
 public class FareProductFieldMappingFactory implements FieldMappingFactory {
 
   public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,

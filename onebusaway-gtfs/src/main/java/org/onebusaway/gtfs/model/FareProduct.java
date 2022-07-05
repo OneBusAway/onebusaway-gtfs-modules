@@ -36,17 +36,24 @@ public final class FareProduct extends IdentityBean<AgencyAndId> {
   private float amount = MISSING_VALUE;
   @CsvField(optional = true)
   private String currency;
+
   // not in the main GTFS spec yet (as of June 2022)
   @CsvField(optional = true)
   private int durationAmount = MISSING_VALUE;
+
   // not in the main GTFS spec yet (as of June 2022)
   @CsvField(optional = true)
   private int durationUnit = MISSING_VALUE;
+
   // not in the main GTFS spec yet (as of June 2022)
   @CsvField(optional = true)
   private int durationType = MISSING_VALUE;
+
+  // not in the main GTFS spec yet (as of June 2022)
   @CsvField(name = "rider_category_id", optional = true, mapping = EntityFieldMappingFactory.class)
   private RiderCategory riderCategory;
+
+  // not in the main GTFS spec yet (as of June 2022)
   @CsvField(name = "fare_container_id", optional = true, mapping = EntityFieldMappingFactory.class)
   private FareContainer fareContainer;
 

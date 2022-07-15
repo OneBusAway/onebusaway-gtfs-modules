@@ -17,14 +17,7 @@
  */
 package org.onebusaway.gtfs.impl.calendar;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
@@ -45,11 +38,11 @@ import org.slf4j.LoggerFactory;
  * id. To my knowledge, the calculation should work the same, which is to say I
  * can't immediately think of any cases where the service dates would be
  * computed incorrectly.
- * 
+ *
  * @author bdferris
  */
 public class CalendarServiceDataFactoryImpl implements
-    CalendarServiceDataFactory {
+        CalendarServiceDataFactory {
 
   private final Logger _log = LoggerFactory.getLogger(CalendarServiceDataFactoryImpl.class);
 
@@ -59,7 +52,7 @@ public class CalendarServiceDataFactoryImpl implements
 
   public static CalendarService createService(GtfsRelationalDao dao) {
     CalendarServiceDataFactoryImpl factory = new CalendarServiceDataFactoryImpl(
-        dao);
+            dao);
     return new CalendarServiceImpl(factory.createData());
   }
 
@@ -76,16 +69,51 @@ public class CalendarServiceDataFactoryImpl implements
   }
 
   public void setExcludeFutureServiceDatesInDays(
-      int excludeFutureServiceDatesInDays) {
+          int excludeFutureServiceDatesInDays) {
     _excludeFutureServiceDatesInDays = excludeFutureServiceDatesInDays;
   }
 
   @Override
   public CalendarServiceData createData() {
 
+    Collection<ServiceCalendar> allCalendars = _dao.getAllCalendars();
+    Collection<ServiceCalendarDate> calendarDates = _dao.getAllCalendarDates();
+
+    Set<AgencyAndId> serviceIds = new HashSet<AgencyAndId>();
+    serviceIds.addAll(getCalendarDatesByServiceId(calendarDates).keySet());
+    serviceIds.addAll(getCalendarsByServiceId(allCalendars).keySet());
+
+    Map<AgencyAndId, List<String>> tripAgencyIdsReferencingServiceId = new HashMap<AgencyAndId, List<String>>();
+
+    for (AgencyAndId serviceId : serviceIds) {
+      tripAgencyIdsReferencingServiceId.put(serviceId, _dao.getTripAgencyIdsReferencingServiceId(serviceId));
+    }
+
+    Map<String, TimeZone> timeZoneMapByAgencyId = new HashMap<String, TimeZone>();
+
+    for (Agency a : _dao.getAllAgencies()) {
+      timeZoneMapByAgencyId.put(a.getId(), TimeZone.getTimeZone(a.getTimezone()));
+    }
+
+    return updateData(_dao.getAllAgencies(),
+            tripAgencyIdsReferencingServiceId,
+            timeZoneMapByAgencyId);
+  }
+
+
+  /*
+   * refactored to not use internal state but have state passed in.  Thus the logic can be used
+   * outside of this class.
+   * @TODO clean up this method signature to reflect its public usage
+   */
+  @Override
+  public CalendarServiceData updateData(Collection<Agency> allAgencies,
+                                        Map<AgencyAndId, List<String>> tripAgencyIdsReferencingServiceId,
+                                        Map<String, TimeZone> timeZoneMapByAgencyId) {
+
     CalendarServiceData data = new CalendarServiceData();
 
-    setTimeZonesForAgencies(data);
+    setTimeZonesForAgencies(data, allAgencies);
 
     List<AgencyAndId> serviceIds = _dao.getAllServiceIds();
 
@@ -96,7 +124,7 @@ public class CalendarServiceDataFactoryImpl implements
       index++;
 
       _log.info("serviceId=" + serviceId + " (" + index + "/"
-          + serviceIds.size() + ")");
+              + serviceIds.size() + ")");
 
       TimeZone serviceIdTimeZone = data.getTimeZoneForAgencyId(serviceId.getAgencyId());
       if (serviceIdTimeZone == null) {
@@ -104,20 +132,20 @@ public class CalendarServiceDataFactoryImpl implements
       }
 
       Set<ServiceDate> activeDates = getServiceDatesForServiceId(serviceId,
-          serviceIdTimeZone);
+              serviceIdTimeZone);
 
       List<ServiceDate> serviceDates = new ArrayList<ServiceDate>(activeDates);
       Collections.sort(serviceDates);
 
       data.putServiceDatesForServiceId(serviceId, serviceDates);
 
-      List<String> tripAgencyIds = _dao.getTripAgencyIdsReferencingServiceId(serviceId);
+      List<String> tripAgencyIds = tripAgencyIdsReferencingServiceId.get(serviceId);
 
       Set<TimeZone> timeZones = new HashSet<TimeZone>();
       for (String tripAgencyId : tripAgencyIds) {
-        TimeZone timeZone = data.getTimeZoneForAgencyId(tripAgencyId);
+        TimeZone timeZone = timeZoneMapByAgencyId.get(tripAgencyId);
         if (timeZone == null) {
-          timeZone = serviceIdTimeZone;
+          throw new IllegalStateException("no timezone for agency " + tripAgencyId);
         }
         timeZones.add(timeZone);
       }
@@ -125,14 +153,9 @@ public class CalendarServiceDataFactoryImpl implements
       for (TimeZone timeZone : timeZones) {
 
         List<Date> dates = new ArrayList<Date>(serviceDates.size());
-        for (ServiceDate serviceDate : serviceDates)
-          try {
-            if (timeZone == null)
-              timeZone = TimeZone.getDefault();
-            dates.add(serviceDate.getAsDate(timeZone));
-          } catch (Exception any) {
-            _log.error(" calendar load failed for " + serviceDate + " for serviceId " + serviceId);
-          }
+        for (ServiceDate serviceDate : serviceDates) {
+          dates.add(serviceDate.getAsDate(timeZone));
+        }
 
         LocalizedServiceId id = new LocalizedServiceId(serviceId, timeZone);
         data.putDatesForLocalizedServiceId(id, dates);
@@ -143,7 +166,7 @@ public class CalendarServiceDataFactoryImpl implements
   }
 
   public Set<ServiceDate> getServiceDatesForServiceId(AgencyAndId serviceId,
-      TimeZone serviceIdTimeZone) {
+                                                      TimeZone serviceIdTimeZone) {
     Set<ServiceDate> activeDates = new HashSet<ServiceDate>();
     ServiceCalendar c = _dao.getCalendarForServiceId(serviceId);
 
@@ -157,19 +180,22 @@ public class CalendarServiceDataFactoryImpl implements
   }
 
   private void setTimeZonesForAgencies(CalendarServiceData data) {
-    for (Agency agency : _dao.getAllAgencies()) {
+    setTimeZonesForAgencies(data, _dao.getAllAgencies());
+  }
+  private void setTimeZonesForAgencies(CalendarServiceData data, Collection<Agency> allAgencies) {
+    for (Agency agency : allAgencies) {
       TimeZone timeZone = TimeZone.getTimeZone(agency.getTimezone());
       if (timeZone.getID().equals("GMT")
-          && !agency.getTimezone().toUpperCase().equals("GMT")) {
+              && !agency.getTimezone().toUpperCase().equals("GMT")) {
         throw new UnknownAgencyTimezoneException(agency.getName(),
-            agency.getTimezone());
+                agency.getTimezone());
       }
       data.putTimeZoneForAgencyId(agency.getId(), timeZone);
     }
   }
 
   private void addDatesFromCalendar(ServiceCalendar calendar,
-      TimeZone timeZone, Set<ServiceDate> activeDates) {
+                                    TimeZone timeZone, Set<ServiceDate> activeDates) {
 
     /**
      * We calculate service dates relative to noon so as to avoid any weirdness
@@ -222,8 +248,8 @@ public class CalendarServiceDataFactoryImpl implements
   }
 
   private void addAndRemoveDatesFromCalendarDate(
-      ServiceCalendarDate calendarDate, TimeZone serviceIdTimeZone,
-      Set<ServiceDate> activeDates) {
+          ServiceCalendarDate calendarDate, TimeZone serviceIdTimeZone,
+          Set<ServiceDate> activeDates) {
 
     ServiceDate serviceDate = calendarDate.getDate();
     Date targetDate = calendarDate.getDate().getAsDate();
@@ -239,13 +265,13 @@ public class CalendarServiceDataFactoryImpl implements
         break;
       default:
         _log.warn("unknown CalendarDate exception type: "
-            + calendarDate.getExceptionType());
+                + calendarDate.getExceptionType());
         break;
     }
   }
 
   private void addServiceDate(Set<ServiceDate> activeDates,
-      ServiceDate serviceDate, TimeZone timeZone) {
+                              ServiceDate serviceDate, TimeZone timeZone) {
     if (_excludeFutureServiceDatesInDays > 0) {
       int days = (int) ((serviceDate.getAsDate().getTime() - System.currentTimeMillis()) / (24 * 60 * 60 * 1000));
       if (days > _excludeFutureServiceDatesInDays)
@@ -256,9 +282,33 @@ public class CalendarServiceDataFactoryImpl implements
   }
 
   private static Date getServiceDateAsNoon(ServiceDate serviceDate,
-      TimeZone timeZone) {
+                                           TimeZone timeZone) {
     Calendar c = serviceDate.getAsCalendar(timeZone);
     c.add(Calendar.HOUR_OF_DAY, 12);
     return c.getTime();
+  }
+
+
+  private Map<AgencyAndId, ServiceCalendar> getCalendarsByServiceId(
+          Collection<ServiceCalendar> calendars) {
+    Map<AgencyAndId, ServiceCalendar> calendarsByServiceId = new HashMap<AgencyAndId, ServiceCalendar>();
+    for (ServiceCalendar c : calendars)
+      calendarsByServiceId.put(c.getServiceId(), c);
+    return calendarsByServiceId;
+  }
+
+  private Map<AgencyAndId, List<ServiceCalendarDate>> getCalendarDatesByServiceId(
+          Collection<ServiceCalendarDate> calendarDates) {
+    Map<AgencyAndId, List<ServiceCalendarDate>> calendarDatesByServiceId = new HashMap<AgencyAndId, List<ServiceCalendarDate>>();
+
+    for (ServiceCalendarDate calendarDate : calendarDates) {
+      List<ServiceCalendarDate> cds = calendarDatesByServiceId.get(calendarDate.getServiceId());
+      if (cds == null) {
+        cds = new ArrayList<ServiceCalendarDate>();
+        calendarDatesByServiceId.put(calendarDate.getServiceId(), cds);
+      }
+      cds.add(calendarDate);
+    }
+    return calendarDatesByServiceId;
   }
 }

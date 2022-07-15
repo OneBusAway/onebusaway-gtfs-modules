@@ -18,10 +18,7 @@ package org.onebusaway.gtfs.impl;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceImpl;
 import org.onebusaway.gtfs.model.*;
-import org.onebusaway.gtfs.model.calendar.LocalizedServiceId;
-import org.onebusaway.gtfs.model.calendar.ServiceDate;
-import org.onebusaway.gtfs.model.calendar.ServiceIdIntervals;
-import org.onebusaway.gtfs.model.calendar.ServiceInterval;
+import org.onebusaway.gtfs.model.calendar.*;
 import org.onebusaway.gtfs.services.GtfsDataService;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
@@ -436,6 +433,11 @@ public class GtfsDataServiceImpl implements GtfsDataService {
     @Override
     public Map<LocalizedServiceId, List<Date>> getPreviousArrivalServiceDates(ServiceIdIntervals serviceIdIntervals, long targetTime) {
         return _calendarService.getPreviousArrivalServiceDates(serviceIdIntervals, targetTime);
+    }
+
+    @Override
+    public void setData(CalendarServiceData data) {
+        _calendarService.setData(data);
     }
 
     public Facility getFacilityForId(AgencyAndId id) { return getEntityForId(Facility.class, id);}

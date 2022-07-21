@@ -33,10 +33,13 @@ public class RouteNameException extends IdentityBean<Integer> {
     @CsvField(name = "route_id", mapping = EntityFieldMappingFactory.class, order = -1)
     private Route routeId;
 
+    @CsvField(optional = true)
     String routeName;
 
+    @CsvField(optional = true)
     String routeDo;
 
+    @CsvField(optional = true)
     String nameType;
 
     public RouteNameException(){

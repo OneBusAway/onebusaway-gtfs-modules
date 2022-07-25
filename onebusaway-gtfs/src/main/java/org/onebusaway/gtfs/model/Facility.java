@@ -28,7 +28,6 @@ public class Facility extends IdentityBean<AgencyAndId>{
 
     private static final long serialVersionUID = 2L;
 
-    private static final int MISSING_VALUE = -999;
 
     @CsvField(name = "facility_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
     private AgencyAndId id;

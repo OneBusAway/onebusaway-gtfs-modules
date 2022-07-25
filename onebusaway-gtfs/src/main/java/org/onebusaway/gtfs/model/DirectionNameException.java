@@ -31,9 +31,16 @@ public class DirectionNameException extends IdentityBean<Integer> {
     @CsvField(ignore = true)
     private int id;
 
+    @CsvField(optional = true)
     String routeName;
+
+    @CsvField(optional = true)
     int directionId;
+
+    @CsvField(optional = true)
     String directionName;
+
+    @CsvField(optional = true)
     String directionDo;
 
     public DirectionNameException(){

@@ -28,8 +28,10 @@ public class FacilityPropertyDefinition extends IdentityBean<AgencyAndId>{
     @CsvField(name = "property_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
     AgencyAndId id;
 
+    @CsvField(optional = true)
     String definition;
 
+    @CsvField(optional = true)
     String possibleValues;
 
     public FacilityPropertyDefinition (){}

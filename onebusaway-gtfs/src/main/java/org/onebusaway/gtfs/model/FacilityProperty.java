@@ -36,6 +36,7 @@ public class FacilityProperty extends IdentityBean<Integer>{
     @CsvField(name = "property_id", mapping = EntityFieldMappingFactory.class)
     FacilityPropertyDefinition propertyId;
 
+    @CsvField(optional = true)
     String value;
 
     public FacilityProperty (){

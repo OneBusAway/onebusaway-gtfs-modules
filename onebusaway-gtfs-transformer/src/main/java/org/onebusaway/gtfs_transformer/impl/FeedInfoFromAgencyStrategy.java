@@ -15,6 +15,9 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.FeedInfo;
@@ -33,6 +36,7 @@ public class FeedInfoFromAgencyStrategy implements GtfsTransformStrategy {
 
   private static Logger _log = LoggerFactory.getLogger(FeedInfoFromAgencyStrategy.class);
   private String agencyId;
+  private String feedVersion;
 
   @CsvField(optional = true)
   private String defaultLang = "en";
@@ -103,4 +107,6 @@ public class FeedInfoFromAgencyStrategy implements GtfsTransformStrategy {
   public void setDefaultLang(String lang) {
     this.defaultLang = lang;
   }
+
+  public void setFeedVersion(String feedVersion){this.feedVersion = feedVersion;}
 }

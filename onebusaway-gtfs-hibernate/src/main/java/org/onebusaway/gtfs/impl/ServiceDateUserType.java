@@ -25,6 +25,7 @@ import java.text.ParseException;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 
@@ -92,6 +93,20 @@ public class ServiceDateUserType implements UserType {
       st.setString(index, serviceDate.getAsString());
     }
   }
+
+  @Override
+  public boolean isMutable() {
+    return false;
+  }
+
+  @Override
+  public Object deepCopy(Object value) throws HibernateException {
+    if (value == null) {
+      return null;
+    }
+    return new ServiceDate((ServiceDate) value);
+  }
+
 
   @Override
   public Object assemble(Serializable cached, Object owner)

@@ -26,7 +26,6 @@ import java.util.TimeZone;
 
 public interface CalendarServiceDataFactory {
   public CalendarServiceData createData();
-
   public CalendarServiceData updateData(Collection<Agency> allAgencies,
                                         Map<AgencyAndId, List<String>> tripAgencyIdsReferencingServiceId,
                                         Map<String, TimeZone> timeZoneMapByAgencyId);

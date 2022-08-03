@@ -33,6 +33,7 @@ import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
+import org.onebusaway.gtfs.serialization.RouteWriter;
 import org.onebusaway.gtfs.services.GenericMutableDao;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
@@ -69,6 +70,8 @@ public class GtfsTransformer {
   
   private GtfsWriter _writer = new GtfsWriter();
 
+  private RouteWriter _routeWriter = new RouteWriter();
+
   private GtfsMutableRelationalDao _dao = new GtfsRelationalDaoImpl();
 
   private String _agencyId;
@@ -77,8 +80,20 @@ public class GtfsTransformer {
 
   private TransformFactory _transformFactory = new TransformFactory(this);
 
+  private boolean _writeZoneRouteMapping = false;
+
+  private String _routeMappingOutputName = "ListOfRoutesInGtfs.txt";
+
   public void setGtfsInputDirectory(File gtfsInputDirectory) {
     setGtfsInputDirectories(Arrays.asList(gtfsInputDirectory));
+  }
+
+  public void setWriteZoneRouteMapping(boolean writeZoneRouteMapping){
+    _writeZoneRouteMapping = writeZoneRouteMapping;
+  }
+
+  public void setRouteMappingOutputName(String routeMappingOutputName){
+    _routeMappingOutputName = routeMappingOutputName;
   }
 
   public void setGtfsReferenceDirectory(File referenceDirectory) {
@@ -163,6 +178,9 @@ public class GtfsTransformer {
 
     updateGtfs();
     writeGtfs();
+    if(_writeZoneRouteMapping) {
+      writeRoutes();
+    }
   }
 
   /****
@@ -258,6 +276,15 @@ public class GtfsTransformer {
     if (_outputDirectory.isFile()) {
       _log.info("preserving lastModified time of " + new Date(_reader.getLastModfiedTime()));
     }
+  }
+
+  private void writeRoutes() throws IOException{
+    if (_outputDirectory == null) {
+      return;
+    }
+    _routeWriter.setOutputLocation(_outputDirectory);
+    _routeWriter.setRoutesOutputLocation(_routeMappingOutputName);
+    _routeWriter.run(_dao);
   }
 
   private class DaoInterceptor extends GenericMutableDaoWrapper {

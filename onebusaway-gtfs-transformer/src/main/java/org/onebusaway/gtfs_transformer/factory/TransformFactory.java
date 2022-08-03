@@ -275,6 +275,10 @@ public class TransformFactory {
         }
         else if (opType.equals("check_for_future_service")){
           handleTransformOperation(line, json, new CheckForFutureService());
+        }else if (opType.equals("remove_unused_routes")) {
+          handleTransformOperation(line, json, new RemoveUnusedRoutes());
+        } else if (opType.equals("remove_old_calendar_statements")) {
+          handleTransformOperation(line, json, new RemoveOldCalendarStatements());
         }
         else if (opType.equals("check_for_plausible_stop_times")){
           handleTransformOperation(line,json, new CheckForPlausibleStopTimes());

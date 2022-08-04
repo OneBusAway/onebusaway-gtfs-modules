@@ -854,8 +854,8 @@ public class GtfsReaderTest {
     assertEquals(3, fareTransferRules.size());
 
     FareTransferRule ftr = fareTransferRules.stream().sorted(Comparator.comparing(FareTransferRule::getId)).findFirst().get();
-    assertEquals("core_express_one_way_trip_core_express_one_way_trip_null_-999_5400", ftr.getId());
-    assertEquals("core_express_one_way_trip", ftr.getFromLegGroupId());
+    assertEquals("1_core_express_one_way_trip_1_core_express_one_way_trip_null_-999_5400", ftr.getId());
+    assertEquals(new AgencyAndId("1", "core_express_one_way_trip"), ftr.getFromLegGroupId());
     assertEquals(-999, ftr.getTransferCount());
     assertEquals(5400, ftr.getDurationLimit());
 

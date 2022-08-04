@@ -1,0 +1,13 @@
+leg_group_id,fare_product_id,rider_category_id
+Turlock,day_general,
+Turlock,day_senior,senior
+Turlock,day_disabled,disabled
+Turlock,day_medicare,medicare
+Turlock,day_veteran,veteran
+Turlock,day_youth,youth
+Turlock,31-day_general,
+Turlock,31-day_senior,senior
+Turlock,31-day_disabled,disabled
+Turlock,31-day_medicare,medicare
+Turlock,31-day_veteran,veteran
+Turlock,31-day_youth,youth

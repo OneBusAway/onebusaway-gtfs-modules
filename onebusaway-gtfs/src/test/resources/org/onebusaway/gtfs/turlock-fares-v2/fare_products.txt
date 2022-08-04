@@ -1,0 +1,13 @@
+fare_product_id,fare_product_name,rider_category_id,duration_amount,duration_unit,duration_type,amount,currency
+day_general,Day Pass General Public,,1,3,2,2,USD
+day_senior,Day Pass Seniors Age 65 and Over,senior,1,3,2,1,USD
+day_disabled,Day Pass Persons with Disabilities,disabled,1,3,2,1,USD
+day_medicare,Day Pass Medicare Cardholders,medicare,1,3,2,1,USD
+day_veteran,Day Pass Veterans,veteran,1,3,2,1,USD
+day_youth,Day Pass Youth Age 18 and Under,youth,1,3,2,0,USD
+31-day_general,31-Day Pass General Public,,31,3,2,30,USD
+31-day_senior,31-Day Pass Seniors Age 65 and Over,senior,31,3,2,15,USD
+31-day_disabled,31-Day Pass Persons with Disabilities,disabled,31,3,2,15,USD
+31-day_medicare,31-Day Pass Medicare Cardholders,medicare,31,3,2,15,USD
+31-day_veteran,31-Day Pass Veterans,veteran,31,3,2,15,USD
+31-day_youth,31-Day Pass Youth Age 18 and Under,youth,31,3,2,0,USD

@@ -15,7 +15,10 @@
  */
 package org.onebusaway.gtfs.services;
 
+import java.util.Collection;
+import org.onebusaway.gtfs.model.FareProduct;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
 
 public interface GtfsDataService extends GtfsRelationalDao, CalendarService {
+  Collection<FareProduct> getAllFareProducts();
 }

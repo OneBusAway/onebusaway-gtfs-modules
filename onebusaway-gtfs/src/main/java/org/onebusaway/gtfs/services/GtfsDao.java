@@ -17,11 +17,12 @@ package org.onebusaway.gtfs.services;
 
 import java.util.Collection;
 
+import java.util.stream.Stream;
 import org.onebusaway.gtfs.model.*;
 
 /**
  * Basic methods for accessing GTFS entities in bulk or by id.
- * 
+ *
  * @author bdferris
  */
 public interface GtfsDao extends GenericDao {
@@ -58,6 +59,30 @@ public interface GtfsDao extends GenericDao {
 
   public FareAttribute getFareAttributeForId(AgencyAndId id);
 
+
+  /****
+   * {@link FareLegRule } Methods
+   ***/
+  Collection<FareLegRule> getAllFareLegRules();
+
+  /****
+   * {@link FareProduct } Methods
+   ***/
+
+  Collection<FareProduct> getAllFareProducts();
+
+  FareProduct getFareProductForId(AgencyAndId id);
+
+  /****
+   * {@link FareContainer } Methods
+   ***/
+  Collection<FareContainer> getAllFareContainers();
+
+  /****
+   * {@link RiderCategory} Methods
+   ***/
+  Collection<RiderCategory> getAllRiderCategories();
+
   /****
    * {@link FareRule} Methods
    ***/
@@ -65,6 +90,12 @@ public interface GtfsDao extends GenericDao {
   public Collection<FareRule> getAllFareRules();
 
   public FareRule getFareRuleForId(int id);
+
+  /****
+   * {@link FareTransferRule} Methods
+   ***/
+
+  public Collection<FareTransferRule> getAllFareTransferRules();
 
   /****
    * {@link FeedInfo} Methods
@@ -168,4 +199,16 @@ public interface GtfsDao extends GenericDao {
 
   public Collection<Translation> getAllTranslations();
 
+  Collection<StopArea> getAllStopAreas();
+
+  default boolean hasFaresV1() {
+    return Stream.of(getAllFareAttributes(), getAllFareRules()).flatMap(Collection::stream).findAny().isPresent();
+  }
+
+  default boolean hasFaresV2() {
+    return Stream.of(getAllFareProducts(), getAllFareLegRules(), getAllFareTransferRules())
+      .flatMap(Collection::stream)
+      .findAny()
+      .isPresent();
+  }
 }

@@ -53,6 +53,9 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true)
   private String textColor;
 
+  @CsvField(name = "network_id", optional = true)
+  private String networkId;
+
   @CsvField(name = "eligibility_restricted", optional = true)
   private int eligibilityRestricted = MISSING_VALUE;
   
@@ -227,6 +230,14 @@ public final class Route extends IdentityBean<AgencyAndId> {
     this.eligibilityRestricted = eligibilityRestricted;
   }
 
+  public String getNetworkId() {
+    return networkId;
+  }
+
+  public void setNetworkId(String networkId) {
+    this.networkId = networkId;
+  }
+
   public int getRegionalFareCardAccepted() {
     return regionalFareCardAccepted;
   }
@@ -234,7 +245,6 @@ public final class Route extends IdentityBean<AgencyAndId> {
   public void setRegionalFareCardAccepted(int regionalFareCardAccepted) {
     this.regionalFareCardAccepted = regionalFareCardAccepted;
   }
-
 
   @Override
   public String toString() {

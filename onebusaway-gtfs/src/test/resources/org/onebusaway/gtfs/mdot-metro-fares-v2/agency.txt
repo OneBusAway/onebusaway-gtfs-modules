@@ -1,0 +1,2 @@
+agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url
+1,Maryland Transit Administration Metro Subway,https://mta.maryland.gov/,America/New_York,en,410-539-5000,https://www.mta.maryland.gov/regular-fares

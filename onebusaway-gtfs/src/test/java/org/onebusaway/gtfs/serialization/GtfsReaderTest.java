@@ -32,6 +32,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -547,6 +548,8 @@ public class GtfsReaderTest {
     assertEquals("1", fareRule.getDestinationId());
     assertNull(fareRule.getRoute());
     assertNull(fareRule.getContainsId());
+
+    assertFalse(entityStore.hasFaresV2());
   }
 
   @Test
@@ -770,6 +773,108 @@ public class GtfsReaderTest {
     assertEquals(1, frequency.getExactTimes());
     assertEquals(300, frequency.getHeadwaySecs());
     assertSame(trip, frequency.getTrip());
+  }
+
+  @Test
+  public void turlockFaresV2() throws CsvEntityIOException, IOException {
+    String agencyId = "1642";
+    GtfsRelationalDao dao = processFeed(GtfsTestData.getTurlockFaresV2(),
+      agencyId, false);
+
+    Agency agency = dao.getAgencyForId(agencyId);
+    assertEquals(agencyId, agency.getId());
+    assertEquals("Turlock Transit", agency.getName());
+    assertEquals("http://www.turlocktransit.com/", agency.getUrl());
+    assertEquals("America/Los_Angeles", agency.getTimezone());
+
+    List<FareProduct> fareProducts = new ArrayList<>(dao.getAllFareProducts());
+    assertEquals(12, fareProducts.size());
+
+    FareProduct fp = fareProducts.stream().sorted(Comparator.comparing(FareProduct::getId)).findFirst().get();
+    assertEquals("id=31-day_disabled|category=disabled|container=null", fp.getId().getId());
+    assertEquals("31-Day Pass Persons with Disabilities", fp.getName());
+    assertEquals("USD", fp.getCurrency());
+    assertEquals(15.0, fp.getAmount(), 0);
+    assertEquals(3, fp.getDurationUnit());
+    assertEquals(31, fp.getDurationAmount());
+    assertEquals(2, fp.getDurationType());
+    RiderCategory cat = fp.getRiderCategory();
+    assertEquals("Persons with Disabilities", cat.getName());
+    assertEquals("disabled", cat.getId().getId());
+
+
+    List<FareLegRule> fareLegRules = new ArrayList<>(dao.getAllFareLegRules());
+    assertEquals(12, fareLegRules.size());
+
+    FareLegRule flr = fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
+    assertEquals("id=31-day_disabled|network=null|fromArea=null|toArea=null|container=null|category=disabled", flr.getId());
+    assertEquals("Turlock", flr.getLegGroupId());
+    assertEquals("Persons with Disabilities", flr.getRiderCategory().getName());
+
+    List<RiderCategory> riderCats = new ArrayList<>(dao.getAllRiderCategories());
+    assertEquals(5, riderCats.size());
+
+    RiderCategory riderCat = riderCats.stream().sorted(Comparator.comparing(RiderCategory::getId)).filter(c -> c.getId().getId().equals("youth")).findAny().get();
+    assertEquals("youth", riderCat.getId().getId());
+    assertEquals("Youth Age 18 and Under", riderCat.getName());
+    assertEquals(18, riderCat.getMaxAge());
+    assertEquals(RiderCategory.MISSING_VALUE, riderCat.getMinAge());
+    assertEquals("http://www.turlocktransit.com/fares.html", riderCat.getEligibilityUrl());
+
+    assertTrue(dao.hasFaresV1());
+    assertTrue(dao.hasFaresV2());
+  }
+  @Test
+  public void mdotMetroFaresV2() throws CsvEntityIOException, IOException {
+    String agencyId = "1";
+    GtfsRelationalDao dao = processFeed(GtfsTestData.getMdotMetroFaresV2(),
+      agencyId, false);
+
+    Agency agency = dao.getAgencyForId(agencyId);
+    assertEquals(agencyId, agency.getId());
+    assertEquals("Maryland Transit Administration Metro Subway", agency.getName());
+
+    List<FareProduct> fareProducts = new ArrayList<>(dao.getAllFareProducts());
+    assertEquals(21, fareProducts.size());
+
+    FareProduct fp = fareProducts.stream().sorted(Comparator.comparing(FareProduct::getId)).findFirst().get();
+    assertEquals("id=core_local_1_day_fare|category=null|container=charmcard", fp.getId().getId());
+    assertEquals("1-Day Pass - Core Service", fp.getName());
+    assertEquals("USD", fp.getCurrency());
+    assertEquals(4.6, fp.getAmount(), 0.01);
+
+    List<FareLegRule> fareLegRules = new ArrayList<>(dao.getAllFareLegRules());
+    assertEquals(21, fareLegRules.size());
+
+    FareLegRule flr = fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
+    assertEquals("id=core_local_1_day_fare|network=core|fromArea=null|toArea=null|container=charmcard|category=null", flr.getId());
+    assertEquals("core_local_one_way_trip", flr.getLegGroupId());
+
+    List<FareTransferRule> fareTransferRules = new ArrayList<>(dao.getAllFareTransferRules());
+    assertEquals(3, fareTransferRules.size());
+
+    FareTransferRule ftr = fareTransferRules.stream().sorted(Comparator.comparing(FareTransferRule::getId)).findFirst().get();
+    assertEquals("1_core_express_one_way_trip_1_core_express_one_way_trip_null_-999_5400", ftr.getId());
+    assertEquals(new AgencyAndId("1", "core_express_one_way_trip"), ftr.getFromLegGroupId());
+    assertEquals(-999, ftr.getTransferCount());
+    assertEquals(5400, ftr.getDurationLimit());
+
+    List<FareContainer> containers = new ArrayList<>(dao.getAllFareContainers());
+    assertEquals(3, fareTransferRules.size());
+
+    FareContainer container = containers.stream().filter(c -> c.getId().getId().equals("charmcard_senior")).findFirst().get();
+    assertEquals("charmcard_senior", container.getId().getId());
+    assertEquals("Senior CharmCard", container.getName());
+
+    List<StopArea> stopAreas = new ArrayList<>(dao.getAllStopAreas());
+    assertEquals(0, stopAreas.size());
+
+    List<Route> routes = new ArrayList<>(dao.getAllRoutes());
+    assertEquals(1, routes.size());
+    assertEquals("core", routes.get(0).getNetworkId());
+
+    assertFalse(dao.hasFaresV1());
+    assertTrue(dao.hasFaresV2());
   }
 
   @Test

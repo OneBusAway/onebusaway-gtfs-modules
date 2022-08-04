@@ -27,4 +27,4 @@ jobs:
           ${{ runner.os }}-maven-
 
     - name: Test project with Maven
-      run: mvn --no-transfer-progress test
+      run: mvn --no-transfer-progress test verify

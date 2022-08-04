@@ -167,8 +167,38 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
+  public Collection<FareLegRule> getAllFareLegRules() {
+    return _ops.find("FROM FareLegRule");
+  }
+
+  @Override
+  public Collection<FareProduct> getAllFareProducts() {
+    return _ops.find("FROM FareProduct");
+  }
+
+  @Override
+  public FareProduct getFareProductForId(AgencyAndId id) {
+    return _ops.get(FareProduct.class, id);
+  }
+
+  @Override
+  public Collection<FareContainer> getAllFareContainers() {
+    return _ops.find("FROM FareContainer");
+  }
+
+  @Override
+  public Collection<RiderCategory> getAllRiderCategories() {
+    return _ops.find("FROM RiderCategory");
+  }
+
+  @Override
   public FareRule getFareRuleForId(int id) {
     return (FareRule) _ops.get(FareRule.class, id);
+  }
+
+  @Override
+  public Collection<FareTransferRule> getAllFareTransferRules() {
+    return _ops.find("FROM FareTransferRule");
   }
 
   @Override
@@ -266,6 +296,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   @Override
   public Collection<Translation> getAllTranslations() {
     return _ops.find("from Translation");
+  }
+
+  @Override
+  public Collection<StopArea> getAllStopAreas() {
+    return _ops.find("from StopArea");
   }
 
   /****

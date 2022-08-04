@@ -1,0 +1,7 @@
+agency_id,route_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color,route_sort_order,min_headway_minutes,eligibility_restricted,continuous_pickup,continuous_drop_off,tts_route_short_name,tts_route_long_name
+1642,16616,1,Countryside,,3,http://www.turlocktransit.com/route1.html,c70021,ffffff,1,,0,1,1,,
+1642,16615,2,Geer,,3,http://www.turlocktransit.com/route2.html,d2b413,000000,2,,0,1,1,,
+1642,16614,3,Olive,,3,http://www.turlocktransit.com/route3.html,29a235,000000,3,,0,1,1,,
+1642,16613,4,Colorado,,3,http://www.turlocktransit.com/route4.html,376bbb,ffffff,4,,0,1,1,,
+1642,16612,5,Lander,,3,http://www.turlocktransit.com/route5.html,ee8528,000000,5,,0,1,1,,
+1642,16611,6,Soderquist,,3,http://www.turlocktransit.com/route6.html,6c369d,ffffff,6,,0,1,1,,

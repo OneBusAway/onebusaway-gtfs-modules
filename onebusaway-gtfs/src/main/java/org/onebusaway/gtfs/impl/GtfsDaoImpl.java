@@ -147,8 +147,38 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getEntityForId(FareAttribute.class, id);
   }
 
+  @Override
+  public Collection<FareLegRule> getAllFareLegRules() {
+    return getAllEntitiesForType(FareLegRule.class);
+  }
+
+  @Override
+  public Collection<FareProduct> getAllFareProducts() {
+    return getAllEntitiesForType(FareProduct.class);
+  }
+
+  @Override
+  public FareProduct getFareProductForId(AgencyAndId id) {
+    return getEntityForId(FareProduct.class, id);
+  }
+
+  @Override
+  public Collection<FareContainer> getAllFareContainers() {
+    return getAllEntitiesForType(FareContainer.class);
+  }
+
+  @Override
+  public Collection<RiderCategory> getAllRiderCategories() {
+    return getAllEntitiesForType(RiderCategory.class);
+  }
+
   public FareRule getFareRuleForId(int id) {
     return getEntityForId(FareRule.class, id);
+  }
+
+  @Override
+  public Collection<FareTransferRule> getAllFareTransferRules() {
+    return getAllEntitiesForType(FareTransferRule.class);
   }
 
   @Override
@@ -248,6 +278,11 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   public Collection<Translation> getAllTranslations() {
     return getAllEntitiesForType(Translation.class);
+  }
+
+  @Override
+  public Collection<StopArea> getAllStopAreas() {
+    return getAllEntitiesForType(StopArea.class);
   }
 
   /****

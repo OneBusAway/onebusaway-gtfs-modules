@@ -6,3 +6,9 @@ pom.xml.releaseBackup
 .classpath
 .metadata/
 /.idea/
+/onebusaway-gtfs-transformer/onebusaway-gtfs-transformer.iml
+/onebusaway-gtfs-transformer/pom.xml.versionsBackup
+/onebusaway-gtfs-modules.iml
+/pom.xml.versionsBackup
+
+*.iml

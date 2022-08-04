@@ -27,7 +27,11 @@ import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
-import org.onebusaway.gtfs.model.calendar.*;
+import org.onebusaway.gtfs.model.calendar.CalendarServiceData;
+import org.onebusaway.gtfs.model.calendar.LocalizedServiceId;
+import org.onebusaway.gtfs.model.calendar.ServiceDate;
+import org.onebusaway.gtfs.model.calendar.ServiceIdIntervals;
+import org.onebusaway.gtfs.model.calendar.ServiceInterval;
 
 /**
  * While the set of {@link ServiceCalendar} and {@link ServiceCalendarDate}
@@ -318,5 +322,9 @@ public interface CalendarService {
   public Map<LocalizedServiceId, List<Date>> getPreviousArrivalServiceDates(
       ServiceIdIntervals serviceIdIntervals, long targetTime);
 
-    void setData(CalendarServiceData data);
+  /**
+   * Update the underlying data structures.
+   * @param data
+   */
+  public void setData(CalendarServiceData data);
 }

@@ -36,6 +36,7 @@ public class FeedInfoFromAgencyStrategy implements GtfsTransformStrategy {
 
   private static Logger _log = LoggerFactory.getLogger(FeedInfoFromAgencyStrategy.class);
   private String agencyId;
+  @CsvField(optional = true)
   private String feedVersion;
 
   @CsvField(optional = true)

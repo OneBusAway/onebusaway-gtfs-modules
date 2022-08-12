@@ -16,6 +16,7 @@
 package org.onebusaway.gtfs_transformer.impl;
 
 import org.onebusaway.gtfs.model.ServiceCalendar;
+import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
@@ -46,13 +47,26 @@ public class TruncateNewCalendarStatements implements GtfsTransformStrategy {
         + 32/*days*/ * 24/*hours*/ * 60/*mins*/ * 60/*secs*/ * 1000/*millis*/);
         Set<ServiceCalendar> serviceCalendarsToRemove = new HashSet<ServiceCalendar>();
         for (ServiceCalendar calendar: gtfsMutableRelationalDao.getAllCalendars()) {
-            if (calendar.getEndDate().getAsDate().after(oneMonthFromNow)){
+            if (calendar.getStartDate().getAsDate().after(oneMonthFromNow)){
                 serviceCalendarsToRemove.add(calendar);
             }
         }
         for (ServiceCalendar serviceCalendar : serviceCalendarsToRemove) {
+            // this method also deletes trips belonging to this calendar
             removeEntityLibrary.removeCalendar(gtfsMutableRelationalDao, serviceCalendar.getServiceId());
         }
+
+        Set<ServiceCalendarDate> serviceCalendarDatesToRemove = new HashSet<ServiceCalendarDate>();
+        for (ServiceCalendarDate calendarDate : gtfsMutableRelationalDao.getAllCalendarDates()) {
+            if (calendarDate.getDate().getAsDate().after(oneMonthFromNow)) {
+                serviceCalendarDatesToRemove.add(calendarDate);
+            }
+        }
+        for (ServiceCalendarDate serviceCalendarDate : serviceCalendarDatesToRemove) {
+            // this method also deletes trips belonging to this calendar
+            removeEntityLibrary.removeCalendar(gtfsMutableRelationalDao, serviceCalendarDate.getServiceId());
+        }
+
     }
 
 }

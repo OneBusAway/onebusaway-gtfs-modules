@@ -23,6 +23,7 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,8 +44,9 @@ public class TruncateNewCalendarStatements implements GtfsTransformStrategy {
     public void run(TransformContext transformContext, GtfsMutableRelationalDao gtfsMutableRelationalDao) {
         RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
         // TODO make this an argument -- default to one month from now
-        java.util.Date oneMonthFromNow = new java.util.Date(System.currentTimeMillis()
-        + 32/*days*/ * 24/*hours*/ * 60/*mins*/ * 60/*secs*/ * 1000/*millis*/);
+        Calendar c = Calendar.getInstance();
+        c.roll(Calendar.MONTH, 1);
+        java.util.Date oneMonthFromNow = c.getTime();
         Set<ServiceCalendar> serviceCalendarsToRemove = new HashSet<ServiceCalendar>();
         for (ServiceCalendar calendar: gtfsMutableRelationalDao.getAllCalendars()) {
             if (calendar.getStartDate().getAsDate().after(oneMonthFromNow)){
@@ -63,8 +65,8 @@ public class TruncateNewCalendarStatements implements GtfsTransformStrategy {
             }
         }
         for (ServiceCalendarDate serviceCalendarDate : serviceCalendarDatesToRemove) {
-            // this method also deletes trips belonging to this calendar
-            removeEntityLibrary.removeCalendar(gtfsMutableRelationalDao, serviceCalendarDate.getServiceId());
+            // here we can't delete the trips as the serviceid may be active elsewhere
+            removeEntityLibrary.removeServiceCalendarDate(gtfsMutableRelationalDao, serviceCalendarDate);
         }
 
     }

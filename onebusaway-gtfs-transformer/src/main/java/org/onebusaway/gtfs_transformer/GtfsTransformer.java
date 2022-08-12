@@ -273,7 +273,7 @@ public class GtfsTransformer {
 
     _writer.run(_dao);
 
-    if (_outputDirectory.isFile()) {
+    if (_outputDirectory.isFile() && _reader.getLastModfiedTime() != null) {
       _log.info("preserving lastModified time of " + new Date(_reader.getLastModfiedTime()));
     }
   }

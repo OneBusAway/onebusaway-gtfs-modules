@@ -15,13 +15,19 @@ Introduction
 
 Requirements
   
-  * Java 6 or greater
+  * Java 11 or greater
 
 Getting the Application
 
   You can download the application here:
 
-#set( $url = 'http://nexus.onebusaway.org/service/local/artifact/maven/content?r=public&g=org.onebusaway&a=onebusaway-gtfs-transformer-cli&v=' + ${currentVersion} )
+#if( $currentVersion.endsWith("-SNAPSHOT"))
+  #set( $repository = 'snapshots' )
+#else
+  #set( $repository = 'releases' )
+#end
+
+#set( $url = 'https://repo.camsys-apps.com/' + $repository + '/org/onebusaway/onebusaway-gtfs-transformer-cli/' + ${currentVersion} + '/onebusaway-gtfs-transformer-cli-' + ${currentVersion} + '.jar' )
   
   {{{${url}}onebusaway-gtfs-transformer-cli-${currentVersion}.jar}}
   

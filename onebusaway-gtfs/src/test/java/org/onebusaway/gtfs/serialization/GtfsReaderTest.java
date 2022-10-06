@@ -877,6 +877,21 @@ public class GtfsReaderTest {
     assertTrue(dao.hasFaresV2());
   }
 
+
+ @Test
+ public void testFaresV2Distance() throws IOException{
+    MockGtfs gtfs = MockGtfs.create();
+    gtfs.putMinimal();
+    gtfs.putLines("fare_products.txt", "fare_product_id, amount, currency", "" +
+            "fare_1,5,EUR");
+    gtfs.putLines("fare_leg_rules.txt", "network_id,min_distance,max_distance,distance_type,fare_product_id",
+            "bus,0,3,1,fare_1"
+    );
+    GtfsRelationalDao dao = processFeed(gtfs.getPath(), "1", false);
+    assertTrue(dao.getAllFareLegRules().stream().map(fareLegRule -> fareLegRule.getMaxDistance()).findFirst().get() == 3.0);
+    assertTrue(dao.getAllFareLegRules().stream().map(fareLegRule -> fareLegRule.getMinDistance()).findFirst().get() == 0.0);
+    assertTrue(dao.getAllFareLegRules().stream().map(fareLegRule -> fareLegRule.getDistanceType()).findFirst().get() == 1);
+ }
   @Test
   public void testFeedInfo() throws CsvEntityIOException, IOException {
 

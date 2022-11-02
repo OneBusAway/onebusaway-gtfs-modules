@@ -35,6 +35,9 @@ public class UpdateRouteNames implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
         for (Route route: dao.getAllRoutes()) {
+            if(route.getLongName()==null){
+                route.setLongName(route.getShortName());
+            }
             if (route.getLongName().endsWith(" Line")) {
                 route.setLongName(route.getLongName().replace(" Line", ""));
             }

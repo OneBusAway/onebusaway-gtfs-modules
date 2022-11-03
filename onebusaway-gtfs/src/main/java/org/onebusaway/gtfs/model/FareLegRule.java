@@ -52,7 +52,7 @@ public final class FareLegRule extends IdentityBean<String> {
   private Double maxDistance;
 
   @CsvField(name = "distance_type", optional = true)
-  public Integer distanceType;
+  private Integer distanceType;
 
   public String getLegGroupId() {
     return legGroupId;

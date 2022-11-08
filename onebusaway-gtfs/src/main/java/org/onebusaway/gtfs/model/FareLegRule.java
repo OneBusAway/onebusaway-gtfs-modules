@@ -45,6 +45,15 @@ public final class FareLegRule extends IdentityBean<String> {
   @CsvField(name = "rider_category_id", optional = true, mapping = EntityFieldMappingFactory.class)
   private RiderCategory riderCategory;
 
+  @CsvField(name = "min_distance", optional = true)
+  private Double minDistance;
+
+  @CsvField(name = "max_distance", optional = true)
+  private Double maxDistance;
+
+  @CsvField(name = "distance_type", optional = true)
+  private Integer distanceType;
+
   public String getLegGroupId() {
     return legGroupId;
   }
@@ -113,5 +122,28 @@ public final class FareLegRule extends IdentityBean<String> {
 
   public void setRiderCategory(RiderCategory riderCategory) {
     this.riderCategory = riderCategory;
+  }
+
+  public void setMinDistance(Double minDistance) {
+    this.minDistance = minDistance;
+  }
+  public Double getMinDistance() {
+    return minDistance;
+  }
+
+  public Double getMaxDistance() {
+    return maxDistance;
+  }
+
+  public void setMaxDistance(Double maxDistance) {
+    this.maxDistance = maxDistance;
+  }
+
+  public Integer getDistanceType() {
+    return distanceType;
+  }
+
+  public void setDistanceType(Integer distanceType) {
+    this.distanceType = distanceType;
   }
 }

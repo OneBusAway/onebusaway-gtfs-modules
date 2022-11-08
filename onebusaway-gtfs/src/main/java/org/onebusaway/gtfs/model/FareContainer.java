@@ -93,4 +93,12 @@ public final class FareContainer extends IdentityBean<AgencyAndId> {
   public void setRiderCategory(RiderCategory riderCategory) {
     this.riderCategory = riderCategory;
   }
+
+  public boolean isAmountSet() {
+    return amount != MISSING_VALUE;
+  }
+
+  public boolean isMinimumInitialPurchaseSet() {
+    return minimumInitialPurchase != MISSING_VALUE;
+  }
 }

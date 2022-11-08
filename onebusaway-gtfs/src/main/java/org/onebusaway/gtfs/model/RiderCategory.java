@@ -80,4 +80,12 @@ public final class RiderCategory extends IdentityBean<AgencyAndId> {
   public void setId(AgencyAndId id) {
     this.id = id;
   }
+
+  public boolean isMinAgeSet() {
+    return minAge != MISSING_VALUE;
+  }
+
+  public boolean isMaxAgeSet() {
+    return maxAge != MISSING_VALUE;
+  }
 }

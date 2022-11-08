@@ -109,4 +109,19 @@ public final class FareTransferRule extends IdentityBean<String> {
   public void setId(String id) {
 
   }
+  public boolean isTransferCountSet() {
+    return transferCount != MISSING_VALUE;
+  }
+
+  public boolean isDurationLimitSet() {
+    return durationLimit != MISSING_VALUE;
+  }
+
+  public boolean isDurationLimitTypeSet() {
+    return durationLimitType != MISSING_VALUE;
+  }
+
+  public boolean isFareTransferTypeSet() {
+    return fareTransferType != MISSING_VALUE;
+  }
 }

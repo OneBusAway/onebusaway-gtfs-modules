@@ -139,4 +139,16 @@ public final class FareProduct extends IdentityBean<AgencyAndId> {
   public void setRiderCategory(RiderCategory riderCategory) {
     this.riderCategory = riderCategory;
   }
+
+  public boolean isDurationUnitSet() {
+    return durationUnit != MISSING_VALUE;
+  }
+
+  public boolean isDurationTypeSet() {
+    return durationType != MISSING_VALUE;
+  }
+
+  public boolean isDurationAmountSet() {
+    return durationAmount != MISSING_VALUE;
+  }
 }

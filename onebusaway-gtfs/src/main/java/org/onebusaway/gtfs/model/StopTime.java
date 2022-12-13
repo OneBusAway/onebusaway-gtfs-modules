@@ -759,4 +759,13 @@ public final class StopTime extends IdentityBean<Integer> implements
             + "Compatibility will be removed in the future, so please update your feed to be in line with the latest Flex V2 spec:"
             + " https://github.com/MobilityData/gtfs-flex/commit/547200dfb", type);
   }
+  @Deprecated
+  public int getOldSpellingOfStartPickupDropOffWindow() {
+    return this.oldSpellingOfStartPickupDropOffWindow;
+  }
+
+  @Deprecated
+  public int getOldSpellingOfEndPickupDropOffWindow() {
+    return oldSpellingOfEndPickupDropOffWindow;
+  }
 }

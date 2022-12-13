@@ -21,10 +21,14 @@ import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.StopLocationFieldMappingFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @CsvFields(filename = "stop_times.txt")
 public final class StopTime extends IdentityBean<Integer> implements
     Comparable<StopTime>, StopTimeProxy {
+
+  private static Logger _log = LoggerFactory.getLogger(StopTime.class);
 
   private static final long serialVersionUID =2L;
 
@@ -55,8 +59,16 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int minArrivalTime = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "start_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class)
+  @CsvField(optional = true, name = "start_pickup_drop_off_window", mapping = StopTimeFieldMappingFactory.class)
   private int startPickupDropOffWindow = MISSING_VALUE;
+
+  /**
+   * @deprecated
+   * GTFS-Flex v2.1 renamed "dropoff" to "drop off": https://github.com/MobilityData/gtfs-flex/commit/547200dfb580771265ae14b07d9bfd7b91c16ed2
+   */
+  @Deprecated
+  @CsvField(optional = true, name = "start_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class)
+  public int oldSpellingOfStartPickupDropOffWindow = MISSING_VALUE;
 
   /**
    * @deprecated
@@ -66,8 +78,16 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int maxDepartureTime = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "end_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class)
+  @CsvField(optional = true, name = "end_pickup_drop_off_window", mapping = StopTimeFieldMappingFactory.class)
   private int endPickupDropOffWindow = MISSING_VALUE;
+
+  /**
+   * @deprecated
+   * GTFS-Flex v2.1 renamed "dropoff" to "drop off": https://github.com/MobilityData/gtfs-flex/commit/547200dfb580771265ae14b07d9bfd7b91c16ed2
+   */
+  @Deprecated
+  @CsvField(optional = true, name = "end_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class)
+  public int oldSpellingOfEndPickupDropOffWindow = MISSING_VALUE;
 
   @CsvField(optional = true)
   private int timepoint = MISSING_VALUE;
@@ -340,6 +360,8 @@ public final class StopTime extends IdentityBean<Integer> implements
   public int getStartPickupDropOffWindow() {
     if (startPickupDropOffWindow != MISSING_VALUE) {
       return startPickupDropOffWindow;
+    } else if(oldSpellingOfStartPickupDropOffWindow != MISSING_VALUE){
+      return oldSpellingOfStartPickupDropOffWindow;
     } else {
       return minArrivalTime;
     }
@@ -362,7 +384,11 @@ public final class StopTime extends IdentityBean<Integer> implements
   public int getEndPickupDropOffWindow() {
     if (endPickupDropOffWindow != MISSING_VALUE) {
       return endPickupDropOffWindow;
-    } else {
+    }
+    else if (oldSpellingOfEndPickupDropOffWindow != MISSING_VALUE) {
+      return oldSpellingOfEndPickupDropOffWindow;
+    }
+    else {
       return maxDepartureTime;
     }
   }
@@ -715,5 +741,22 @@ public final class StopTime extends IdentityBean<Integer> implements
       return;
     }
     this.freeRunningFlag = freeRunningFlag;
+  }
+  @Deprecated
+  public void setOldSpellingOfStartPickupDropOffWindow(int time) {
+    oldDropOffSpellingWarning("start");
+    this.oldSpellingOfStartPickupDropOffWindow = time;
+  }
+
+  @Deprecated
+  public void setOldSpellingOfEndPickupDropOffWindow(int time) {
+    oldDropOffSpellingWarning("end");
+    this.oldSpellingOfEndPickupDropOffWindow = time;
+  }
+
+  private static void oldDropOffSpellingWarning(String type) {
+    _log.warn("This feed uses the old spelling of '{}_pickup_drop_off_window' ('dropoff' instead of 'drop_off'). "
+            + "Compatibility will be removed in the future, so please update your feed to be in line with the latest Flex V2 spec:"
+            + " https://github.com/MobilityData/gtfs-flex/commit/547200dfb", type);
   }
 }

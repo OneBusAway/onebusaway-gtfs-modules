@@ -5,7 +5,7 @@ import static org.onebusaway.gtfs.serialization.GtfsReaderTest.processFeed;
 
 import java.io.IOException;
 import java.time.LocalTime;
-import java.util.List;
+import java.util.ArrayList;
 import org.junit.Test;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
@@ -26,19 +26,35 @@ public class FlexDropOffSpellingTest {
 
   @Test
   public void oldSpelling() throws IOException {
+    testFlexStopTimeWithSpelling("dropoff");
+  }
+
+  @Test
+  public void newSpelling() throws IOException {
+    testFlexStopTimeWithSpelling("drop_off");
+  }
+
+  private static void testFlexStopTimeWithSpelling(String dropOffSpelling) throws IOException {
     MockGtfs gtfs = MockGtfs.create();
     gtfs.putMinimal();
     gtfs.putDefaultTrips();
+
+    String rows =
+            String.format(
+                    "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_booking_rule_id,drop_off_booking_rule_id,start_pickup_%s_window,end_pickup_%s_window",
+                    dropOffSpelling, dropOffSpelling
+            );
+
     gtfs.putLines(
             "stop_times.txt",
-            "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_booking_rule_id,drop_off_booking_rule_id,start_pickup_dropoff_window,end_pickup_dropoff_window",
+            rows,
             "T10-0,,,location-123,0,headsign-1,,,10:00:00,18:00:00"
     );
     GtfsRelationalDao dao = processFeed(gtfs.getPath(), "1", false);
 
     assertEquals(1, dao.getAllStopTimes().size());
 
-    StopTime stopTime = List.copyOf(dao.getAllStopTimes()).get(0);
+    StopTime stopTime = new ArrayList<>(dao.getAllStopTimes()).get(0);
 
     assertEquals("1_T10-0", stopTime.getTrip().getId().toString());
     assertEquals(LocalTime.parse("10:00").toSecondOfDay(), stopTime.getStartPickupDropOffWindow());

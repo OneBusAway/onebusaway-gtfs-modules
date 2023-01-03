@@ -56,10 +56,10 @@ public final class StopTime extends IdentityBean<Integer> implements
    * GTFS-Flex v2.1 renamed this field. Use {@link #startPickupDropOffWindow} instead.
    */
   @Deprecated
-  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
+  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
   private int minArrivalTime = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "start_pickup_drop_off_window", mapping = StopTimeFieldMappingFactory.class)
+  @CsvField(optional = true, name = "start_pickup_drop_off_window", mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
   private int startPickupDropOffWindow = MISSING_VALUE;
 
   /**
@@ -67,7 +67,7 @@ public final class StopTime extends IdentityBean<Integer> implements
    * GTFS-Flex v2.1 renamed "dropoff" to "drop off": https://github.com/MobilityData/gtfs-flex/commit/547200dfb580771265ae14b07d9bfd7b91c16ed2
    */
   @Deprecated
-  @CsvField(optional = true, name = "start_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class)
+  @CsvField(optional = true, name = "start_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
   public int oldSpellingOfStartPickupDropOffWindow = MISSING_VALUE;
 
   /**
@@ -75,10 +75,10 @@ public final class StopTime extends IdentityBean<Integer> implements
    * GTFS-Flex v2.1 renamed this field. Use {@link #endPickupDropOffWindow} instead.
    */
   @Deprecated
-  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
+  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
   private int maxDepartureTime = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "end_pickup_drop_off_window", mapping = StopTimeFieldMappingFactory.class)
+  @CsvField(optional = true, name = "end_pickup_drop_off_window", mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
   private int endPickupDropOffWindow = MISSING_VALUE;
 
   /**
@@ -86,10 +86,10 @@ public final class StopTime extends IdentityBean<Integer> implements
    * GTFS-Flex v2.1 renamed "dropoff" to "drop off": https://github.com/MobilityData/gtfs-flex/commit/547200dfb580771265ae14b07d9bfd7b91c16ed2
    */
   @Deprecated
-  @CsvField(optional = true, name = "end_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class)
+  @CsvField(optional = true, name = "end_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
   public int oldSpellingOfEndPickupDropOffWindow = MISSING_VALUE;
 
-  @CsvField(optional = true)
+  @CsvField(optional = true, defaultValue = "-999")
   private int timepoint = MISSING_VALUE;
 
   private int stopSequence;
@@ -109,13 +109,13 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, defaultValue = "0")
   private int dropOffType;
 
-  @CsvField(optional = true)
+  @CsvField(optional = true, defaultValue = "-999")
   private double shapeDistTraveled = MISSING_VALUE;
 
-  @CsvField(optional = true)
+  @CsvField(optional = true, defaultValue = "1")
   private int continuousPickup = MISSING_FLEX_VALUE;
 
-  @CsvField(optional = true)
+  @CsvField(optional = true, defaultValue = "1")
   private int continuousDropOff = MISSING_FLEX_VALUE;
 
   @CsvField(optional = true, name = "start_service_area_id", mapping = EntityFieldMappingFactory.class, order = -2)
@@ -124,10 +124,10 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, name = "end_service_area_id", mapping = EntityFieldMappingFactory.class, order = -2)
   private Area endServiceArea;
 
-  @CsvField(optional = true)
+  @CsvField(optional = true, defaultValue = "-999.0")/*note defaultValue quirk for non-proxied comparison*/
   private double startServiceAreaRadius = MISSING_VALUE;
 
-  @CsvField(optional = true)
+  @CsvField(optional = true, defaultValue = "-999.0")/*note defaultValue quirk for non-proxied comparison*/
   private double endServiceAreaRadius = MISSING_VALUE;
 
   @CsvField(ignore = true)
@@ -157,16 +157,16 @@ public final class StopTime extends IdentityBean<Integer> implements
   private Note note;
 
   // See https://github.com/MobilityData/gtfs-flex/blob/master/spec/reference.md
-  @CsvField(optional = true, name = "mean_duration_factor")
+  @CsvField(optional = true, name = "mean_duration_factor", defaultValue = "-999.0")/*note defaultValue quirk for non-proxied comparison*/
   private double meanDurationFactor = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "mean_duration_offset")
+  @CsvField(optional = true, name = "mean_duration_offset", defaultValue = "-999.0")/*note defaultValue quirk for non-proxied comparison*/
   private double meanDurationOffset = MISSING_VALUE;
     
-  @CsvField(optional = true, name = "safe_duration_factor")
+  @CsvField(optional = true, name = "safe_duration_factor", defaultValue = "-999.0")/*note defaultValue quirk for non-proxied comparison*/
   private double safeDurationFactor = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "safe_duration_offset")
+  @CsvField(optional = true, name = "safe_duration_offset", defaultValue = "-999")
   private double safeDurationOffset = MISSING_VALUE;
 
   @CsvField(optional = true, name = "free_running_flag")

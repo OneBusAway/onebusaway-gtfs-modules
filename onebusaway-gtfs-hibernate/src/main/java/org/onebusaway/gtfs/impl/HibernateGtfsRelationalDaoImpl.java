@@ -303,6 +303,26 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
     return _ops.find("from StopArea");
   }
 
+  @Override
+  public List<String> getOptionalMetadataFilenames() {
+    return new ArrayList<>();
+  }
+
+  @Override
+  public boolean hasMetadata(String filename) {
+    return false;
+  }
+
+  @Override
+  public String getMetadata(String filename) {
+    return null;
+  }
+
+  @Override
+  public void addMetadata(String filename, String content) {
+
+  }
+
   /****
    * {@link GtfsRelationalDao} Interface
    ****/

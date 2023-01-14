@@ -23,24 +23,27 @@ import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.onebusaway.gtfs.impl.FileSupport;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.Agency;
 
 public class GtfsWriterTest {
 
+  private FileSupport _support = new FileSupport();
   private File _tmpDirectory;
 
   @Before
   public void setup() throws IOException {
     _tmpDirectory = File.createTempFile("GtfsWriterTest-", "-tmp");
     if (_tmpDirectory.exists())
-      deleteFileRecursively(_tmpDirectory);
+      _support.deleteFileRecursively(_tmpDirectory);
     _tmpDirectory.mkdirs();
+    _support.markForDeletion(_tmpDirectory);
   }
 
   @After
   public void teardown() {
-    deleteFileRecursively(_tmpDirectory);
+    _support.cleanup();
   }
 
   @Test

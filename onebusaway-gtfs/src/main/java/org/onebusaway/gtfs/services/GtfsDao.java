@@ -17,6 +17,7 @@ package org.onebusaway.gtfs.services;
 
 import java.util.Collection;
 
+import java.util.List;
 import java.util.stream.Stream;
 import org.onebusaway.gtfs.model.*;
 
@@ -211,4 +212,13 @@ public interface GtfsDao extends GenericDao {
       .findAny()
       .isPresent();
   }
+
+  List<String> getOptionalMetadataFilenames();
+
+  boolean hasMetadata(String filename);
+
+  String getMetadata(String filename);
+
+  void addMetadata(String filename, String content);
+
 }

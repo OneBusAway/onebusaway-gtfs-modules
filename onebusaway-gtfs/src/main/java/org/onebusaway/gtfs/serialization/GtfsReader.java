@@ -16,13 +16,10 @@
  */
 package org.onebusaway.gtfs.serialization;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.util.*;
 
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.CsvEntityReader;
@@ -32,6 +29,7 @@ import org.onebusaway.csv_entities.EntityHandler;
 import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.impl.GtfsDaoImpl;
+import org.onebusaway.gtfs.impl.ZipHandler;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.services.GenericMutableDao;
 import org.slf4j.Logger;
@@ -59,6 +57,8 @@ public class GtfsReader extends CsvEntityReader {
   private Map<String, String> _agencyIdMapping = new HashMap<String, String>();
 
   private boolean _overwriteDuplicates = false;
+
+  private File _inputLocation = null;
 
   public GtfsReader() {
 
@@ -114,6 +114,11 @@ public class GtfsReader extends CsvEntityReader {
     ctx.put(KEY_CONTEXT, _context);
 
     addEntityHandler(new EntityHandlerImpl());
+  }
+
+  public void setInputLocation(File path) throws IOException {
+    super.setInputLocation(path);
+    _inputLocation = path;
   }
 
   public void setLastModifiedTime(Long lastModifiedTime) {
@@ -200,6 +205,54 @@ public class GtfsReader extends CsvEntityReader {
     }
 
     _entityStore.close();
+
+    // support metadata files that are not CSV
+    // but only if we have a GtfsDao
+    if (_entityStore instanceof GtfsDaoImpl) {
+      List<String> filenames = ((GtfsDaoImpl) _entityStore).getOptionalMetadataFilenames();
+      if (filenames != null) {
+        for (String metaFile : filenames) {
+          if (source.hasResource(metaFile)) {
+            _log.info("reading metadata file: " + metaFile);
+            ((GtfsDaoImpl) _entityStore).addMetadata(metaFile, readContent(_inputLocation, metaFile));
+          }
+        }
+      }
+    }
+  }
+
+  private String readContent(File inputLocation, String filename) {
+    if (inputLocation.getAbsoluteFile().getName().endsWith(".zip")) {
+      // zip file
+      return readContentFromZip(inputLocation,
+        filename);
+    } else {
+      // file in directory
+      return readContentFromFile(new File(inputLocation.getAbsolutePath()
+              + File.separator
+              + filename));
+    }
+  }
+
+  private String readContentFromFile(File filePath) {
+    StringBuffer sb = new StringBuffer();
+    try {
+      byte[] bytes = Files.readAllBytes(filePath.toPath());
+      sb.append(new String(bytes, StandardCharsets.UTF_8));
+    } catch (IOException e) {
+      System.err.println("issue reading content from " + filePath);
+    }
+    return sb.toString();
+  }
+
+  private String readContentFromZip(File zipFilePath, String zipEntryName) {
+    try {
+      ZipHandler zip = new ZipHandler(zipFilePath);
+      return zip.readTextFromFile(zipEntryName);
+    } catch (IOException e) {
+      System.err.println("issue reading content from " + zipFilePath + ":" + zipEntryName);
+    }
+    return null;
   }
 
   /****

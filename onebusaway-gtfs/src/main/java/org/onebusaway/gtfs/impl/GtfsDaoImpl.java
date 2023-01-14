@@ -16,8 +16,7 @@
 package org.onebusaway.gtfs.impl;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.services.GenericMutableDao;
@@ -33,6 +32,10 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
   private boolean packStopTimes = false;
 
   private boolean packShapePoints = false;
+
+  private String[] _optionalMetadataFilenames = {"modifications.txt"};
+
+  private Map<String, String> metadataByFilename = new HashMap<>();
 
   public boolean isPackStopTimes() {
     return packStopTimes;
@@ -363,6 +366,24 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     }
     super.close();
   }
+
+  @Override
+  public List<String> getOptionalMetadataFilenames() {
+    return Arrays.asList(_optionalMetadataFilenames);
+  }
+  @Override
+  public boolean hasMetadata(String filename) {
+    return metadataByFilename.containsKey(filename);
+  }
+  @Override
+  public String getMetadata(String filename) {
+    return metadataByFilename.get(filename);
+  }
+  @Override
+  public void addMetadata(String filename, String content) {
+    metadataByFilename.put(filename, content);
+  }
+
 
   /****
    * Private Methods

@@ -15,6 +15,8 @@
  */
 package org.onebusaway.gtfs.serialization;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,9 +25,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.onebusaway.csv_entities.CsvEntityWriter;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
+import org.onebusaway.gtfs.impl.ZipHandler;
 import org.onebusaway.gtfs.services.GtfsDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +40,13 @@ public class GtfsWriter extends CsvEntityWriter {
       + ".context";
 
   private List<Class<?>> _entityClasses = new ArrayList<Class<?>>();
+
+  private File _outputLocation = null;
+
+  public void setOutputLocation(File path) {
+    super.setOutputLocation(path);
+    _outputLocation = path;
+  }
 
   private Map<Class<?>, Comparator<?>> _entityComparators = new HashMap<Class<?>, Comparator<?>>();
 
@@ -75,7 +84,46 @@ public class GtfsWriter extends CsvEntityWriter {
     }
 
     close();
+
+    // now copy any metadata files
+    List<String> filenames = dao.getOptionalMetadataFilenames();
+    for (String metadataFile : filenames) {
+      if (dao.hasMetadata(metadataFile)) {
+        _log.info("writing metadata file : " + metadataFile);
+        writeContent(metadataFile, dao.getMetadata(metadataFile));
+      }
+    }
   }
+
+  private void writeContent(String srcFilename, String content) {
+    if (content == null) {
+      return;
+    }
+    // outputLocation may be a zip file!
+    if (_outputLocation.getName().endsWith(".zip")) {
+      copyToZipFile(srcFilename, content);
+    } else {
+      try {
+        String location = _outputLocation.getAbsolutePath() + File.separator + srcFilename;
+        FileWriter fw = new FileWriter(location);
+        fw.write(content);
+        fw.close();
+      } catch (IOException e) {
+        // don't let metadata issue kill the entire process
+        System.err.println("issue copying metadata: "+ e);
+      }
+    }
+  }
+
+  private void copyToZipFile(String srcFilename, String content) {
+    try {
+      new ZipHandler(_outputLocation).writeTextToFile(srcFilename, content);
+    } catch (IOException e) {
+      // don't let metadata issue kill the entire process
+      System.err.println("issue copying metadata to zipfile: "+ e);
+    }
+  }
+
 
   @SuppressWarnings("unchecked")
   private Collection<Object> sortEntities(Class<?> entityClass,

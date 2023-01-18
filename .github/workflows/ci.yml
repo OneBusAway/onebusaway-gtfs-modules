@@ -28,3 +28,6 @@ jobs:
 
     - name: Test project with Maven
       run: mvn --no-transfer-progress test verify
+
+    - name: Build documentation
+      run: mvn --no-transfer-progress site

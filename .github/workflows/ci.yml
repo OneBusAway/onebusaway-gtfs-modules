@@ -6,7 +6,7 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
+  build:
 
     runs-on: ubuntu-latest
 
@@ -31,3 +31,10 @@ jobs:
 
     - name: Build documentation
       run: mvn --no-transfer-progress site
+
+    - name: Deploy documentation to Github Pages
+      # only deploy after merging to master
+      # if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: target/site/

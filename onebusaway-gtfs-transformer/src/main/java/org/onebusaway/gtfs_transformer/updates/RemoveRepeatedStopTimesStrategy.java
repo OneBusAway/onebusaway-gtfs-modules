@@ -18,6 +18,7 @@ package org.onebusaway.gtfs_transformer.updates;
 import java.util.List;
 import java.util.Map;
 
+import org.onebusaway.collections.tuple.T2;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -41,7 +42,7 @@ public class RemoveRepeatedStopTimesStrategy implements GtfsTransformStrategy {
     int removed = 0;
     int total = 0;
 
-    Map<String, List<Trip>> tripsByBlockId = TripsByBlockInSortedOrder.getTripsByBlockInSortedOrder(dao);
+    Map<T2, List<Trip>> tripsByBlockId = TripsByBlockInSortedOrder.getTripsByBlockAndServiceIdInSortedOrder(dao);
 
     for (List<Trip> trips : tripsByBlockId.values()) {
 

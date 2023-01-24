@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.onebusaway.collections.tuple.Pair;
+import org.onebusaway.collections.tuple.T2;
+import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -91,6 +94,66 @@ public class TripsByBlockInSortedOrder {
     return tripsByBlockId;
   }
 
+  public static Map<T2, List<Trip>> getTripsByBlockAndServiceIdInSortedOrder(
+          GtfsMutableRelationalDao dao) {
+
+    Map<T2, List<Trip>> tripsByBlockAndServiceId = new HashMap<T2, List<Trip>>();
+    Map<Trip, Integer> averageStopTimeByTrip = new HashMap<Trip, Integer>();
+
+    int totalTrips = 0;
+    int tripsWithoutStopTimes = 0;
+
+    for (Trip trip : dao.getAllTrips()) {
+
+      totalTrips++;
+
+      String blockId = trip.getBlockId();
+
+      // Generate a random block id if none is present so we get no collisions
+      if (blockId == null)
+        blockId = trip.getId() + "-" + Math.random();
+      T2 key = new T2Impl(trip.getServiceId(), blockId);
+
+      List<Trip> trips = tripsByBlockAndServiceId.get(key);
+      if (trips == null) {
+        trips = new ArrayList<Trip>();
+        tripsByBlockAndServiceId.put(key, trips);
+      }
+      trips.add(trip);
+
+      List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
+      if (stopTimes.isEmpty()) {
+        tripsWithoutStopTimes++;
+      } else {
+
+        int arrivalTimes = 0;
+        int arrivalTimeCount = 0;
+
+        for (StopTime stopTime : stopTimes) {
+          if (stopTime.isArrivalTimeSet()) {
+            arrivalTimes += stopTime.getArrivalTime();
+            arrivalTimeCount++;
+          }
+        }
+
+        if (arrivalTimeCount > 0) {
+          int averageArrivalTime = arrivalTimes / arrivalTimeCount;
+          averageStopTimeByTrip.put(trip, averageArrivalTime);
+        }
+      }
+    }
+
+    _log.info("trips=" + totalTrips + " withoutStopTimes="
+            + tripsWithoutStopTimes);
+
+    TripComparator c = new TripComparator(averageStopTimeByTrip);
+
+    for (List<Trip> tripsInBlock : tripsByBlockAndServiceId.values()) {
+      Collections.sort(tripsInBlock, c);
+    }
+    return tripsByBlockAndServiceId;
+  }
+
   private static class TripComparator implements Comparator<Trip> {
 
     private Map<Trip, Integer> _averageArrivalTimesByTrip;
@@ -114,4 +177,25 @@ public class TripsByBlockInSortedOrder {
     }
   }
 
+  private static class T2Impl implements T2 {
+    private String first;
+    private String second;
+
+    public T2Impl(AgencyAndId serviceId, String blockId) {
+      this.first = null;
+      if (serviceId != null)
+        first = serviceId.toString();
+      this.second = blockId;
+    }
+
+    @Override
+    public Object getFirst() {
+      return first;
+    }
+
+    @Override
+    public Object getSecond() {
+      return second;
+    }
+  }
 }

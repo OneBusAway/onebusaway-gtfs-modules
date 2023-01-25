@@ -197,5 +197,17 @@ public class TripsByBlockInSortedOrder {
     public Object getSecond() {
       return second;
     }
+
+    @Override
+    public int hashCode() {
+      return first.hashCode() + second.hashCode();
+    }
+    @Override
+    public boolean equals(Object o) {
+      if (o == this) return true;
+      T2 t2 = (T2)o;
+      return this.first.equals(t2.getFirst())
+              && this.second.equals(t2.getSecond());
+    }
   }
 }

@@ -166,7 +166,7 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, name = "safe_duration_factor", defaultValue = "-999.0")/*note defaultValue quirk for non-proxied comparison*/
   private double safeDurationFactor = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "safe_duration_offset", defaultValue = "-999.0")/*note defaultValue quirk for non-proxied comparison*/
+  @CsvField(optional = true, name = "safe_duration_offset", defaultValue = "-999")
   private double safeDurationOffset = MISSING_VALUE;
 
   @CsvField(optional = true, name = "free_running_flag")

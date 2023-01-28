@@ -145,7 +145,7 @@ public final class StopTime extends IdentityBean<Integer> implements
   private String farePeriodId;
 
   /** Extension to support departure buffer https://groups.google.com/forum/#!msg/gtfs-changes/sHTyliLgMQk/gfpaGkI_AgAJ */
-  @CsvField(optional = true, defaultValue = "-1")
+  @CsvField(optional = true, defaultValue = "-999")
   private int departureBuffer;
 
   /** Support track extension */
@@ -166,7 +166,7 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, name = "safe_duration_factor", defaultValue = "-999.0")/*note defaultValue quirk for non-proxied comparison*/
   private double safeDurationFactor = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "safe_duration_offset", defaultValue = "-999")
+  @CsvField(optional = true, name = "safe_duration_offset", defaultValue = "-999.0")/*note defaultValue quirk for non-proxied comparison*/
   private double safeDurationOffset = MISSING_VALUE;
 
   @CsvField(optional = true, name = "free_running_flag")

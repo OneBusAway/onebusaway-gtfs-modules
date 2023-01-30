@@ -177,7 +177,7 @@ public class MissingValueTest {
             if (line.contains("safe_duration_factor")) {
                 foundSafeDurationFactor = true;
             }
-            if (line.contains("safe_duraction_offset")) {
+            if (line.contains("safe_duration_offset")) {
                 foundSafeDurationOffset = true;
             }
 

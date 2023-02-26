@@ -34,7 +34,7 @@ jobs:
 
     - name: Deploy documentation to Github Pages
       # only deploy after merging to master
-      if: github.repository_owner == 'OneBusAway' github.event_name == 'push' && github.ref == 'refs/heads/master'
+      if: github.repository_owner == 'OneBusAway' && github.event_name == 'push' && github.ref == 'refs/heads/master'
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         folder: target/site/

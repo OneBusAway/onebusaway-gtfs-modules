@@ -19,7 +19,7 @@ jobs:
         java-version: 8
 
     - name: Cache Maven dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -27,7 +27,7 @@ jobs:
           ${{ runner.os }}-maven-
 
     - name: Test project with Maven
-      run: mvn --no-transfer-progress test verify
+      run: mvn --no-transfer-progress test install
 
     - name: Build documentation
       run: mvn --no-transfer-progress site

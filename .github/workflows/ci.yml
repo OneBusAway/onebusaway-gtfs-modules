@@ -27,7 +27,7 @@ jobs:
           ${{ runner.os }}-maven-
 
     - name: Test project with Maven
-      run: mvn --no-transfer-progress test verify
+      run: mvn --no-transfer-progress test install verify
 
     - name: Build documentation
       run: mvn --no-transfer-progress site

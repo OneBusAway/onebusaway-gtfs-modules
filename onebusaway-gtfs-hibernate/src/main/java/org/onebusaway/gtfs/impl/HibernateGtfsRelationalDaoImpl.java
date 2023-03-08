@@ -114,6 +114,16 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
+  public List<RouteStop> getAllRouteStops() {
+    return _ops.find("FROM RouteStop routeStop");
+  }
+
+  @Override
+  public List<RouteShape> getAllRouteShapes() {
+    return _ops.find("FROM RouteShape routeShape");
+  }
+
+  @Override
   public List<Stop> getAllStops() {
     return _ops.find("FROM Stop");
   }

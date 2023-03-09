@@ -25,6 +25,7 @@ import org.onebusaway.gtfs.services.GtfsMutableDao;
 
 public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
+  public static final String[] OPTIONAL_FILE_NAMES = {"modifications.txt"};
   private StopTimeArray stopTimes = new StopTimeArray();
 
   private ShapePointArray shapePoints = new ShapePointArray();
@@ -33,9 +34,18 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   private boolean packShapePoints = false;
 
-  private String[] _optionalMetadataFilenames = {"modifications.txt"};
+  private List<String> _optionalMetadataFilenames = null;
 
   private Map<String, String> metadataByFilename = new HashMap<>();
+
+  public GtfsDaoImpl() {
+    _optionalMetadataFilenames = new ArrayList<>();
+    if (OPTIONAL_FILE_NAMES != null) {
+      for (String optionalFileName : OPTIONAL_FILE_NAMES) {
+        _optionalMetadataFilenames.add(optionalFileName);
+      }
+    }
+  }
 
   public boolean isPackStopTimes() {
     return packStopTimes;
@@ -377,7 +387,7 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   @Override
   public List<String> getOptionalMetadataFilenames() {
-    return Arrays.asList(_optionalMetadataFilenames);
+    return _optionalMetadataFilenames;
   }
   @Override
   public boolean hasMetadata(String filename) {
@@ -390,6 +400,8 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
   @Override
   public void addMetadata(String filename, String content) {
     metadataByFilename.put(filename, content);
+    if (!_optionalMetadataFilenames.contains(filename))
+      _optionalMetadataFilenames.add(filename);
   }
 
 

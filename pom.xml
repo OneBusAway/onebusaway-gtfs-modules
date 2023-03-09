@@ -23,7 +23,7 @@
     <connection>scm:git:https://github.com/OneBusAway/onebusaway-gtfs-modules.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/OneBusAway/onebusaway-gtfs-modules.git</developerConnection>
     <url>https://github.com/OneBusAway/onebusaway-gtfs-modules</url>
-    <tag>onebusaway-gtfs-modules-1.3.118</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
@@ -156,8 +156,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+          <source>11</source>
+          <target>11</target>
 				</configuration>
 			</plugin>
 			<plugin>

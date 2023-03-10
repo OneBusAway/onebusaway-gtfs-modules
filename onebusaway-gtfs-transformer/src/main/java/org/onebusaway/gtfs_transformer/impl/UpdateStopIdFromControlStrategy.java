@@ -163,7 +163,11 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
         for (AgencyAndId id : stopsToRemove) {
             Stop stop = dao.getStopForId(id);
             //removeEntityLibrary.removeStop(dao, stop);
-            dao.removeEntity(stop);
+            if (stop != null) {
+                dao.removeEntity(stop);
+            } else {
+                _log.info("expecting stop {} but it was not found", id);
+            }
         }
     }
 

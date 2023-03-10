@@ -71,13 +71,13 @@ public class AddExtensionFileTest extends AbstractTestSupport {
     bwriter.write(TXT_STRING);
     bwriter.close();
 
-    context.putParameter(AddExtensionFile.FILE_PARAM, extensionFilename);
-
     String extensionName = "route_stop.txt";
-    context.putParameter(AddExtensionFile.FILE_NAME, extensionName);
+    test.setExtensionFilename(extensionFilename);
+    test.setExtensionName(extensionName);
+
     test.run(context, dao);
 
-    File tmpFileDirectory = File.createTempFile("CarryForwardExpectedFilesTest-", "-tmp");
+    File tmpFileDirectory = File.createTempFile("AddExtensionFileTest-", "-tmp");
     if (tmpFileDirectory.exists())
       _support.deleteFileRecursively(tmpFileDirectory);
     tmpFileDirectory.mkdirs();

@@ -15,9 +15,12 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,21 +32,36 @@ import java.nio.file.Files;
  */
 
 public class AddExtensionFile implements GtfsTransformStrategy {
-  public static final String FILE_PARAM = "extension_file_path";
-  public static final String FILE_NAME = "extension_name";
+  private static Logger _log = LoggerFactory.getLogger(AddExtensionFile.class);
+
+
+  @CsvField(optional = false)
+  private String extensionFilename;
+  @CsvField(optional = false)
+  private String extensionName;
   @Override
   public String getName() {
     return this.getClass().getName();
   }
 
+  public void setExtensionFilename(String extensionFilename) {
+    this.extensionFilename = extensionFilename;
+  }
+  public void setExtensionName(String extensionName) {
+    this.extensionName = extensionName;
+  }
+
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
     // lookup the file
-    String extensionFilename = context.getParameter(FILE_PARAM);
-    String extensionName = context.getParameter(FILE_NAME);
+    if (extensionFilename == null)
+      throw new IllegalStateException("missing required param extensionFilename");
+    if (extensionName == null)
+      throw new IllegalStateException("missing required param extensionName");
+    _log.info("AddExtensionFile entered with {} to {}", extensionName, extensionFilename);
     File extension = new File(extensionFilename);
     if (!extension.exists()) {
-      throw new IllegalStateException("attempt to add non-exitsant extension file:" + extension.getName());
+      throw new IllegalStateException("attempt to add non-existant extension file:" + extension.getName());
     }
     String content = null;
     try {
@@ -54,6 +72,7 @@ public class AddExtensionFile implements GtfsTransformStrategy {
     if (content == null)
       throw new IllegalStateException("no content for specified file " + extensionFilename);
 
+    _log.info("AddExtensionFile copying {} to {}", extensionName, extensionFilename);
     dao.addMetadata(extensionName, content);
   }
 }

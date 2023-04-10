@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 public class FeedInfoFromAgencyStrategy implements GtfsTransformStrategy {
 
@@ -77,9 +78,13 @@ public class FeedInfoFromAgencyStrategy implements GtfsTransformStrategy {
   }
 
   private FeedInfo getFeedInfoFromAgency(GtfsMutableRelationalDao dao, Agency agency) {
-    FeedInfo info = dao.getFeedInfoForId(agencyId);
-    if (info == null) {
-       info = new FeedInfo();
+    // cannot just use dao.getFeedInfoFromAgencyForId if it needs to be compatable with "update" SimpleModificationStrategy
+    FeedInfo info = dao.getAllFeedInfos().stream().
+            filter(feed->feed.getId().equals(agencyId))
+            .collect(Collectors.toMap(feed->feed.getId(), feed -> feed))
+            .get(agency.getId());
+    if (info==null) {
+      info = new FeedInfo();
     }
     info.setId(agencyId);
     info.setPublisherName(agency.getName());

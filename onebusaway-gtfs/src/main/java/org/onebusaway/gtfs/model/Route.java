@@ -56,7 +56,7 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @CsvField(name = "network_id", optional = true)
   private String networkId;
 
-  @CsvField(name = "eligibility_restricted", optional = true)
+  @CsvField(name = "eligibility_restricted", optional = true, defaultValue = "-999")
   private int eligibilityRestricted = MISSING_VALUE;
   
   @Deprecated

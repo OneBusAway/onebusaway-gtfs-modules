@@ -65,7 +65,7 @@ public class AddExtensionFile implements GtfsTransformStrategy {
     }
     String content = null;
     try {
-      content = null
+      content = null;
     } catch (IOException e) {
       throw new IllegalStateException(e);
     }

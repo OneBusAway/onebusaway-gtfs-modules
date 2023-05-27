@@ -64,11 +64,6 @@ public class AddExtensionFile implements GtfsTransformStrategy {
       throw new IllegalStateException("attempt to add non-existant extension file:" + extension.getName());
     }
     String content = null;
-    try {
-      content = null;
-    } catch (IOException e) {
-      throw new IllegalStateException(e);
-    }
     if (content == null)
       throw new IllegalStateException("no content for specified file " + extensionFilename);
 

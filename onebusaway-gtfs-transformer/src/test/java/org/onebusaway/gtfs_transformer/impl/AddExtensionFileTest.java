@@ -17,6 +17,7 @@ package org.onebusaway.gtfs_transformer.impl;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.onebusaway.gtfs.impl.FileSupport;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;

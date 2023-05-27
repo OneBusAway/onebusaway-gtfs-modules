@@ -90,7 +90,7 @@ public class AddExtensionFileTest extends AbstractTestSupport {
     // verify file is there
     assertTrue("expected extension to be present!", expectedFile.exists());
     assertTrue("expected extension to be a file!", expectedFile.isFile());
-    String actualText = null
+    String actualText = null;
     assertEquals(TXT_STRING, actualText);
 
   }

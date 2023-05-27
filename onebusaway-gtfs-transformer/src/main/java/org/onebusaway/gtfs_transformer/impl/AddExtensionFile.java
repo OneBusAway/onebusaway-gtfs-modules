@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+//import java.nio.file.Files;
 
 /**
  * Insert a GTFS extension into a GTFS file via a transformation.
@@ -65,7 +65,7 @@ public class AddExtensionFile implements GtfsTransformStrategy {
     }
     String content = null;
     try {
-      content = Files.readString(extension.toPath());
+      content = null
     } catch (IOException e) {
       throw new IllegalStateException(e);
     }

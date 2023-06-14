@@ -46,6 +46,12 @@ public final class FeedInfo extends IdentityBean<String> {
   @CsvField(optional = true, name = "default_lang")
   private String defaultLang;
 
+  @CsvField(optional = true)
+  private String contactEmail;
+
+  @CsvField(optional = true)
+  private String contactUrl;
+
   public FeedInfo() {
   }
 
@@ -58,6 +64,8 @@ public final class FeedInfo extends IdentityBean<String> {
     this.endDate = fi.endDate;
     this.version = fi.version;
     this.defaultLang = fi.defaultLang;
+    this.contactEmail = fi.contactEmail;
+    this.contactUrl = fi.contactUrl;
   }
 
   public String getPublisherName() {
@@ -114,6 +122,22 @@ public final class FeedInfo extends IdentityBean<String> {
 
   public void setDefaultLang(String defaultLang) {
     this.defaultLang = defaultLang;
+  }
+
+  public String getContactEmail() {
+    return contactEmail;
+  }
+
+  public void setContactEmail(String contactEmail) {
+    this.contactEmail = contactEmail;
+  }
+
+  public String getContactUrl() {
+    return contactUrl;
+  }
+
+  public void setContactUrl(String contactUrl) {
+    this.contactUrl = contactUrl;
   }
 
   /****

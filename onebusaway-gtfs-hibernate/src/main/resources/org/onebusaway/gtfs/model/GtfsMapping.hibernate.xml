@@ -83,6 +83,8 @@
         <property name="startDate" type="org.onebusaway.gtfs.impl.ServiceDateUserType" length="8"/>
         <property name="endDate" type="org.onebusaway.gtfs.impl.ServiceDateUserType" length="8"/>
         <property name="version" />
+        <property name="contactEmail" />
+        <property name="contactUrl" />
     </class>
 
     <class name="org.onebusaway.gtfs.model.Frequency" table="gtfs_frequencies">

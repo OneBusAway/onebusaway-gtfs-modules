@@ -1,4 +1,0 @@
-fare_container_id,fare_container_name,minimum_initial_purchase,amount,currency,rider_category_id
-charmcard,CharmCard,,,,
-charmcard_senior,Senior CharmCard,,,,sen
-charmpass,CharmPass Mobile App,,,,

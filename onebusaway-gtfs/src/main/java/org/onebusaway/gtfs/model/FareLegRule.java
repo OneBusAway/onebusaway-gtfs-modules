@@ -15,35 +15,26 @@
  */
 package org.onebusaway.gtfs.model;
 
-import java.util.Optional;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
-import org.onebusaway.gtfs.serialization.mappings.FareProductFieldMappingFactory;
+
+import java.util.Optional;
 
 @CsvFields(filename = "fare_leg_rules.txt", required = false)
 public final class FareLegRule extends IdentityBean<String> {
-
-  @CsvField(name = "fare_product_id", mapping = FareProductFieldMappingFactory.class)
-  private FareProduct fareProduct;
-
-  @CsvField(optional = true, name = "leg_group_id")
-  private String legGroupId;
+  @CsvField(optional = true, name = "leg_group_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
+  private AgencyAndId legGroupId;
 
   @CsvField(optional = true, name = "network_id")
   private String networkId;
 
-  @CsvField(optional = true, name = "from_area_id")
-  private String fromAreaId;
+  @CsvField(optional = true, name = "from_area_id", mapping = EntityFieldMappingFactory.class)
+  private Area fromArea;
 
-  @CsvField(optional = true, name = "to_area_id")
-  private String toAreaId;
-
-  @CsvField(name = "fare_container_id", optional = true, mapping = EntityFieldMappingFactory.class)
-  private FareContainer fareContainer;
-
-  @CsvField(name = "rider_category_id", optional = true, mapping = EntityFieldMappingFactory.class)
-  private RiderCategory riderCategory;
+  @CsvField(optional = true, name = "to_area_id", mapping = EntityFieldMappingFactory.class)
+  private Area toArea;
 
   @CsvField(name = "min_distance", optional = true)
   private Double minDistance;
@@ -54,28 +45,34 @@ public final class FareLegRule extends IdentityBean<String> {
   @CsvField(name = "distance_type", optional = true)
   private Integer distanceType;
 
-  public String getLegGroupId() {
+  @CsvField(
+    name = "fare_product_id",
+    mapping = DefaultAgencyIdFieldMappingFactory .class
+  )
+  private AgencyAndId fareProductId;
+
+  public AgencyAndId getLegGroupId() {
     return legGroupId;
   }
 
-  public void setLegGroupId(String legGroupId) {
+  public void setLegGroupId(AgencyAndId legGroupId) {
     this.legGroupId = legGroupId;
   }
 
-  public String getFromAreaId() {
-    return fromAreaId;
+  public Area getFromArea() {
+    return fromArea;
   }
 
-  public void setFromAreaId(String fromAreaId) {
-    this.fromAreaId = fromAreaId;
+  public void setFromArea(Area fromArea) {
+    this.fromArea = fromArea;
   }
 
-  public String getToAreaId() {
-    return toAreaId;
+  public Area getToArea() {
+    return toArea;
   }
 
-  public void setToAreaId(String toAreaId) {
-    this.toAreaId = toAreaId;
+  public void setToArea(Area toArea) {
+    this.toArea = toArea;
   }
 
   public String getNetworkId() {
@@ -88,11 +85,13 @@ public final class FareLegRule extends IdentityBean<String> {
 
   @Override
   public String getId() {
-    String containerId = Optional.ofNullable(fareContainer).map(c -> c.getId().getId()).orElse(null);
-    String categoryId = Optional.ofNullable(riderCategory).map(c -> c.getId().getId()).orElse(null);
+    String fromAreaId = Optional.ofNullable(fromArea).map(Area::getAreaId).orElse(null);
+    String toAreaId = Optional.ofNullable(toArea).map(Area::getAreaId).orElse(null);
+    String baseLegGroupId = Optional.ofNullable(legGroupId).map(AgencyAndId::getId).orElse(null);
+    String baseProductId = Optional.ofNullable(fareProductId).map(AgencyAndId::getId).orElse(null);
     return String.format(
-      "id=%s|network=%s|fromArea=%s|toArea=%s|container=%s|category=%s",
-      fareProduct.getFareProductId().getId(), networkId, fromAreaId, toAreaId, containerId, categoryId
+      "groupId=%s|product=%s|network=%s|fromArea=%s|toArea=%s",
+            baseLegGroupId, baseProductId, networkId, fromAreaId, toAreaId
     );
   }
 
@@ -100,28 +99,12 @@ public final class FareLegRule extends IdentityBean<String> {
   public void setId(String id) {
   }
 
-  public FareProduct getFareProduct() {
-    return fareProduct;
+  public AgencyAndId getFareProductId() {
+    return fareProductId;
   }
 
-  public void setFareProduct(FareProduct fareProduct) {
-    this.fareProduct = fareProduct;
-  }
-
-  public FareContainer getFareContainer() {
-    return fareContainer;
-  }
-
-  public void setFareContainer(FareContainer fareContainer) {
-    this.fareContainer = fareContainer;
-  }
-
-  public RiderCategory getRiderCategory() {
-    return riderCategory;
-  }
-
-  public void setRiderCategory(RiderCategory riderCategory) {
-    this.riderCategory = riderCategory;
+  public void setFareProductId(AgencyAndId fareProductId) {
+    this.fareProductId = fareProductId;
   }
 
   public void setMinDistance(Double minDistance) {

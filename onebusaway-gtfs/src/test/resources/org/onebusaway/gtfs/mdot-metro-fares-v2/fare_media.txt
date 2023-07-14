@@ -1,0 +1,4 @@
+fare_media_id,fare_media_name,fare_media_type,rider_category_id
+charmcard,CharmCard,2,
+charmcard_senior,Senior CharmCard,2,sen
+charmpass,CharmPass Mobile App,4,

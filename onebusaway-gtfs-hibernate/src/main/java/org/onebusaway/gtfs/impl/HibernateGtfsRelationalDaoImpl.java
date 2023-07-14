@@ -192,8 +192,8 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
-  public Collection<FareContainer> getAllFareContainers() {
-    return _ops.find("FROM FareContainer");
+  public Collection<FareMedium> getAllFareMedia() {
+    return _ops.find("FROM FareMedium");
   }
 
   @Override

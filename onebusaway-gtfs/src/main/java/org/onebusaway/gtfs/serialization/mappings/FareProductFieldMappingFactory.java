@@ -31,7 +31,7 @@ import org.onebusaway.gtfs.serialization.GtfsReaderContext;
  * Fare products have a composite primary key of
  *
  *  - fare product id
- *  - fare container id (nullable)
+ *  - fare medium id (nullable)
  *  - rider category id (nullable)
  *
  *  So if you want this library to look up the fare product instance you need to supply all of these,
@@ -47,13 +47,13 @@ public class FareProductFieldMappingFactory implements FieldMappingFactory {
     return new FareProductFieldMapping(entityType, csvFieldName, objFieldName, required);
   }
 
-  public static AgencyAndId fareProductId(String agencyId, String fareProductId, String riderCategoryId, String fareContainerId) {
-    String primaryKey = fareProductIdPrimaryKey(fareProductId, riderCategoryId, fareContainerId);
+  public static AgencyAndId fareProductId(String agencyId, String fareProductId, String riderCategoryId, String fareMediumId) {
+    String primaryKey = fareProductPrimaryKey(fareProductId, riderCategoryId, fareMediumId);
     return new AgencyAndId(agencyId, primaryKey);
   }
 
-  static String fareProductIdPrimaryKey(String fareProductId, String riderCategoryId, String fareContainerId) {
-    return String.format("id=%s|category=%s|container=%s", fareProductId, riderCategoryId, fareContainerId);
+  static String fareProductPrimaryKey(String fareProductId, String riderCategoryId, String fareMediumId) {
+    return String.format("id=%s|category=%s|medium=%s", fareProductId, riderCategoryId, fareMediumId);
   }
 
   private static class FareProductFieldMapping extends AbstractFieldMapping {
@@ -71,12 +71,12 @@ public class FareProductFieldMappingFactory implements FieldMappingFactory {
 
       String productId = (String) csvValues.get("fare_product_id");
       String categoryId = blankToNull(csvValues, "rider_category_id");
-      String containerId = blankToNull(csvValues, "fare_container_id");
+      String mediumId = blankToNull(csvValues, "fare_medium_id");
 
-      String primaryKey = fareProductIdPrimaryKey(productId, categoryId, containerId);
+      String primaryKey = fareProductPrimaryKey(productId, categoryId, mediumId);
 
       String agencyId = ctx.getAgencyForEntity(FareProduct.class, primaryKey);
-      AgencyAndId id = FareProductFieldMappingFactory.fareProductId(agencyId, productId, categoryId, containerId);
+      AgencyAndId id = FareProductFieldMappingFactory.fareProductId(agencyId, productId, categoryId, mediumId);
 
       FareProduct fareProduct = (FareProduct) ctx.getEntity(FareProduct.class, id);
 

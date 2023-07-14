@@ -32,30 +32,25 @@ public final class FareProduct extends IdentityBean<AgencyAndId> {
   private AgencyAndId fareProductId;
   @CsvField(optional = true, name = "fare_product_name")
   private String name;
-  @CsvField(optional = true)
+  @CsvField
   private float amount = MISSING_VALUE;
-  @CsvField(optional = true)
+  @CsvField
   private String currency;
 
-  // not in the main GTFS spec yet (as of June 2022)
   @CsvField(optional = true)
   private int durationAmount = MISSING_VALUE;
 
-  // not in the main GTFS spec yet (as of June 2022)
   @CsvField(optional = true)
   private int durationUnit = MISSING_VALUE;
 
-  // not in the main GTFS spec yet (as of June 2022)
   @CsvField(optional = true)
   private int durationType = MISSING_VALUE;
 
-  // not in the main GTFS spec yet (as of June 2022)
   @CsvField(name = "rider_category_id", optional = true, mapping = EntityFieldMappingFactory.class)
   private RiderCategory riderCategory;
 
-  // not in the main GTFS spec yet (as of June 2022)
-  @CsvField(name = "fare_container_id", optional = true, mapping = EntityFieldMappingFactory.class)
-  private FareContainer fareContainer;
+  @CsvField(name = "fare_media_id", optional = true, mapping = EntityFieldMappingFactory.class)
+  private FareMedium fareMedium;
 
   public AgencyAndId getFareProductId() {
     return fareProductId;
@@ -65,12 +60,12 @@ public final class FareProduct extends IdentityBean<AgencyAndId> {
     this.fareProductId = fareProductId;
   }
 
-  public FareContainer egetFareContainer() {
-    return fareContainer;
+  public FareMedium getFareMedium() {
+    return fareMedium;
   }
 
-  public void setFareContainer(FareContainer fareContainer) {
-    this.fareContainer = fareContainer;
+  public void setFareMedium(FareMedium fareMedium) {
+    this.fareMedium = fareMedium;
   }
 
   public int getDurationAmount() {
@@ -124,8 +119,13 @@ public final class FareProduct extends IdentityBean<AgencyAndId> {
   @Override
   public AgencyAndId getId() {
     String riderCategoryId = Optional.ofNullable(riderCategory).map(c -> c.getId().getId()).orElse(null);
-    String fareContainerId = Optional.ofNullable(fareContainer).map(c -> c.getId().getId()).orElse(null);
-    return FareProductFieldMappingFactory.fareProductId(fareProductId.getAgencyId(), fareProductId.getId(), riderCategoryId, fareContainerId);
+    String fareMediumId = Optional.ofNullable(fareMedium).map(c -> c.getId().getId()).orElse(null);
+    return FareProductFieldMappingFactory.fareProductId(
+            fareProductId.getAgencyId(),
+            fareProductId.getId(),
+            riderCategoryId,
+            fareMediumId
+    );
   }
 
   @Override

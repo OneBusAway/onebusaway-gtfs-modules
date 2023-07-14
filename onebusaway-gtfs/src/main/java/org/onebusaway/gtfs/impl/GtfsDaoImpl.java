@@ -184,8 +184,8 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
   }
 
   @Override
-  public Collection<FareContainer> getAllFareContainers() {
-    return getAllEntitiesForType(FareContainer.class);
+  public Collection<FareMedium> getAllFareMedia() {
+    return getAllEntitiesForType(FareMedium.class);
   }
 
   @Override

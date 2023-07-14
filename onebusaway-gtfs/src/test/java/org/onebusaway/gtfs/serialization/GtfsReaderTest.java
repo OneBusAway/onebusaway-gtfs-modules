@@ -791,7 +791,7 @@ public class GtfsReaderTest {
     assertEquals(12, fareProducts.size());
 
     FareProduct fp = fareProducts.stream().sorted(Comparator.comparing(FareProduct::getId)).findFirst().get();
-    assertEquals("id=31-day_disabled|category=disabled|container=null", fp.getId().getId());
+    assertEquals("id=31-day_disabled|category=disabled|medium=null", fp.getId().getId());
     assertEquals("31-Day Pass Persons with Disabilities", fp.getName());
     assertEquals("USD", fp.getCurrency());
     assertEquals(15.0, fp.getAmount(), 0);
@@ -807,9 +807,8 @@ public class GtfsReaderTest {
     assertEquals(12, fareLegRules.size());
 
     FareLegRule flr = fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
-    assertEquals("id=31-day_disabled|network=null|fromArea=null|toArea=null|container=null|category=disabled", flr.getId());
-    assertEquals("Turlock", flr.getLegGroupId());
-    assertEquals("Persons with Disabilities", flr.getRiderCategory().getName());
+    assertEquals("groupId=Turlock|product=31-day_disabled|network=null|fromArea=null|toArea=null", flr.getId());
+    assertEquals("Turlock", flr.getLegGroupId().getId());
 
     List<RiderCategory> riderCats = new ArrayList<>(dao.getAllRiderCategories());
     assertEquals(5, riderCats.size());
@@ -838,17 +837,17 @@ public class GtfsReaderTest {
     assertEquals(21, fareProducts.size());
 
     FareProduct fp = fareProducts.stream().sorted(Comparator.comparing(FareProduct::getId)).findFirst().get();
-    assertEquals("id=core_local_1_day_fare|category=null|container=charmcard", fp.getId().getId());
+    assertEquals("id=core_local_1_day_fare|category=null|medium=charmcard", fp.getId().getId());
     assertEquals("1-Day Pass - Core Service", fp.getName());
     assertEquals("USD", fp.getCurrency());
     assertEquals(4.6, fp.getAmount(), 0.01);
 
     List<FareLegRule> fareLegRules = new ArrayList<>(dao.getAllFareLegRules());
-    assertEquals(21, fareLegRules.size());
+    assertEquals(7, fareLegRules.size());
 
     FareLegRule flr = fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
-    assertEquals("id=core_local_1_day_fare|network=core|fromArea=null|toArea=null|container=charmcard|category=null", flr.getId());
-    assertEquals("core_local_one_way_trip", flr.getLegGroupId());
+    assertEquals("groupId=core_local_one_way_trip|product=core_local_1_day_fare|network=core|fromArea=null|toArea=null", flr.getId());
+    assertEquals("core_local_one_way_trip", flr.getLegGroupId().getId());
 
     List<FareTransferRule> fareTransferRules = new ArrayList<>(dao.getAllFareTransferRules());
     assertEquals(3, fareTransferRules.size());
@@ -859,12 +858,12 @@ public class GtfsReaderTest {
     assertEquals(-999, ftr.getTransferCount());
     assertEquals(5400, ftr.getDurationLimit());
 
-    List<FareContainer> containers = new ArrayList<>(dao.getAllFareContainers());
+    List<FareMedium> media = new ArrayList<>(dao.getAllFareMedia());
     assertEquals(3, fareTransferRules.size());
 
-    FareContainer container = containers.stream().filter(c -> c.getId().getId().equals("charmcard_senior")).findFirst().get();
-    assertEquals("charmcard_senior", container.getId().getId());
-    assertEquals("Senior CharmCard", container.getName());
+    FareMedium medium = media.stream().filter(c -> c.getId().getId().equals("charmcard_senior")).findFirst().get();
+    assertEquals("charmcard_senior", medium.getId().getId());
+    assertEquals("Senior CharmCard", medium.getName());
 
     List<StopArea> stopAreas = new ArrayList<>(dao.getAllStopAreas());
     assertEquals(0, stopAreas.size());

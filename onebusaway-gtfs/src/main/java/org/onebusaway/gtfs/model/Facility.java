@@ -41,7 +41,7 @@ public class Facility extends IdentityBean<AgencyAndId>{
     @CsvField(optional = true)
     private String facilityType;
 
-    @CsvField(name = "stop_id", mapping = EntityFieldMappingFactory.class)
+    @CsvField(name = "stop_id", mapping = EntityFieldMappingFactory.class, optional = true)
     private Stop stop;
 
     @CsvField(optional = true)

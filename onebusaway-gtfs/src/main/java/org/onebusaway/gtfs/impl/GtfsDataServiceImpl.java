@@ -524,4 +524,10 @@ public class GtfsDataServiceImpl implements GtfsDataService {
     public Collection<DirectionNameException> getAllDirectionNameExceptions() {
         return getAllEntitiesForType(DirectionNameException.class);
     }
+    public Collection<DirectionEntry> getAllDirectionEntries() {
+        return _dao.getAllDirectionEntries();
+    }
+    public Collection<WrongWayConcurrency> getAllWrongWayConcurrencies() {
+        return _dao.getAllWrongWayConcurrencies();
+    }
 }

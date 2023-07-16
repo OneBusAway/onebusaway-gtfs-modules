@@ -204,6 +204,10 @@ public interface GtfsDao extends GenericDao {
 
   public Collection<Translation> getAllTranslations();
 
+  public Collection<DirectionEntry> getAllDirectionEntries();
+
+  public Collection<WrongWayConcurrency> getAllWrongWayConcurrencies();
+
   Collection<StopArea> getAllStopAreas();
 
   default boolean hasFaresV1() {

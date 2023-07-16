@@ -99,6 +99,8 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(FacilityProperty.class);
     _entityClasses.add(RouteNameException.class);
     _entityClasses.add(DirectionNameException.class);
+    _entityClasses.add(WrongWayConcurrency.class);
+    _entityClasses.add(DirectionEntry.class);
 
     CsvTokenizerStrategy tokenizerStrategy = new CsvTokenizerStrategy();
     tokenizerStrategy.getCsvParser().setTrimInitialWhitespace(true);

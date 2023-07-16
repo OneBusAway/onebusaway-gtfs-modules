@@ -261,6 +261,9 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
   public RouteNameException getRouteNameExceptionForId(AgencyAndId id) { return getEntityForId(RouteNameException.class, id);}
   public DirectionNameException getDirectionNameExceptionForId(AgencyAndId id) { return getEntityForId(DirectionNameException.class, id);}
 
+  public Collection<DirectionEntry> getAllDirectionEntries() {
+    return getAllEntitiesForType(DirectionEntry.class);
+  }
   public Collection<Facility> getAllFacilities() {
     return getAllEntitiesForType(Facility.class);
   }
@@ -277,6 +280,9 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getAllEntitiesForType(DirectionNameException.class);
   }
 
+  public Collection<WrongWayConcurrency> getAllWrongWayConcurrencies() {
+    return getAllEntitiesForType(WrongWayConcurrency.class);
+  }
   public Collection<Area> getAllAreas() {
     return getAllEntitiesForType(Area.class);
   }

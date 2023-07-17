@@ -111,8 +111,8 @@ public class GtfsReaderTest {
         "S1,R1,T1,S1,R1,T1,2,60");
     gtfs.putLines(
         "feed_info.txt",
-        "feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version",
-        "Test,http://agency.gov/,en,20120110,20120217,2.0");
+        "feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version,feed_contact_email,feed_contact_url",
+        "Test,http://agency.gov/,en,20120110,20120217,2.0,agency@email.com,http://agency.gov/");
     gtfs.putLines(
         "pathways.txt",
             "pathway_id,pathway_mode,is_bidirectional,from_stop_id,to_stop_id,traversal_time",
@@ -301,6 +301,8 @@ public class GtfsReaderTest {
     assertEquals(new ServiceDate(2012, 1, 10), feedInfo.getStartDate());
     assertEquals(new ServiceDate(2012, 2, 17), feedInfo.getEndDate());
     assertEquals("2.0", feedInfo.getVersion());
+    assertEquals("agency@email.com",feedInfo.getContactEmail());
+    assertEquals("http://agency.gov/",feedInfo.getContactUrl());
 
     Pathway pathway = dao.getAllPathways().iterator().next();
     assertEquals(new AgencyAndId("1", "P1"), pathway.getId());

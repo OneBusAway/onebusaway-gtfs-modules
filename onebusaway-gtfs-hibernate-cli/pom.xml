@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.onebusaway</groupId>
     <artifactId>onebusaway-gtfs-modules</artifactId>
-    <version>1.4.4-SNAPSHOT</version>
+    <version>1.4.4</version>
   </parent>
   <artifactId>onebusaway-gtfs-hibernate-cli</artifactId>
   <name>onebusaway-gtfs-hibernate-cli</name>

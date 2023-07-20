@@ -18,6 +18,7 @@ package org.onebusaway.gtfs.model;
 import java.util.HashSet;
 import java.util.Set;
 
+@Deprecated
 public class LocationGroup extends IdentityBean<AgencyAndId> implements StopLocation {
     private static final long serialVersionUID = 1L;
 

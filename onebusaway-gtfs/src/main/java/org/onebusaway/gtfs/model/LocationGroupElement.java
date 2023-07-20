@@ -20,6 +20,8 @@ import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.StopLocationFieldMappingFactory;
 
+
+@Deprecated
 @CsvFields(filename = "location_groups.txt", required = false, prefix = "location_group_")
 public class LocationGroupElement extends IdentityBean<Integer> {
 

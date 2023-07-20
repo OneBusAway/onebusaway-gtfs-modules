@@ -867,8 +867,8 @@ public class GtfsReaderTest {
     assertEquals("charmcard_senior", medium.getId().getId());
     assertEquals("Senior CharmCard", medium.getName());
 
-    List<StopArea> stopAreas = new ArrayList<>(dao.getAllStopAreas());
-    assertEquals(0, stopAreas.size());
+    List<StopAreaElement> stopAreaElements = new ArrayList<>(dao.getAllStopAreas());
+    assertEquals(0, stopAreaElements.size());
 
     List<Route> routes = new ArrayList<>(dao.getAllRoutes());
     assertEquals(1, routes.size());

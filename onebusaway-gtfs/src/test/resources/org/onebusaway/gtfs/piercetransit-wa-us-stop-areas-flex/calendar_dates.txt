@@ -1,0 +1,11 @@
+service_id,date,holiday_name,exception_type
+c_69336_b_80376_d_31,20231123,Thanksgiving Day,2
+c_69336_b_80376_d_31,20231110,Veteran's Day (Observed),2
+c_69336_b_80376_d_31,20230904,Labor Day,2
+c_69336_b_80376_d_31,20230704,Independence Day,2
+c_69336_b_80376_d_31,20230619,Juneteenth,2
+c_69336_b_80376_d_31,20230529,Memorial Day,2
+c_69335_b_80375_d_127,20231123,Thanksgiving Day,2
+c_69335_b_80375_d_127,20230904,Labor Day,2
+c_69335_b_80375_d_127,20230704,Independence Day,2
+c_69335_b_80375_d_127,20230529,Memorial Day,2

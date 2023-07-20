@@ -1,0 +1,3 @@
+service_id,service_name,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date
+c_69336_b_80376_d_31,JBLM Runner (Weekday),1,1,1,1,1,0,0,20230401,20231201
+c_69335_b_80375_d_127,Flex Year Round (All days of week),1,1,1,1,1,1,1,20230401,20231201

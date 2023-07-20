@@ -1,0 +1,8 @@
+route_id,service_id,trip_id,trip_short_name,trip_headsign,direction_id,block_id,shape_id,bikes_allowed,wheelchair_accessible,trip_type,drt_max_travel_time,drt_avg_travel_time,drt_advance_book_min,drt_pickup_message,drt_drop_off_message,continuous_pickup_message,continuous_drop_off_message,tts_trip_headsign,tts_trip_short_name
+76310,c_69335_b_80375_d_127,t_5582575_b_80375_tn_0,,,0,,,,,,,,,,,,,,
+76311,c_69335_b_80375_d_127,t_5586053_b_80375_tn_0,,,0,,,,,,,,,,,,,,
+76312,c_69335_b_80375_d_127,t_5586054_b_80375_tn_0,,,0,,,,,,,,,,,,,,
+76312,c_69335_b_80375_d_127,t_5586055_b_80375_tn_0,,,0,,,,,,,,,,,,,,
+76312,c_69335_b_80375_d_127,t_5586056_b_80375_tn_0,,,0,,,,,,,,,,,,,,
+76313,c_69336_b_80376_d_31,t_5586097_b_80376_tn_0,,,0,,,,,,,,,,,,,,
+76313,c_69336_b_80376_d_31,t_5586096_b_80376_tn_0,,,0,,,,,,,,,,,,,,

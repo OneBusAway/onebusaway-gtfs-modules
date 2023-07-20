@@ -1,0 +1,5 @@
+route_id,direction_id,direction
+76313,0,No direction
+76312,0,No direction
+76311,0,No direction
+76310,0,No direction

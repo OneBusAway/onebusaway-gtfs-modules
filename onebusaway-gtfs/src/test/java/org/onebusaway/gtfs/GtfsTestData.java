@@ -41,6 +41,8 @@ public class GtfsTestData {
 
   public static final String MDOT_FARES_V2 = "org/onebusaway/gtfs/mdot-metro-fares-v2";
 
+  public static final String PIERCE_TRANSIT_FLEX = "org/onebusaway/gtfs/mdot-metro-fares-v2";
+
   public static final String LOCATIONS_GEOJSON = "org/onebusaway/gtfs/locations.geojson";
 
   public static File getCaltrainGtfs() {
@@ -70,6 +72,9 @@ public class GtfsTestData {
 
   public static File getMdotMetroFaresV2() {
     return new File("src/test/resources", MDOT_FARES_V2);
+  }
+  public static File getPierceTransitFlex() {
+    return new File("src/test/resources", PIERCE_TRANSIT_FLEX);
   }
 
   public static <T extends GenericMutableDao> void readGtfs(T entityStore,

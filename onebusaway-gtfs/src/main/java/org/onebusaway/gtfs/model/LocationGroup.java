@@ -18,6 +18,11 @@ package org.onebusaway.gtfs.model;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Location groups have been merged with Fares V2's stop areas.
+ *
+ * Please update your code now as this class will be removed soon.
+ */
 @Deprecated
 public class LocationGroup extends IdentityBean<AgencyAndId> implements StopLocation {
     private static final long serialVersionUID = 1L;

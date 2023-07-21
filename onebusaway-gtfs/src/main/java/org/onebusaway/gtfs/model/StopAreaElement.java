@@ -17,31 +17,28 @@ package org.onebusaway.gtfs.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.StopLocationFieldMappingFactory;
 
 @CsvFields(filename = "stop_areas.txt", required = false)
 public final class StopAreaElement extends IdentityBean<AgencyAndId> {
 
-  @CsvField(name = "area_id")
+  @CsvField(name = "area_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId areaId;
-  @CsvField(name = "stop_id")
-  private String stopId;
+  @CsvField(name = "stop_id", mapping = StopLocationFieldMappingFactory.class)
   private StopLocation stop;
+
+  public void setAreaId(AgencyAndId id) {
+    this.areaId = id;
+  }
 
   public AgencyAndId getAreaId() {
     return areaId;
   }
 
-  public String getStopId() {
-    return stopId;
-  }
-
-  public void setStopId(String stopId) {
-    this.stopId = stopId;
-  }
-
   @Override
   public AgencyAndId getId() {
-    return new AgencyAndId(areaId.getAgencyId(), String.format("%s_%s", areaId.getId(), stopId));
+    return new AgencyAndId(areaId.getAgencyId(), String.format("%s_%s", areaId.getId(), stop.getId().getId()));
   }
 
   @Override

@@ -23,17 +23,16 @@ import java.util.List;
 import org.junit.Test;
 import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.gtfs.GtfsTestData;
-import org.onebusaway.gtfs.services.GtfsRelationalDao;
 
 public class FlexReaderTest extends BaseGtfsTest {
 
   @Test
-  public void pierceTransit() throws CsvEntityIOException, IOException {
-    String agencyId = "1";
-    GtfsRelationalDao dao = processFeed(GtfsTestData.getPierceTransitFlex(), agencyId, false);
+  public void pierceTransitStopAreas() throws CsvEntityIOException, IOException {
+    var agencyId = "1";
+    var dao = processFeed(GtfsTestData.getPierceTransitFlex(), agencyId, false);
 
     var stopAreas = List.copyOf(dao.getAllStopAreas());
 
-    assertEquals(1, stopAreas.size());
+    assertEquals(15, stopAreas.size());
   }
 }

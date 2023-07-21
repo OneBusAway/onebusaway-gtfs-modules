@@ -1,6 +1,5 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2023 Leonard Ehrenfried <mail@leonard.io>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +16,61 @@
 package org.onebusaway.gtfs.serialization;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.Test;
 import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.gtfs.GtfsTestData;
+import org.onebusaway.gtfs.model.Location;
+import org.onebusaway.gtfs.model.Stop;
+import org.onebusaway.gtfs.model.StopArea;
+import org.onebusaway.gtfs.model.StopLocation;
 
 public class FlexReaderTest extends BaseGtfsTest {
 
+  private static final String AGENCY_ID = "1";
+
   @Test
   public void pierceTransitStopAreas() throws CsvEntityIOException, IOException {
-    var agencyId = "1";
-    var dao = processFeed(GtfsTestData.getPierceTransitFlex(), agencyId, false);
+    var dao = processFeed(GtfsTestData.getPierceTransitFlex(), AGENCY_ID, false);
+
+    var areaElements = List.copyOf(dao.getAllStopAreaElements());
+    assertEquals(15, areaElements.size());
+
+    var first = areaElements.get(0);
+    assertEquals("4210813", first.getAreaId().getId());
+    var stop = first.getStopLocation();
+    assertEquals("4210806", stop.getId().getId());
+    assertEquals("Bridgeport Way & San Francisco Ave SW (Northbound)", stop.getName());
+    assertSame(Stop.class, stop.getClass());
+
+    var areaWithLocation = areaElements.stream().filter(a -> a.getId().toString().equals("1_4210800_area_1076")).findFirst().get();
+
+    var location = areaWithLocation.getStopLocation();
+    assertSame(Location.class, location.getClass());
 
     var stopAreas = List.copyOf(dao.getAllStopAreas());
+    assertEquals(2, stopAreas.size());
 
-    assertEquals(15, stopAreas.size());
+    var area = getArea(stopAreas, "1_4210813");
+    assertEquals(12, area.getStops().size());
+    var stop2 = area.getStops().stream().min(Comparator.comparing(StopLocation::getName)).get();
+    assertEquals("Barnes Blvd & D St SW", stop2.getName());
+
+    var area2 = getArea(stopAreas, "1_4210800");
+    assertEquals(3, area2.getStops().size());
+
+    var names = area2.getStops().stream().map(s -> s.getId().toString()).collect(Collectors.toSet());
+
+    assertEquals(Set.of("1_area_1075", "1_area_1074", "1_area_1076"), names);
+  }
+
+  private static StopArea getArea(List<StopArea> stopAreas, String id) {
+    return stopAreas.stream().filter(a -> a.getId().toString().equals(id)).findAny().get();
   }
 }

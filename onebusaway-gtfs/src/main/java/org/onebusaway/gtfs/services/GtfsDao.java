@@ -193,9 +193,11 @@ public interface GtfsDao extends GenericDao {
   @Deprecated
   public Collection<LocationGroupElement> getAllLocationGroupElements();
 
+  public Collection<LocationGroup> getAllLocationGroups();
+
   public Collection<StopAreaElement> getAllStopAreaElements();
 
-  public Collection<LocationGroup> getAllLocationGroups();
+  public Collection<StopArea> getAllStopAreas();
 
   public Collection<Location> getAllLocations();
 
@@ -210,8 +212,6 @@ public interface GtfsDao extends GenericDao {
   public Collection<DirectionEntry> getAllDirectionEntries();
 
   public Collection<WrongWayConcurrency> getAllWrongWayConcurrencies();
-
-  Collection<StopAreaElement> getAllStopAreas();
 
   default boolean hasFaresV1() {
     return Stream.of(getAllFareAttributes(), getAllFareRules()).flatMap(Collection::stream).findAny().isPresent();

@@ -1,6 +1,5 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2023 Leonard Ehrenfried <mail@leonard.io>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,50 +24,22 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import org.junit.Test;
 import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
-import org.onebusaway.csv_entities.exceptions.InvalidValueEntityException;
-import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
 import org.onebusaway.gtfs.GtfsTestData;
-import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.Block;
-import org.onebusaway.gtfs.model.FareAttribute;
 import org.onebusaway.gtfs.model.FareLegRule;
 import org.onebusaway.gtfs.model.FareMedium;
 import org.onebusaway.gtfs.model.FareProduct;
-import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.FareTransferRule;
-import org.onebusaway.gtfs.model.FeedInfo;
-import org.onebusaway.gtfs.model.Frequency;
-import org.onebusaway.gtfs.model.Level;
-import org.onebusaway.gtfs.model.Pathway;
 import org.onebusaway.gtfs.model.RiderCategory;
-import org.onebusaway.gtfs.model.Ridership;
 import org.onebusaway.gtfs.model.Route;
-import org.onebusaway.gtfs.model.ServiceCalendar;
-import org.onebusaway.gtfs.model.ServiceCalendarDate;
-import org.onebusaway.gtfs.model.ShapePoint;
-import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopAreaElement;
-import org.onebusaway.gtfs.model.StopTime;
-import org.onebusaway.gtfs.model.Transfer;
-import org.onebusaway.gtfs.model.Trip;
-import org.onebusaway.gtfs.model.calendar.ServiceDate;
-import org.onebusaway.gtfs.serialization.mappings.AgencyNotFoundForRouteException;
-import org.onebusaway.gtfs.services.GtfsDao;
-import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs.services.MockGtfs;
 
@@ -164,7 +135,7 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
     assertEquals("charmcard_senior", medium.getId().getId());
     assertEquals("Senior CharmCard", medium.getName());
 
-    List<StopAreaElement> stopAreaElements = new ArrayList<>(dao.getAllStopAreas());
+    List<StopAreaElement> stopAreaElements = new ArrayList<>(dao.getAllStopAreaElements());
     assertEquals(0, stopAreaElements.size());
 
     List<Route> routes = new ArrayList<>(dao.getAllRoutes());

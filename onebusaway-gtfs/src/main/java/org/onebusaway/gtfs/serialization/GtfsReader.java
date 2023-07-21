@@ -377,7 +377,7 @@ public class GtfsReader extends CsvEntityReader {
           stopArea.setName("area");
           _entityStore.saveEntity(stopArea);
         }
-        stopArea.addLocation(stopAreaElement.getStop());
+        stopArea.addLocation(stopAreaElement.getStopLocation());
       } else if (entity instanceof Vehicle) {
         Vehicle vehicle = (Vehicle) entity;
         registerAgencyId(Vehicle.class, vehicle.getId());

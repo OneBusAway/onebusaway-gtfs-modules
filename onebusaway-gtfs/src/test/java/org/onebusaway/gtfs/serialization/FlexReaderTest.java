@@ -68,6 +68,16 @@ public class FlexReaderTest extends BaseGtfsTest {
     var names = area2.getStops().stream().map(s -> s.getId().toString()).collect(Collectors.toSet());
 
     assertEquals(Set.of("1_area_1075", "1_area_1074", "1_area_1076"), names);
+
+    var trips = dao.getAllTrips();
+    assertEquals(7, trips.size());
+
+    var trip = trips.stream().filter(t -> t.getId().getId().equals("t_5586096_b_80376_tn_0")).findFirst().get();
+    var stopTimes = dao.getStopTimesForTrip(trip);
+
+    var classes = stopTimes.stream().map(st -> st.getStop().getClass()).collect(Collectors.toList());
+    assertEquals(List.of(StopArea.class, StopArea.class), classes);
+
   }
 
   private static StopArea getArea(List<StopArea> stopAreas, String id) {

@@ -36,11 +36,11 @@ public class StopArea extends IdentityBean<AgencyAndId> implements StopLocation 
       this.id = id;
     }
 
-    public Set<StopLocation> getStops() {
+    public Set<StopLocation> getLocations() {
       return stops;
     }
 
-    private void setStops(Set<StopLocation> stops) {
+    private void setLocations(Set<StopLocation> stops) {
       this.stops = stops;
     }
 

@@ -303,7 +303,7 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   @Override
   public Collection<StopAreaElement> getAllStopAreaElements() {
     Collection<StopArea> groups = _ops.find("FROM StopArea");
-    return groups.stream().flatMap(group -> group.getStops().stream().map(stopLocation -> {
+    return groups.stream().flatMap(group -> group.getLocations().stream().map(stopLocation -> {
       var stopAreaElement = new StopAreaElement();
       stopAreaElement.setId(group.getId());
       stopAreaElement.setStopLocation(stopLocation);

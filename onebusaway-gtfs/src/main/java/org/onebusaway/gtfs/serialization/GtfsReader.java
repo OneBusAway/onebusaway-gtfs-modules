@@ -355,6 +355,7 @@ public class GtfsReader extends CsvEntityReader {
       } else if (entity instanceof Area) {
         Area area = (Area) entity;
         registerAgencyId(Area.class, area.getId());
+
       } else if (entity instanceof Location) {
         Location location = (Location) entity;
         registerAgencyId(Location.class, location.getId());
@@ -370,11 +371,10 @@ public class GtfsReader extends CsvEntityReader {
         locationGroup.addLocation(locationGroupElement.getLocation());
       } else if (entity instanceof StopAreaElement) {
         var stopAreaElement = (StopAreaElement) entity;
-        var stopArea = _entityStore.getEntityForId(StopArea.class, stopAreaElement.getAreaId());
+        var stopArea = _entityStore.getEntityForId(StopArea.class, stopAreaElement.getArea().getId());
         if (stopArea == null) {
           stopArea = new StopArea();
-          stopArea.setId(stopAreaElement.getAreaId());
-          stopArea.setName("area");
+          stopArea.setArea(stopAreaElement.getArea());
           _entityStore.saveEntity(stopArea);
         }
         stopArea.addLocation(stopAreaElement.getStopLocation());

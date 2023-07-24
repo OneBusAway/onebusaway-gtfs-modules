@@ -19,40 +19,45 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class StopArea extends IdentityBean<AgencyAndId> implements StopLocation {
-    private static final long serialVersionUID = 1L;
 
-    private AgencyAndId id;
+  private static final long serialVersionUID = 1L;
 
-    private Set<StopLocation> stops = new HashSet<>();
+  private Area area;
 
-    private String name;
+  private Set<StopLocation> stops = new HashSet<>();
 
-    @Override
-    public AgencyAndId getId() {
-      return id;
-    }
+  @Override
+  public AgencyAndId getId() {
+    return area.getId();
+  }
 
-    public void setId(AgencyAndId id) {
-      this.id = id;
-    }
+  @Override
+  public void setId(AgencyAndId id) {
+  }
 
-    public Set<StopLocation> getLocations() {
-      return stops;
-    }
+  public void setArea(Area area) {
+    this.area = area;
+  }
 
-    private void setLocations(Set<StopLocation> stops) {
-      this.stops = stops;
-    }
+  public Set<StopLocation> getLocations() {
+    return stops;
+  }
 
-    public void addLocation(StopLocation location) {
-      this.stops.add(location);
-    }
+  private void setLocations(Set<StopLocation> stops) {
+    this.stops = stops;
+  }
 
-    public String getName() {
-      return name;
-    }
+  public void addLocation(StopLocation location) {
+    this.stops.add(location);
+  }
 
-    public void setName(String name) {
-      this.name = name;
-    }
+  public String getName() {
+    return area.getName();
+  }
+
+  @Override
+  public void setName(String name) {
+
+  }
+
 }

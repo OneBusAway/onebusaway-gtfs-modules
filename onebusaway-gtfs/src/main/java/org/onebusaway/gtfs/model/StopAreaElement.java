@@ -17,33 +17,33 @@ package org.onebusaway.gtfs.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
-import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.StopLocationFieldMappingFactory;
 
 @CsvFields(filename = "stop_areas.txt", required = false)
 public final class StopAreaElement extends IdentityBean<AgencyAndId> {
 
-  @CsvField(name = "area_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
-  private AgencyAndId areaId;
+  @CsvField(name = "area_id", mapping = EntityFieldMappingFactory.class)
+  private Area area;
   @CsvField(name = "stop_id", mapping = StopLocationFieldMappingFactory.class)
   private StopLocation stopLocation;
 
-  public void setAreaId(AgencyAndId id) {
-    this.areaId = id;
+  public void setArea(Area area) {
+    this.area = area;
   }
 
-  public AgencyAndId getAreaId() {
-    return areaId;
+  public Area getArea() {
+    return area;
   }
 
   @Override
   public AgencyAndId getId() {
-    return new AgencyAndId(areaId.getAgencyId(), String.format("%s_%s", areaId.getId(), stopLocation.getId().getId()));
+    return new AgencyAndId(getArea().getId().getAgencyId(), String.format("%s_%s", area.getId().getId(), stopLocation.getId().getId()));
   }
 
   @Override
   public void setId(AgencyAndId id) {
-    this.areaId = id;
+
   }
 
   public void setStopLocation(StopLocation stopLocation) {

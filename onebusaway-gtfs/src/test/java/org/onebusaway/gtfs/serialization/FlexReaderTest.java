@@ -43,7 +43,7 @@ public class FlexReaderTest extends BaseGtfsTest {
     assertEquals(15, areaElements.size());
 
     var first = areaElements.get(0);
-    assertEquals("4210813", first.getAreaId().getId());
+    assertEquals("1_4210813", first.getArea().getId().toString());
     var stop = first.getStopLocation();
     assertEquals("4210806", stop.getId().getId());
     assertEquals("Bridgeport Way & San Francisco Ave SW (Northbound)", stop.getName());
@@ -77,6 +77,8 @@ public class FlexReaderTest extends BaseGtfsTest {
 
     var classes = stopTimes.stream().map(st -> st.getStop().getClass()).collect(Collectors.toList());
     assertEquals(List.of(StopArea.class, StopArea.class), classes);
+
+    assertEquals("JBLM Stops", area.getName());
 
   }
 

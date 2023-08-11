@@ -200,6 +200,7 @@
           <header>LICENSE.txt</header>
           <excludes combine.children="append">
             <exclude>**/ci.yml</exclude>
+            <exclude>**/simplelogger.properties</exclude>
           </excludes>
         </configuration>
       </plugin>

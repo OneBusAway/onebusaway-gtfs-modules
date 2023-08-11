@@ -17,6 +17,8 @@ package org.onebusaway.gtfs.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 
 /**
  * An GTFS extension that allows for re-mapping of route + direction + stop
@@ -30,9 +32,13 @@ public class WrongWayConcurrency extends IdentityBean<Integer> {
 
   @CsvField(ignore = true)
   private int id;
-  private AgencyAndId routeId;
+  @CsvField(name = "route_id")
+  private String routeId;
+  @CsvField(name = "direction_id")
   private String directionId;
+  @CsvField(name = "from_stop_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId fromStopId;
+  @CsvField(name = "to_stop_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId toStopId;
 
   @Override
@@ -45,11 +51,11 @@ public class WrongWayConcurrency extends IdentityBean<Integer> {
     this.id = id;
   }
 
-  public AgencyAndId getRouteId() {
+  public String getRouteId() {
     return routeId;
   }
 
-  public void setRouteId(AgencyAndId routeId) {
+  public void setRouteId(String routeId) {
     this.routeId = routeId;
   }
 

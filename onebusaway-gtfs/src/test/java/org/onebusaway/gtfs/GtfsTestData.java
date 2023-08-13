@@ -29,19 +29,25 @@ import org.onebusaway.gtfs.services.GenericMutableDao;
 
 public class GtfsTestData {
 
-  public static final String CALTRAIN_GTFS = "org/onebusaway/gtfs/caltrain_20090308_1937.zip";
+  private static String gtfsPath(String name) {
+    return String.format("org/onebusaway/gtfs/%s",name);
+  }
 
-  public static final String ISLAND_GTFS = "org/onebusaway/gtfs/island-transit_20090312_0314.zip";
+  public static final String CALTRAIN_GTFS = gtfsPath("caltrain_20090308_1937.zip");
 
-  public static final String BART_GTFS = "org/onebusaway/gtfs/bart.zip";
+  public static final String ISLAND_GTFS = gtfsPath("island-transit_20090312_0314.zip");
+
+  public static final String BART_GTFS = gtfsPath("bart.zip");
   
-  public static final String TEST_AGENCY_GTFS = "org/onebusaway/gtfs/testagency";
+  public static final String TEST_AGENCY_GTFS = gtfsPath("testagency");
 
-  public static final String TURLOCK_FARES_V2 = "org/onebusaway/gtfs/turlock-fares-v2";
+  public static final String TURLOCK_FARES_V2 = gtfsPath("turlock-fares-v2");
 
-  public static final String MDOT_FARES_V2 = "org/onebusaway/gtfs/mdot-metro-fares-v2";
+  public static final String MDOT_FARES_V2 = gtfsPath("mdot-metro-fares-v2");
 
-  public static final String LOCATIONS_GEOJSON = "org/onebusaway/gtfs/locations.geojson";
+  public static final String PIERCE_TRANSIT_FLEX = gtfsPath("piercetransit-stop-areas-flex");
+
+  public static final String LOCATIONS_GEOJSON = gtfsPath("locations.geojson");
 
   public static File getCaltrainGtfs() {
     return getResourceAsTemporaryFile(CALTRAIN_GTFS);
@@ -70,6 +76,9 @@ public class GtfsTestData {
 
   public static File getMdotMetroFaresV2() {
     return new File("src/test/resources", MDOT_FARES_V2);
+  }
+  public static File getPierceTransitFlex() {
+    return new File("src/test/resources", PIERCE_TRANSIT_FLEX);
   }
 
   public static <T extends GenericMutableDao> void readGtfs(T entityStore,

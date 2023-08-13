@@ -35,7 +35,7 @@ public class StopLocationFieldMappingImpl extends EntityFieldMappingImpl {
 
     private class ConverterImpl implements Converter {
 
-        private GtfsReaderContext _context;
+        private final GtfsReaderContext _context;
 
         public ConverterImpl(GtfsReaderContext context) {
             _context = context;
@@ -55,8 +55,10 @@ public class StopLocationFieldMappingImpl extends EntityFieldMappingImpl {
                 if (stop != null) return stop;
                 Object location =  _context.getEntity(Location.class, id);
                 if (location != null) return location;
-                Object locationGroup =  _context.getEntity(LocationGroup.class, id);
+                Object locationGroup = _context.getEntity(LocationGroup.class, id);
                 if (locationGroup != null) return locationGroup;
+                Object stopArea = _context.getEntity(StopArea.class, id);
+                if (stopArea != null) return stopArea;
                 return null;
             }
             // we fell through -- unexpected situation

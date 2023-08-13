@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2022 Leonard Ehrenfried <mail@leonard.io>
+ * Copyright (C) 2023 Leonard Ehrenfried <mail@leonard.io>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,40 +15,48 @@
  */
 package org.onebusaway.gtfs.model;
 
-import org.onebusaway.csv_entities.schema.annotations.CsvField;
-import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import java.util.HashSet;
+import java.util.Set;
 
-@CsvFields(filename = "stop_areas.txt", required = false)
-public final class StopArea extends IdentityBean<String> {
+public class StopArea extends IdentityBean<AgencyAndId> implements StopLocation {
 
-  @CsvField(name = "area_id")
-  private String areaId;
-  @CsvField(name = "stop_id")
-  private String stopId;
+  private static final long serialVersionUID = 1L;
 
-  public String getAreaId() {
-    return areaId;
-  }
+  private Area area;
 
-  public void setAreaId(String areaId) {
-    this.areaId = areaId;
-  }
+  private Set<StopLocation> stops = new HashSet<>();
 
-  public String getStopId() {
-    return stopId;
-  }
-
-  public void setStopId(String stopId) {
-    this.stopId = stopId;
+  @Override
+  public AgencyAndId getId() {
+    return area.getId();
   }
 
   @Override
-  public String getId() {
-    return String.format("%s_%s", areaId, stopId);
+  public void setId(AgencyAndId id) {
+  }
+
+  public void setArea(Area area) {
+    this.area = area;
+  }
+
+  public Set<StopLocation> getLocations() {
+    return stops;
+  }
+
+  private void setLocations(Set<StopLocation> stops) {
+    this.stops = stops;
+  }
+
+  public void addLocation(StopLocation location) {
+    this.stops.add(location);
+  }
+
+  public String getName() {
+    return area.getName();
   }
 
   @Override
-  public void setId(String id) {
+  public void setName(String name) {
 
   }
 

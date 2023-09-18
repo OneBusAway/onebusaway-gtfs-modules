@@ -82,7 +82,10 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
     @CsvField(ignore = true)
     private Set<AgencyAndId> stopIdsWithPathways = new HashSet<AgencyAndId>();
-    
+
+    @CsvField(ignore = true)
+    private Map<AgencyAndId, Stop> complexStopIds = new HashMap<>();
+
     @CsvField(ignore = true)
     private String agencyId;
 
@@ -127,6 +130,9 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
     @CsvField(optional = true)
     private int elevatorTraversalTime = 120;
+
+    @CsvField(optional = true)
+    private boolean markStopsAsAccessible = false;
 
     public String getName() {
       return this.getClass().getName();
@@ -225,6 +231,13 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
         if (elevatorsCsv != null) {
             readElevatorData(stopGroups, getComplexList(dao));
+        }
+
+        for (AgencyAndId aid : complexStopIds.keySet()) {
+            Stop stop = complexStopIds.get(aid);
+            stop.setWheelchairBoarding(WHEELCHAIR_ACCESSIBLE);
+            _log.info("marking stop {} as accessible", stop.getId());
+            dao.saveEntity(stop);
         }
            
         for (Stop s : newStops) {
@@ -572,6 +585,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
                     if (stop == null)
                         _log.info("null stop: {}", id);
                     complex.add(stop);
+                    this.complexStopIds.put(AgencyAndId.convertFromString(id), stop);
                 }
                 complexes.put("complex-" + UUID.randomUUID(), complex);
             }

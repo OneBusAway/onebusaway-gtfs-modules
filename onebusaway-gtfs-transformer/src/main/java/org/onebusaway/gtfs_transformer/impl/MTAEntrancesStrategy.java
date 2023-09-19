@@ -233,6 +233,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
             readElevatorData(stopGroups, getComplexList(dao));
         }
 
+        _log.info("found {} complex stops to mark as accessible", complexStopIds.size());
         for (AgencyAndId aid : complexStopIds.keySet()) {
             Stop stop = complexStopIds.get(aid);
             stop.setWheelchairBoarding(WHEELCHAIR_ACCESSIBLE);
@@ -579,6 +580,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
         try (BufferedReader br = new BufferedReader(new FileReader(new File(this.accessibleComplexFile)))) {
             String line;
             while ((line = br.readLine()) != null) {
+                _log.info("accessibleComplexFile line: " + line);
                 List<Stop> complex = new ArrayList<>();
                 for (String id : line.split(STOP_SEPARATOR)) {
                     Stop stop = stops.get(id);

@@ -68,8 +68,8 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     private static final int LOCATION_TYPE_PAYGATE = 3;
     private static final int LOCATION_TYPE_GENERIC = 4;
 
-    private static final int WHEELCHAIR_ACCESSIBLE = 1;
-    private static final int NOT_WHEELCHAIR_ACCESSIBLE = 2;
+    static final int WHEELCHAIR_ACCESSIBLE = 1;
+    static final int NOT_WHEELCHAIR_ACCESSIBLE = 2;
 
     private static final String DEFAULT_MEZZ = "default";
 

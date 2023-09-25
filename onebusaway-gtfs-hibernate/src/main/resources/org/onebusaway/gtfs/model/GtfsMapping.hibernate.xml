@@ -208,6 +208,7 @@
             <property name="vehicleType" />
             <property name="wheelchairBoarding" />
             <property name="platformCode" />
+            <property name="ttsStopName"/>
             <many-to-one name="level">
                 <column name="level_agencyId" length="50" />
                 <column name="level_id" />

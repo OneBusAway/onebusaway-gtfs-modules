@@ -96,6 +96,8 @@ public final class Stop extends IdentityBean<AgencyAndId> implements StopLocatio
   @CsvField(optional = true, name = "regional_fare_card", defaultValue = "0")
   private int regionalFareCardAccepted;
 
+  @CsvField(optional = true, name = "tts_stop_name")
+  private String ttsStopName;
 
   public Stop() {
 
@@ -120,6 +122,7 @@ public final class Stop extends IdentityBean<AgencyAndId> implements StopLocatio
     this.level = obj.level;
     this.mtaStopId = obj.mtaStopId;
     this.regionalFareCardAccepted = obj.regionalFareCardAccepted;
+    this.ttsStopName = obj.ttsStopName;
   }
 
   public AgencyAndId getId() {
@@ -289,5 +292,13 @@ public final class Stop extends IdentityBean<AgencyAndId> implements StopLocatio
 
   public void setRegionalFareCardAccepted(int regionalFareCardAccepted) {
     this.regionalFareCardAccepted = regionalFareCardAccepted;
+  }
+
+  public String getTtsStopName() {
+    return ttsStopName;
+  }
+
+  public void setTtsStopName(String ttsStopName) {
+    this.ttsStopName = ttsStopName;
   }
 }

@@ -1,0 +1,5 @@
+Station ID,Complex ID,GTFS Stop ID,Division,Line,Stop Name,Borough,Daytime Routes,Structure,GTFS Latitude,GTFS Longitude,North Direction Label,South Direction Label,ADA,ADA Direction Notes,ADA NB,ADA SB,Capital Outage NB,Capital Outage SB
+10,10,R15,BMT,Broadway - Brighton,49 St,M,N R W,Subway,40.759901,-73.984139,Uptown & Queens,Downtown & Brooklyn,2,Uptown & Queens,1,0,,
+162,162,A25,IND,8th Av - Fulton St,50 St,M,C E,Subway,40.762456,-73.985984,Uptown - Queens,Downtown & Brooklyn,2,Downtown & Brooklyn only,0,1,,
+336,336,233,IRT,Eastern Pky,Hoyt St,Bk,2 3,Subway,40.690545,-73.985065,Manhattan,Flatbush - New Lots,2,,,,,
+397,397,626,IRT,Lexington Av,86 St,M,4 5 6,Subway,40.779492,-73.955589,Uptown & The Bronx,Downtown & Brooklyn,2,Uptown & The Bronx local only,2,0,,

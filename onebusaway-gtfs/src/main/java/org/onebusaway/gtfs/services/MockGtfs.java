@@ -164,6 +164,36 @@ public class MockGtfs {
     putFile("stops.txt", b.build());
   }
 
+  /**
+   * specify stop_id and stop_name, have stop generated with fake lat/lon
+   * @param rows
+   */
+  public void putNamedStops(String...rows) {
+    int numberOfRows = rows.length;
+    List<String> stopIds = new ArrayList<>();
+    List<String> stopNames = new ArrayList<>();
+    List<String> stopLats = new ArrayList<String>();
+    List<String> stopLons = new ArrayList<String>();
+    TableBuilder b = new TableBuilder(numberOfRows);
+    for (String column : rows) {
+      String[] parts = column.split(",");
+      stopIds.add(parts[0]);
+      stopNames.add(parts[1]);
+    }
+    for (int i = 0; i < numberOfRows; ++i) {
+      double lat = 47.65383950857904 + 0.004 * i;
+      double lon = -122.30782950811766;
+      stopLats.add(Double.toString(lat));
+      stopLons.add(Double.toString(lon));
+    }
+
+    b.addColumnSpec("stop_id", stopIds);
+    b.addColumnSpec("stop_name", stopNames);
+    b.addColumnSpec("stop_lat", stopLats);
+    b.addColumnSpec("stop_lon", stopLons);
+    putFile("stops.txt", b.build());
+  }
+
   public void putDefaultStops() {
     putDefaultAgencies();
     putLines("stops.txt", "stop_id,stop_name,stop_lat,stop_lon",

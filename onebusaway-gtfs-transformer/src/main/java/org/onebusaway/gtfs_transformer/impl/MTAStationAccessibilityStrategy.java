@@ -31,7 +31,7 @@ import java.io.File;
 import java.util.*;
 
 import static org.onebusaway.gtfs_transformer.csv.CSVUtil.readCsv;
-import static org.onebusaway.gtfs_transformer.impl.MTAEntrancesStrategy.WHEELCHAIR_ACCESSIBLE;
+import static org.onebusaway.gtfs_transformer.csv.MTAStation.*;
 
 /**
  * Based on a CSV of MTAStations set the associated stops accessible as specified.
@@ -77,18 +77,24 @@ public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
               "Entrances file does not exist: " + stationsFile.getName());
     }
 
-    // we have a file, load the contents
+    // see MTAStationAccessibilityStrategyTest for discussion of how this works
     List<MTAStation> stations = getStations();
     for (MTAStation station : stations) {
-      if (station.getAda() == MTAStation.ADA_FULLY_ACCESSIBLE) {
-        markStopAccessible(dao, station.getStopId(), "N");
-        markStopAccessible(dao, station.getStopId(), "S");
-      } else if (station.getAda() == MTAStation.ADA_PARTIALLY_ACCESSIBLE) {
-        if (station.getAdaNorthBound() == WHEELCHAIR_ACCESSIBLE) {
-          markStopAccessible(dao, station.getStopId(), "N");
+      markStopAccessible(dao, station.getStopId(), "", station.getAda());
+      if (ADA_NOT_ACCESSIBLE == station.getAda()
+            || ADA_FULLY_ACCESSIBLE == station.getAda()) {
+        markStopAccessible(dao, station.getStopId(), "N", station.getAda());
+        markStopAccessible(dao, station.getStopId(), "S", station.getAda());
+      } else if (ADA_PARTIALLY_ACCESSIBLE == station.getAda()) {
+        if (station.getAdaNorthBound() < 0) {
+          markStopAccessible(dao, station.getStopId(), "N", ADA_NOT_ACCESSIBLE);
+        } else {
+          markStopAccessible(dao, station.getStopId(), "N", station.getAdaNorthBound());
         }
-        if (station.getAdaSouthBound() == WHEELCHAIR_ACCESSIBLE) {
-          markStopAccessible(dao, station.getStopId(), "S");
+        if (station.getAdaSouthBound() < 0) {
+          markStopAccessible(dao, station.getStopId(), "S", ADA_NOT_ACCESSIBLE);
+        } else {
+          markStopAccessible(dao, station.getStopId(), "S", station.getAdaSouthBound());
         }
       }
     }
@@ -101,14 +107,15 @@ public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
 
   }
 
-  private void markStopAccessible(GtfsMutableRelationalDao dao, String stopId, String compassDirection) {
+  private void markStopAccessible(GtfsMutableRelationalDao dao, String stopId, String compassDirection,
+                                  int accessibilityQualifier) {
     String unqualifedStopId = stopId + compassDirection;
     Stop stopForId = idToStopMap.get(unqualifedStopId);
     if (stopForId == null) {
       _log.error("no such stop for stopId {}", unqualifedStopId);
       return;
     }
-    stopForId.setWheelchairBoarding(WHEELCHAIR_ACCESSIBLE);
+    stopForId.setWheelchairBoarding(accessibilityQualifier);
     this.accessibleStops.add(stopForId);
   }
 

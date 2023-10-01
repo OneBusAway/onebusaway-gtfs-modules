@@ -26,6 +26,7 @@ import java.io.File;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.onebusaway.gtfs_transformer.csv.MTAStation.*;
 
 /**
  * Document and test partial and fully accessible MTAStations.
@@ -66,16 +67,36 @@ public class MTAStationAccessibilityStrategyTest extends AbstractTestSupport {
     assertNotNull(sStop);
 
     assertEquals("expecting ada flag to match wheelchairBoarding flag for stop " + parentStop.getId(),
-            ada, parentStop.getWheelchairBoarding());
+            ada, converGTFSccessibilityToMTA(parentStop.getWheelchairBoarding()));
     if (northBoundFlag == null) {
-      assertEquals("expecting N/A wheelchairBoarding for northbound stop " + nStop,0, nStop.getWheelchairBoarding()); // default is 0
+      assertEquals("expecting N/A wheelchairBoarding for northbound stop " + nStop,0, converGTFSccessibilityToMTA(nStop.getWheelchairBoarding())); // default is 0
     } else {
-      assertEquals("expecting northBoundFlag to match wheelchairBoarding flag for stop" + nStop, northBoundFlag.intValue(), nStop.getWheelchairBoarding());
+      assertEquals("expecting northBoundFlag to match wheelchairBoarding flag for stop" + nStop, northBoundFlag.intValue(), converGTFSccessibilityToMTA(nStop.getWheelchairBoarding()));
     }
     if (southBoundFlag == null) {
-      assertEquals("expecting N/A wheelchairBoarding for southbound stop " + sStop,0, sStop.getWheelchairBoarding());
+      assertEquals("expecting N/A wheelchairBoarding for southbound stop " + sStop,0, converGTFSccessibilityToMTA(sStop.getWheelchairBoarding()));
     } else {
-      assertEquals("expecting southBoundFlag to match wheelchairBoarding flag for stop" + sStop, southBoundFlag.intValue(), sStop.getWheelchairBoarding());
+      assertEquals("expecting southBoundFlag to match wheelchairBoarding flag for stop" + sStop, southBoundFlag.intValue(), converGTFSccessibilityToMTA(sStop.getWheelchairBoarding()));
+    }
+  }
+
+  /**
+   * GTFS 1 -> MTA 1
+   * GTFS 2 -> MTA 0
+   * GTFS 3 -> MTA 2
+   * @param gtfsValue
+   * @return
+   */
+  private int converGTFSccessibilityToMTA(int gtfsValue) {
+    switch (gtfsValue) {
+      case 1:
+        return ADA_FULLY_ACCESSIBLE;
+      case 2:
+        return ADA_NOT_ACCESSIBLE;
+      case 3:
+        return ADA_PARTIALLY_ACCESSIBLE;
+      default:
+        return 0;// unknown
     }
   }
 }

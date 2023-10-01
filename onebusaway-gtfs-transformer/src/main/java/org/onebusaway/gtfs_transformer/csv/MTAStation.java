@@ -28,6 +28,11 @@ public class MTAStation {
   public static final int ADA_FULLY_ACCESSIBLE = 1;
   public static final int ADA_PARTIALLY_ACCESSIBLE = 2;
 
+  public static final int GTFS_WHEELCHAIR_UNKNOWN = 0;
+  public static final int GTFS_WHEELCHAIR_ACCESSIBLE = 1;
+  public static final int GTFS_WHEELCHAIR_NOT_ACCESSIBLE = 2;
+  public static final int GTFS_WHEELCHAIR_EXPERIMENTAL_PARTIALLY_ACCESSIBLE = 3;
+
   private static final int MISSING_VALUE = -999;
   @CsvField(name = "Station ID")
   private int id;

@@ -109,14 +109,35 @@ public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
 
   private void markStopAccessible(GtfsMutableRelationalDao dao, String stopId, String compassDirection,
                                   int accessibilityQualifier) {
-    String unqualifedStopId = stopId + compassDirection;
-    Stop stopForId = idToStopMap.get(unqualifedStopId);
+    int gtfsValue = convertMTAccessibilityToGTFS(accessibilityQualifier);
+    String unqualifiedStopId = stopId + compassDirection;
+    Stop stopForId = idToStopMap.get(unqualifiedStopId);
     if (stopForId == null) {
-      _log.error("no such stop for stopId {}", unqualifedStopId);
+      _log.error("no such stop for stopId {}", unqualifiedStopId);
       return;
     }
-    stopForId.setWheelchairBoarding(accessibilityQualifier);
+    stopForId.setWheelchairBoarding(gtfsValue);
     this.accessibleStops.add(stopForId);
+  }
+
+  /**
+   * MTA 0 -> GTFS 2
+   * MTA 1 -> GTFS 1
+   * MTA 2 -> GTFS 3 (experimental)
+   * @param accessibilityQualifier
+   * @return
+   */
+  public int convertMTAccessibilityToGTFS(int accessibilityQualifier) {
+    switch (accessibilityQualifier) {
+      case ADA_NOT_ACCESSIBLE:
+        return GTFS_WHEELCHAIR_NOT_ACCESSIBLE;
+      case ADA_FULLY_ACCESSIBLE:
+        return GTFS_WHEELCHAIR_ACCESSIBLE;
+      case ADA_PARTIALLY_ACCESSIBLE:
+        return GTFS_WHEELCHAIR_EXPERIMENTAL_PARTIALLY_ACCESSIBLE;
+      default:
+        return GTFS_WHEELCHAIR_UNKNOWN;
+    }
   }
 
 

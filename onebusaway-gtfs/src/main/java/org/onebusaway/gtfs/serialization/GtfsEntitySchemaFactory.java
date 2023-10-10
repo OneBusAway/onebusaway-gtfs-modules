@@ -73,6 +73,7 @@ public class GtfsEntitySchemaFactory {
     entityClasses.add(DirectionNameException.class);
     entityClasses.add(WrongWayConcurrency.class);
     entityClasses.add(DirectionEntry.class);
+    entityClasses.add(AlternateStopNameException.class);
     return entityClasses;
   }
 

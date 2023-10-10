@@ -59,6 +59,8 @@ public class TranslationServiceDataFactoryImpl implements TranslationServiceData
 
     private static final String DIRECTION_ENTRY_TABLE_NAME = "direction_entry";
 
+    private static final String ALTERNATE_STOP_NAME_EXCEPTION_TABLE_NAME = "alternate_stop_name_exception";
+
     private GtfsRelationalDao _dao;
 
     public static TranslationService getTranslationService(GtfsRelationalDao dao) {
@@ -136,6 +138,8 @@ public class TranslationServiceDataFactoryImpl implements TranslationServiceData
                 return WrongWayConcurrency.class;
             case DIRECTION_ENTRY_TABLE_NAME:
                 return DirectionEntry.class;
+            case ALTERNATE_STOP_NAME_EXCEPTION_TABLE_NAME:
+                return AlternateStopNameException.class;
         }
         return null;
     }

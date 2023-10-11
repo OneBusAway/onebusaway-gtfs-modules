@@ -17,16 +17,17 @@ package org.onebusaway.gtfs_transformer.impl;
 
 import org.onebusaway.cloud.api.ExternalServices;
 import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
+import org.onebusaway.gtfs_transformer.util.CalendarFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Calendar;
 import java.util.Date;
 
 /* Checks the numbers of Trips with service today and next four days
@@ -36,6 +37,9 @@ import java.util.Date;
 public class CheckForFutureService implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(CheckForFutureService.class);
+
+    @CsvField(ignore = true)
+    private CalendarFunctions helper = new CalendarFunctions();
 
     @Override
     public String getName() {
@@ -49,20 +53,20 @@ public class CheckForFutureService implements GtfsTransformStrategy {
         int tripsTomorrow = 0;
         int tripsNextDay = 0;
         int tripsDayAfterNext = 0;
-        Date today = removeTime(new Date());
-        Date tomorrow = removeTime(addDays(new Date(), 1));
-        Date nextDay = removeTime(addDays(new Date(), 2));
-        Date dayAfterNext = removeTime(addDays(new Date(), 3));
+        Date today = helper.removeTime(new Date());
+        Date tomorrow = helper.removeTime(helper.addDays(new Date(), 1));
+        Date nextDay = helper.removeTime(helper.addDays(new Date(), 2));
+        Date dayAfterNext = helper.removeTime(helper.addDays(new Date(), 3));
 
         String feed = CloudContextService.getLikelyFeedName(dao);
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
+        ExternalServices es = new ExternalServicesBridgeFactory().getExternalServices();
         String agency = dao.getAllAgencies().iterator().next().getId();
         String agencyName = dao.getAllAgencies().iterator().next().getName();
 
         tripsToday = hasServiceForDate(dao, today);
         tripsTomorrow = hasServiceForDate(dao, tomorrow);
         tripsNextDay = hasServiceForDate(dao, nextDay);
-        tripsDayAfterNext = hasServiceForDate(dao,dayAfterNext);
+        tripsDayAfterNext = hasServiceForDate(dao, dayAfterNext);
 
         _log.info("Feed for metrics: {}, agency id: {}", feed, agencyName);
         es.publishMetric(CloudContextService.getNamespace(), "TripsToday", "feed", feed, tripsToday);
@@ -91,72 +95,13 @@ public class CheckForFutureService implements GtfsTransformStrategy {
     }
 
     int hasServiceForDate(GtfsMutableRelationalDao dao, Date testDate) {
+        ServiceDate serviceDate = new ServiceDate(testDate);
         int numTripsOnDate = 0;
         for (Trip trip : dao.getAllTrips()) {
-            //check for service
-            boolean hasCalDateException = false;
-            //are there calendar dates?
-            if (!dao.getCalendarDatesForServiceId(trip.getServiceId()).isEmpty()) {
-                //calendar dates are not empty
-                for (ServiceCalendarDate calDate : dao.getCalendarDatesForServiceId(trip.getServiceId())) {
-                    Date date = constructDate(calDate.getDate());
-                    if (date.equals(testDate)) {
-                        hasCalDateException = true;
-                        if (calDate.getExceptionType() == 1) {
-                            //there is service for date
-                            numTripsOnDate++;
-                            break;
-                        }
-                        if (calDate.getExceptionType() == 2) {
-                            //service has been excluded for date
-                            break;
-                        }
-                    }
-                }
-            }
-
-            //if there are no entries in calendarDates, check serviceCalendar
-            if (!hasCalDateException) {
-                ServiceCalendar servCal = dao.getCalendarForServiceId(trip.getServiceId());
-                if (servCal != null) {
-                    //check for service using calendar
-                    Date start = removeTime(servCal.getStartDate().getAsDate());
-                    Date end = removeTime(servCal.getEndDate().getAsDate());
-                    if (testDate.equals(start) || testDate.equals(end) ||
-                            (testDate.after(start) && testDate.before(end))) {
-                        numTripsOnDate++;
-                    }
-                }
-            }
+            if (helper.isTripActive(dao, serviceDate, trip))
+                numTripsOnDate++;
         }
         return numTripsOnDate;
     }
 
-    private Date addDays(Date date, int daysToAdd) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(Calendar.DATE, daysToAdd);
-        return cal.getTime();
-    }
-
-    private Date constructDate(ServiceDate date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, date.getYear());
-        calendar.set(Calendar.MONTH, date.getMonth()-1);
-        calendar.set(Calendar.DATE, date.getDay());
-        Date date1 = calendar.getTime();
-        date1 = removeTime(date1);
-        return date1;
-    }
-
-    private Date removeTime(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        date = calendar.getTime();
-        return date;
-    }
 }

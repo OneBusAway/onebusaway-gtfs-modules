@@ -9,14 +9,14 @@
   <parent>
     <groupId>org.onebusaway</groupId>
     <artifactId>onebusaway-gtfs-modules</artifactId>
-    <version>1.4.8-SNAPSHOT</version>
+    <version>1.4.8</version>
   </parent>
 
   <dependencies>
     <dependency>
       <groupId>org.onebusaway</groupId>
       <artifactId>onebusaway-gtfs</artifactId>
-      <version>1.4.8-SNAPSHOT</version>
+      <version>1.4.8</version>
     </dependency>
     <dependency>
       <groupId>org.onebusaway</groupId>

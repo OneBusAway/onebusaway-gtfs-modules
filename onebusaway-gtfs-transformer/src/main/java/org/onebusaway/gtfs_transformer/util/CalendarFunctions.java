@@ -28,7 +28,8 @@ import java.util.Date;
  * Common calendaring functions for Strategies/Transformations.
  */
 public class CalendarFunctions {
-  public boolean isTripActive(GtfsMutableRelationalDao dao, ServiceDate serviceDate, Trip trip) {
+
+  public boolean isTripActive(GtfsMutableRelationalDao dao, ServiceDate serviceDate, Trip trip, boolean matchDayInCalendar) {
     Date testDate = serviceDate.getAsDate();
     //check for service
     boolean hasCalDateException = false;
@@ -49,13 +50,42 @@ public class CalendarFunctions {
     //if there are no entries in calendarDates, check serviceCalendar
     if (!hasCalDateException) {
       ServiceCalendar servCal = dao.getCalendarForServiceId(trip.getServiceId());
+      if (servCal == null) {
+        // do a brute force lookup as agencyIds are tricky
+        for (ServiceCalendar calendar : dao.getAllCalendars()) {
+          if (calendar.getServiceId().getId().equals(trip.getServiceId().getId())) {
+            servCal = calendar;
+          }
+        }
+
+      }
       if (servCal != null) {
         //check for service using calendar
         Date start = removeTime(servCal.getStartDate().getAsDate());
         Date end = removeTime(servCal.getEndDate().getAsDate());
         if (testDate.equals(start) || testDate.equals(end) ||
                 (testDate.after(start) && testDate.before(end))) {
-          return true;
+          Calendar cal = Calendar.getInstance();
+          cal.setTime(testDate);
+          if (!matchDayInCalendar) return true;
+          switch (cal.get(Calendar.DAY_OF_WEEK)) {
+            case Calendar.SUNDAY:
+              return servCal.getSunday() == 1;
+            case Calendar.MONDAY:
+              return servCal.getMonday() == 1;
+            case Calendar.TUESDAY:
+              return servCal.getTuesday() == 1;
+            case Calendar.WEDNESDAY:
+              return servCal.getWednesday() == 1;
+            case Calendar.THURSDAY:
+              return servCal.getThursday() == 1;
+            case Calendar.FRIDAY:
+              return servCal.getFriday() == 1;
+            case Calendar.SATURDAY:
+              return servCal.getSaturday() == 1;
+            default:
+              throw new IllegalStateException("unexected value " + cal.get(Calendar.DAY_OF_WEEK));
+          }
         }
       }
     }

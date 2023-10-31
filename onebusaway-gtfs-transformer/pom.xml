@@ -47,10 +47,15 @@
       <artifactId>wsf-api</artifactId>
       <version>1.0</version>
     </dependency>
+      <dependency>
+          <groupId>org.onebusaway</groupId>
+          <artifactId>onebusaway-cloud-api</artifactId>
+          <version>${onebusaway_cloud_version}</version>
+      </dependency>
     <dependency>
       <groupId>org.onebusaway</groupId>
       <artifactId>onebusaway-cloud-noop</artifactId>
-      <version>0.0.10</version>
+      <version>${onebusaway_cloud_version}</version>
     </dependency>
 	  <dependency>
 	    <groupId>javax.xml.bind</groupId>

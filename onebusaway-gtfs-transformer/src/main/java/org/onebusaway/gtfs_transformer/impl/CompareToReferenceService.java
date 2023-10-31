@@ -29,6 +29,8 @@ import org.onebusaway.gtfs_transformer.util.CalendarFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.*;
 
 /**
@@ -47,6 +49,12 @@ public class CompareToReferenceService implements GtfsTransformStrategy {
 
   @CsvField(ignore = true)
   private String defaultAgencyId = "1";
+
+  private String s3BasePath = null;
+  public void setS3BasePath(String path) {
+    s3BasePath = path;
+  }
+
   @CsvField(ignore = true)
   private CalendarFunctions helper = new CalendarFunctions();
   @Override
@@ -58,10 +66,11 @@ public class CompareToReferenceService implements GtfsTransformStrategy {
       String detailTopic = CloudContextService.getTopic() + "-atis-detail";
       ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
 
+      String summaryHeader = "depot,unmatched_gtfs_trips,unmatched_reference_trips\n";
+      String detailHeader = "depot,unmatched_gtfs_trip_ds,unmatched_reference_trip_ids\n";
+
       StringBuffer summaryReport = new StringBuffer();
-      summaryReport.append("depot,unmatched_gtfs_trips,unmatched_reference_trips\n");
       StringBuffer detailReport = new StringBuffer();
-      detailReport.append("depot,unmatched_gtfs_trip_ds,unmatched_reference_trip_ids\n");
 
       GtfsMutableRelationalDao referenceDao = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
 
@@ -69,6 +78,12 @@ public class CompareToReferenceService implements GtfsTransformStrategy {
       Map<String, List<AgencyAndId>> activeTripsByDepot = getTripsByDepot(context, gtfsDao);
       // get active trip ids for service date for reference GTFS
       Map<String, List<AgencyAndId>> referenceTripsByDepot = getTripsByDepot(context, referenceDao);
+      String summaryFilename = System.getProperty("java.io.tmpdir") + File.separator + "summary.csv";
+      FileWriter summaryFile = new FileWriter(summaryFilename);
+      summaryFile.write(summaryHeader);
+      String detailFilename = System.getProperty("java.io.tmpdir") + File.separator + "detail.csv";
+      FileWriter detailFile = new FileWriter(detailFilename);
+      detailFile.write(detailHeader);
 
       Set<String> allDepots = new HashSet<>();
       allDepots.addAll(activeTripsByDepot.keySet());
@@ -94,9 +109,26 @@ public class CompareToReferenceService implements GtfsTransformStrategy {
         summaryReport.append(depot).append(",").append(unmatchedGtfsTrips.size()).append(",").append(unmatchedReferenceTrips.size()).append("\n");
         detailReport.append(depot).append(",\"").append(unmatchedGtfsTrips).append("\",\"").append(unmatchedReferenceTrips).append("\"\n");
         es.publishMessage(detailTopic, truncate(detailReport.toString()));
+        detailFile.write(detailReport.toString());
         detailReport = new StringBuffer();
       }
       es.publishMessage(summaryTopic, summaryReport.toString());
+      summaryFile.write(summaryReport.toString());
+
+      summaryFile.close();
+      detailFile.close();
+
+      // now copy the reports to an S3 reports directory
+      Calendar cal = Calendar.getInstance();
+      String year = "" + cal.get(Calendar.YEAR);
+      String month = lpad(cal.get(Calendar.MONTH)+1, 2);
+      String day = lpad(cal.get(Calendar.DAY_OF_MONTH), 2);
+      String time = lpad(cal.get(Calendar.HOUR_OF_DAY), 2) + ":" + lpad(cal.get(Calendar.MINUTE),2 );
+      String baseurl = s3BasePath
+              + "/" + year + "/" + month + "/" + day + "/" + time + "-";
+      es.putFile(baseurl + "summary.csv", summaryFilename);
+      es.putFile(baseurl + "detail.csv", detailFilename);
+
 
       _log.error("{} Unmatched Summary", getName());
       _log.error(summaryReport.toString());
@@ -106,14 +138,20 @@ public class CompareToReferenceService implements GtfsTransformStrategy {
 
   }
 
+  private String lpad(int numberToFormat, int totalDigits) {
+    String text = String.valueOf(numberToFormat);
+    while (text.length() < totalDigits)
+      text = "0" + text;
+    return text;
+  }
+
   private String truncate(String message) {
     if (message.length() > MAX_MESSAGE_SIZE)
       return message.substring(0, MAX_MESSAGE_SIZE);
     return message;
   }
 
-  private String getDepot(Trip trip) {
-    String tripId = trip.getId().getId();
+  private String getDepot(String tripId) {
     String depot = null;
     if (tripId.indexOf("-") < 0) {
       depot = "MISSING";
@@ -133,13 +171,13 @@ public class CompareToReferenceService implements GtfsTransformStrategy {
     Map<String, List<AgencyAndId>> tripsByDepot = new HashMap<>();
     for (Trip trip : dao.getAllTrips()) {
       if (trip.getServiceId() != null) {
-        boolean isActive = helper.isTripActive(dao, new ServiceDate(), trip);
+        boolean isActive = helper.isTripActive(dao, new ServiceDate(), trip, true);
         if (isActive) {
           AgencyAndId tripId = trip.getId();
           if (trip.getMtaTripId() != null) {
             tripId = new AgencyAndId(trip.getId().getAgencyId(), trip.getMtaTripId());
           }
-          String depot = getDepot(trip);
+          String depot = getDepot(tripId.getId());
           if (!tripsByDepot.containsKey(depot))
             tripsByDepot.put(depot, new ArrayList<>());
           tripsByDepot.get(depot).add(sanitize(tripId));
@@ -152,8 +190,8 @@ public class CompareToReferenceService implements GtfsTransformStrategy {
 
 
   private AgencyAndId sanitize(AgencyAndId tripId) {
-    if (tripId.getId().contains("SDon-")) {
-      return new AgencyAndId(defaultAgencyId, tripId.getId().replaceAll("SDon-", ""));
+    if (tripId.getId().contains("-SDon")) {
+      return new AgencyAndId(defaultAgencyId, tripId.getId().replaceAll("-SDon", ""));
     }
     return new AgencyAndId(defaultAgencyId, tripId.getId());
   }

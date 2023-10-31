@@ -27,7 +27,7 @@
     <dependency>
       <groupId>org.onebusaway</groupId>
       <artifactId>onebusaway-cloud-aws</artifactId>
-      <version>0.0.10</version>
+      <version>${onebusaway_cloud_version}</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>

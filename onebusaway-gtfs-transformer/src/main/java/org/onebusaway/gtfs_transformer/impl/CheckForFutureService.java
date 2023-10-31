@@ -98,7 +98,7 @@ public class CheckForFutureService implements GtfsTransformStrategy {
         ServiceDate serviceDate = new ServiceDate(testDate);
         int numTripsOnDate = 0;
         for (Trip trip : dao.getAllTrips()) {
-            if (helper.isTripActive(dao, serviceDate, trip))
+            if (helper.isTripActive(dao, serviceDate, trip, false))
                 numTripsOnDate++;
         }
         return numTripsOnDate;

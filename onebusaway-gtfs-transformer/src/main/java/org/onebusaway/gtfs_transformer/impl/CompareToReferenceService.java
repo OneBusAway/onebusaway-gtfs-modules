@@ -108,11 +108,11 @@ public class CompareToReferenceService implements GtfsTransformStrategy {
         unmatchedReferenceTrips.removeAll(gtfsTripIds);
         summaryReport.append(depot).append(",").append(unmatchedGtfsTrips.size()).append(",").append(unmatchedReferenceTrips.size()).append("\n");
         detailReport.append(depot).append(",\"").append(unmatchedGtfsTrips).append("\",\"").append(unmatchedReferenceTrips).append("\"\n");
-        es.publishMessage(detailTopic, truncate(detailReport.toString()));
+//        es.publishMessage(detailTopic, truncate(detailReport.toString()));
         detailFile.write(detailReport.toString());
         detailReport = new StringBuffer();
       }
-      es.publishMessage(summaryTopic, summaryReport.toString());
+//      es.publishMessage(summaryTopic, summaryReport.toString());
       summaryFile.write(summaryReport.toString());
 
       summaryFile.close();

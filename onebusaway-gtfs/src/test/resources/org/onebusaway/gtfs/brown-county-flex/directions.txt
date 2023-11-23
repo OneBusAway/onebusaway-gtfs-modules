@@ -1,3 +1,0 @@
-route_id,direction_id,direction
-74513,0,Loop
-74362,0,No direction

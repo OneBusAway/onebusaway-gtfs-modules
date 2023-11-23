@@ -279,7 +279,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     if (proxy != null) {
       return proxy.getStop();
     }
-    return Objects.requireNonNullElse(stop, location);
+    return stop;
   }
 
   public StopLocation getLocation() {
@@ -287,6 +287,15 @@ public final class StopTime extends IdentityBean<Integer> implements
       return proxy.getLocation();
     }
     return location;
+  }
+
+  /**
+   * Returns possible entity for the stop location in this order:
+   *  - stop
+   *  - location
+   */
+  public StopLocation getStopLocation(){
+    return Objects.requireNonNullElseGet(getStop(), this::getLocation);
   }
 
   public void setStop(StopLocation stop) {
@@ -698,7 +707,7 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   @Override
   public String toString() {
-    return "StopTime(seq=" + getStopSequence() + " stop=" + (getStop()==null?"NuLl":getStop().getId())
+    return "StopTime(seq=" + getStopSequence() + " stop=" + (getStopLocation()==null?"NuLl":getStop().getId())
         + " trip=" + (getTrip()==null?"NuLl":getTrip().getId()) + " times="
         + StopTimeFieldMappingFactory.getSecondsAsString(getArrivalTime())
         + "-"

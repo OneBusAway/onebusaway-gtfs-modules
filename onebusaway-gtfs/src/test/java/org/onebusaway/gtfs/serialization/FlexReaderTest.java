@@ -89,9 +89,9 @@ public class FlexReaderTest extends BaseGtfsTest {
     var dao = processFeed(GtfsTestData.getBrownCountyFlex(), AGENCY_ID, false);
     var trip = dao.getAllTrips().stream().filter(t -> t.getId().getId().equals("t_5374696_b_77497_tn_0")).findAny().get();
     var stopTimes = dao.getStopTimesForTrip(trip);
-    stopTimes.forEach(st -> assertNotNull(st.getStop()));
+    stopTimes.forEach(st -> assertNotNull(st.getStopLocation()));
 
-    var stopLocations = stopTimes.stream().map(StopTime::getStop).collect(Collectors.toList());
+    var stopLocations = stopTimes.stream().map(StopTime::getStopLocation).collect(Collectors.toList());
     var first = stopLocations.get(0);
     assertEquals("4149546", first.getId().getId());
     assertEquals(Stop.class, first.getClass());

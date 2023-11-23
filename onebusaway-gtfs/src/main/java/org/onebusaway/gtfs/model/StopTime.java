@@ -16,6 +16,7 @@
  */
 package org.onebusaway.gtfs.model;
 
+import java.util.Objects;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
@@ -42,8 +43,15 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(name = "trip_id", mapping = EntityFieldMappingFactory.class)
   private Trip trip;
 
-  @CsvField(name = "stop_id", mapping = StopLocationFieldMappingFactory.class)
+  /**
+   * This is optional because in flex you can also have location_id and location_group_id.
+   */
+  @CsvField(name = "stop_id", optional = true, mapping = StopLocationFieldMappingFactory.class)
   private StopLocation stop;
+
+  @CsvField(name = "location_id", optional = true, mapping = StopLocationFieldMappingFactory.class)
+  private StopLocation location;
+
 
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int arrivalTime = MISSING_VALUE;
@@ -192,6 +200,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.shapeDistTraveled = st.shapeDistTraveled;
     this.farePeriodId = st.farePeriodId;
     this.stop = st.stop;
+    this.location = st.location;
     this.stopHeadsign = st.stopHeadsign;
     this.stopSequence = st.stopSequence;
     this.toStopSequence = st.toStopSequence;
@@ -270,7 +279,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     if (proxy != null) {
       return proxy.getStop();
     }
-    return stop;
+    return Objects.requireNonNullElse(stop, location);
   }
 
   public void setStop(StopLocation stop) {
@@ -279,6 +288,14 @@ public final class StopTime extends IdentityBean<Integer> implements
       return;
     }
     this.stop = stop;
+  }
+
+  public void setLocation(StopLocation location) {
+    if (proxy != null) {
+      proxy.setLocation(location);
+      return;
+    }
+    this.location = location;
   }
 
   public boolean isArrivalTimeSet() {

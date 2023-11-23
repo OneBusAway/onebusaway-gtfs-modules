@@ -1,0 +1,2 @@
+agency_id,agency_url,agency_lang,agency_name,agency_phone,agency_timezone,agency_fare_url,tts_agency_name
+4870,https://www.co.brown.mn.us/heartland-express-transit?view=category&id=56,en,Brown County Heartland Express,,America/Chicago,,

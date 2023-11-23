@@ -282,6 +282,13 @@ public final class StopTime extends IdentityBean<Integer> implements
     return Objects.requireNonNullElse(stop, location);
   }
 
+  public StopLocation getLocation() {
+    if (proxy != null) {
+      return proxy.getLocation();
+    }
+    return location;
+  }
+
   public void setStop(StopLocation stop) {
     if (proxy != null) {
       proxy.setStop(stop);

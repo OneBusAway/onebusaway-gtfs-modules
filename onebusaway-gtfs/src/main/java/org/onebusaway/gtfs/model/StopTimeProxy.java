@@ -45,6 +45,8 @@ public interface StopTimeProxy {
 
   public StopLocation getStop();
 
+  public StopLocation getLocation();
+
   public void setStop(StopLocation stop);
 
   public void setLocation(StopLocation stop);
@@ -124,4 +126,5 @@ public interface StopTimeProxy {
   public String getFreeRunningFlag();
 
   public void setFreeRunningFlag(String freeRunningFlag);
+
 }

@@ -278,6 +278,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.toStopSequence = toStopSequence;
   }
 
+  @Override
   public StopLocation getStop() {
     if (proxy != null) {
       return proxy.getStop();
@@ -285,6 +286,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     return stop;
   }
 
+  @Override
   public StopLocation getLocation() {
     if (proxy != null) {
       return proxy.getLocation();
@@ -292,6 +294,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     return location;
   }
 
+  @Override
   public StopLocation getLocationGroup() {
     if (proxy != null) {
       return proxy.getLocationGroup();

@@ -16,7 +16,6 @@
  */
 package org.onebusaway.gtfs.model;
 
-import java.util.Objects;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
@@ -51,6 +50,9 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   @CsvField(name = "location_id", optional = true, mapping = StopLocationFieldMappingFactory.class)
   private StopLocation location;
+
+  @CsvField(name = "location_group_id", optional = true, mapping = StopLocationFieldMappingFactory.class)
+  private StopLocation locationGroup;
 
 
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
@@ -201,6 +203,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.farePeriodId = st.farePeriodId;
     this.stop = st.stop;
     this.location = st.location;
+    this.locationGroup = st.locationGroup;
     this.stopHeadsign = st.stopHeadsign;
     this.stopSequence = st.stopSequence;
     this.toStopSequence = st.toStopSequence;
@@ -293,9 +296,19 @@ public final class StopTime extends IdentityBean<Integer> implements
    * Returns possible entity for the stop location in this order:
    *  - stop
    *  - location
+   *  - location group
    */
   public StopLocation getStopLocation(){
-    return Objects.requireNonNullElseGet(getStop(), this::getLocation);
+    if(stop != null){
+      return stop;
+    }
+    else if(location != null) {
+      return location;
+    }
+    else if(locationGroup != null){
+      return locationGroup;
+    }
+    return null;
   }
 
   public void setStop(StopLocation stop) {
@@ -312,6 +325,14 @@ public final class StopTime extends IdentityBean<Integer> implements
       return;
     }
     this.location = location;
+  }
+
+  public void setLocationGroup(StopLocation group) {
+    if (proxy != null) {
+      proxy.setLocationGroup(group);
+      return;
+    }
+    this.locationGroup = group;
   }
 
   public boolean isArrivalTimeSet() {

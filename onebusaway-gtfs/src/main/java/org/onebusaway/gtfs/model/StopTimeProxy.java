@@ -51,6 +51,8 @@ public interface StopTimeProxy {
 
   public void setLocation(StopLocation stop);
 
+  public void setLocationGroup(StopLocation stop);
+
   public boolean isArrivalTimeSet();
 
   public int getArrivalTime();

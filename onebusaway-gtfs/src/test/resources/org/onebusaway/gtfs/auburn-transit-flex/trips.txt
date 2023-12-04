@@ -1,0 +1,2 @@
+route_id,service_id,trip_id,trip_short_name,trip_headsign,direction_id,block_id,shape_id,bikes_allowed,wheelchair_accessible,trip_type,continuous_pickup_message,continuous_drop_off_message,tts_trip_headsign,tts_trip_short_name
+32372,c_23810_b_33000_d_63,t_5756013_b_33000_tn_0,,,0,,,,,,,,,

@@ -1,0 +1,2 @@
+service_id,service_name,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date
+c_23810_b_33000_d_63,Loop year round (No Sunday),1,1,1,1,1,1,0,20231001,20241001

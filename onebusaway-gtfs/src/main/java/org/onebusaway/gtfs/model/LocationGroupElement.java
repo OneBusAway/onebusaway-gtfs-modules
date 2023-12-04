@@ -31,7 +31,7 @@ public class LocationGroupElement extends IdentityBean<Integer> {
     @CsvField(name = "location_group_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
     private AgencyAndId locationGroupId;
 
-    @CsvField(name = "location_id", mapping = StopLocationFieldMappingFactory.class)
+    @CsvField(name = "stop_id", mapping = StopLocationFieldMappingFactory.class)
     private StopLocation location;
 
     @CsvField(optional = true)

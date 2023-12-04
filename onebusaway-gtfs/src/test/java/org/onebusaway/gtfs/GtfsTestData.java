@@ -49,6 +49,8 @@ public class GtfsTestData {
 
   public static final String BROWN_COUNTY_FLEX = gtfsPath("brown-county-flex");
 
+  public static final String AUBURN_TRANSIT_FLEX = gtfsPath("auburn-transit-flex");
+
   public static final String LOCATIONS_GEOJSON = gtfsPath("locations.geojson");
 
   public static File getCaltrainGtfs() {
@@ -86,6 +88,10 @@ public class GtfsTestData {
 
   public static File getBrownCountyFlex() {
     return new File("src/test/resources", BROWN_COUNTY_FLEX);
+  }
+
+  public static File getAuburnTransitFlex() {
+    return new File("src/test/resources", AUBURN_TRANSIT_FLEX);
   }
 
   public static <T extends GenericMutableDao> void readGtfs(T entityStore,

@@ -274,6 +274,11 @@ public class StopTimeArray extends AbstractList<StopTime> {
     }
 
     @Override
+    public void setLocationGroup(StopLocation group) {
+      stops[index] = group;
+    }
+
+    @Override
     public boolean isArrivalTimeSet() {
       return arrivalTimes[index] != StopTime.MISSING_VALUE;
     }

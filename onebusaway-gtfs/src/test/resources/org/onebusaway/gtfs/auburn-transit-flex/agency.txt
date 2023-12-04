@@ -1,0 +1,2 @@
+agency_id,agency_url,agency_lang,agency_name,agency_phone,agency_timezone,agency_fare_url,tts_agency_name
+1593,https://www.auburn.ca.gov/192/Transit-Services,en,Auburn Transit,(530) 906-3700,America/Los_Angeles,,

@@ -292,6 +292,13 @@ public final class StopTime extends IdentityBean<Integer> implements
     return location;
   }
 
+  public StopLocation getLocationGroup() {
+    if (proxy != null) {
+      return proxy.getLocationGroup();
+    }
+    return locationGroup;
+  }
+
   /**
    * Returns possible entity for the stop location in this order:
    *  - stop

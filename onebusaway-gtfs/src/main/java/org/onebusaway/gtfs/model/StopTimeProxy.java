@@ -46,6 +46,7 @@ public interface StopTimeProxy {
   public StopLocation getStop();
 
   public StopLocation getLocation();
+  public StopLocation getLocationGroup();
 
   public void setStop(StopLocation stop);
 

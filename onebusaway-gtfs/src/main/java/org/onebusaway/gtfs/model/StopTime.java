@@ -42,8 +42,18 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(name = "trip_id", mapping = EntityFieldMappingFactory.class)
   private Trip trip;
 
-  @CsvField(name = "stop_id", mapping = StopLocationFieldMappingFactory.class)
+  /**
+   * This is optional because in flex you can also have location_id and location_group_id.
+   */
+  @CsvField(name = "stop_id", optional = true, mapping = StopLocationFieldMappingFactory.class)
   private StopLocation stop;
+
+  @CsvField(name = "location_id", optional = true, mapping = StopLocationFieldMappingFactory.class)
+  private StopLocation location;
+
+  @CsvField(name = "location_group_id", optional = true, mapping = StopLocationFieldMappingFactory.class)
+  private StopLocation locationGroup;
+
 
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int arrivalTime = MISSING_VALUE;
@@ -192,6 +202,8 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.shapeDistTraveled = st.shapeDistTraveled;
     this.farePeriodId = st.farePeriodId;
     this.stop = st.stop;
+    this.location = st.location;
+    this.locationGroup = st.locationGroup;
     this.stopHeadsign = st.stopHeadsign;
     this.stopSequence = st.stopSequence;
     this.toStopSequence = st.toStopSequence;
@@ -266,11 +278,47 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.toStopSequence = toStopSequence;
   }
 
+  @Override
   public StopLocation getStop() {
     if (proxy != null) {
       return proxy.getStop();
     }
     return stop;
+  }
+
+  @Override
+  public StopLocation getLocation() {
+    if (proxy != null) {
+      return proxy.getLocation();
+    }
+    return location;
+  }
+
+  @Override
+  public StopLocation getLocationGroup() {
+    if (proxy != null) {
+      return proxy.getLocationGroup();
+    }
+    return locationGroup;
+  }
+
+  /**
+   * Returns possible entity for the stop location in this order:
+   *  - stop
+   *  - location
+   *  - location group
+   */
+  public StopLocation getStopLocation(){
+    if(stop != null){
+      return stop;
+    }
+    else if(location != null) {
+      return location;
+    }
+    else if(locationGroup != null){
+      return locationGroup;
+    }
+    return null;
   }
 
   public void setStop(StopLocation stop) {
@@ -279,6 +327,22 @@ public final class StopTime extends IdentityBean<Integer> implements
       return;
     }
     this.stop = stop;
+  }
+
+  public void setLocation(StopLocation location) {
+    if (proxy != null) {
+      proxy.setLocation(location);
+      return;
+    }
+    this.location = location;
+  }
+
+  public void setLocationGroup(StopLocation group) {
+    if (proxy != null) {
+      proxy.setLocationGroup(group);
+      return;
+    }
+    this.locationGroup = group;
   }
 
   public boolean isArrivalTimeSet() {
@@ -674,7 +738,7 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   @Override
   public String toString() {
-    return "StopTime(seq=" + getStopSequence() + " stop=" + (getStop()==null?"NuLl":getStop().getId())
+    return "StopTime(seq=" + getStopSequence() + " stop=" + (getStopLocation()==null?"NuLl":getStop().getId())
         + " trip=" + (getTrip()==null?"NuLl":getTrip().getId()) + " times="
         + StopTimeFieldMappingFactory.getSecondsAsString(getArrivalTime())
         + "-"

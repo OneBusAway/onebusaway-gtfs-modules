@@ -45,7 +45,14 @@ public interface StopTimeProxy {
 
   public StopLocation getStop();
 
+  public StopLocation getLocation();
+  public StopLocation getLocationGroup();
+
   public void setStop(StopLocation stop);
+
+  public void setLocation(StopLocation stop);
+
+  public void setLocationGroup(StopLocation stop);
 
   public boolean isArrivalTimeSet();
 
@@ -122,4 +129,5 @@ public interface StopTimeProxy {
   public String getFreeRunningFlag();
 
   public void setFreeRunningFlag(String freeRunningFlag);
+
 }

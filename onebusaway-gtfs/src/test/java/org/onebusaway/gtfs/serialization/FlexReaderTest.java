@@ -16,6 +16,7 @@
 package org.onebusaway.gtfs.serialization;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
 import java.io.IOException;
@@ -27,9 +28,11 @@ import org.junit.Test;
 import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.gtfs.GtfsTestData;
 import org.onebusaway.gtfs.model.Location;
+import org.onebusaway.gtfs.model.LocationGroup;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopArea;
 import org.onebusaway.gtfs.model.StopLocation;
+import org.onebusaway.gtfs.model.StopTime;
 
 public class FlexReaderTest extends BaseGtfsTest {
 
@@ -80,6 +83,40 @@ public class FlexReaderTest extends BaseGtfsTest {
 
     assertEquals("JBLM Stops", area.getName());
 
+  }
+
+  @Test
+  public void locationIdAsASeparateColumn() throws CsvEntityIOException, IOException {
+    var dao = processFeed(GtfsTestData.getBrownCountyFlex(), AGENCY_ID, false);
+    var trip = dao.getAllTrips().stream().filter(t -> t.getId().getId().equals("t_5374696_b_77497_tn_0")).findAny().get();
+    var stopTimes = dao.getStopTimesForTrip(trip);
+    stopTimes.forEach(st -> assertNotNull(st.getStopLocation()));
+
+    var stopLocations = stopTimes.stream().map(StopTime::getStopLocation).collect(Collectors.toList());
+    var first = stopLocations.get(0);
+    assertEquals("4149546", first.getId().getId());
+    assertEquals(Stop.class, first.getClass());
+
+    var second = stopLocations.get(1);
+    assertEquals("radius_300_s_4149546_s_4149547", second.getId().getId());
+    assertEquals(Location.class, second.getClass());
+  }
+
+  @Test
+  public void locationGroupIdAsSeparateColumn() throws CsvEntityIOException, IOException {
+    var dao = processFeed(GtfsTestData.getAuburnTransitFlex(), AGENCY_ID, false);
+    var trip = dao.getAllTrips().stream().filter(t -> t.getId().getId().equals("t_5756013_b_33000_tn_0")).findAny().get();
+    var stopTimes = dao.getStopTimesForTrip(trip);
+    stopTimes.forEach(st -> assertNotNull(st.getStopLocation()));
+
+    var stopLocations = stopTimes.stream().map(StopTime::getStopLocation).collect(Collectors.toList());
+    var first = stopLocations.get(0);
+    assertEquals("4230479", first.getId().getId());
+    assertEquals(LocationGroup.class, first.getClass());
+
+    var second = stopLocations.get(1);
+    assertEquals("4230479", second.getId().getId());
+    assertEquals(LocationGroup.class, second.getClass());
   }
 
   private static StopArea getArea(List<StopArea> stopAreas, String id) {

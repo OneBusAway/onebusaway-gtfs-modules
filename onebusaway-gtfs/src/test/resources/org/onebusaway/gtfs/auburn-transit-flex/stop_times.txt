@@ -1,0 +1,3 @@
+trip_id,arrival_time,departure_time,stop_id,location_id,location_group_id,stop_sequence,stop_headsign,pickup_type,drop_off_type,shape_dist_traveled,timepoint,continuous_pickup,continuous_drop_off,pickup_booking_rule_id,drop_off_booking_rule_id,start_pickup_drop_off_window,end_pickup_drop_off_window,mean_duration_factor,mean_duration_offset,safe_duration_factor,safe_duration_offset,tts_stop_headsign
+t_5756013_b_33000_tn_0,,,,,4230479,1,,2,1,,0,1,1,booking_route_32372,booking_route_32372,09:00:00,17:00:00,1,5.0,1,10.0,
+t_5756013_b_33000_tn_0,,,,,4230479,2,,1,2,,0,1,1,booking_route_32372,booking_route_32372,09:00:00,17:00:00,1,5.0,1,10.0,

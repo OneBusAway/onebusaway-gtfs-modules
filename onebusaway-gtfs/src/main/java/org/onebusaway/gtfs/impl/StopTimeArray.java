@@ -259,8 +259,28 @@ public class StopTimeArray extends AbstractList<StopTime> {
     }
 
     @Override
+    public StopLocation getLocation() {
+      return stops[index];
+    }
+
+    @Override
+    public StopLocation getLocationGroup() {
+      return stops[index];
+    }
+
+    @Override
     public void setStop(StopLocation stop) {
       stops[index] = stop;
+    }
+
+    @Override
+    public void setLocation(StopLocation location) {
+      stops[index] = location;
+    }
+
+    @Override
+    public void setLocationGroup(StopLocation group) {
+      stops[index] = group;
     }
 
     @Override

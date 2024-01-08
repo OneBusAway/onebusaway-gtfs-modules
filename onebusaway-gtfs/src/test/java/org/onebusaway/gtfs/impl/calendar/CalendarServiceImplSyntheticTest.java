@@ -22,24 +22,19 @@ import static org.junit.Assert.assertTrue;
 import static org.onebusaway.gtfs.DateSupport.date;
 import static org.onebusaway.gtfs.DateSupport.hourToSec;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.calendar.CalendarServiceData;
-import org.onebusaway.gtfs.model.calendar.LocalizedServiceId;
-import org.onebusaway.gtfs.model.calendar.ServiceDate;
-import org.onebusaway.gtfs.model.calendar.ServiceIdIntervals;
+import org.onebusaway.gtfs.model.calendar.*;
 
 public class CalendarServiceImplSyntheticTest {
 
+  static {
+    // avoid timezone conversions
+    TimeZone.setDefault(TimeZone.getTimeZone("America/Los_Angeles"));
+  }
   private TimeZone tz = TimeZone.getTimeZone("America/Los_Angeles");
 
   private ServiceDate d1 = new ServiceDate(2010, 02, 01);
@@ -445,6 +440,64 @@ public class CalendarServiceImplSyntheticTest {
 
     assertEquals(1, dates.size());
     assertTrue(dates.contains(d1.getAsDate(tz)));
+  }
+
+  @Test
+  public void testAgencyOverrideOverlap() {
+    long baseTime = d1.getAsDate().getTime();
+
+    Map<String, Integer> oneHourOverride = new HashMap<>();
+    oneHourOverride.put("A", 60); // 60 minute window instead of entire service day
+
+    Map<String, Integer> twoHourOverride = new HashMap<>();
+    twoHourOverride.put("A", 120); // 2 hour window instead of entire service day
+
+    // active service 6:00 -> 7:00
+    // 6:00 + 1 service interval
+    ServiceInterval sixOclockScheudledService = new ServiceInterval(hourToSec(6), hourToSec(7));
+    AgencyServiceInterval sixOclock1HourQuery = new AgencyServiceInterval(baseTime + hourToSec(6)*1000, oneHourOverride);
+    boolean active = service.isLocalizedServiceIdActiveInRange(lsid1, sixOclockScheudledService, sixOclock1HourQuery);
+    assertTrue(active); // this should be an exact match
+
+    // active service 6:00 -> 7:00
+    // 5 + 1 service interval
+    AgencyServiceInterval fiveOclock1HourQuery = new AgencyServiceInterval(baseTime + hourToSec(5)*1000, oneHourOverride);
+    active = service.isLocalizedServiceIdActiveInRange(lsid1, sixOclockScheudledService, fiveOclock1HourQuery);
+    assertFalse(active);
+
+    // active service 6:00 -> 7:00
+    // 7 + 1 service interval
+    AgencyServiceInterval sevenOclock1HourQuery = new AgencyServiceInterval(baseTime + hourToSec(7)*1000, oneHourOverride);
+    active = service.isLocalizedServiceIdActiveInRange(lsid1, sixOclockScheudledService, sevenOclock1HourQuery);
+    assertFalse(active);
+
+    // active service 6:00 -> 7:00
+    // 5 + 2 service interval
+    AgencyServiceInterval fiveOclock2HourQuery = new AgencyServiceInterval(baseTime + hourToSec(5)*1000, twoHourOverride);
+    active = service.isLocalizedServiceIdActiveInRange(lsid1, sixOclockScheudledService, fiveOclock2HourQuery);
+    assertTrue(active);
+
+    // active service 6:00 -> 25:00
+    // 12 + 1
+    AgencyServiceInterval lunchInterval1HourOverride = new AgencyServiceInterval(baseTime + hourToSec(12)*1000, oneHourOverride);
+    ServiceInterval exactMatchInterval = new ServiceInterval(hourToSec(6), hourToSec(25));
+    active = service.isLocalizedServiceIdActiveInRange(lsid1, exactMatchInterval, lunchInterval1HourOverride);
+    assertTrue(active);
+  }
+
+  @Test
+  public void testOverlapNoOverride() {
+    long baseTime = d1.getAsDate().getTime();
+    AgencyServiceInterval defaultInterval = new AgencyServiceInterval(baseTime);
+    // active service 6:00 -> 7:00
+    ServiceInterval sixOclockScheudledService = new ServiceInterval(hourToSec(6), hourToSec(7));
+    boolean active = service.isLocalizedServiceIdActiveInRange(lsid1, sixOclockScheudledService, defaultInterval);
+    assertTrue(active);
+
+    long yesterday = d1.getAsDate().getTime() - hourToSec(24) * 1000;
+    AgencyServiceInterval tomorrowInterval = new AgencyServiceInterval(yesterday);
+    active = service.isLocalizedServiceIdActiveInRange(lsid1, sixOclockScheudledService, tomorrowInterval);
+    assertFalse(active);
   }
 
   /****

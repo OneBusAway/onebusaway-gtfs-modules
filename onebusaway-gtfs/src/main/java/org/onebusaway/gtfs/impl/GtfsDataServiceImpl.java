@@ -479,6 +479,12 @@ public class GtfsDataServiceImpl implements GtfsDataService {
     }
 
     @Override
+    public boolean isLocalizedServiceIdActiveInRange(LocalizedServiceId serviceId,
+                                                     ServiceInterval scheduledService,
+                                                     AgencyServiceInterval serviceInterval) {
+        return _calendarService.isLocalizedServiceIdActiveInRange(serviceId, scheduledService, serviceInterval);
+    }
+    @Override
     public Map<LocalizedServiceId, List<Date>> getServiceDateArrivalsWithinRange(ServiceIdIntervals serviceIdIntervals, Date from, Date to) {
         return _calendarService.getServiceDateArrivalsWithinRange(serviceIdIntervals, from, to);
     }

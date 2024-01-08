@@ -27,11 +27,7 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.calendar.CalendarServiceData;
-import org.onebusaway.gtfs.model.calendar.LocalizedServiceId;
-import org.onebusaway.gtfs.model.calendar.ServiceDate;
-import org.onebusaway.gtfs.model.calendar.ServiceIdIntervals;
-import org.onebusaway.gtfs.model.calendar.ServiceInterval;
+import org.onebusaway.gtfs.model.calendar.*;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
 import org.onebusaway.gtfs.services.calendar.CalendarServiceDataFactory;
 
@@ -124,6 +120,34 @@ public class CalendarServiceImpl implements CalendarService {
     CalendarServiceData data = getData();
     List<Date> dates = data.getDatesForLocalizedServiceId(localizedServiceId);
     return Collections.binarySearch(dates, serviceDate) >= 0;
+  }
+
+  /**
+   * test if the given calendar servieId is active in the union of the activeService
+   * window and the agencyServiceInterval.
+   * @param localizedServiceId
+   * @param activeService
+   * @param agencyServiceInterval
+   * @return
+   */
+  public boolean isLocalizedServiceIdActiveInRange(LocalizedServiceId localizedServiceId,
+                                                   ServiceInterval activeService,
+                                                   AgencyServiceInterval agencyServiceInterval) {
+    if (agencyServiceInterval == null || agencyServiceInterval.getServiceDate() == null) {
+      throw new IllegalStateException("agencyServiceInterval cannot be null");
+    }
+    ServiceInterval serviceInterval = agencyServiceInterval.getServiceInterval(localizedServiceId.getId().getAgencyId());
+
+    boolean active = isLocalizedServiceIdActiveOnDate(localizedServiceId, agencyServiceInterval.getServiceDate().getAsDate());
+    if (active) {
+      // even if a match is found enforce overlap in service intervals
+      if ( Math.max(activeService.getMinArrival(), serviceInterval.getMinArrival())
+              < Math.min(activeService.getMaxDeparture(), serviceInterval.getMaxDeparture())) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   @Override

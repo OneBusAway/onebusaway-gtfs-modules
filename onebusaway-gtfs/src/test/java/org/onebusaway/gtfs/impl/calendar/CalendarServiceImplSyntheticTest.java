@@ -463,13 +463,13 @@ public class CalendarServiceImplSyntheticTest {
     // 5 + 1 service interval
     AgencyServiceInterval fiveOclock1HourQuery = new AgencyServiceInterval(baseTime + hourToSec(5)*1000, oneHourOverride);
     active = service.isLocalizedServiceIdActiveInRange(lsid1, sixOclockScheudledService, fiveOclock1HourQuery);
-    assertFalse(active);
+    assertTrue(active);
 
     // active service 6:00 -> 7:00
     // 7 + 1 service interval
     AgencyServiceInterval sevenOclock1HourQuery = new AgencyServiceInterval(baseTime + hourToSec(7)*1000, oneHourOverride);
     active = service.isLocalizedServiceIdActiveInRange(lsid1, sixOclockScheudledService, sevenOclock1HourQuery);
-    assertFalse(active);
+    assertTrue(active);
 
     // active service 6:00 -> 7:00
     // 5 + 2 service interval
@@ -483,6 +483,13 @@ public class CalendarServiceImplSyntheticTest {
     ServiceInterval exactMatchInterval = new ServiceInterval(hourToSec(6), hourToSec(25));
     active = service.isLocalizedServiceIdActiveInRange(lsid1, exactMatchInterval, lunchInterval1HourOverride);
     assertTrue(active);
+
+    // point in time
+    AgencyServiceInterval stopCheck = new AgencyServiceInterval(baseTime + 43200, oneHourOverride);
+    ServiceInterval stopInterval = new ServiceInterval(43230,43230);
+    active = service.isLocalizedServiceIdActiveInRange(lsid1, stopInterval, lunchInterval1HourOverride);
+    assertTrue(active);
+
   }
 
   @Test

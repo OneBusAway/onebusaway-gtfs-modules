@@ -141,8 +141,8 @@ public class CalendarServiceImpl implements CalendarService {
     boolean active = isLocalizedServiceIdActiveOnDate(localizedServiceId, agencyServiceInterval.getServiceDate().getAsDate());
     if (active) {
       // even if a match is found enforce overlap in service intervals
-      if ( Math.max(activeService.getMinArrival(), serviceInterval.getMinArrival())
-              < Math.min(activeService.getMaxDeparture(), serviceInterval.getMaxDeparture())) {
+      if (Math.max(activeService.getMinArrival(), serviceInterval.getMinArrival())
+              <= Math.min(activeService.getMaxDeparture(), serviceInterval.getMaxDeparture())) {
         return true;
       }
     }

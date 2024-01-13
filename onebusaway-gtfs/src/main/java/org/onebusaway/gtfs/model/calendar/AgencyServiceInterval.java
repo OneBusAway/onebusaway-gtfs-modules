@@ -107,6 +107,19 @@ public class AgencyServiceInterval implements Serializable {
     cal.set(Calendar.SECOND, 0);
     cal.set(Calendar.MILLISECOND, 000);
     return cal.getTime();
+  }
 
+  @Override
+  public boolean equals(Object other) {
+    if (!(other instanceof AgencyServiceInterval)) {
+      return false;
+    }
+    AgencyServiceInterval that = (AgencyServiceInterval) other;
+    return that._referenceTime == _referenceTime;
+  }
+
+  @Override
+  public int hashCode() {
+    return new Long(_referenceTime).hashCode();
   }
 }

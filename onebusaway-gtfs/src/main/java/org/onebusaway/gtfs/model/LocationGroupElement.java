@@ -20,7 +20,7 @@ import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.StopLocationFieldMappingFactory;
 
-@CsvFields(filename = "location_groups_stops.txt", required = false, prefix = "location_group_")
+@CsvFields(filename = "location_group_stops.txt", required = false, prefix = "location_group_")
 public class LocationGroupElement extends IdentityBean<Integer> {
 
     private static final long serialVersionUID = 1L;

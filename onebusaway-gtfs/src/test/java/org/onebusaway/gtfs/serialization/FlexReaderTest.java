@@ -108,7 +108,7 @@ public class FlexReaderTest extends BaseGtfsTest {
     var locationGroup = List.copyOf(dao.getAllLocationGroups()).get(0);
     assertEquals("Aurburn Loop Stops", locationGroup.getName());
     assertEquals("1_4230479", locationGroup.getId().toString());
-    var actualStops = locationGroup.getStops().stream().map(s -> s.getId().toString()).collect(Collectors.toList());
+    var actualStops = locationGroup.getLocations().stream().map(s -> s.getId().toString()).collect(Collectors.toList());
     assertEquals(30, actualStops.size());
 
     var trip = dao.getAllTrips().stream().filter(t -> t.getId().getId().equals("t_5756013_b_33000_tn_0")).findAny().get();

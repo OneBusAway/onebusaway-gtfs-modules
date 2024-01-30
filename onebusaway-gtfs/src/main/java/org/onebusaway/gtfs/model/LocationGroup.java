@@ -16,6 +16,7 @@
 package org.onebusaway.gtfs.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
@@ -54,11 +55,14 @@ public class LocationGroup extends IdentityBean<AgencyAndId> implements StopLoca
       this.name = name;
     }
 
-    public void addStop(StopLocation stop) {
+    public void addLocation(StopLocation stop) {
       stops.add(stop);
     }
+    public void setLocations(Collection<StopLocation> stop) {
+      stops.addAll(stop);
+    }
 
-    public Set<StopLocation> getStops() {
+    public Set<StopLocation> getLocations() {
       return Set.copyOf(stops);
     }
 }

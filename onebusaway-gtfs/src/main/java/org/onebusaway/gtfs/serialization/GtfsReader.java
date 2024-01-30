@@ -74,6 +74,7 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Level.class);
     _entityClasses.add(Stop.class);
     _entityClasses.add(Location.class);
+    _entityClasses.add(LocationGroup.class);
     _entityClasses.add(LocationGroupElement.class);
     _entityClasses.add(Trip.class);
     _entityClasses.add(StopAreaElement.class);
@@ -360,16 +361,13 @@ public class GtfsReader extends CsvEntityReader {
       } else if (entity instanceof Location) {
         Location location = (Location) entity;
         registerAgencyId(Location.class, location.getId());
+      } else if (entity instanceof LocationGroup) {
+        var group = (LocationGroup) entity;
+        registerAgencyId(LocationGroup.class, group.getId());
       } else if (entity instanceof LocationGroupElement) {
         LocationGroupElement locationGroupElement = (LocationGroupElement) entity;
         LocationGroup locationGroup = _entityStore.getEntityForId(LocationGroup.class, locationGroupElement.getLocationGroupId());
-        if (locationGroup == null) {
-          locationGroup = new LocationGroup();
-          locationGroup.setId(locationGroupElement.getLocationGroupId());
-          locationGroup.setName(locationGroupElement.getName());
-          _entityStore.saveEntity(locationGroup);
-        }
-        locationGroup.addLocation(locationGroupElement.getLocation());
+        locationGroup.addStop(locationGroupElement.getStop());
       } else if (entity instanceof StopAreaElement) {
         var stopAreaElement = (StopAreaElement) entity;
         var stopArea = _entityStore.getEntityForId(StopArea.class, stopAreaElement.getArea().getId());

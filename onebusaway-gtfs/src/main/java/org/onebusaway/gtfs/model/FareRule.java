@@ -33,6 +33,9 @@ public final class FareRule extends IdentityBean<Integer> {
   @CsvField(name = "route_id", optional = true, mapping = EntityFieldMappingFactory.class)
   private Route route;
 
+  @CsvField(optional = true, name = "route_id")
+  private String rawRouteId;
+
   @CsvField(optional = true)
   private String originId;
 
@@ -53,6 +56,7 @@ public final class FareRule extends IdentityBean<Integer> {
     this.originId = fr.originId;
     this.destinationId = fr.destinationId;
     this.containsId = fr.containsId;
+    this.rawRouteId = fr.rawRouteId;
   }
 
   @Override
@@ -79,6 +83,14 @@ public final class FareRule extends IdentityBean<Integer> {
 
   public void setRoute(Route route) {
     this.route = route;
+  }
+
+  public String getRawRouteId() {
+    return rawRouteId;
+  }
+
+  public void setRawRouteId(String rawRouteId) {
+    this.rawRouteId = rawRouteId;
   }
 
   public String getOriginId() {

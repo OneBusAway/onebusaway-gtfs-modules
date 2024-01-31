@@ -33,6 +33,9 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @CsvField(name = "agency_id", optional = true, mapping = RouteAgencyFieldMappingFactory.class, order = -1)
   private Agency agency;
 
+  @CsvField(optional = true, name = "agency_id")
+  private String rawAgencyId;
+
   @CsvField(optional = true, alwaysIncludeInOutput = true)
   private String shortName;
 
@@ -99,6 +102,7 @@ public final class Route extends IdentityBean<AgencyAndId> {
     this.brandingUrl = r.brandingUrl;
     this.eligibilityRestricted = r.eligibilityRestricted;
     this.regionalFareCardAccepted = r.regionalFareCardAccepted;
+    this.rawAgencyId = r.rawAgencyId;
   }
 
   public AgencyAndId getId() {
@@ -115,6 +119,14 @@ public final class Route extends IdentityBean<AgencyAndId> {
 
   public void setAgency(Agency agency) {
     this.agency = agency;
+  }
+
+  public String getRawAgencyId() {
+    return rawAgencyId;
+  }
+
+  public void setRawAgencyId(String rawAgencyId) {
+    this.rawAgencyId = rawAgencyId;
   }
 
   public String getShortName() {

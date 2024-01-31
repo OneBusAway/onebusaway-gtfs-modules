@@ -42,11 +42,18 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(name = "trip_id", mapping = EntityFieldMappingFactory.class)
   private Trip trip;
 
+  @CsvField(optional = true, name = "trip_id")
+  private String rawTripId;
+
   /**
    * This is optional because in flex you can also have location_id and location_group_id.
    */
+
   @CsvField(name = "stop_id", optional = true, mapping = StopLocationFieldMappingFactory.class)
   private StopLocation stop;
+
+  @CsvField(optional = true, name = "stop_id")
+  private String rawStopId;
 
   @CsvField(name = "location_id", optional = true, mapping = StopLocationFieldMappingFactory.class)
   private StopLocation location;
@@ -181,6 +188,8 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   @CsvField(optional = true, name = "free_running_flag")
   private String freeRunningFlag;
+
+
   
   public StopTime() {
 
@@ -223,6 +232,8 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.meanDurationOffset= st.meanDurationOffset;
     this.meanDurationFactor= st.meanDurationFactor;
     this.freeRunningFlag = st.freeRunningFlag;
+    this.rawTripId = st.rawTripId;
+    this.rawStopId = st.rawStopId;
   }
 
   public Integer getId() {
@@ -806,6 +817,39 @@ public final class StopTime extends IdentityBean<Integer> implements
     }
     this.freeRunningFlag = freeRunningFlag;
   }
+
+  public String getRawTripId() {
+    if (proxy != null) {
+      return proxy.getRawTripId();
+    }
+    return rawTripId;
+  }
+
+
+  public void setRawTripId(String rawTripId) {
+    if (proxy != null) {
+      proxy.setRawTripId(rawTripId);
+      return;
+    }
+    this.rawTripId = rawTripId;
+  }
+
+  public String getRawStopId() {
+    if (proxy != null) {
+      return proxy.getRawStopId();
+    }
+    return rawStopId;
+  }
+
+
+  public void setRawStopId(String rawStopId) {
+    if (proxy != null) {
+      proxy.setRawStopId(rawStopId);
+      return;
+    }
+    this.rawStopId = rawStopId;
+  }
+
   @Deprecated
   public void setOldSpellingOfStartPickupDropOffWindow(int time) {
     oldDropOffSpellingWarning("start");

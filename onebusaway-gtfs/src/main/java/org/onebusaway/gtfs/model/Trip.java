@@ -32,9 +32,14 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(name = "route_id", mapping = EntityFieldMappingFactory.class, order = -1)
   private Route route;
 
+  @CsvField(optional = true, name = "route_id", order = -2)
+  private String rawRouteId;
+
   @CsvField(mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId serviceId;
 
+  @CsvField(optional = true, name = "service_id")
+  private String rawServiceId;
   @CsvField(optional = true)
   private String tripShortName;
 
@@ -158,6 +163,8 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.peakOffpeak = obj.peakOffpeak;
     this.mtaTripId = obj.mtaTripId;
     this.boardingType = obj.boardingType;
+    this.rawRouteId = obj.rawRouteId;
+    this.rawServiceId = obj.rawServiceId;
   }
 
   public AgencyAndId getId() {
@@ -176,12 +183,28 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.route = route;
   }
 
+  public String getRawRouteId() {
+    return rawRouteId;
+  }
+
+  public void setRawRouteId(String rawRouteId) {
+    this.rawRouteId = rawRouteId;
+  }
+
   public AgencyAndId getServiceId() {
     return serviceId;
   }
 
   public void setServiceId(AgencyAndId serviceId) {
     this.serviceId = serviceId;
+  }
+
+  public String getRawServiceId() {
+    return rawServiceId;
+  }
+
+  public void setRawServiceId(String rawServiceId) {
+    this.rawServiceId = rawServiceId;
   }
 
   public String getTripShortName() {

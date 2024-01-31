@@ -116,6 +116,7 @@ public class TripMergeStrategy extends
     for (StopTime stopTime : stopTimes) {
       stopTime.setId(0);
       stopTime.setTrip(trip);
+      stopTime.setRawTripId(trip.getId().getId());
       target.saveEntity(stopTime);
     }
   }

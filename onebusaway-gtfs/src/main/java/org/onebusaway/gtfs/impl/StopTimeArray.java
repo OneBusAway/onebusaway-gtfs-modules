@@ -71,7 +71,10 @@ public class StopTimeArray extends AbstractList<StopTime> {
   private double[] safeFactors = new double[0];
 
   private String[] freeRunningFlags = new String[0];
-  
+
+  private String[] rawTripIds = new String[0];
+  private String[] rawStopIds = new String[0];
+
   public void trimToSize() {
     setLength(size);
   }
@@ -105,6 +108,8 @@ public class StopTimeArray extends AbstractList<StopTime> {
     meanOffsets[index] = stopTime.getMeanDurationOffset();
     meanFactors[index] = stopTime.getMeanDurationFactor();
     freeRunningFlags[index] = stopTime.getFreeRunningFlag();
+    rawTripIds[index] = stopTime.getRawTripId();
+    rawStopIds[index] = stopTime.getRawStopId();
 
     return true;
   }
@@ -167,6 +172,8 @@ public class StopTimeArray extends AbstractList<StopTime> {
     this.meanOffsets = Arrays.copyOf(this.meanOffsets, newLength);
     this.meanFactors = Arrays.copyOf(this.meanFactors, newLength);
     this.freeRunningFlags = Arrays.copyOf(this.freeRunningFlags, newLength);
+    this.rawTripIds = Arrays.copyOf(this.rawTripIds, newLength);
+    this.rawStopIds = Arrays.copyOf(this.rawStopIds, newLength);
   }
 
   private class StopTimeIterator implements Iterator<StopTime> {
@@ -472,5 +479,23 @@ public class StopTimeArray extends AbstractList<StopTime> {
     public void setFreeRunningFlag(String freeRunningFlag) {
       freeRunningFlags[index] = freeRunningFlag;
     }
+
+    @Override
+    public String getRawTripId() {
+      return rawTripIds[index];
+    }
+
+    @Override
+    public void setRawTripId(String rawTripId) {
+      rawTripIds[index] = rawTripId;
+    }
+
+    @Override
+    public String getRawStopId() {
+      return rawStopIds[index];
+    }
+
+    @Override
+    public void setRawStopId(String rawStopId) {rawStopIds[index] = rawStopId;}
   }
 }

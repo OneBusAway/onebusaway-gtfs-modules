@@ -15,17 +15,28 @@
  */
 package org.onebusaway.gtfs.model;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
+import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 
+@CsvFields(filename = "location_groups.txt", required = false)
 public class LocationGroup extends IdentityBean<AgencyAndId> implements StopLocation {
     private static final long serialVersionUID = 1L;
 
+    @CsvField(name = "location_group_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
     private AgencyAndId id;
 
-    private Set<StopLocation> locations = new HashSet<>();
-
+    @CsvField(name = "location_group_name")
     private String name;
+
+    // we use a List, not Set to keep the insertion order. by definition these stops don't have an
+    // order but it's nice for clients to not randomly change it.
+    @CsvField(ignore = true)
+    private List<StopLocation> stops = new ArrayList<>();
 
     @Override
     public AgencyAndId getId() {
@@ -36,23 +47,22 @@ public class LocationGroup extends IdentityBean<AgencyAndId> implements StopLoca
       this.id = id;
     }
 
-    public Set<StopLocation> getLocations() {
-      return locations;
-    }
-
-    private void setLocations(Set<StopLocation> locations) {
-      this.locations = locations;
-    }
-
-    public void addLocation(StopLocation location) {
-      this.locations.add(location);
-    }
-
     public String getName() {
       return name;
     }
 
     public void setName(String name) {
       this.name = name;
+    }
+
+    public void addLocation(StopLocation stop) {
+      stops.add(stop);
+    }
+    public void setLocations(Collection<StopLocation> stop) {
+      stops.addAll(stop);
+    }
+
+    public Set<StopLocation> getLocations() {
+      return Set.copyOf(stops);
     }
 }

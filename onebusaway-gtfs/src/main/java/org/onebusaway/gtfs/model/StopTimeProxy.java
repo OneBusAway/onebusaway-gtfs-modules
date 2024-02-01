@@ -130,4 +130,11 @@ public interface StopTimeProxy {
 
   public void setFreeRunningFlag(String freeRunningFlag);
 
+  public String getRawTripId();
+
+  public void setRawTripId(String rawTripId);
+
+  public String getRawStopId();
+
+  public void setRawStopId(String rawStopId);
 }

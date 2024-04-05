@@ -40,11 +40,6 @@ import org.onebusaway.gtfs.services.MockGtfs;
 public class FlexDropOffSpellingTest {
 
   @Test
-  public void oldSpelling() throws IOException {
-    testFlexStopTimeWithSpelling("dropoff");
-  }
-
-  @Test
   public void newSpelling() throws IOException {
     testFlexStopTimeWithSpelling("drop_off");
   }

@@ -26,13 +26,13 @@ public class AlternateStopNameException extends IdentityBean<Integer> {
     private int id;
 
     @CsvField(optional = true)
-    int routeId;
+    String routeId;
 
     @CsvField(optional = true)
     int directionId;
 
     @CsvField(optional = true)
-    int stopId;
+    String stopId;
 
     @CsvField(optional = true)
     String alternateStopName;
@@ -58,11 +58,11 @@ public class AlternateStopNameException extends IdentityBean<Integer> {
         this.id = id;
     }
 
-    public int getRouteId() {
+    public String getRouteId() {
         return routeId;
     }
 
-    public void setRouteId(int routeId) {
+    public void setRouteId(String routeId) {
         this.routeId = routeId;
     }
 
@@ -74,11 +74,11 @@ public class AlternateStopNameException extends IdentityBean<Integer> {
         this.directionId = directionId;
     }
 
-    public int getStopId() {
+    public String getStopId() {
         return stopId;
     }
 
-    public void setStopId(int stopId) {
+    public void setStopId(String stopId) {
         this.stopId = stopId;
     }
 

@@ -30,7 +30,7 @@ public class LocationGroup extends IdentityBean<AgencyAndId> implements StopLoca
     @CsvField(name = "location_group_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
     private AgencyAndId id;
 
-    @CsvField(name = "location_group_name")
+    @CsvField(name = "location_group_name", optional = true)
     private String name;
 
     // we use a List, not Set to keep the insertion order. by definition these stops don't have an

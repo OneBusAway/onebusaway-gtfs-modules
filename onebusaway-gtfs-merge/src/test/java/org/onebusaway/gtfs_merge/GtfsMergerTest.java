@@ -21,17 +21,14 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
-import org.onebusaway.gtfs.model.Agency;
-import org.onebusaway.gtfs.model.Route;
-import org.onebusaway.gtfs.model.ServiceCalendar;
-import org.onebusaway.gtfs.model.Stop;
-import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs.services.MockGtfs;
@@ -358,6 +355,111 @@ public class GtfsMergerTest {
     assertTrue("expect a puget stop", pugetStopFound);
   }
 
+// tests stop, location, and location group
+  @Test
+  public void testStopTimeProxies() throws IOException {
+    // lowest priority feed (first) to highest priority feed (last)
+    _oldGtfs.putLines("agency.txt", "agency_id,agency_name,agency_url,agency_timezone",
+            "3,Pierce,http://p.us/,America/Los_Angeles");
+    _oldGtfs.putLines("routes.txt",
+            "route_id,route_short_name,route_long_name,route_type",
+            "R10,10,The Pierce Ten,3");
+    _oldGtfs.putLines("stops.txt", "stop_id,stop_name,stop_lat,stop_lon",
+            "100,The Stop,47.654403,-122.305211",
+            "200,Pierce Other Stop,47.668594,-122.298859",
+            "400,Pierce Only Stop,47.669563,-122.305420");
+    _oldGtfs.putLines(
+            "calendars.txt",
+            "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date",
+            "sid0,1,1,1,1,1,0,0,20110101,20111231");
+    _oldGtfs.putLines("trips.txt", "route_id,service_id,trip_id",
+            "R10,sid0,T10-0",
+            "R10,sid0,T10-1");
+    _oldGtfs.putStopTimes("T10-0", "100,200"); // stop conflict only
+    _oldGtfs.putStopTimes("T10-1", "100,400");
+    _oldGtfs.putLines("location_groups.txt","location_group_id","3",
+            "33");
+    _oldGtfs.putLines("stop_times.txt",
+            "trip_id,stop_id,stop_sequence,arrival_time,departure_time,location_group_id",
+            "T10-0,100,0,08:00:00,08:00:00,3",
+            "T10-0,200,1,09:00:00,09:00:00,33",
+            "T10-1,100,1,08:00:00,08:00:00,",
+            "T10-1,400,1,09:00:00,09:00:00,");
+
+
+    _newGtfs.putLines("agency.txt", "agency_id,agency_name,agency_url,agency_timezone",
+            "1,Metro,http://metro.gov/,America/Los_Angeles",
+            "3,Pierce,http://p.us/,America/Los_Angeles");
+    _newGtfs.putLines("routes.txt",
+            "agency_id,route_id,route_short_name,route_long_name,route_type",
+            "1,R10,10,The KCM Ten,3");
+    _newGtfs.putLines("stops.txt", "stop_id,stop_name,stop_lat,stop_lon",
+            "100,The Stop,47.654403,-122.305211",
+            "200,The Other Stop,47.656303,-122.315436",
+            "300,The Third Stop,47.668575,-122.283653");
+    _newGtfs.putCalendars(1, "mask=1111100", "start_date=20120504",
+            "end_date=20120608");
+    _newGtfs.putLines("trips.txt", "route_id,service_id,trip_id", "R10,sid0,T10-0");
+    _newGtfs.putLines("stop_times.txt",
+            "trip_id,stop_id,stop_sequence,arrival_time,departure_time",
+            "T10-0,100,0,08:00:00,08:00:00",
+            "T10-0,200,1,09:00:00,09:00:00",
+            "T10-0,300,1,10:00:00,10:00:00");
+
+    _pugetGtfs = MockGtfs.create();
+    _pugetGtfs.putLines("agency.txt", "agency_id,agency_name,agency_url,agency_timezone",
+            "0,Puget Sound Region,http://puget-sound.gov/,America/Los_Angeles");
+    _pugetGtfs.putLines("routes.txt",
+            "route_id,route_short_name,route_long_name,route_type",
+            "r0,,,3");
+    _pugetGtfs.putLines("stops.txt", "stop_id,stop_name,stop_lat,stop_lon","");
+    _pugetGtfs.putLines(
+            "calendars.txt",
+            "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date",
+            "sid0,1,1,1,1,1,0,0,20110101,20111231");
+    _pugetGtfs.putCalendars(1, "mask=1111100", "start_date=20120504",
+            "end_date=20120608");
+    _pugetGtfs.putLines("trips.txt", "route_id,service_id,trip_id",
+            "r0,sid0,t0");
+    _pugetGtfs.putLines("locations.geojson",
+            "{ \"type\": \"FeatureCollection\",",
+            "  \"features\": [",
+            "    { \"type\": \"Feature\",",
+            "      \"id\":\"s0\",",
+            "       \"geometry\": {",
+            "         \"type\": \"Polygon\",",
+            "         \"coordinates\": [",
+            "           [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0],",
+            "             [100.0, 1.0], [100.0, 0.0] ]",
+            "           ]",
+            "",
+            "       },",
+            "       \"properties\": {",
+            "         }",
+            "       }",
+            "    ]",
+            "  }");
+    _pugetGtfs.putLines("stop_times.txt",
+            "trip_id,stop_id,stop_sequence,arrival_time,departure_time",
+            "t0,s0,0,01:00:00,01:00:03");
+
+
+
+    GtfsRelationalDao dao = merge();
+
+    // make sure all stoptimes only have stop_id, location_id, or location_group_id
+    Iterator<StopTime> itt = dao.getAllStopTimes().iterator();
+    while(itt.hasNext()){
+      StopTime st = itt.next();
+      boolean hasST = st.getStop()!=null;
+      boolean hasLoc = st.getLocation()!=null;
+      boolean hasLocGroup = st.getLocationGroup()!=null;
+      assertTrue("multiple ids found for stop: "+st.getStop()+
+                      ", location_id: "+st.getLocation()+
+                      ", location_id: "+st.getLocationGroup(),
+              !(hasST & hasLoc | hasST && hasLocGroup | hasLoc & hasLocGroup));
+    }
+  }
   
   private GtfsRelationalDao merge() throws IOException {
     List<File> paths = new ArrayList<File>();

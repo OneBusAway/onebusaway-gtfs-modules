@@ -21,12 +21,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.onebusaway.gtfs.model.Area;
-import org.onebusaway.gtfs.model.BookingRule;
-import org.onebusaway.gtfs.model.StopLocation;
-import org.onebusaway.gtfs.model.StopTime;
-import org.onebusaway.gtfs.model.StopTimeProxy;
-import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.model.*;
 
 public class StopTimeArray extends AbstractList<StopTime> {
 
@@ -35,6 +30,10 @@ public class StopTimeArray extends AbstractList<StopTime> {
   private Trip[] trips = new Trip[0];
 
   private StopLocation[] stops = new StopLocation[0];
+
+  private StopLocation[] locations = new StopLocation[0];
+
+  private StopLocation[] locationGroups = new StopLocation[0];
 
   private Area[] startServiceAreas = new Area[0];
 
@@ -89,6 +88,8 @@ public class StopTimeArray extends AbstractList<StopTime> {
     startServiceAreas[index] = stopTime.getStartServiceArea();
     endServiceAreas[index] = stopTime.getEndServiceArea();
     stops[index] = stopTime.getStop();
+    locations[index] = stopTime.getLocation();
+    locationGroups[index] = stopTime.getLocationGroup();
     arrivalTimes[index] = stopTime.getArrivalTime();
     departureTimes[index] = stopTime.getDepartureTime();
     timepoints[index] = stopTime.getTimepoint();
@@ -151,6 +152,8 @@ public class StopTimeArray extends AbstractList<StopTime> {
     this.startServiceAreas = Arrays.copyOf(this.startServiceAreas, newLength);
     this.endServiceAreas = Arrays.copyOf(this.endServiceAreas, newLength);
     this.stops = Arrays.copyOf(this.stops, newLength);
+    this.locationGroups = Arrays.copyOf(this.locationGroups,newLength);
+    this.locations = Arrays.copyOf(this.locations,newLength);
     this.arrivalTimes = Arrays.copyOf(this.arrivalTimes, newLength);
     this.departureTimes = Arrays.copyOf(this.departureTimes, newLength);
     this.timepoints = Arrays.copyOf(this.timepoints, newLength);
@@ -260,12 +263,12 @@ public class StopTimeArray extends AbstractList<StopTime> {
 
     @Override
     public StopLocation getLocation() {
-      return stops[index];
+      return locations[index];
     }
 
     @Override
     public StopLocation getLocationGroup() {
-      return stops[index];
+      return locationGroups[index];
     }
 
     @Override
@@ -275,12 +278,12 @@ public class StopTimeArray extends AbstractList<StopTime> {
 
     @Override
     public void setLocation(StopLocation location) {
-      stops[index] = location;
+      locations[index] = location;
     }
 
     @Override
     public void setLocationGroup(StopLocation group) {
-      stops[index] = group;
+      locationGroups[index] = group;
     }
 
     @Override

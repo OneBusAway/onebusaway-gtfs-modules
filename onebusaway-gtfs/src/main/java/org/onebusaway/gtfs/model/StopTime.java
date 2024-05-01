@@ -280,7 +280,7 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   @Override
   public StopLocation getStop() {
-    if (proxy != null & stop!=null) {
+    if (proxy != null) {
       return proxy.getStop();
     }
     return stop;
@@ -288,7 +288,7 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   @Override
   public StopLocation getLocation() {
-    if (proxy != null & location!=null) {
+    if (proxy != null) {
       return proxy.getLocation();
     }
     return location;
@@ -296,7 +296,7 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   @Override
   public StopLocation getLocationGroup() {
-    if (proxy != null & locationGroup!=null) {
+    if (proxy != null) {
       return proxy.getLocationGroup();
     }
     return locationGroup;
@@ -309,14 +309,14 @@ public final class StopTime extends IdentityBean<Integer> implements
    *  - location group
    */
   public StopLocation getStopLocation(){
-    if(stop != null){
-      return stop;
+    if(getStop() != null){
+      return getStop();
     }
-    else if(location != null) {
-      return location;
+    else if(getLocation() != null) {
+      return getLocation();
     }
-    else if(locationGroup != null){
-      return locationGroup;
+    else if(getLocationGroup() != null){
+      return getLocationGroup();
     }
     return null;
   }
@@ -738,7 +738,7 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   @Override
   public String toString() {
-    return "StopTime(seq=" + getStopSequence() + " stop=" + (getStopLocation()==null?"NuLl":getStop().getId())
+    return "StopTime(seq=" + getStopSequence() + " stop=" + (getStopLocation()==null?"NuLl":getStopLocation().getId())
         + " trip=" + (getTrip()==null?"NuLl":getTrip().getId()) + " times="
         + StopTimeFieldMappingFactory.getSecondsAsString(getArrivalTime())
         + "-"

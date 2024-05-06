@@ -740,10 +740,4 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.freeRunningFlag = freeRunningFlag;
   }
 
-  private static void oldDropOffSpellingWarning(String type) {
-    _log.warn("This feed uses the old spelling of '{}_pickup_drop_off_window' ('dropoff' instead of 'drop_off'). "
-            + "Compatibility will be removed in the future, so please update your feed to be in line with the latest Flex V2 spec:"
-            + " https://github.com/MobilityData/gtfs-flex/commit/547200dfb", type);
-  }
-
 }

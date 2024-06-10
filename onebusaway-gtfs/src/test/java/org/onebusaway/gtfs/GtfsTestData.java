@@ -53,6 +53,8 @@ public class GtfsTestData {
 
   public static final String LOCATIONS_GEOJSON = gtfsPath("locations.geojson");
 
+  public static final String TEST_AGENCY_VEHICLES_EXT_GTFS = gtfsPath("testagency-vehicles-ext");
+
   public static File getCaltrainGtfs() {
     return getResourceAsTemporaryFile(CALTRAIN_GTFS);
   }
@@ -92,6 +94,10 @@ public class GtfsTestData {
 
   public static File getAuburnTransitFlex() {
     return new File("src/test/resources", AUBURN_TRANSIT_FLEX);
+  }
+
+  public static File getTestAgencyVehiclesExt(){
+    return new File("src/test/resources", TEST_AGENCY_VEHICLES_EXT_GTFS);
   }
 
   public static <T extends GenericMutableDao> void readGtfs(T entityStore,

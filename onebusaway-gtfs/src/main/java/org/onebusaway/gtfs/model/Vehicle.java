@@ -18,13 +18,15 @@ package org.onebusaway.gtfs.model;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.StopLocationFieldMappingFactory;
 
 /**
  * GTFS Extension representing vehicle configuration data.
  */
 @CsvFields(filename = "vehicles.txt", required = false)
 public final class Vehicle extends IdentityBean<AgencyAndId> {
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 2L;
 
   @CsvField(name = "vehicle_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
@@ -52,6 +54,9 @@ public final class Vehicle extends IdentityBean<AgencyAndId> {
 
   @CsvField(name = "wheelchair_access", optional = true)
   private String wheelchairAccess;
+
+  @CsvField(name = "icon_id", optional = true, mapping = EntityFieldMappingFactory.class, order = -1)
+  private Icon icon;
 
   @Override
   public AgencyAndId getId() {
@@ -86,4 +91,12 @@ public final class Vehicle extends IdentityBean<AgencyAndId> {
 
   public String getWheelchairAccess() { return wheelchairAccess; }
   public void setWheelchairAccess(String wheelchairAccess) { this.wheelchairAccess = wheelchairAccess; }
+
+  public Icon getIcon() {
+    return icon;
+  }
+
+  public void setIcon(Icon icon) {
+    this.icon = icon;
+  }
 }

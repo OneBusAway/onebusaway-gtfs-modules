@@ -65,6 +65,7 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Agency.class);
     _entityClasses.add(Block.class);
     _entityClasses.add(ShapePoint.class);
+    _entityClasses.add(Icon.class);
     _entityClasses.add(Note.class);
     _entityClasses.add(Area.class);
     _entityClasses.add(BookingRule.class);
@@ -386,6 +387,9 @@ public class GtfsReader extends CsvEntityReader {
       } else if (entity instanceof FacilityPropertyDefinition){
         FacilityPropertyDefinition facilityPropertyDefinition = (FacilityPropertyDefinition) entity;
         registerAgencyId(FacilityPropertyDefinition.class, facilityPropertyDefinition.getId());
+      } else if (entity instanceof Icon){
+        Icon icon = (Icon) entity;
+        registerAgencyId(Icon.class, icon.getId());
       }
 
       if (entity instanceof IdentityBean<?>) {

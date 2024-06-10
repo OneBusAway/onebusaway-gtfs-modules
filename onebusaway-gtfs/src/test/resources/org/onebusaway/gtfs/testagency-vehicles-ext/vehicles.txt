@@ -1,0 +1,2 @@
+vehicle_id,icon_id
+123,ICO

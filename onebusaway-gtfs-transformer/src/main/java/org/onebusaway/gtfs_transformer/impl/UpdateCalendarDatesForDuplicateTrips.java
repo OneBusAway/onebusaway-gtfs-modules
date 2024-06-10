@@ -199,8 +199,16 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
             this.dao = dao;
             this.calendarAgencyId = calendarAgencyId;
             String largestServiceId = Collections.max(dao.getAllCalendarDates().stream().map(l->l.getServiceId().getId()).collect(Collectors.toSet()));
-            // here we make an assumption that service ids are numeric
-            serviceIdCounter = Integer.parseInt(largestServiceId) + 1;
+            // remove any de-duplication prefix from the service id
+            largestServiceId = largestServiceId.replaceAll("^[a-z]-", "");
+            try {
+                // here we make an assumption that service ids are numeric
+                serviceIdCounter = Integer.parseInt(largestServiceId) + 1;
+            } catch (NumberFormatException e) {
+                // we guessed wrong, we have some string service ids
+                // create a higher order service_id that should not conflict
+                serviceIdCounter = 10000;
+            }
         }
 
         public void addTrip(Trip exemplar, Set<AgencyAndId> serviceIds) {

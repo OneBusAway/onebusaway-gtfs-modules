@@ -75,6 +75,7 @@ public class GtfsEntitySchemaFactory {
     entityClasses.add(WrongWayConcurrency.class);
     entityClasses.add(DirectionEntry.class);
     entityClasses.add(AlternateStopNameException.class);
+    entityClasses.add(Icon.class);
     return entityClasses;
   }
 
@@ -96,6 +97,7 @@ public class GtfsEntitySchemaFactory {
     comparators.put(ServiceCalendarDate.class,
         new ServiceCalendarDateComparator());
     comparators.put(Vehicle.class, getComparatorForIdentityBeanType(Vehicle.class));
+    comparators.put(Icon.class, getComparatorForIdentityBeanType(Icon.class));
     return comparators;
   }
 

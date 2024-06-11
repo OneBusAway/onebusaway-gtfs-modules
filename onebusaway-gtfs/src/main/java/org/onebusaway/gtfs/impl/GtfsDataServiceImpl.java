@@ -354,6 +354,16 @@ public class GtfsDataServiceImpl implements GtfsDataService {
     }
 
     @Override
+    public Collection<Vehicle> getAllVehicles() {
+        return _dao.getAllVehicles();
+    }
+
+    @Override
+    public Vehicle getVehicleForId(AgencyAndId id) {
+        return _dao.getVehicleForId(id);
+    }
+
+    @Override
     public Collection<Area> getAllAreas() {
         return _dao.getAllAreas();
     }

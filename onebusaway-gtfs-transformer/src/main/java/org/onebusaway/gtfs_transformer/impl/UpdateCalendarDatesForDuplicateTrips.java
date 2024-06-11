@@ -257,9 +257,7 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
                         incDuplicateCount();
                         toModify.setId(mtaTripId);
                     } else {
-                        // TODO we don't think this is a duplicate so removeTag(...)
-                        toModify.setId(mtaTripId);
-                    }
+                        toModify.setId(removeTag(mtaTripId));                    }
                 } else {
                    // the trip has already been deleted, nothing to do
                     System.out.println("non-existent trip " + atisTripId + "/" + mtaTripId);

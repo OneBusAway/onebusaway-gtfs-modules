@@ -76,8 +76,10 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
 
     private void update(GtfsMutableRelationalDao dao, DuplicateState state, HashMap<String, ArrayList<Trip>> tripsByMtaTripId) {
         for (Map.Entry<String, ArrayList<Trip>> entry : tripsByMtaTripId.entrySet()) {
-            update(state, entry.getKey(), entry.getValue());
-            deDuplicate(dao, state, entry.getKey(), entry.getValue());
+            String mtaTripId = entry.getKey();
+            ArrayList<Trip> atisTrips = entry.getValue();
+            update(state, mtaTripId, atisTrips);
+            deDuplicate(dao, state, mtaTripId, atisTrips);
         }
     }
 
@@ -255,8 +257,8 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
                         incDuplicateCount();
                         toModify.setId(mtaTripId);
                     } else {
-                        // we've pruned it to be unique, remove the dup tagging
-                        toModify.setId(removeTag(mtaTripId));
+                        // TODO we don't think this is a duplicate so removeTag(...)
+                        toModify.setId(mtaTripId);
                     }
                 } else {
                    // the trip has already been deleted, nothing to do

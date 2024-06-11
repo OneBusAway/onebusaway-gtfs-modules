@@ -161,6 +161,16 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   @Override
   public Collection<Ridership> getAllRiderships() { return _ops.find("FROM Ridership"); }
 
+  @Override
+  public Collection<Vehicle> getAllVehicles() {
+    return _ops.find("FROM Vehicle");
+  }
+
+  @Override
+  public Vehicle getVehicleForId(AgencyAndId id) {
+    return (Vehicle) _ops.get(Vehicle.class, id);
+  }
+
 
   @Override
   public Collection<DirectionEntry> getAllDirectionEntries() {

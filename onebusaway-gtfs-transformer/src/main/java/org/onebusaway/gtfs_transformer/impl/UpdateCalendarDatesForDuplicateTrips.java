@@ -117,6 +117,7 @@ public class UpdateCalendarDatesForDuplicateTrips implements GtfsTransformStrate
 
     private void deDuplicateTrip(GtfsMutableRelationalDao dao, DuplicateState state, Trip exemplar, List<Trip> tripsToRemove) {
         Set<AgencyAndId> serviceIds = tripsToRemove.stream().map(l->l.getServiceId()).collect(Collectors.toSet());
+        serviceIds.add(exemplar.getServiceId());
         addServiceForTrip(dao, state, exemplar, serviceIds);
         deleteTrips(dao, state, tripsToRemove);
     }

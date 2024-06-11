@@ -365,4 +365,30 @@
         <property name="url" />
     </class>
 
+    <class name="org.onebusaway.gtfs.model.Vehicle" table="gtfs_vehicles">
+        <composite-id name="id" class="org.onebusaway.gtfs.model.AgencyAndId">
+            <key-property name="agencyId" length="50" />
+            <key-property name="id" />
+        </composite-id>
+        <property name="description" />
+        <property name="seatedCapacity" />
+        <property name="standingCapacity" />
+        <property name="doorCount" />
+        <property name="doorWidth" />
+        <property name="lowFloor" />
+        <property name="bikeCapacity" />
+        <property name="wheelchairAccess" />
+        <many-to-one name="icon">
+            <column name="icon_agencyId" length="50" />
+            <column name="icon_id" />
+        </many-to-one>
+    </class>
+    <class name="org.onebusaway.gtfs.model.Icon" table="gtfs_icons">
+        <composite-id name="id" class="org.onebusaway.gtfs.model.AgencyAndId">
+            <key-property name="agencyId" length="50" />
+            <key-property name="id" />
+        </composite-id>
+        <property name="description" />
+        <property name="url" />
+    </class>
 </hibernate-mapping>

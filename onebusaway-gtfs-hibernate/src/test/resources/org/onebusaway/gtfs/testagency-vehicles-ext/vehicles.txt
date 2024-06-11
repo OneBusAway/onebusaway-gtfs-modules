@@ -1,0 +1,3 @@
+vehicle_id,icon_id,bike_capacity,vehicle_description,door_count,door_width,low_floor,seated_capacity,standing_capacity,wheelchair_access
+123,ICO,2,vehicle description,2,30 ft,0,40,20,yes
+456,ICO,4,larger vehicle description,3,40 ft,0,65,40,no

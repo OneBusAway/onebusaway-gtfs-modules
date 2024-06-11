@@ -185,6 +185,17 @@ public interface GtfsDao extends GenericDao {
   public Collection<Ridership> getAllRiderships();
 
   /****
+   * {@link Vehicle} Methods
+   ****/
+  Collection<Vehicle> getAllVehicles();
+
+  /****
+   * {@link Vehicle} Methods
+   ****/
+  Vehicle getVehicleForId(AgencyAndId id);
+
+
+  /****
    * {@link Area} Methods
    ****/
 

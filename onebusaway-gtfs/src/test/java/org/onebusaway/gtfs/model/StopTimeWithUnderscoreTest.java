@@ -80,7 +80,7 @@ public class StopTimeWithUnderscoreTest {
         _gtfs.putDefaultTrips();
         _gtfs.putDefaultStops();
         _gtfs.putLines("stop_times.txt",
-                "trip_id,stop_id,stop_sequence,arrival_time,departure_time,end_pickup_dropoff_window",
+                "trip_id,stop_id,stop_sequence,arrival_time,departure_time,end_pickup_drop_off_window",
                 "T10-0,100,0,05:55:55,08:00:00,08:23:23", "T10-0,200,1,05:55:55,09:00:00,08:44:44");
 
         GtfsRelationalDao dao = _gtfs.read();
@@ -94,7 +94,7 @@ public class StopTimeWithUnderscoreTest {
         boolean foundUnderscoreParam = false;
         while(scan.hasNext()){
             String line = scan.nextLine();
-            if(line.contains("end_pickup_dropoff_window")){
+            if(line.contains("end_pickup_drop_off_window")){
                 foundUnderscoreParam = true;
             }
         }

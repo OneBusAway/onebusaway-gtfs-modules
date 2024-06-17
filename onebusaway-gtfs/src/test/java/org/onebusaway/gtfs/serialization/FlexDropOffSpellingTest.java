@@ -35,14 +35,9 @@ import org.onebusaway.gtfs.services.MockGtfs;
  *
  * Since it's hard to spot: the change is in the word "dropoff" vs "drop_off".
  *
- * This test makes sure that both spellings are understood.
+ * This test makes sure that the new spelling is understood.
  */
 public class FlexDropOffSpellingTest {
-
-  @Test
-  public void oldSpelling() throws IOException {
-    testFlexStopTimeWithSpelling("dropoff");
-  }
 
   @Test
   public void newSpelling() throws IOException {

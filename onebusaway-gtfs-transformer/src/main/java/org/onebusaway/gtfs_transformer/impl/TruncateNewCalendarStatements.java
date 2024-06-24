@@ -15,6 +15,7 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -35,6 +36,31 @@ import java.util.Set;
 public class TruncateNewCalendarStatements implements GtfsTransformStrategy {
 
     private final Logger _log = LoggerFactory.getLogger(TruncateNewCalendarStatements.class);
+
+    /*
+     * add two arguments used in the truncated transformation strategy
+     * calendarField  --> calendar_field (json config file)
+     *      Calendar.YEAR           =  1
+     *      Calendar.MONTH          =  2
+     *      Calendar.DAY_OF_MONTH   =  5
+     *      Calendar.DAY_OF_YEAR    =  6
+     * calendarAmount --> calendar_amount (json config file)
+     */
+    @CsvField(optional = true)
+    private int calendarField = Calendar.MONTH;
+
+    @CsvField(optional = true)
+    private int calendarAmount = 1;
+
+
+    public void setCalendarField(int calendarField) {
+        this.calendarField = calendarField;
+    }
+
+    public void setCalendarAmount(int calendarAmount) {
+        this.calendarAmount = calendarAmount;
+    }
+
     @Override
     public String getName() {
         return this.getClass().getSimpleName();
@@ -43,9 +69,8 @@ public class TruncateNewCalendarStatements implements GtfsTransformStrategy {
     @Override
     public void run(TransformContext transformContext, GtfsMutableRelationalDao gtfsMutableRelationalDao) {
         RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
-        // TODO make this an argument -- default to one month from now
         Calendar c = Calendar.getInstance();
-        c.roll(Calendar.MONTH, 1);
+        c.add(calendarField, calendarAmount); 
         java.util.Date oneMonthFromNow = c.getTime();
         Set<ServiceCalendar> serviceCalendarsToRemove = new HashSet<ServiceCalendar>();
         for (ServiceCalendar calendar: gtfsMutableRelationalDao.getAllCalendars()) {

@@ -15,7 +15,7 @@
  */
 package org.onebusaway.gtfs.impl.fares;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.GtfsTestData;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.FareAttribute;

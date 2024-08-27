@@ -16,11 +16,11 @@
  */
 package org.onebusaway.gtfs.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertFalse;
+import static  org.junit.jupiter.api.Assertions.assertNotNull;
+import static  org.junit.jupiter.api.Assertions.assertNull;
+import static  org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,9 +30,9 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Route;
@@ -53,7 +53,7 @@ public class HibernateGtfsRelationalDaoImplCaltrainTest {
 
   private static HibernateGtfsRelationalDaoImpl _dao;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() throws IOException {
 
     Configuration config = new Configuration();
@@ -70,7 +70,7 @@ public class HibernateGtfsRelationalDaoImplCaltrainTest {
     reader.run();
   }
 
-  @AfterClass
+  @AfterAll
   public static void teardown() {
     _sessionFactory.close();
   }

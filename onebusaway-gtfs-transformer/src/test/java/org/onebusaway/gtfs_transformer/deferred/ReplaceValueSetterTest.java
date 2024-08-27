@@ -15,9 +15,9 @@
  */
 package org.onebusaway.gtfs_transformer.deferred;
 
-import static org.junit.Assert.*;
+import static  org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.gtfs.model.Stop;
 

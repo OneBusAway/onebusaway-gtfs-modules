@@ -18,8 +18,8 @@ package org.onebusaway.gtfs_transformer;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
@@ -34,7 +34,7 @@ public class AbstractTestSupport {
 
   private File _outputPath;
 
-  @Before
+  @BeforeEach
   public void before() throws IOException {
     _gtfs = MockGtfs.create();
     _outputPath = File.createTempFile("MockGtfs-", ".zip");
@@ -45,7 +45,7 @@ public class AbstractTestSupport {
     _transformer.setOutputDirectory(_outputPath);
   }
 
-  @After
+  @AfterEach
   public void after() {
     _gtfs.getPath().delete();
     _outputPath.delete();

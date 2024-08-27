@@ -15,17 +15,17 @@
  */
 package org.onebusaway.gtfs.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.IOException;
 import java.io.StringReader;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
@@ -43,7 +43,7 @@ public class GtfsMappingTest {
 
   private static GtfsReader _reader;
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
 
     Configuration config = new Configuration();
@@ -57,7 +57,7 @@ public class GtfsMappingTest {
     _reader.setEntityStore(_dao);
   }
 
-  @After
+  @AfterEach
   public void teardown() {
     if (_dao != null)
       _dao.close();

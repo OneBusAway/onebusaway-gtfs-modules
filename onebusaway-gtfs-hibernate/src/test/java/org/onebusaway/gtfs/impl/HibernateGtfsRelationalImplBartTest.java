@@ -16,8 +16,8 @@
  */
 package org.onebusaway.gtfs.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,9 +25,9 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.ServiceCalendar;
@@ -44,7 +44,7 @@ public class HibernateGtfsRelationalImplBartTest {
 
   private static HibernateGtfsRelationalDaoImpl _dao;
 
-  @BeforeClass
+  @BeforeAll
   public static void setup() throws IOException {
 
     Configuration config = new Configuration();
@@ -61,7 +61,7 @@ public class HibernateGtfsRelationalImplBartTest {
     reader.run();
   }
 
-  @AfterClass
+  @AfterAll
   public static void teardown() {
     _sessionFactory.close();
   }

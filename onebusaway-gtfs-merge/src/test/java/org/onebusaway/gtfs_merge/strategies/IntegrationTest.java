@@ -17,7 +17,7 @@ package org.onebusaway.gtfs_merge.strategies;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.services.MockGtfs;
 
 public class IntegrationTest {

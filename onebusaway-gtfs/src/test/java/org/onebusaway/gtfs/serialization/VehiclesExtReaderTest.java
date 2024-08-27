@@ -15,7 +15,7 @@
  */
 package org.onebusaway.gtfs.serialization;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.GtfsTestData;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
@@ -25,8 +25,8 @@ import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import java.io.IOException;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 public class VehiclesExtReaderTest extends BaseGtfsTest{

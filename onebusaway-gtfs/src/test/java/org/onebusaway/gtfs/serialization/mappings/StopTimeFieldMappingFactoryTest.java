@@ -16,15 +16,15 @@
  */
 package org.onebusaway.gtfs.serialization.mappings;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.fail;
 import static org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory.getStringAsSeconds;
 import static org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory.getSecondsAsString;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.CsvEntityContextImpl;
 import org.onebusaway.csv_entities.schema.BeanWrapper;

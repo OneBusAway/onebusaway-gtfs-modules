@@ -15,13 +15,13 @@
  */
 package org.onebusaway.gtfs.serialization;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.onebusaway.gtfs.serialization.GtfsReaderTest.processFeed;
 
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs.services.MockGtfs;

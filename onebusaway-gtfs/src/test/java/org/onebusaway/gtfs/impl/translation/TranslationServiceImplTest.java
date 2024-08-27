@@ -15,7 +15,7 @@
  */
 package org.onebusaway.gtfs.impl.translation;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.GtfsTestData;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.Agency;
@@ -29,7 +29,7 @@ import org.onebusaway.gtfs.model.Trip;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TranslationServiceImplTest {
 

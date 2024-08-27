@@ -15,24 +15,22 @@
  */
 package org.onebusaway.gtfs_transformer.updates;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertFalse;
+import static  org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.FareRule;
 import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.serialization.GtfsReader;
-import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs.services.MockGtfs;
 import org.onebusaway.gtfs_transformer.factory.EntityRetentionGraph;
@@ -43,7 +41,7 @@ public class EntityRetentionGraphTest {
 
   private EntityRetentionGraph _graph;
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException, URISyntaxException {
     GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();
     _dao = dao;

@@ -15,14 +15,14 @@
  */
 package org.onebusaway.gtfs;
 
-import static org.junit.Assert.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
@@ -39,7 +39,7 @@ public class ExtensionsTest {
 
   private File _tmpDirectory;
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     _tmpDirectory = File.createTempFile("GtfsWriterTest-", "-tmp");
     if (_tmpDirectory.exists())
@@ -47,7 +47,7 @@ public class ExtensionsTest {
     _tmpDirectory.mkdirs();
   }
 
-  @After
+  @AfterEach
   public void teardown() {
     GtfsWriterTest.deleteFileRecursively(_tmpDirectory);
   }

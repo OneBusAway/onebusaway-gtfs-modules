@@ -16,9 +16,9 @@
  */
 package org.onebusaway.gtfs.model.calendar;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertTrue;
+import static  org.junit.jupiter.api.Assertions.fail;
 import static org.onebusaway.gtfs.DateSupport.date;
 
 import java.text.ParseException;
@@ -26,8 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.junit.Test;
-import org.onebusaway.gtfs.model.calendar.ServiceDate;
+import org.junit.jupiter.api.Test;
 
 public class ServiceDateTest {
 

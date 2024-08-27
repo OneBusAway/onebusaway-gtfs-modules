@@ -15,15 +15,15 @@
  */
 package org.onebusaway.gtfs_transformer.deferred;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.csv_entities.schema.EntitySchema;
@@ -41,7 +41,7 @@ public class DeferredValueSupportTest {
   private EntitySchemaCache _schemaCache;
   private DeferredValueSupport _support;
 
-  @Before
+  @BeforeEach
   public void before() {
     _reader = new GtfsReader();
     _reader.setDefaultAgencyId("a0");

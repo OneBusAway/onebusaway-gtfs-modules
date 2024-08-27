@@ -15,13 +15,12 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.impl.FileSupport;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
-import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_transformer.AbstractTestSupport;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
@@ -32,7 +31,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.junit.Assert.*;
+import static  org.junit.jupiter.api.Assertions.*;
 
 /**
  * test we can insert an extension into a GTFS file via a transformation.
@@ -46,7 +45,7 @@ public class AddExtensionFileTest extends AbstractTestSupport {
   private TransformContext context = new TransformContext();
   private GtfsWriter writer = new GtfsWriter();
 
-  @Before
+  @BeforeEach
   public void setup() {
     _gtfs.putAgencies(1);
     _gtfs.putStops(1);
@@ -55,7 +54,7 @@ public class AddExtensionFileTest extends AbstractTestSupport {
     _gtfs.putStopTimes("t0", "s0");
 
   }
-  @After
+  @AfterEach
   public void teardown() {
     _support.cleanup();
   }
@@ -89,8 +88,8 @@ public class AddExtensionFileTest extends AbstractTestSupport {
     String modLocation = tmpFileDirectory.getAbsolutePath() + File.separator + extensionName;
     File expectedFile = new File(modLocation);
     // verify file is there
-    assertTrue("expected extension to be present!", expectedFile.exists());
-    assertTrue("expected extension to be a file!", expectedFile.isFile());
+    assertTrue(expectedFile.exists(), "expected extension to be present!");
+    assertTrue(expectedFile.isFile(), "expected extension to be a file!");
     String actualText = Files.readString(Path.of(modLocation));
     assertEquals(TXT_STRING, actualText);
 

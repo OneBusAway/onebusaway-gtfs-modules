@@ -15,8 +15,8 @@
  */
 package org.onebusaway.gtfs_transformer.updates;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
@@ -24,8 +24,8 @@ import org.onebusaway.gtfs_transformer.AbstractTestSupport;
 
 import java.io.File;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.onebusaway.gtfs_transformer.csv.MTAStation.*;
 
 /**
@@ -33,7 +33,7 @@ import static org.onebusaway.gtfs_transformer.csv.MTAStation.*;
  */
 public class MTAStationAccessibilityStrategyTest extends AbstractTestSupport {
 
-  @Before
+  @BeforeEach
   public void setup() throws Exception {
     File stations_csv = new File(getClass().getResource(
             "/org/onebusaway/gtfs_transformer/stations/stations.csv").toURI());
@@ -66,17 +66,16 @@ public class MTAStationAccessibilityStrategyTest extends AbstractTestSupport {
     Stop sStop = dao.getStopForId(new AgencyAndId("a0", stopId+"S"));
     assertNotNull(sStop);
 
-    assertEquals("expecting ada flag to match wheelchairBoarding flag for stop " + parentStop.getId(),
-            ada, converGTFSccessibilityToMTA(parentStop.getWheelchairBoarding()));
+    assertEquals(converGTFSccessibilityToMTA(parentStop.getWheelchairBoarding()), ada, "expecting ada flag to match wheelchairBoarding flag for stop " + parentStop.getId());
     if (northBoundFlag == null) {
-      assertEquals("expecting N/A wheelchairBoarding for northbound stop " + nStop,0, converGTFSccessibilityToMTA(nStop.getWheelchairBoarding())); // default is 0
+      assertEquals(0, converGTFSccessibilityToMTA(nStop.getWheelchairBoarding()), "expecting N/A wheelchairBoarding for northbound stop " + nStop); // default is 0
     } else {
-      assertEquals("expecting northBoundFlag to match wheelchairBoarding flag for stop" + nStop, northBoundFlag.intValue(), converGTFSccessibilityToMTA(nStop.getWheelchairBoarding()));
+      assertEquals(northBoundFlag.intValue(), converGTFSccessibilityToMTA(nStop.getWheelchairBoarding()), "expecting northBoundFlag to match wheelchairBoarding flag for stop" + nStop);
     }
     if (southBoundFlag == null) {
-      assertEquals("expecting N/A wheelchairBoarding for southbound stop " + sStop,0, converGTFSccessibilityToMTA(sStop.getWheelchairBoarding()));
+      assertEquals(0, converGTFSccessibilityToMTA(sStop.getWheelchairBoarding()), "expecting N/A wheelchairBoarding for southbound stop " + sStop);
     } else {
-      assertEquals("expecting southBoundFlag to match wheelchairBoarding flag for stop" + sStop, southBoundFlag.intValue(), converGTFSccessibilityToMTA(sStop.getWheelchairBoarding()));
+      assertEquals(southBoundFlag.intValue(), converGTFSccessibilityToMTA(sStop.getWheelchairBoarding()), "expecting southBoundFlag to match wheelchairBoarding flag for stop" + sStop);
     }
   }
 

@@ -15,11 +15,10 @@
  */
 package org.onebusaway.gtfs_transformer.updates;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.collections.tuple.T2;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
-import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.serialization.GtfsReader;
@@ -32,8 +31,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertTrue;
 import static org.onebusaway.gtfs_transformer.updates.TripsByBlockInSortedOrder.getTripsByBlockAndServiceIdInSortedOrder;
 
 /**
@@ -43,7 +42,7 @@ public class RemoveRepeatedStopTimesStrategyTest {
 
   private GtfsRelationalDaoImpl _dao;
   private TransformContext _context = new TransformContext();
-  @Before
+  @BeforeEach
   public void before() throws IOException {
     _dao = new GtfsRelationalDaoImpl();
   }

@@ -15,7 +15,7 @@
  */
 package org.onebusaway.gtfs.impl;
 
-import static org.junit.Assert.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.onebusaway.gtfs.GtfsTestData;
 import org.onebusaway.gtfs.model.Agency;
@@ -33,7 +33,7 @@ import org.onebusaway.gtfs.model.Transfer;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Collection;

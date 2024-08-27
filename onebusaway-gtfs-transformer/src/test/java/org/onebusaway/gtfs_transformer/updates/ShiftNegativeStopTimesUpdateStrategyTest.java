@@ -15,13 +15,13 @@
  */
 package org.onebusaway.gtfs_transformer.updates;
 
-import static org.junit.Assert.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
@@ -37,7 +37,7 @@ public class ShiftNegativeStopTimesUpdateStrategyTest {
 
   private MockGtfs _gtfs;
 
-  @Before
+  @BeforeEach
   public void before() throws IOException {
     _gtfs = MockGtfs.create();
   }

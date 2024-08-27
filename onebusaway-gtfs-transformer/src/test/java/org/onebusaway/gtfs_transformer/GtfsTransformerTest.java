@@ -15,14 +15,14 @@
  */
 package org.onebusaway.gtfs_transformer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertNotNull;
+import static  org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
@@ -35,7 +35,7 @@ public class GtfsTransformerTest {
 
   private GtfsTransformer _transformer = new GtfsTransformer();
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     _gtfs = MockGtfs.create();
     _gtfs.putAgencies(1);

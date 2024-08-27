@@ -16,9 +16,12 @@
 
 package org.onebusaway.gtfs_transformer.updates;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+
+import  org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Trip;
@@ -32,7 +35,7 @@ import java.net.URISyntaxException;
 public class LastStopToHeadsignStrategyTest {
     private GtfsRelationalDaoImpl _dao;
 
-    @Before
+    @BeforeEach
     public void setup() throws IOException, URISyntaxException {
         _dao = new GtfsRelationalDaoImpl();
 
@@ -53,10 +56,10 @@ public class LastStopToHeadsignStrategyTest {
         tripId.setAgencyId("agency");
         Trip trip = _dao.getTripForId(tripId);
 
-        Assert.assertNotSame("C",trip.getTripHeadsign());
+        assertNotSame("C",trip.getTripHeadsign());
         _strategy.run(new TransformContext(), _dao);
 
         trip = _dao.getTripForId(tripId);
-        Assert.assertEquals("C",trip.getTripHeadsign());
+        assertEquals("C",trip.getTripHeadsign());
     }
 }

@@ -15,11 +15,11 @@
  */
 package org.onebusaway.gtfs_transformer.deferred;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static  org.junit.jupiter.api.Assertions.assertFalse;
+import static  org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.ServiceCalendar;
@@ -35,7 +35,7 @@ public class DeferredValueMatcherTest {
 
   private EntitySchemaCache _schemaCache = new EntitySchemaCache();
 
-  @Before
+  @BeforeEach
   public void setup() {
     _reader.setDefaultAgencyId("1");
     _schemaCache.addEntitySchemasFromGtfsReader(_reader);

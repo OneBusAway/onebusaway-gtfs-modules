@@ -15,10 +15,10 @@
  */
 package org.onebusaway.gtfs_transformer.deferred;
 
-import static org.junit.Assert.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.collections.beans.PropertyPathExpression;
 import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
@@ -36,7 +36,7 @@ public class PropertyPathExpressionValueSetterTest {
   private EntitySchemaCache _schemaCache = new EntitySchemaCache();
   private GtfsMutableRelationalDao _dao = new GtfsRelationalDaoImpl();
 
-  @Before
+  @BeforeEach
   public void setup() {
     _schemaCache.addEntitySchemasFromGtfsReader(_reader);
   }

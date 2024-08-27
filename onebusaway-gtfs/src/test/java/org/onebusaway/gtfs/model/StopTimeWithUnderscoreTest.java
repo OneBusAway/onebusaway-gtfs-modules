@@ -19,15 +19,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
 import org.onebusaway.gtfs.serialization.GtfsWriterTest;
 import org.onebusaway.gtfs.services.MockGtfs;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 
-import static org.junit.Assert.*;
+import static  org.junit.jupiter.api.Assertions.*;
 
 public class StopTimeWithUnderscoreTest {
 
@@ -35,7 +35,7 @@ public class StopTimeWithUnderscoreTest {
 
     private File _tmpDirectory;
 
-    @Before
+    @BeforeEach
     public void before() throws IOException {
         _gtfs = MockGtfs.create();
 
@@ -71,7 +71,7 @@ public class StopTimeWithUnderscoreTest {
             }
         }
         // if the underscore version was input use it as output
-        assertTrue("Column without underscore was not found", foundUnderscoreParam);
+        assertTrue(foundUnderscoreParam, "Column without underscore was not found");
     }
 
     @Test
@@ -99,7 +99,7 @@ public class StopTimeWithUnderscoreTest {
             }
         }
         // if the new spec was used as input ensure it is output
-        assertTrue("Column without underscore was not found", foundUnderscoreParam);
+        assertTrue(foundUnderscoreParam, "Column without underscore was not found");
     }
 
     @Test
@@ -109,7 +109,7 @@ public class StopTimeWithUnderscoreTest {
         _gtfs.read();
     }
 
-    @After
+    @AfterEach
     public void teardown() {
         deleteFileRecursively(_tmpDirectory);
     }

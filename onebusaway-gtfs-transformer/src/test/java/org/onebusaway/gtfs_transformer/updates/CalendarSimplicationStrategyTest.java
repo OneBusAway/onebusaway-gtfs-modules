@@ -15,13 +15,13 @@
  */
 package org.onebusaway.gtfs_transformer.updates;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ServiceCalendar;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
@@ -31,7 +31,7 @@ import org.onebusaway.gtfs_transformer.AbstractTestSupport;
 
 public class CalendarSimplicationStrategyTest extends AbstractTestSupport {
 
-  @Before
+  @BeforeEach
   public void setup() {
     _transformer.addTransform(new CalendarSimplicationStrategy());
   }

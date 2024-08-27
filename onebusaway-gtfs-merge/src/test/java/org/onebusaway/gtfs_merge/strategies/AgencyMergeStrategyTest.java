@@ -15,13 +15,13 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.Collection;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
@@ -40,7 +40,7 @@ public class AgencyMergeStrategyTest extends EntityMergeTestSupport {
 
   private GtfsRelationalDaoImpl _target;
 
-  @Before
+  @BeforeEach
   public void before() {
     _strategy = new AgencyMergeStrategy();
     _target = new GtfsRelationalDaoImpl();

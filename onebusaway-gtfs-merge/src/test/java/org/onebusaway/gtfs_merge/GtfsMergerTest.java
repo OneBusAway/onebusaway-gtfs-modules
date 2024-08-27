@@ -15,8 +15,8 @@
  */
 package org.onebusaway.gtfs_merge;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.serialization.GtfsReader;
@@ -56,7 +56,7 @@ public class GtfsMergerTest {
 
   private GtfsMerger _merger;
 
-  @Before
+  @BeforeEach
   public void before() throws IOException {
     _oldGtfs = MockGtfs.create();
     _newGtfs = MockGtfs.create();
@@ -65,7 +65,7 @@ public class GtfsMergerTest {
     _merger = new GtfsMerger();
   }
 
-  @After
+  @AfterEach
   public void after() {
 
   }
@@ -224,7 +224,7 @@ public class GtfsMergerTest {
         pugetStopFound = true;
       }
     }
-    assertTrue("expect a puget stop", pugetStopFound);
+    assertTrue(pugetStopFound, "expect a puget stop");
   }
 
   @Test
@@ -352,7 +352,7 @@ public class GtfsMergerTest {
     
     assertTrue("b-sid0".matches("[a-j]-.*"));
     
-    assertTrue("expect a puget stop", pugetStopFound);
+    assertTrue(pugetStopFound, "expect a puget stop");
   }
 
 // tests stop, location, and location group
@@ -454,10 +454,11 @@ public class GtfsMergerTest {
       boolean hasST = st.getStop()!=null;
       boolean hasLoc = st.getLocation()!=null;
       boolean hasLocGroup = st.getLocationGroup()!=null;
-      assertTrue("multiple ids found for stop: "+st.getStop()+
+      assertTrue( !(hasST & hasLoc | hasST && hasLocGroup | hasLoc & hasLocGroup),
+                      "multiple ids found for stop: "+st.getStop()+
                       ", location_id: "+st.getLocation()+
-                      ", location_id: "+st.getLocationGroup(),
-              !(hasST & hasLoc | hasST && hasLocGroup | hasLoc & hasLocGroup));
+                      ", location_id: "+st.getLocationGroup()
+              );
     }
   }
   

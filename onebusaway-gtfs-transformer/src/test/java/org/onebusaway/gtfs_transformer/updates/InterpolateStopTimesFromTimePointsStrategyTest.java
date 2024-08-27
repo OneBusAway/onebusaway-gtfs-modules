@@ -15,8 +15,8 @@
  */
 package org.onebusaway.gtfs_transformer.updates;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static  org.junit.jupiter.api.Assertions.*;
 
 /**
  * Sanity check the interpolation strategy.
@@ -44,7 +44,7 @@ public class InterpolateStopTimesFromTimePointsStrategyTest {
 
   private TransformContext _context = new TransformContext();
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     _gtfs = MockGtfs.create();
   }

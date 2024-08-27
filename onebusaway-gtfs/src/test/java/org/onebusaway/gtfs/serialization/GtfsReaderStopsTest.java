@@ -16,15 +16,15 @@
  */
 package org.onebusaway.gtfs.serialization;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
 import org.onebusaway.gtfs.model.Agency;
@@ -35,7 +35,7 @@ public class GtfsReaderStopsTest {
 
   private MockGtfs _gtfs;
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     _gtfs = MockGtfs.create();
     _gtfs.putDefaultAgencies();
@@ -50,7 +50,7 @@ public class GtfsReaderStopsTest {
    */
   
   @Test
-  @Ignore
+  @Disabled
   public void testMissingStopLat() throws IOException {
     _gtfs.putLines("stops.txt", "stop_id,stop_name,stop_lat,stop_lon",
         "1,The Stop, ,-122.0");
@@ -64,7 +64,7 @@ public class GtfsReaderStopsTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void testMissingStopLon() throws IOException {
     _gtfs.putLines("stops.txt", "stop_id,stop_name,stop_lat,stop_lon",
         "1,The Stop,47.0,");

@@ -15,15 +15,15 @@
  */
 package org.onebusaway.gtfs_transformer.updates;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertFalse;
+import static  org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ServiceCalendar;
@@ -41,7 +41,7 @@ public class CalendarExtensionStrategyTest {
 
   private TransformContext _context = new TransformContext();
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     _gtfs = MockGtfs.create();
     _gtfs.putAgencies(1);

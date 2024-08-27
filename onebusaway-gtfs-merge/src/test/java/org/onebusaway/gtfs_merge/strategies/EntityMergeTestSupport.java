@@ -18,7 +18,7 @@ package org.onebusaway.gtfs_merge.strategies;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
@@ -26,7 +26,7 @@ public class EntityMergeTestSupport {
 
   protected Map<String, Object> entityByRawId;
 
-  @Before
+  @BeforeEach
   public void setup() {
     entityByRawId = new HashMap<String, Object>();
   }

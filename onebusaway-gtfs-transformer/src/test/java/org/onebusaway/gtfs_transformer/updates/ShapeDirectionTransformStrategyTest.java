@@ -15,8 +15,8 @@
  */
 package org.onebusaway.gtfs_transformer.updates;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ShapePoint;
@@ -25,8 +25,8 @@ import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.MockGtfs;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -41,7 +41,7 @@ public class ShapeDirectionTransformStrategyTest {
 
   private MockGtfs _gtfs;
 
-  @Before
+  @BeforeEach
   public void before() throws IOException {
     _gtfs = MockGtfs.create();
   }

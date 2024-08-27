@@ -15,9 +15,9 @@
  */
 package org.onebusaway.gtfs_merge;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.impl.FileSupport;
 import org.onebusaway.gtfs.impl.ZipHandler;
 
@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertTrue;
+import static  org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test appending metadata inputs as part of merge.
@@ -40,12 +40,12 @@ public class MergeExpectedFilesTest {
 
   private FileSupport _support = new FileSupport();
 
-  @Before
+  @BeforeEach
   public void before() throws IOException {
     _merger = new GtfsMerger();
   }
 
-  @After
+  @AfterEach
   public void after() {
     _support.cleanup();
   }
@@ -68,8 +68,8 @@ public class MergeExpectedFilesTest {
     String modLocation = gtfsDirectory.getAbsolutePath() + File.separator + "modifications.txt";
     File expectedFile = new File(modLocation);
     // verify modifications.txt is there!!!!
-    assertTrue("expected modifications.txt to be present!", expectedFile.exists());
-    assertTrue("expected modifications.txt to be a file!", expectedFile.isFile());
+    assertTrue(expectedFile.exists(), "expected modifications.txt to be present!");
+    assertTrue(expectedFile.isFile(), "expected modifications.txt to be a file!");
     StringBuffer sb = new StringBuffer();
     BufferedReader br = new BufferedReader(new FileReader(expectedFile));
     sb.append(br.lines().collect(Collectors.joining(System.lineSeparator())));

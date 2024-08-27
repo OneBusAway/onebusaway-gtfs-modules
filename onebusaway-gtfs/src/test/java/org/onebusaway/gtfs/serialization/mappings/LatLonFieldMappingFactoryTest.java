@@ -15,14 +15,14 @@
  */
 package org.onebusaway.gtfs.serialization.mappings;
 
-import static org.junit.Assert.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.CsvEntityContextImpl;
 import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
@@ -34,7 +34,7 @@ public class LatLonFieldMappingFactoryTest {
 
   private FieldMapping _fieldMapping;
 
-  @Before
+  @BeforeEach
   public void before() {
     _fieldMapping = buildFieldMapping();
   }

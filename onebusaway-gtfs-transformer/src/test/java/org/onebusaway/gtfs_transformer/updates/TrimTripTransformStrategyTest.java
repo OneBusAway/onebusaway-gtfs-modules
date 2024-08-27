@@ -15,14 +15,14 @@
  */
 package org.onebusaway.gtfs_transformer.updates;
 
-import static org.junit.Assert.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.collections.beans.PropertyPathExpression;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ShapePoint;
@@ -45,7 +45,7 @@ public class TrimTripTransformStrategyTest {
 
   private TransformContext _context = new TransformContext();
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
     _gtfs = MockGtfs.create();
   }

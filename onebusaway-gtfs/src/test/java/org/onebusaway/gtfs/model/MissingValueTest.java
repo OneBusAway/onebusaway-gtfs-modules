@@ -19,15 +19,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
 import org.onebusaway.gtfs.serialization.GtfsWriterTest;
 import org.onebusaway.gtfs.services.MockGtfs;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 
-import static org.junit.Assert.*;
+import static  org.junit.jupiter.api.Assertions.*;
 
 /**
  * Optional flex fields in stop times should not be present
@@ -40,7 +40,7 @@ public class MissingValueTest {
 
     private File _tmpDirectory;
 
-    @Before
+    @BeforeEach
     public void before() throws IOException {
         _gtfs = MockGtfs.create();
 
@@ -88,9 +88,9 @@ public class MissingValueTest {
                 foundShapeDist = true;
             }
         }
-        assertFalse("Empty Column not properly removed in line " + headerLine, foundEmptyColumn);
-        assertTrue("Column unexpectedly removed in line " + headerLine, foundProperArrivalTime);
-        assertFalse("Not expecting shapeDistTraveled in line " + headerLine, foundShapeDist);
+        assertFalse(foundEmptyColumn, "Empty Column not properly removed in line " + headerLine);
+        assertTrue(foundProperArrivalTime, "Column unexpectedly removed in line " + headerLine);
+        assertFalse(foundShapeDist, "Not expecting shapeDistTraveled in line " + headerLine);
     }
 
     @Test
@@ -117,7 +117,7 @@ public class MissingValueTest {
                 foundTimepoint = true;
             }
         }
-        assertFalse("Empty Column not properly removed", foundTimepoint);
+        assertFalse(foundTimepoint, "Empty Column not properly removed" );
     }
 
     /**
@@ -182,14 +182,14 @@ public class MissingValueTest {
             }
 
         }
-        assertFalse("Empty Column not properly removed", foundTimepoint);
-        assertFalse("Not expecting shapeDistTraveled in line " + headerLine, foundShapeDist);
-        assertFalse("Not expecting start service area radius in line " + headerLine, foundStartServiceArea);
-        assertFalse("Not expecting end service area radius in line " + headerLine, foundEndServiceArea);
-        assertFalse("Not expecting mean duration factor in line " + headerLine, foundMeanDurationFactor);
-        assertFalse("Not expecting mean duration offset in line " + headerLine, foundMeanDurationOffset);
-        assertFalse("Not expecting safe duration factor in line " + headerLine, foundSafeDurationFactor);
-        assertFalse("Not expecting safe duration offset in line " + headerLine, foundSafeDurationOffset);
+        assertFalse(foundTimepoint, "Empty Column not properly removed");
+        assertFalse(foundShapeDist, "Not expecting shapeDistTraveled in line " + headerLine);
+        assertFalse(foundStartServiceArea, "Not expecting start service area radius in line " + headerLine );
+        assertFalse(foundEndServiceArea, "Not expecting end service area radius in line " + headerLine );
+        assertFalse(foundMeanDurationFactor, "Not expecting mean duration factor in line " + headerLine );
+        assertFalse(foundMeanDurationOffset, "Not expecting mean duration offset in line " + headerLine );
+        assertFalse(foundSafeDurationFactor, "Not expecting safe duration factor in line " + headerLine );
+        assertFalse(foundSafeDurationOffset, "Not expecting safe duration offset in line " + headerLine);
     }
 
     @Test
@@ -199,7 +199,7 @@ public class MissingValueTest {
         _gtfs.read();
     }
 
-    @After
+    @AfterEach
     public void teardown() {
         deleteFileRecursively(_tmpDirectory);
     }

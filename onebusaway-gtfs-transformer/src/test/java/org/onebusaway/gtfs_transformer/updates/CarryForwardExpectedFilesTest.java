@@ -15,9 +15,9 @@
  */
 package org.onebusaway.gtfs_transformer.updates;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.impl.FileSupport;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.impl.ZipHandler;
@@ -28,7 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import static org.junit.Assert.assertTrue;
+import static  org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Ensure metadata files are still present in typical read/write cycle.
@@ -42,12 +42,12 @@ public class CarryForwardExpectedFilesTest {
 
   private FileSupport _support = new FileSupport();
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException, URISyntaxException {
     _dao = new GtfsRelationalDaoImpl();
   }
 
-  @After
+  @AfterEach
   public void teardown() {
     _support.cleanup();
   }
@@ -75,8 +75,8 @@ public class CarryForwardExpectedFilesTest {
     String modLocation = _tmpFileDirectory.getAbsolutePath() + File.separator + "modifications.txt";
     File expectedFile = new File(modLocation);
     // verify modifications.txt is there!!!!
-    assertTrue("expected modifications.txt to be present!", expectedFile.exists());
-    assertTrue("expected modifications.txt to be a file!", expectedFile.isFile());
+    assertTrue(expectedFile.exists(), "expected modifications.txt to be present!");
+    assertTrue(expectedFile.isFile(), "expected modifications.txt to be a file!");
   }
 
   @Test

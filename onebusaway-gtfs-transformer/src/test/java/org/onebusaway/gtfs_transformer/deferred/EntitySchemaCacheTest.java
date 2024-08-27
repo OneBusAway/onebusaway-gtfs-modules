@@ -15,9 +15,9 @@
  */
 package org.onebusaway.gtfs_transformer.deferred;
 
-import static org.junit.Assert.assertSame;
+import static  org.junit.jupiter.api.Assertions.assertSame;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.schema.DefaultFieldMapping;
 import org.onebusaway.csv_entities.schema.EntitySchema;
 import org.onebusaway.csv_entities.schema.FieldMapping;

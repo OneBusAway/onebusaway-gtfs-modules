@@ -15,17 +15,17 @@
  */
 package org.onebusaway.gtfs.impl.calendar;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertFalse;
+import static  org.junit.jupiter.api.Assertions.assertNull;
+import static  org.junit.jupiter.api.Assertions.assertTrue;
 import static org.onebusaway.gtfs.DateSupport.date;
 import static org.onebusaway.gtfs.DateSupport.hourToSec;
 
 import java.util.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.calendar.*;
 
@@ -53,7 +53,7 @@ public class CalendarServiceImplSyntheticTest {
 
   private CalendarServiceImpl service;
 
-  @Before
+  @BeforeEach
   public void setup() {
 
     CalendarServiceData data = new CalendarServiceData();

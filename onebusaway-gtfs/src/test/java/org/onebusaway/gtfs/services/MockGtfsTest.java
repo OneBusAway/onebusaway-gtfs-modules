@@ -15,13 +15,13 @@
  */
 package org.onebusaway.gtfs.services;
 
-import static org.junit.Assert.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
@@ -30,7 +30,7 @@ public class MockGtfsTest {
 
   private MockGtfs _gtfs;
 
-  @Before
+  @BeforeEach
   public void before() throws IOException {
     _gtfs = MockGtfs.create();
   }

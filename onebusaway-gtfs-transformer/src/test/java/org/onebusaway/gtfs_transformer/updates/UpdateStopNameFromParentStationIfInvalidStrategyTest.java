@@ -15,8 +15,8 @@
  */
 package org.onebusaway.gtfs_transformer.updates;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.MockGtfs;
@@ -25,18 +25,19 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static  org.junit.jupiter.api.Assertions.*;
 
 public class UpdateStopNameFromParentStationIfInvalidStrategyTest {
 
   private MockGtfs _gtfs;
 
-  @Before
+  @BeforeEach
   public void before() throws IOException {
     _gtfs = MockGtfs.create();
   }
 
-  @Test public void test() throws IOException {
+  @Test
+  public void test() throws IOException {
     _gtfs.putAgencies(1);
     _gtfs.putLines("stops.txt",
         "stop_id,stop_name,stop_lat,stop_lon,location_type,parent_station,platform_code",

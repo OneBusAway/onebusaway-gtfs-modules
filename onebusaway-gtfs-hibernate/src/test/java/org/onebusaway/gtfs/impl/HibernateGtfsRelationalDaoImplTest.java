@@ -15,8 +15,8 @@
  */
 package org.onebusaway.gtfs.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static  org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -25,9 +25,9 @@ import java.util.Set;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Stop;
 
@@ -37,7 +37,7 @@ public class HibernateGtfsRelationalDaoImplTest {
 
   private static HibernateGtfsRelationalDaoImpl _dao;
 
-  @Before
+  @BeforeEach
   public void setup() throws IOException {
 
     Configuration config = new Configuration();
@@ -48,7 +48,7 @@ public class HibernateGtfsRelationalDaoImplTest {
     _dao.open();
   }
 
-  @After
+  @AfterEach
   public void teardown() {
     if (_dao != null)
       _dao.close();

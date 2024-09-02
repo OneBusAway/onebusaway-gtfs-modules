@@ -75,8 +75,8 @@ public class GtfsReaderTest extends BaseGtfsTest {
     gtfs.putLines(
         "trips.txt",
         "route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,block_id,shape_id,route_short_name,"
-            + "trip_bikes_allowed,bikes_allowed,wheelchair_accessible,peak_offpeak",
-        "R1,WEEK,T1,head-sign,short-name,1,B1,SHP1,10X,1,2,1,3");
+            + "trip_bikes_allowed,bikes_allowed,wheelchair_accessible,peak_offpeak,cars_allowed",
+        "R1,WEEK,T1,head-sign,short-name,1,B1,SHP1,10X,1,2,1,3,1");
     gtfs.putLines(
         "stop_times.txt",
         "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_type,drop_off_type,"
@@ -210,6 +210,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals("10X", trip.getRouteShortName());
     assertEquals(1, trip.getTripBikesAllowed());
     assertEquals(2, trip.getBikesAllowed());
+    assertEquals(1, trip.getCarsAllowed());
     assertEquals(1, trip.getWheelchairAccessible());
     assertEquals(3, trip.getPeakOffpeak());
 

@@ -17,6 +17,7 @@ package org.onebusaway.gtfs.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.annotations.Experimental;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.TripAgencyIdFieldMappingFactory;
@@ -100,6 +101,13 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, defaultValue = "0")
   private int bikesAllowed = 0;
 
+  /**
+   * 0 = unknown / unspecified, 1 = cars allowed, 2 = cars NOT allowed
+   */
+  @Experimental(proposedBy="https://github.com/google/transit/issues/466")
+  @CsvField(optional = true, defaultValue = "0")
+  private int carsAllowed = 0;
+
   // Custom extension for KCM to specify a fare per-trip
   @CsvField(optional = true)
   private String fareId;
@@ -153,6 +161,7 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.safeDurationOffset = obj.safeDurationOffset;
     this.tripBikesAllowed = obj.tripBikesAllowed;
     this.bikesAllowed = obj.bikesAllowed;
+    this.carsAllowed = obj.carsAllowed;
     this.fareId = obj.fareId;
     this.note = obj.note;
     this.peakOffpeak = obj.peakOffpeak;
@@ -351,6 +360,21 @@ public final class Trip extends IdentityBean<AgencyAndId> {
    */
   public void setBikesAllowed(int bikesAllowed) {
     this.bikesAllowed = bikesAllowed;
+  }
+
+  /**
+   * @return 0 = unknown / unspecified, 1 = cars allowed, 2 = cars NOT allowed
+   */
+  public int getCarsAllowed() {
+    return carsAllowed;
+  }
+
+  /**
+   * @param carsAllowed 0 = unknown / unspecified, 1 = cars allowed, 2 = cars
+   *          NOT allowed
+   */
+  public void setCarsAllowed(int carsAllowed) {
+    this.carsAllowed = carsAllowed;
   }
 
   public String toString() {

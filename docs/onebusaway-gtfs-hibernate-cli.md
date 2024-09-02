@@ -7,7 +7,7 @@ GTFS Hibernate Command-Line Utility
 Introduction
 
   The `onebusaway-gtfs-hibernate-cli` command-line utility is a simple command-line tool for loading a
-{{{https://developers.google.com/transit/gtfs}GTFS}} feed into a database.
+[GTFS](https://developers.google.com/transit/gtfs) feed into a database.
 
 Getting the Application
 
@@ -21,7 +21,7 @@ Getting the Application
 
 #set( $url = 'https://repo.camsys-apps.com/' + $repository + '/org/onebusaway/onebusaway-gtfs-hibernate-cli/' + ${currentVersion} + '/onebusaway-gtfs-hibernate-cli-' + ${currentVersion} + '.jar' )
 
-  {{{${url}}onebusaway-gtfs-hibernate-cli-${currentVersion}.jar}}
+  [.jar](${url}}onebusaway-gtfs-hibernate-cli-${currentVersion)
   
 Using the Application
 

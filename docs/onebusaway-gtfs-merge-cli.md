@@ -9,7 +9,7 @@ Introduction
   <<NOTE>>: This tool is a work in progress!  This documentation may not be up-to-date.
 
   The `onebusaway-gtfs-merge-cli` command-line application is a simple command-line tool for merging
-{{{https://developers.google.com/transit/gtfs}GTFS}} feeds. 
+[GTFS](https://developers.google.com/transit/gtfs) feeds. 
 
 Getting the Application
 
@@ -23,7 +23,7 @@ Getting the Application
 
 #set( $url = 'https://repo.camsys-apps.com/' + $repository + '/org/onebusaway/onebusaway-gtfs-merge-cli/' + ${currentVersion} + '/onebusaway-gtfs-merge-cli-' + ${currentVersion} + '.jar' )
   
-  {{{${url}}onebusaway-gtfs-merge-cli-${currentVersion}.jar}}
+  [.jar](${url}}onebusaway-gtfs-merge-cli-${currentVersion)
   
 Using the Application
 

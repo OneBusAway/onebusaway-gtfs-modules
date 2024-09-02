@@ -1,26 +1,26 @@
 # onebusaway-gtfs-modules
 
-  We provide a Java library for reading and writing {{{https://developers.google.com/transit/gtfs} GTFS}} feeds, including database support.
+  We provide a Java library for reading and writing [ GTFS](https://developers.google.com/transit/gtfs) feeds, including database support.
   
   The library is broken up into a few key modules:
   
   * `onebusaway-gtfs` - The core library for reading and writing GTFS
   
-  * `onebusaway-gtfs-hibernate` - Support for {{{http://www.hibernate.org/}Hibernate}} database persistence of GTFS data
+  * `onebusaway-gtfs-hibernate` - Support for [Hibernate](http://www.hibernate.org/) database persistence of GTFS data
   
-  * `onebusaway-gtfs-hibernate-cli` - Command-line utilty for loading GTFS feeds into a database - see {{{./onebusaway-gtfs-hibernate-cli.html}the full documentation}}. 
+  * `onebusaway-gtfs-hibernate-cli` - Command-line utilty for loading GTFS feeds into a database - see [the full documentation](./onebusaway-gtfs-hibernate-cli.html). 
   
   * `onebusaway-gtfs-transformer` - Tools for transforming GTFS data
   
-  * `onebusaway-gtfs-transformer-cli` - Command-line utility for transforming GTFS - see {{{./onebusaway-gtfs-transformer-cli.html}the full documentation}}.
+  * `onebusaway-gtfs-transformer-cli` - Command-line utility for transforming GTFS - see [the full documentation](./onebusaway-gtfs-transformer-cli.html).
 
   * `onebusaway-gtfs-merge` - Tools for merging GTFS data
   
-  * `onebusaway-gtfs-merge-cli` - Command-line utility for merging GTFS feeds - see {{{./onebusaway-gtfs-merge-cli.html}the full documentation}}.
+  * `onebusaway-gtfs-merge-cli` - Command-line utility for merging GTFS feeds - see [the full documentation](./onebusaway-gtfs-merge-cli.html).
 
 Documentation
 
-  You can access the {{{./apidocs/index.html}latest Javadoc for the library}}.  Also, see example source code below.
+  You can access the [latest Javadoc for the library](./apidocs/index.html).  Also, see example source code below.
 
 Using in Maven
 
@@ -50,7 +50,7 @@ Using in Maven
 ```
 
 #if( $currentVersion.contains('SNAPSHOT') )
-  To use a SNAPSHOT version of the library, you'll need to {{{https://github.com/OneBusAway/onebusaway/wiki/Maven-Repository}add a reference to the OneBusAway Maven repository}}.
+  To use a SNAPSHOT version of the library, you'll need to [add a reference to the OneBusAway Maven repository](https://github.com/OneBusAway/onebusaway/wiki/Maven-Repository).
 #end
 
 Example Code
@@ -105,11 +105,11 @@ public class GtfsReaderExampleMain {
 }
 ```
 
-  Notice that the {{{./apidocs/org/onebusaway/gtfs/serialization/GtfsReader.html}GtfsReader}} does the bulk of the work of reading the GTFS feed.  The general pattern is to create the reader, set the input file, and call `run()` to start the reading process.  You can manage the resulting GTFS entities in a couple of ways:
+  Notice that the [GtfsReader](./apidocs/org/onebusaway/gtfs/serialization/GtfsReader.html) does the bulk of the work of reading the GTFS feed.  The general pattern is to create the reader, set the input file, and call `run()` to start the reading process.  You can manage the resulting GTFS entities in a couple of ways:
 
-  * Register an {{{../../onebusaway-csv-entities/${onebusaway_csv_entities_version}/apidocs/org/onebusaway/csv_entities/EntityHandler.html}EntityHandler}} to handle entities as they are read
+  * Register an [EntityHandler](../../onebusaway-csv-entities/${onebusaway_csv_entities_version}/apidocs/org/onebusaway/csv_entities/EntityHandler.html) to handle entities as they are read
   
-  * Use an instance of {{{./apidocs/org/onebusaway/gtfs/services/GenericMutableDao.html}GenericMutableDao}} to examine the loaded entities after reading is complete
+  * Use an instance of [GenericMutableDao](./apidocs/org/onebusaway/gtfs/services/GenericMutableDao.html) to examine the loaded entities after reading is complete
 
 
 * Basic Writing
@@ -247,7 +247,7 @@ stop_id,stop_name,stop_lat,stop_lon,extra_stop_info
 123,Some Station,47.0,-122.0,This is a cool transit station
 ```
 
-  The `extra_stop_info` field isn't included in the the {{{./apidocs/org/onebusaway/gtfs/model/Stop.html}Stop}} data
+  The `extra_stop_info` field isn't included in the the [Stop](./apidocs/org/onebusaway/gtfs/model/Stop.html) data
 model by default.  So instead, we define a special `StopExtension` Java bean type with the new field:
 
 ```
@@ -280,6 +280,6 @@ System.out.println(extension.getExtraStopInfo());
 ```
 
   For more information on defining the mapping from GTFS fields to Java beans, see documentation for
-the {{{https://github.com/OneBusAway/onebusaway-csv-entities}onebusaway-csv-entities}} project,
-including the {{{../../onebusaway-csv-entities/${onebusaway_csv_entities_version}/apidocs/org/onebusaway/csv_entities/schema/annotations/CsvField.html}@CsvField}}
+the [onebusaway-csv-entities](https://github.com/OneBusAway/onebusaway-csv-entities) project,
+including the [@CsvField](../../onebusaway-csv-entities/${onebusaway_csv_entities_version}/apidocs/org/onebusaway/csv_entities/schema/annotations/CsvField.html)
 annotation documentation.    

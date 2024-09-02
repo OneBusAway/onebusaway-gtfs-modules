@@ -47,6 +47,11 @@
 
   <repositories>
     <repository>
+      <id>central2</id>
+      <name>Check central first to avoid a lot of not found warnings</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
+    <repository>
       <id>repo.camsys-apps.com</id>
       <url>https://repo.camsys-apps.com/third-party/</url>
     </repository>

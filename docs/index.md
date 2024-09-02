@@ -1,26 +1,22 @@
-onebusaway-gtfs-modules
+# onebusaway-gtfs-modules
 
   We provide a Java library for reading and writing {{{https://developers.google.com/transit/gtfs} GTFS}} feeds, including database support.
   
-  <<Current Version:>> ${currentVersion}
-
-  Details on all releases can be found in the {{{./release-notes.html}Release Notes}}.
-  
   The library is broken up into a few key modules:
   
-  * <<<onebusaway-gtfs>>> - The core library for reading and writing GTFS
+  * `onebusaway-gtfs` - The core library for reading and writing GTFS
   
-  * <<<onebusaway-gtfs-hibernate>>> - Support for {{{http://www.hibernate.org/}Hibernate}} database persistence of GTFS data
+  * `onebusaway-gtfs-hibernate` - Support for {{{http://www.hibernate.org/}Hibernate}} database persistence of GTFS data
   
-  * <<<onebusaway-gtfs-hibernate-cli>>> - Command-line utilty for loading GTFS feeds into a database - see {{{./onebusaway-gtfs-hibernate-cli.html}the full documentation}}. 
+  * `onebusaway-gtfs-hibernate-cli` - Command-line utilty for loading GTFS feeds into a database - see {{{./onebusaway-gtfs-hibernate-cli.html}the full documentation}}. 
   
-  * <<<onebusaway-gtfs-transformer>>> - Tools for transforming GTFS data
+  * `onebusaway-gtfs-transformer` - Tools for transforming GTFS data
   
-  * <<<onebusaway-gtfs-transformer-cli>>> - Command-line utility for transforming GTFS - see {{{./onebusaway-gtfs-transformer-cli.html}the full documentation}}.
+  * `onebusaway-gtfs-transformer-cli` - Command-line utility for transforming GTFS - see {{{./onebusaway-gtfs-transformer-cli.html}the full documentation}}.
 
-  * <<<onebusaway-gtfs-merge>>> - Tools for merging GTFS data
+  * `onebusaway-gtfs-merge` - Tools for merging GTFS data
   
-  * <<<onebusaway-gtfs-merge-cli>>> - Command-line utility for merging GTFS feeds - see {{{./onebusaway-gtfs-merge-cli.html}the full documentation}}.
+  * `onebusaway-gtfs-merge-cli` - Command-line utility for merging GTFS feeds - see {{{./onebusaway-gtfs-merge-cli.html}the full documentation}}.
 
 Documentation
 
@@ -30,7 +26,7 @@ Using in Maven
 
   The library is available as a Maven module.  Simply add the following dependencies:
 
-+---+
+```
 <dependencies>
     <!-- Core GTFS Library -->
     <dependency>
@@ -51,7 +47,7 @@ Using in Maven
         <version>${currentVersion}</version>
     </dependency>
 </dependencies>
-+---+
+```
 
 #if( $currentVersion.contains('SNAPSHOT') )
   To use a SNAPSHOT version of the library, you'll need to {{{https://github.com/OneBusAway/onebusaway/wiki/Maven-Repository}add a reference to the OneBusAway Maven repository}}.
@@ -63,7 +59,7 @@ Example Code
 
   Let's introduce basic code for reading a GTFS feed and handling the resulting entities:
 
-+---+
+```
 public class GtfsReaderExampleMain {
 
   public static void main(String[] args) throws IOException {
@@ -107,7 +103,7 @@ public class GtfsReaderExampleMain {
     }
   }
 }
-+---+
+```
 
   Notice that the {{{./apidocs/org/onebusaway/gtfs/serialization/GtfsReader.html}GtfsReader}} does the bulk of the work of reading the GTFS feed.  The general pattern is to create the reader, set the input file, and call `run()` to start the reading process.  You can manage the resulting GTFS entities in a couple of ways:
 
@@ -118,7 +114,7 @@ public class GtfsReaderExampleMain {
 
 * Basic Writing
 
-+---+
+```
 public class GtfsWriterExampleMain {
 
   public static void main(String[] args) throws IOException {
@@ -146,17 +142,17 @@ public class GtfsWriterExampleMain {
     writer.close();
   }
 }
-+---+
+```
 
 * Basic Database Reading
 
-  The class <<<org.onebusaway.gtfs.examples.GtfsHibernateReaderExampleMain>>> in the
-<<<onebusaway-gtfs-hibernate/src/test/java>>> directory includes basic code for reading
+  The class `org.onebusaway.gtfs.examples.GtfsHibernateReaderExampleMain` in the
+`onebusaway-gtfs-hibernate/src/test/java` directory includes basic code for reading
 a GTFS feed into a database and querying the resulting entities.
 
   The sample code has been summarized for length and clarity:
 
-+---+
+```
 public class GtfsHibernateReaderExampleMain {
 
   public static void main(String[] args) throws IOException {
@@ -200,10 +196,10 @@ public class GtfsHibernateReaderExampleMain {
     return new HibernateGtfsFactory(sessionFactory);
   }
 }
-+---+
+```
 
   This code is roughly similar to the example reader code for
-<<<onebusaway-gtfs>>>, with the main difference being the use of <<<HibernateGtfsFactory>>>, which is a convenience
+`onebusaway-gtfs`, with the main difference being the use of `HibernateGtfsFactory`, which is a convenience
 factory for creating database-aware DAOs.
 
 
@@ -214,13 +210,13 @@ it to use a different database and you totally can.  See {{http://hibernate.org/
 Hibernate, but also check out the default hibernate config file used in the example above.  It's located in the following
 directory:
 
-+---+
+```
 onebusaway-gtfs-hibernate/src/test/resources/org/onebusaway/gtfs/examples/hibernate-configuration-examples.xml
-+---+
+```
 
   The contents look like:
 
-+---+
+```
 <?xml version='1.0' encoding='utf-8'?>
 <hibernate-configuration>
     <session-factory>
@@ -236,25 +232,25 @@ onebusaway-gtfs-hibernate/src/test/resources/org/onebusaway/gtfs/examples/hibern
         <!-- More config options removed for brevity -->
     </session-factory>
 </hibernate-configuration>
-+---+
+```
 
   Here you can configure the data source used for the database connection along with the Hibernate dialect.
   
 * Reading Custom Fields
 
-  Does your GTFS feed have custom fields not defined by the core <<<onebusaway-gtfs>>> library?  It's possible
+  Does your GTFS feed have custom fields not defined by the core `onebusaway-gtfs` library?  It's possible
 to read and write this data without modify OBA source code using the "extensions" mechanism.  Consider a
-<<<stops.txt>>> file with a custom <<<extra_stop_info>>> field:
+`stops.txt` file with a custom `extra_stop_info` field:
 
-+---+
+```
 stop_id,stop_name,stop_lat,stop_lon,extra_stop_info
 123,Some Station,47.0,-122.0,This is a cool transit station
-+---+
+```
 
-  The <<<extra_stop_info>>> field isn't included in the the {{{./apidocs/org/onebusaway/gtfs/model/Stop.html}Stop}} data
-model by default.  So instead, we define a special <<<StopExtension>>> Java bean type with the new field:
+  The `extra_stop_info` field isn't included in the the {{{./apidocs/org/onebusaway/gtfs/model/Stop.html}Stop}} data
+model by default.  So instead, we define a special `StopExtension` Java bean type with the new field:
 
-+---+
+```
 public static class StopExtension {
   @CsvField(optional = true)
   private String extraStopInfo;
@@ -262,26 +258,26 @@ public static class StopExtension {
   public String getExtraStopInfo() { ... }
   public void setExtraStopInfo(String info) { ... }
 }
-+---+
+```
 
   We can now register our class as an extension of the default stop data model:
 
-+---+
+```
 DefaultEntitySchemaFactory factory = GtfsEntitySchemaFactory.createEntitySchemaFactory();
 factory.addExtension(Stop.class, StopExtension.class);
     
 GtfsReader reader = new GtfsReader();
 reader.setEntitySchemaFactory(factory);
-+---+
+```
 
-  Now when you read your GTFS feed with the <<<GtfsReader>>> instance, <<<StopExtension>>> objects
+  Now when you read your GTFS feed with the `GtfsReader` instance, `StopExtension` objects
 will automatically be created, populated, and attached to stops as they are read:
 
-+---+
+```
 Stop stop = dao.getStopForId(...);
 StopExtension extension = stop.getExtension(StopExtension.class);
 System.out.println(extension.getExtraStopInfo());
-+---+
+```
 
   For more information on defining the mapping from GTFS fields to Java beans, see documentation for
 the {{{https://github.com/OneBusAway/onebusaway-csv-entities}onebusaway-csv-entities}} project,

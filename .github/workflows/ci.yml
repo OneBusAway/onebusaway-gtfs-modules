@@ -22,12 +22,12 @@ jobs:
     - name: Test project with Maven
       run: mvn --no-transfer-progress test package
 
-    - name: Build documentation
-      run: mvn --no-transfer-progress site
-
-    - name: Deploy documentation to Github Pages
-      # only deploy after merging to master
-      if: github.repository_owner == 'OneBusAway' && github.event_name == 'push' && github.ref == 'refs/heads/master'
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        folder: target/site/
+#    - name: Build documentation
+#      run: mvn --no-transfer-progress site
+#
+#    - name: Deploy documentation to Github Pages
+#      # only deploy after merging to master
+#      if: github.repository_owner == 'OneBusAway' && github.event_name == 'push' && github.ref == 'refs/heads/master'
+#      uses: JamesIves/github-pages-deploy-action@v4
+#      with:
+#        folder: target/site/

@@ -61,43 +61,11 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int departureTime = MISSING_VALUE;
 
-  /**
-   * @deprecated
-   * GTFS-Flex v2.1 renamed this field. Use {@link #startPickupDropOffWindow} instead.
-   */
-  @Deprecated
-  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
-  private int minArrivalTime = MISSING_VALUE;
-
   @CsvField(optional = true, name = "start_pickup_drop_off_window", mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
   private int startPickupDropOffWindow = MISSING_VALUE;
 
-  /**
-   * @deprecated
-   * GTFS-Flex v2.1 renamed "dropoff" to "drop off": https://github.com/MobilityData/gtfs-flex/commit/547200dfb580771265ae14b07d9bfd7b91c16ed2
-   */
-  @Deprecated
-  @CsvField(optional = true, name = "start_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
-  public int oldSpellingOfStartPickupDropOffWindow = MISSING_VALUE;
-
-  /**
-   * @deprecated
-   * GTFS-Flex v2.1 renamed this field. Use {@link #endPickupDropOffWindow} instead.
-   */
-  @Deprecated
-  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
-  private int maxDepartureTime = MISSING_VALUE;
-
   @CsvField(optional = true, name = "end_pickup_drop_off_window", mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
   private int endPickupDropOffWindow = MISSING_VALUE;
-
-  /**
-   * @deprecated
-   * GTFS-Flex v2.1 renamed "dropoff" to "drop off": https://github.com/MobilityData/gtfs-flex/commit/547200dfb580771265ae14b07d9bfd7b91c16ed2
-   */
-  @Deprecated
-  @CsvField(optional = true, name = "end_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
-  public int oldSpellingOfEndPickupDropOffWindow = MISSING_VALUE;
 
   @CsvField(optional = true, defaultValue = "-999")
   private int timepoint = MISSING_VALUE;
@@ -192,9 +160,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.dropOffType = st.dropOffType;
     this.id = st.id;
     this.pickupType = st.pickupType;
-    this.minArrivalTime = st.minArrivalTime;
     this.startPickupDropOffWindow = st.startPickupDropOffWindow;
-    this.maxDepartureTime = st.maxDepartureTime;
     this.endPickupDropOffWindow = st.endPickupDropOffWindow;
     this.continuousPickup = st.continuousPickup;
     this.continuousDropOff = st.continuousDropOff;
@@ -411,50 +377,17 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.departureTime = MISSING_VALUE;
   }
 
-  @Deprecated
-  public int getMinArrivalTime() {
-    return minArrivalTime;
-  }
-
-  @Deprecated
-  public void setMinArrivalTime(int minArrivalTime) {
-    this.minArrivalTime = minArrivalTime;
-  }
 
   public int getStartPickupDropOffWindow() {
-    if (startPickupDropOffWindow != MISSING_VALUE) {
-      return startPickupDropOffWindow;
-    } else if(oldSpellingOfStartPickupDropOffWindow != MISSING_VALUE){
-      return oldSpellingOfStartPickupDropOffWindow;
-    } else {
-      return minArrivalTime;
-    }
+    return startPickupDropOffWindow;
   }
 
   public void setStartPickupDropOffWindow(int startPickupDropOffWindow) {
     this.startPickupDropOffWindow = startPickupDropOffWindow;
   }
 
-  @Deprecated
-  public int getMaxDepartureTime() {
-    return maxDepartureTime;
-  }
-
-  @Deprecated
-  public void setMaxDepartureTime(int maxDepartureTime) {
-    this.maxDepartureTime = maxDepartureTime;
-  }
-
   public int getEndPickupDropOffWindow() {
-    if (endPickupDropOffWindow != MISSING_VALUE) {
-      return endPickupDropOffWindow;
-    }
-    else if (oldSpellingOfEndPickupDropOffWindow != MISSING_VALUE) {
-      return oldSpellingOfEndPickupDropOffWindow;
-    }
-    else {
-      return maxDepartureTime;
-    }
+    return endPickupDropOffWindow;
   }
 
   public void setEndPickupDropOffWindow(int endPickupDropOffWindow) {
@@ -806,30 +739,5 @@ public final class StopTime extends IdentityBean<Integer> implements
     }
     this.freeRunningFlag = freeRunningFlag;
   }
-  @Deprecated
-  public void setOldSpellingOfStartPickupDropOffWindow(int time) {
-    oldDropOffSpellingWarning("start");
-    this.oldSpellingOfStartPickupDropOffWindow = time;
-  }
 
-  @Deprecated
-  public void setOldSpellingOfEndPickupDropOffWindow(int time) {
-    oldDropOffSpellingWarning("end");
-    this.oldSpellingOfEndPickupDropOffWindow = time;
-  }
-
-  private static void oldDropOffSpellingWarning(String type) {
-    _log.warn("This feed uses the old spelling of '{}_pickup_drop_off_window' ('dropoff' instead of 'drop_off'). "
-            + "Compatibility will be removed in the future, so please update your feed to be in line with the latest Flex V2 spec:"
-            + " https://github.com/MobilityData/gtfs-flex/commit/547200dfb", type);
-  }
-  @Deprecated
-  public int getOldSpellingOfStartPickupDropOffWindow() {
-    return this.oldSpellingOfStartPickupDropOffWindow;
-  }
-
-  @Deprecated
-  public int getOldSpellingOfEndPickupDropOffWindow() {
-    return oldSpellingOfEndPickupDropOffWindow;
-  }
 }

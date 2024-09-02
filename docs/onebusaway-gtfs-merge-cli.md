@@ -1,8 +1,4 @@
- ------
-GTFS Merge Command-Line Application
- ------
- ------
- ------
+# GTFS Merge Command-Line Application
 
 Introduction
 

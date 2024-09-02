@@ -1,10 +1,4 @@
- ------
-GTFS Transformation Command-Line Application
- ------
-Brian Ferris
- ------
-2011-08-17
- ------
+# GTFS Transformation Command-Line Application
 
 ## Introduction
 
@@ -16,8 +10,10 @@ The `onebusaway-gtfs-transformer-cli` command-line application is a simple comma
   * Java 11 or greater
 
 ### Getting the Application
-You can download the application here:
 
+You can download the application from Maven Central: https://repo1.maven.org/maven2/org/onebusaway/onebusaway-gtfs-transformer-cli/
+
+Select the largest jar file from the version you would like to use, for example https://repo1.maven.org/maven2/org/onebusaway/onebusaway-gtfs-transformer-cli/2.0.0/onebusaway-gtfs-transformer-cli-2.0.0.jar
   
 ### Using the Application
 

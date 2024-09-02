@@ -32,6 +32,8 @@
     <onebusaway_collections_version>1.2.8</onebusaway_collections_version>
     <slf4j_version>2.0.6</slf4j_version>
     <onebusaway_cloud_version>0.0.13</onebusaway_cloud_version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
   <scm>

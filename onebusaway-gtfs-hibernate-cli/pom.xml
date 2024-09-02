@@ -4,6 +4,7 @@
     <groupId>org.onebusaway</groupId>
     <artifactId>onebusaway-gtfs-modules</artifactId>
     <version>1.4.19-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>onebusaway-gtfs-hibernate-cli</artifactId>
   <name>onebusaway-gtfs-hibernate-cli</name>

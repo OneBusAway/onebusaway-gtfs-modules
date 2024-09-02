@@ -244,17 +244,6 @@
           </dependency>
         </dependencies>
       </plugin>
-      <plugin>
-        <groupId>com.mycila</groupId>
-        <artifactId>license-maven-plugin</artifactId>
-        <configuration>
-          <header>LICENSE.txt</header>
-          <excludes combine.children="append">
-            <exclude>**/ci.yml</exclude>
-            <exclude>**/simplelogger.properties</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 </project>

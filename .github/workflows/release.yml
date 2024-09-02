@@ -1,0 +1,18 @@
+name: Create Github release
+
+on:
+  push:
+    tags:
+      - "onebusaway-gtfs-modules-*.*.*"
+
+permissions:
+  contents: write
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Release
+        uses: softprops/action-gh-release@v2

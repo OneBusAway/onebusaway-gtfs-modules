@@ -1,2 +1,2 @@
 release:
-	mvn release:prepare release:perform -Dgoals=deploy release:clean
+	mvn release:clean release:prepare release:perform -Dgoals=deploy release:clean

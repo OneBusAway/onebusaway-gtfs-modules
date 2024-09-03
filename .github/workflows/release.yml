@@ -14,7 +14,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - run: |
+          release_name=echo "{{github.ref_name}}" | sed -e "s/onebusaway-gtfs-modules-//"
+          echo "RELEASE_NAME=$release_name" >> $GITHUB_ENV
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
+          name: {{ env.RELEASE_NAME }}

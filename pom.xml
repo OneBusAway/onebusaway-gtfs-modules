@@ -46,25 +46,6 @@
     <url>https://github.com/OneBusAway/onebusaway-gtfs-modules/issues</url>
   </issueManagement>
 
-  <repositories>
-    <repository>
-      <id>central2</id>
-      <name>Check central first to avoid a lot of not found warnings</name>
-      <url>https://repo.maven.apache.org/maven2</url>
-    </repository>
-    <repository>
-      <id>repo.camsys-apps.com</id>
-      <url>https://repo.camsys-apps.com/third-party/</url>
-    </repository>
-    <repository>
-      <id>releases-camsys-public-repo</id>
-      <url>https://repo.camsys-apps.com/releases/</url>
-    </repository>
-    <repository>
-      <id>snapshots-camsys-public-repo</id>
-      <url>https://repo.camsys-apps.com/snapshots/</url>
-    </repository>
-  </repositories>
 
   <modules>
     <module>onebusaway-csv-entities</module>

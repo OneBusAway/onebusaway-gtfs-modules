@@ -27,12 +27,12 @@
   </developers>
 
   <properties>
-    <onebusaway_csv_entities_version>1.1.7</onebusaway_csv_entities_version>
-    <onebusaway_collections_version>1.2.8</onebusaway_collections_version>
-    <slf4j_version>2.0.6</slf4j_version>
-    <onebusaway_cloud_version>0.0.13</onebusaway_cloud_version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <onebusaway_csv_entities_version>1.1.7</onebusaway_csv_entities_version>
+    <onebusaway_collections_version>1.2.8</onebusaway_collections_version>
+    <slf4j.version>2.0.6</slf4j.version>
+    <onebusaway_cloud_version>0.0.13</onebusaway_cloud_version>
     <junit.version>5.11.0</junit.version>
   </properties>
 
@@ -74,7 +74,6 @@
     <module>onebusaway-gtfs-hibernate-cli</module>
     <module>onebusaway-gtfs-transformer</module>
     <module>onebusaway-gtfs-transformer-cli</module>
-    <!--module>onebusaway-gtfs-transformer-cli-aws</module-->
     <module>onebusaway-gtfs-merge</module>
     <module>onebusaway-gtfs-merge-cli</module>
   </modules>
@@ -106,17 +105,17 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j</artifactId>
-        <version>${slf4j_version}</version>
+        <version>${slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>${slf4j_version}</version>
+        <version>${slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <version>${slf4j_version}</version>
+        <version>${slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>

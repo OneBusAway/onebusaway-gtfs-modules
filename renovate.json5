@@ -29,17 +29,8 @@
     {
       "description": "Automerge Maven plugins in a single PR",
       "groupName": "Maven plugins",
-      "matchPackageNames": [
-        "io.github.git-commit-id:git-commit-id-maven-plugin",
-        "org.apache.maven.plugins:maven-gpg-plugin",
-        "org.codehaus.mojo:build-helper-maven-plugin",
-        "org.apache.maven.plugins:maven-source-plugin",
-        "com.hubspot.maven.plugins:prettier-maven-plugin",
-        "com.google.cloud.tools:jib-maven-plugin",
-        "org.apache.maven.plugins:maven-shade-plugin",
-        "org.apache.maven.plugins:maven-compiler-plugin",
-        "org.apache.maven.plugins:maven-jar-plugin",
-        "org.sonatype.plugins:nexus-staging-maven-plugin"
+      "matchPackagePrefixes": [
+        "org.apache.maven.plugins:"
       ],
       "schedule": "on the 23rd day of the month",
       "automerge": true

@@ -1,0 +1,115 @@
+<!--
+
+    Copyright (C) 2013 Google, Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<html>
+<body>
+	<p>The onebusaway-csv-entities project provides a library for
+		mapping between CSV data files and Java objects, both for reading and
+		writing.</p>
+	<h2>Example</h2>
+
+	<p>Consider the following CSV data file, "employees.csv":
+	<pre>id,first_name,last_name,office,phone
+123,Alice,Brown,New York,555-1234
+456,Bob,Smith,San Francisco,</pre>
+
+	<p>Here, our CSV data file defines a number of employee records,
+		with a header defining the fields of the file and each row
+		representing an employee. Let's say we wanted to map those employee
+		records to the following class:</p>
+
+	<pre>class Employee {
+  private int id;
+  private String firstName;
+  private String lastName;
+  private String office;
+  private String phone;
+}</pre>
+
+	<h3>Schema Annotations</h3>
+
+	<p>With a few simple annotations, we can define how to map the Java
+		class to and from CSV:</p>
+
+	<pre>{@literal @}CsvFields(filename="employees.csv")
+class Employee {
+  private int id;
+  private String firstName;
+  private String lastName;
+  private String office;
+  {@literal @}CsvField(optional=true)
+  private String phone;
+}</pre>
+
+	<p>
+		The primary annotation is <a
+			href="org/onebusaway/csv_entities/schema/annotations/CsvFields.html">@CsvFields</a>,
+		which indicates that the Java file can be mapped to and from entries
+		in a CSV file. We even define the name of the file that should be
+		written and read.
+	</p>
+
+	<p>
+		By default, we map each field of the Java file to a field in the CSV
+		file. Each field is considered required by default, which means the
+		parser will throw an exception if a blank field value is found in the
+		input CSV (or in the Java object, when writing CSV). However, in our
+		example, not all phone number fields have been specified. So we
+		annotate the field with a <a
+			href="org/onebusaway/csv_entities/schema/annotations/CsvField.html">@CsvField</a>
+		annotation, marking the field as optional. @CsvField annotations can
+		be used to control how fields are serialized to and from CSV.
+	</p>
+
+	<h3>Reading Objects</h3>
+
+	<p>Now that we've annotated our Java class, let's see how to read
+		and build Java object instances from CSV data.</p>
+
+	<pre>CsvEntityReader reader = new CsvEntityReader();
+reader.addEntityHandler(new EntityHandler() { ... });
+reader.readEntities(Employee.class, new FileReader("/path/to/employees.csv"));</pre>
+
+	<p>
+		First, we create a new <a
+			href="org/onebusaway/csv_entities/CsvEntityReader.html">CsvEntityReader</a>
+		object, which will do the heavy-lifting of reading CSV data and
+		converting it into Java objects. Second, we register a new <a
+			href="org/onebusaway/csv_entities/EntityHandler.html">EntityHandler</a>
+		instance. EntityHandler is just an interface with a single method,
+		"handleEntity", that gets called for each new Java entity created from
+		a CSV data row. Provide your own implementation to handle entities as
+		they are read and created. Finally, we direct the reader to read
+		entities of our annotated type from the specified file.
+	</p>
+
+	<h3>Writing Objects</h3>
+
+	<p>Writing entities is just as simple:</p>
+
+	<pre>CsvEntityWriterFactory factory = new CsvEntityWriterFactory();
+CsvEntityWriter writer = factory.createWriter(Employee.class, new FileWriter("/path/to/employees.csv"));
+writer.handleEntity(new Employee());
+writer.close();</pre>
+
+	<h2>Next Steps</h2>
+
+	<p>The OneBusAway CSV entities library can do a whole lot more than
+		reading and writing simple Java objects from CSV. Read the JavaDoc
+		documentation for more details.</p>
+</body>
+</html>

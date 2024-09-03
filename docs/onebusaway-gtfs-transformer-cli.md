@@ -1,5 +1,35 @@
 # GTFS Transformation Command-Line Application
 
+<!-- TOC -->
+* [GTFS Transformation Command-Line Application](#gtfs-transformation-command-line-application)
+  * [Introduction](#introduction)
+    * [Requirements](#requirements)
+    * [Getting the Application](#getting-the-application)
+    * [Using the Application](#using-the-application)
+    * [Arguments](#arguments)
+    * [Transform Syntax](#transform-syntax)
+    * [Matching](#matching-)
+    * [Regular Expressions](#regular-expressions)
+    * [Compound Property Expressions](#compound-property-expressions)
+    * [Multi-Value Matches](#multi-value-matches)
+    * [Collection-Like Entities](#collection-like-entities)
+    * [Types of Transforms](#types-of-transforms)
+      * [Add an Entity](#add-an-entity)
+      * [Update an Entity](#update-an-entity)
+      * [Find/Replace](#findreplace)
+      * [Path Expressions](#path-expressions-)
+      * [Retain an Entity](#retain-an-entity)
+      * [Remove an Entity](#remove-an-entity)
+      * [Trim a Trip](#trim-a-trip)
+      * [Generate Stop Times](#generate-stop-times)
+      * [Extend Service Calendars](#extend-service-calendars)
+      * [Deduplicate Calendar Entries](#deduplicate-calendar-entries)
+      * [Merge Trips and Simplify Calendar Entries](#merge-trips-and-simplify-calendar-entries)
+      * [Shift Negative Stop Times](#shift-negative-stop-times)
+      * [Arbitrary Transform](#arbitrary-transform)
+    * [How to Reduce your GTFS](#how-to-reduce-your-gtfs)
+<!-- TOC -->
+
 ## Introduction
 
 The `onebusaway-gtfs-transformer-cli` command-line application is a simple command-line tool for transforming
@@ -7,7 +37,7 @@ The `onebusaway-gtfs-transformer-cli` command-line application is a simple comma
 
 ### Requirements
   
-  * Java 11 or greater
+  * Java 17 or greater
 
 ### Getting the Application
 
@@ -25,7 +55,7 @@ java -jar onebusaway-gtfs-transformer-cli.jar [-args] input_gtfs_path ... output
 
 `input_gtfs_path` and `output_gtfs_path` can be either a directory containing a GTFS feed or a .zip file.
 
-  <<Note>>: Transforming large GTFS feeds is processor and memory intensive.  You'll likely need to increase the
+_Note_: Transforming large GTFS feeds is processor and memory intensive.  You'll likely need to increase the
 max amount of memory allocated to Java with an option like `-Xmx1G` or greater.  Adding the `-server` argument 
 if you are running the Oracle or OpenJDK can also increase performance. 
 
@@ -172,7 +202,7 @@ You can update arbitrary fields of a GTFS entity.
 Normally, update values are used as-is.  However, we support a number of
 special update operations:
   
-### Find/Replace
+#### Find/Replace
 
 ```
 {"op":"update", "match":{"file":"trips.txt"}, "update":{"trip_short_name":"s/North/N/"}}
@@ -188,7 +218,7 @@ following example:
   
 Here, a trip with a headsign of `North Seattle` will be updated to `N Seattle`.
   
-### Path Expressions 
+#### Path Expressions 
 
 By using `path(...)` syntax in the update value, the expression will be
 treated as a compound Java bean properties path expression.  This path
@@ -203,7 +233,7 @@ Here, the `trip_short_name` field is updated for each trip in the feed.
 The value will be copied from the `route_long_name` field of each trip's
 associated route.
 
-### Retain an Entity
+#### Retain an Entity
 
 We also provide a powerful mechanism for selecting just a sub-set of a feed.  
 You can apply retain operations to entities you wish to keep and all the supporting entities referenced 
@@ -228,7 +258,7 @@ example:
 {"op":"retain","match":{"file":"routes.txt", "route_short_name":"B15"}, "retainBlocks":false}
 ```
 
-### Remove an Entity
+#### Remove an Entity
 
 You can remove a specific entity from a feed.
 
@@ -239,7 +269,7 @@ You can remove a specific entity from a feed.
 Note that removing an entity has a cascading effect.  If you remove a trip, all the stop times that depend on that
 trip will also be removed.  If you remove a route, all the trips and stop times for that route will be removed.
   
-### Trim a Trip
+#### Trim a Trip
 
 You can remove stop times from the beginning or end of a trip using the "trim_trip" operation.  Example:
   
@@ -260,7 +290,7 @@ Or both:
 {"op":"trim_trip", "match":{"file":"trips.txt", "route_id":"R10"}, "to_stop_id":"125S", "from_stop_id":"138S"}
 ```
 
-### Generate Stop Times
+#### Generate Stop Times
 
 You can generate stop time entries for a trip.  Example:
   
@@ -273,7 +303,7 @@ stops.  The departure time for the first stop will be set from the `start_time` 
 be set from the `end_time` field, and the times for intermediate stops will be interpolated based on their distance along the
 trip.
 
-### Extend Service Calendars
+#### Extend Service Calendars
 
 Sometimes you need to extend the service dates in a GTFS feed, perhaps in order to temporarily extend an expired feed.  Extending
 the feed by hand can be a tedious task, especially when the feed uses a complex combination of `calendar.txt` and `calendar_dates.txt`
@@ -309,7 +339,7 @@ _Note_: We don't make any effort to extend canceled service dates, as specified 
 other special events.  It's too tricky to automatically determine how they should be handled.  You may need to still handle
 those manually. 
 
-### Deduplicate Calendar Entries
+#### Deduplicate Calendar Entries
 
 Finds GTFS service_ids that have the exact same set of active days and consolidates each set of duplicated
 ids to a single service_id entry.
@@ -318,7 +348,7 @@ ids to a single service_id entry.
 {"op":"deduplicate_service_ids"}
 ```
   
-### Merge Trips and Simplify Calendar Entries
+#### Merge Trips and Simplify Calendar Entries
 
 Some agencies model their transit schedule favoring multiple entries in calendar_dates.txt as opposed to a more concise
 entry in calendar.txt.  A smaller number of agencies take this scheme even further, creating trips.txt entries for each
@@ -355,7 +385,7 @@ The transform takes additional optional arguments to control its behavior:
     where appropriate.
   
     
-### Shift Negative Stop Times
+#### Shift Negative Stop Times
 
 Some agencies have trips that they model as starting BEFORE midnight on a given service date.  For these agencies, it
 would be convenient to represent these trips with negative arrival and departure times in stop_times.txt.  The GTFS spec and
@@ -403,13 +433,13 @@ _A note on negative stop times:_ When writing negative stop times, the negative 
 {"op":"last_stop_to_headsign"}
 ```
 
-### Arbitrary Transform
+#### Arbitrary Transform
 
 We also allow you to specify arbitrary transformations as well.  Here, you specify your transformation class and we will
 automatically instantiate it for use in the transform pipeline.
 
 ```
-{"op":"transform", "class":"some.class.implementing.GtfsTranformStrategy"}
+{"op":"transform", "class":"some.class.implementing.GtfsTransformStrategy"}
 ```
 
 We additionally provide a mechanism for setting additional properties of the transform.  For all additional properties

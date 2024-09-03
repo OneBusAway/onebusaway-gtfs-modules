@@ -33,6 +33,7 @@
     <onebusaway_cloud_version>0.0.13</onebusaway_cloud_version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <junit.version>5.11.0</junit.version>
   </properties>
 
   <scm>
@@ -120,7 +121,7 @@
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
-        <version>5.6.2</version>
+        <version>${junit.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>

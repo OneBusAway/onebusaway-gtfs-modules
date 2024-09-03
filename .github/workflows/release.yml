@@ -3,7 +3,7 @@ name: Create Github release
 on:
   push:
     tags:
-      - "onebusaway-gtfs-modules-*.*.*"
+      - "v*.*.*"
 
 permissions:
   contents: write

@@ -12,12 +12,6 @@
     <version>3.1.1-SNAPSHOT</version>
   </parent>
 
-  <properties>
-    <!-- We don't always want to deploy the packaged jar to main maven repo, since it includes all the project dependencies and 
-      is quite large -->
-    <skip-deploy-onebusaway-gtfs-transformer-cli-jar>false</skip-deploy-onebusaway-gtfs-transformer-cli-jar>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.onebusaway</groupId>

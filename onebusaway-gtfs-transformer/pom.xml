@@ -51,12 +51,12 @@
     <dependency>
       <groupId>org.onebusaway</groupId>
       <artifactId>onebusaway-cloud-api</artifactId>
-      <version>${onebusaway_cloud_version}</version>
+      <version>${onebusaway.cloud.version}</version>
     </dependency>
     <dependency>
       <groupId>org.onebusaway</groupId>
       <artifactId>onebusaway-cloud-noop</artifactId>
-      <version>${onebusaway_cloud_version}</version>
+      <version>${onebusaway.cloud.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.xml.bind</groupId>

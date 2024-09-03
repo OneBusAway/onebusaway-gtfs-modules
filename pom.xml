@@ -29,9 +29,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <onebusaway_csv_entities_version>1.1.7</onebusaway_csv_entities_version>
     <slf4j.version>2.0.16</slf4j.version>
-    <onebusaway_cloud_version>0.0.13</onebusaway_cloud_version>
+    <onebusaway.cloud.version>0.0.13</onebusaway.cloud.version>
     <junit.version>5.11.0</junit.version>
   </properties>
 
@@ -84,13 +83,7 @@
       <dependency>
         <groupId>org.onebusaway</groupId>
         <artifactId>onebusaway-csv-entities</artifactId>
-        <version>${onebusaway_csv_entities_version}</version>
-        <exclusions>
-          <exclusion>
-            <artifactId>slf4j-api</artifactId>
-            <groupId>org.slf4j</groupId>
-          </exclusion>
-        </exclusions>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>

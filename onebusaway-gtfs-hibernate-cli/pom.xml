@@ -11,12 +11,6 @@
   <name>onebusaway-gtfs-hibernate-cli</name>
   <description>A command-line utility for loading GTFS data into a database.</description>
 
-  <properties>
-    <!-- We don't always want to deploy the packaged jar to main maven repo, since it includes all the project dependencies 
-      and is quite large -->
-    <skip-deploy-jar>false</skip-deploy-jar>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.onebusaway</groupId>
@@ -57,22 +51,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>${skip-deploy-jar}</skip>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>oss-distribution</id>
-      <properties>
-        <skip-deploy-jar>true</skip-deploy-jar>
-      </properties>
-    </profile>
-  </profiles>
 </project>

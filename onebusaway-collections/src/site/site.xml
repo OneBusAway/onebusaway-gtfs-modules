@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/DECORATION/1.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd"
+  name="onebusaway-collections">
+  <body>
+    <menu name="onebusaway-collections">
+      <item name="About" href="/index.html" />
+      <item name="Release Notes" href="/release-notes.html" />
+      <item name="API Javadoc" href="/apidocs/index.html" />
+    </menu>
+    <menu ref="reports" />
+  </body>
+</project>

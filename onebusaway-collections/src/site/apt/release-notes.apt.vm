@@ -1,0 +1,60 @@
+Release Notes
+
+* ${currentVersion}
+
+  * Full Documentation: {{${site_base_url}/onebusaway-collections/${currentVersion}/}}
+  
+* 1.2.0
+
+  * Move property-path expression code to new {{{./apidocs/org/onebusaway/collections/beans/package-summary.html}org.onebusaway.collections.beans}}
+    package.
+    
+  * Introduce {{{./apidocs/org/onebusaway/collections/beans/PropertyPathCollectionExpression.html}PropertyPathCollectionExpression}}: provides
+    support for property-path expressions that return multiple values.
+    
+  * Introduce {{{./apidocs/org/onebusaway/collections/beans/PropertyMethodResolver.html}PropertyMethodResolver}}: provides support for custom
+    resolution of property methods in property-path expressions.
+  
+  * Full Documentation: {{${site_base_url}/onebusaway-collections/1.2.0/}}
+  
+* 1.1.3
+
+  * Migration to GitHub.
+
+  * Add additional methods to {{{./apidocs/index.html?org/onebusaway/collections/PropertyPathExpression.html}PropertyPathExpression}}.
+
+  * Full Documentation: {{${site_base_url}/onebusaway-collections/1.1.3/}}
+  
+* 1.1.2
+
+  * Add additional constructors for {{{./apidocs/org/onebusaway/collections/Range.html}Range}}
+
+  * Full Documentation: {{${site_base_url}/onebusaway-collections/1.1.2/}}
+  
+* 1.1.1
+
+  * Documentation tweaks
+
+  * Addition of {{{./apidocs/org/onebusaway/collections/adapter/ListAdapter.html}ListAdapter}} and {{{./apidocs/org/onebusaway/collections/Range.html}Range}} classes
+  
+  * Full Documentation: {{${site_base_url}/onebusaway-collections/1.1.1/}}
+
+* 1.1.0
+
+  * Initial Site Documentation
+  
+  * Bump to require Maven 3
+
+  * FunctionalLibrary - simple filter, grep operations on collections
+
+  * Full Documentation: {{${site_base_url}/onebusaway-collections/1.1.0/}}
+
+* 1.0.4
+
+* 1.0.3
+
+* 1.0.2
+
+* 1.0.1
+
+* 1.0.0

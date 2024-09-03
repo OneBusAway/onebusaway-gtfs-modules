@@ -69,6 +69,7 @@
   </repositories>
 
   <modules>
+    <module>onebusaway-collections</module>
     <module>onebusaway-gtfs</module>
     <module>onebusaway-gtfs-hibernate</module>
     <module>onebusaway-gtfs-hibernate-cli</module>
@@ -235,5 +236,6 @@
       </plugin>
     </plugins>
   </build>
+
 
 </project>

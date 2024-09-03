@@ -68,6 +68,7 @@
   </repositories>
 
   <modules>
+    <module>onebusaway-csv-entities</module>
     <module>onebusaway-collections</module>
     <module>onebusaway-gtfs</module>
     <module>onebusaway-gtfs-hibernate</module>

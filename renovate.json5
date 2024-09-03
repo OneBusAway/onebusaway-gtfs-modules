@@ -1,0 +1,59 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "prConcurrentLimit": 3,
+  "rebaseWhen": "conflicted",
+  "packageRules": [
+    // some dependencies that we auto-merge release very often and even the auto-merges create a lot of
+    // noise, so we slow it down a bit
+    {
+      "description": "Automerge test dependencies in a single PR",
+      "groupName": "Test dependencies",
+      "matchPackageNames": [
+        "org.mockito:mockito-core",
+        "com.tngtech.archunit:archunit",
+        "org.apache.maven.plugins:maven-surefire-plugin",
+        "me.fabriciorby:maven-surefire-junit5-tree-reporter",
+        "com.google.truth:truth",
+        "org.jacoco:jacoco-maven-plugin", // coverage plugin
+        "org.apache.commons:commons-compress" // only used by tests
+      ],
+      "matchPackagePrefixes": [
+        "org.junit.jupiter:",
+      ],
+      "automerge": true,
+      "schedule": "on the 17th day of the month"
+    },
+    {
+      "description": "Automerge Maven plugins in a single PR",
+      "groupName": "Maven plugins",
+      "matchPackageNames": [
+        "io.github.git-commit-id:git-commit-id-maven-plugin",
+        "org.apache.maven.plugins:maven-gpg-plugin",
+        "org.codehaus.mojo:build-helper-maven-plugin",
+        "org.apache.maven.plugins:maven-source-plugin",
+        "com.hubspot.maven.plugins:prettier-maven-plugin",
+        "com.google.cloud.tools:jib-maven-plugin",
+        "org.apache.maven.plugins:maven-shade-plugin",
+        "org.apache.maven.plugins:maven-compiler-plugin",
+        "org.apache.maven.plugins:maven-jar-plugin",
+        "org.sonatype.plugins:nexus-staging-maven-plugin"
+      ],
+      "schedule": "on the 23rd day of the month",
+      "automerge": true
+    },
+    {
+      "description": "Automerge logging dependencies in a single PR",
+      "groupName": "logging dependencies",
+      "matchPackagePrefixes": [
+        "org.slf4j:",
+        "ch.qos.logback:"
+      ],
+      "automerge": true,
+      "schedule": "on the 4th day of the month"
+    }
+  ],
+  "timezone": "Europe/Berlin"
+}

@@ -3,7 +3,7 @@
 
   <groupId>org.onebusaway</groupId>
   <artifactId>onebusaway-gtfs-modules</artifactId>
-  <version>2.0.2-SNAPSHOT</version>
+  <version>2.0.2</version>
   <packaging>pom</packaging>
 
   <name>onebusaway-gtfs-modules</name>
@@ -40,7 +40,7 @@
     <connection>scm:git:https://github.com/OneBusAway/onebusaway-gtfs-modules.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/OneBusAway/onebusaway-gtfs-modules.git</developerConnection>
     <url>https://github.com/OneBusAway/onebusaway-gtfs-modules</url>
-    <tag>HEAD</tag>
+    <tag>onebusaway-gtfs-modules-2.0.2</tag>
   </scm>
 
   <issueManagement>
@@ -217,7 +217,7 @@
         <artifactId>maven-release-plugin</artifactId>
         <version>3.1.1</version>
         <configuration>
-          <autoVersionSubmodules/>
+          <autoVersionSubmodules />
         </configuration>
       </plugin>
       <plugin>

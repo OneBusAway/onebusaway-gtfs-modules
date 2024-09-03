@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.onebusaway</groupId>
@@ -9,12 +10,6 @@
   <artifactId>onebusaway-gtfs-hibernate-cli</artifactId>
   <name>onebusaway-gtfs-hibernate-cli</name>
   <description>A command-line utility for loading GTFS data into a database.</description>
-
-  <properties>
-    <!-- We don't always want to deploy the packaged jar to main maven repo, since it includes all the project dependencies 
-      and is quite large -->
-    <skip-deploy-jar>false</skip-deploy-jar>
-  </properties>
 
   <dependencies>
     <dependency>
@@ -36,7 +31,7 @@
 
   <build>
     <plugins>
-          <plugin>
+      <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <executions>
           <execution>
@@ -56,22 +51,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>${skip-deploy-jar}</skip>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <id>oss-distribution</id>
-      <properties>
-        <skip-deploy-jar>true</skip-deploy-jar>
-      </properties>
-    </profile>
-  </profiles>
 </project>

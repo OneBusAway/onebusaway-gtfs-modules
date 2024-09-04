@@ -49,7 +49,7 @@ specific options for each file type after the `--file` option.  Here's a quick e
  - `transfers.txt`
    
 You can specify merge options for each of these files using the `--file=gtfs_file.txt` option.  File types listed
-together (eg. `trips.txt>> and `stop_times.txt`) are handled by the same merge strategy, so specifying options for
+together (eg. `trips.txt` and `stop_times.txt`) are handled by the same merge strategy, so specifying options for
 either will have the same effect.  For details on options you might specify, read on.
 
 ## Handling Duplicates

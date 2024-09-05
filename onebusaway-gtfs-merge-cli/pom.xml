@@ -10,12 +10,6 @@
   <name>onebusaway-gtfs-merge-cli</name>
   <description>Command-line interface to the GTFS merge tool.</description>
 
-  <properties>
-    <!-- We don't always want to deploy the packaged jar to main maven repo, since it includes all the project dependencies and 
-      is quite large -->
-    <skip-deploy-onebusaway-gtfs-merge-cli-jar>false</skip-deploy-onebusaway-gtfs-merge-cli-jar>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.onebusaway</groupId>

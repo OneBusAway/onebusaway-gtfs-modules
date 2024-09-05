@@ -35,7 +35,7 @@ public class DecimalFieldMappingFactory implements FieldMappingFactory {
 
   private String _format;
 
-  private Locale _locale = Locale.getDefault();
+  private Locale _locale = Locale.US;
 
   public DecimalFieldMappingFactory() {
 
@@ -73,7 +73,7 @@ public class DecimalFieldMappingFactory implements FieldMappingFactory {
   @Retention(value = RetentionPolicy.RUNTIME)
   @Target(value = ElementType.FIELD)
   public @interface NumberFormatAnnotation {
-    public String value();
+    String value();
   }
 
   private String determineFormat(Class<?> entityType, String objFieldName) {

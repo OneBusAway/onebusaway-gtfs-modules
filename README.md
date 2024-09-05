@@ -14,9 +14,9 @@ In your `pom.xml`, include:
 ```
 
 <dependency>
-	<groupId>org.onebusaway</groupId>
-	<artifactId>onebusaway-gtfs</artifactId>
-	<version>2.0.0</version>
+  <groupId>org.onebusaway</groupId>
+  <artifactId>onebusaway-gtfs</artifactId>
+  <version>${VERSION}</version>
 </dependency>
 ```
 

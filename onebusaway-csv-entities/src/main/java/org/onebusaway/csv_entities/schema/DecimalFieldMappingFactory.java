@@ -35,7 +35,7 @@ public class DecimalFieldMappingFactory implements FieldMappingFactory {
 
   private String _format;
 
-  private Locale _locale = Locale.getDefault();
+  private Locale _locale = Locale.US;
 
   public DecimalFieldMappingFactory() {
 

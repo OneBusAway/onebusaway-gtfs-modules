@@ -10,8 +10,29 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        locale: [ "en_US.utf8", "fr_FR.utf8" ]
+
+    env:
+      LANG: ${{ matrix.locale }}
+      
     steps:
     - uses: actions/checkout@v4
+
+    - name: Set locale
+      run: |
+       
+        lang=`echo "${{ matrix.locale }}" | head -c 2`
+        echo $lang
+        
+        sudo apt-get install -y language-pack-${lang}
+        # list installed locales
+        locale -a
+        sudo locale-gen ${{ matrix.locale }}
+        sudo update-locale LANG=${{ matrix.locale }}
+
+    - run: date
 
     - uses: actions/setup-java@v4
       with:

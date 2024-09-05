@@ -32,13 +32,13 @@ import java.util.Map;
 
 class IndividualCsvEntityWriter implements EntityHandler {
 
-  private PrintWriter _writer;
+  private final PrintWriter _writer;
 
-  private List<String> _fieldNames = new ArrayList<String>();
+  private final List<String> _fieldNames = new ArrayList<String>();
 
-  private EntitySchema _schema;
+  private final EntitySchema _schema;
 
-  private CsvEntityContext _context;
+  private final CsvEntityContext _context;
 
   private TokenizerStrategy _tokenizerStrategy = new CsvTokenizerStrategy();
 
@@ -78,7 +78,7 @@ class IndividualCsvEntityWriter implements EntityHandler {
     }
 
     BeanWrapper wrapper = BeanWrapperFactory.wrap(object);
-    Map<String, Object> csvValues = new HashMap<String, Object>();
+    Map<String, Object> csvValues = new HashMap<>();
     for (FieldMapping field : _schema.getFields()) {
       field.translateFromObjectToCSV(_context, wrapper, csvValues);
     }

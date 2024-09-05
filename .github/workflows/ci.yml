@@ -23,9 +23,12 @@ jobs:
     - name: Set locale to ${{ matrix.locale }}
       run: |
         lang=`echo "${{ matrix.locale }}" | head -c 2`
-        sudo apt-get install -y language-pack-${lang}
+        sudo apt-get -qq install -y language-pack-${lang}
+        
+        echo ""
         
         # list installed locales
+        echo "Available locales"
         locale -a
         sudo locale-gen ${{ matrix.locale }}
         sudo update-locale LANG=${{ matrix.locale }}

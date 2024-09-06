@@ -21,3 +21,9 @@ In your `pom.xml`, include:
 ```
 
 ...where `<version>` contains the latest version number.
+
+## Update on camsys-apps.com repo
+
+In August 2024 @leonardehrenfried took over maintainership and subsequently all artifacts are
+now again published to Maven Central. Adding camsys-apps.com to your Maven repo configuration is no
+longer necessary when you use version 1.4.18 or newer.

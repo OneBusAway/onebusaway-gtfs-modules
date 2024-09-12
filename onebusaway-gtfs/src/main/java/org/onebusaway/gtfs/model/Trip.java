@@ -78,15 +78,19 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true)
   private String continuousDropOffMessage;
 
+  @Experimental(proposedBy = "https://github.com/MobilityData/gtfs-flex/pull/79")
   @CsvField(optional = true)
   private Double meanDurationFactor;
 
+  @Experimental(proposedBy = "https://github.com/MobilityData/gtfs-flex/pull/79")
   @CsvField(optional = true)
   private Double meanDurationOffset;
 
+  @Experimental(proposedBy = "https://github.com/MobilityData/gtfs-flex/pull/79")
   @CsvField(optional = true)
   private Double safeDurationFactor;
 
+  @Experimental(proposedBy = "https://github.com/MobilityData/gtfs-flex/pull/79")
   @CsvField(optional = true)
   private Double safeDurationOffset;
 

@@ -62,10 +62,6 @@ public class UpdateTripHeadsignExcludeNonreference implements GtfsTransformStrat
                         trip.setTripHeadsign(tripHeadSign);
                         update++;
                     }
-                    else {
-                        fallbackSetHeadsign(trip);
-                        fallback++;
-                    }
                 }
                 else {
                     noChange++;
@@ -74,18 +70,8 @@ public class UpdateTripHeadsignExcludeNonreference implements GtfsTransformStrat
                     }
                 }
             }
-            else {
-                fallbackSetHeadsign(trip);
-                fallback++;
-            }
         }
         _log.info("trip headsign update:{} fallback: {} no change: {} shuttle: {}", update, fallback, noChange, shuttle);
-    }
-
-    private void fallbackSetHeadsign (Trip trip) {
-        if (trip.getTripHeadsign() == null) {
-            trip.setTripHeadsign(trip.getRouteShortName());
-        }
     }
 
     @CsvField(ignore = true)

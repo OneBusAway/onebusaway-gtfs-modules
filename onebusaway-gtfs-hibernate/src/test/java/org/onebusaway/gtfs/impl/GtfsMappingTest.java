@@ -44,7 +44,7 @@ public class GtfsMappingTest {
   private static GtfsReader _reader;
 
   @BeforeEach
-  public void setup() throws IOException {
+  public void setup() {
 
     Configuration config = new Configuration();
     config = config.configure("org/onebusaway/gtfs/hibernate-configuration.xml");

@@ -50,23 +50,8 @@ public class UpdateTripHeadsignByDestinationStrategy implements GtfsTransformStr
                     trip.setTripHeadsign(tripHeadSign);
                     update++;
                 }
-                else {
-                    fallbackSetHeadsign(trip);
-                    fallback++;
-                }
-            }
-            else {
-                fallbackSetHeadsign(trip);
-                fallback++;
             }
         }
         _log.info("trip headsign update:{} fallback: {}", update, fallback);
-    }
-
-    private void fallbackSetHeadsign (Trip trip) {
-        if (trip.getTripHeadsign() == null) {
-            trip.setTripHeadsign(trip.getRouteShortName());
-
-        }
     }
 }

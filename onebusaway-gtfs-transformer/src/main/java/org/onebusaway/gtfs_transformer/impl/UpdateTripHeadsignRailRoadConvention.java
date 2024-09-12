@@ -48,7 +48,7 @@ public class UpdateTripHeadsignRailRoadConvention implements GtfsTransformStrate
             List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
 
             if (stopTimes != null && stopTimes.size() > 0) {
-                String existingTripHeadsign = (trip.getTripHeadsign() != null) ? trip.getTripHeadsign() : trip.getRouteShortName();
+                String existingTripHeadsign = (trip.getTripHeadsign() != null) ? trip.getTripHeadsign() : "trip route short name";
             	
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(stopTimes.get(0).getDepartureTime() * 1000);

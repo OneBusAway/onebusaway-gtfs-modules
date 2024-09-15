@@ -81,6 +81,8 @@ public class TransformFactory {
 
   private static final String ARG_COLLECTION = "collection";
 
+  private static final String ARG_PATH = "path";
+
   private static final Set<String> _excludeForObjectSpec = new HashSet<String>(
       Arrays.asList(ARG_FILE, ARG_CLASS));
 
@@ -321,26 +323,8 @@ public class TransformFactory {
         else if (opType.equals("verify_route_ids")) {
           handleTransformOperation(line, json, new VerifyRouteIds());
         }
-        else if (opType.equals("KCMSuite")){
-          String baseUrl = "https://raw.github.com/wiki/camsys/onebusaway-application-modules";
-
-          handleTransformOperation(line, json, new RemoveMergedTripsStrategy());
-          handleTransformOperation(line, json, new RemoveRepeatedStopTimesStrategy());
-          handleTransformOperation(line, json, new RemoveEmptyBlockTripsStrategy());
-          handleTransformOperation(line, json, new EnsureStopTimesIncreaseUpdateStrategy());
-
-          configureStopNameUpdates(_transformer, baseUrl
-                  + "/KingCountyMetroStopNameModifications.md");
-
-
-          try {
-            GtfsTransformerLibrary.configureTransformation(_transformer, baseUrl
-                    + "/KingCountyMetroModifications.md");
-          } catch (TransformSpecificationException e) {
-            throw new RuntimeException(e);
-          }
-
-          _transformer.addTransform(new LocalVsExpressUpdateStrategy());
+        else if (opType.equals("configure_stop_name_updates")){
+            configureStopNameUpdates(_transformer, json.getString(ARG_PATH));
         }
         else if (opType.equals("transform")) {
           handleTransformOperation(line, json);
@@ -887,8 +871,10 @@ public class TransformFactory {
 
   private void configureStopNameUpdates(GtfsTransformer transformer, String path) {
 
-    if (path == null)
+    if (path == null) {
+      _log.error("missing path to configure stop names");
       return;
+    }
 
     try {
       StopNameUpdateFactoryStrategy factory = new StopNameUpdateFactoryStrategy();

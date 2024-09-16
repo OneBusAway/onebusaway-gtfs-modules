@@ -5,6 +5,9 @@
   ],
   "prConcurrentLimit": 3,
   "rebaseWhen": "conflicted",
+  "labels": [
+    "dependencies"
+  ],
   "packageRules": [
     // some dependencies that we auto-merge release very often and even the auto-merges create a lot of
     // noise, so we slow it down a bit

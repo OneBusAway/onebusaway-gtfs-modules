@@ -47,6 +47,14 @@
       ],
       "automerge": true,
       "schedule": "on the 4th day of the month"
+    },
+    {
+      "description": "Automerge dependencies",
+      "matchPackageNames": [
+        "io.github.classgraph:classgraph",
+      ],
+      "automerge": true,
+      "schedule": "after 1am every weekday"
     }
   ],
   "timezone": "Europe/Berlin"

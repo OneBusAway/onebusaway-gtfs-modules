@@ -8,21 +8,17 @@
   
   * `onebusaway-gtfs-hibernate` - Support for [Hibernate](http://www.hibernate.org/) database persistence of GTFS data
   
-  * `onebusaway-gtfs-hibernate-cli` - Command-line utilty for loading GTFS feeds into a database - see [the full documentation](./onebusaway-gtfs-hibernate-cli.html). 
+  * `onebusaway-gtfs-hibernate-cli` - Command-line utilty for loading GTFS feeds into a database - see [the full documentation](./onebusaway-gtfs-hibernate-cli.md). 
   
   * `onebusaway-gtfs-transformer` - Tools for transforming GTFS data
   
-  * `onebusaway-gtfs-transformer-cli` - Command-line utility for transforming GTFS - see [the full documentation](./onebusaway-gtfs-transformer-cli.html).
+  * `onebusaway-gtfs-transformer-cli` - Command-line utility for transforming GTFS - see [the full documentation](./onebusaway-gtfs-transformer-cli.md).
 
   * `onebusaway-gtfs-merge` - Tools for merging GTFS data
   
-  * `onebusaway-gtfs-merge-cli` - Command-line utility for merging GTFS feeds - see [the full documentation](./onebusaway-gtfs-merge-cli.html).
+  * `onebusaway-gtfs-merge-cli` - Command-line utility for merging GTFS feeds - see [the full documentation](./onebusaway-gtfs-merge-cli.md).
 
-Documentation
-
-  You can access the [latest Javadoc for the library](./apidocs/index.html).  Also, see example source code below.
-
-Using in Maven
+## Using in Maven
 
   The library is available as a Maven module.  Simply add the following dependencies:
 
@@ -49,11 +45,7 @@ Using in Maven
 </dependencies>
 ```
 
-#if( $currentVersion.contains('SNAPSHOT') )
-  To use a SNAPSHOT version of the library, you'll need to [add a reference to the OneBusAway Maven repository](https://github.com/OneBusAway/onebusaway/wiki/Maven-Repository).
-#end
-
-Example Code
+## Example Code
 
 * Basic Reading
 

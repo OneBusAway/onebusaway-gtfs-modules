@@ -1,0 +1,8 @@
+changelog:
+  categories:
+    - title: Breaking changes
+      labels:
+        - "Breaking change"
+    - title: Dependency upgrades
+      labels:
+        - dependencies

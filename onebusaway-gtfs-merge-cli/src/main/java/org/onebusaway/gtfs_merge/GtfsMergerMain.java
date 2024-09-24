@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,20 +54,20 @@ public class GtfsMergerMain {
    * Generic Arguments
    ****/
 
-  private static CommandLineParser _parser = new PosixParser();
+  private static final CommandLineParser _parser = new PosixParser();
 
-  private Options _options = new Options();
+  private final Options options = new Options();
 
   /**
    * Mapping from GTFS file name to the entity type handled by that class.
    */
-  private Map<String, Class<?>> _entityClassesByFilename = new HashMap<String, Class<?>>();
+  private final Map<String, Class<?>> _entityClassesByFilename = new HashMap<>();
 
   /**
    * If we ever need to register a custom option handler for a specific entity
    * type, we would do it here.
    */
-  private Map<Class<?>, OptionHandler> _optionHandlersByEntityClass = new HashMap<Class<?>, OptionHandler>();
+  private final Map<Class<?>, OptionHandler> _optionHandlersByEntityClass = new HashMap<>();
 
   public static void main(String[] args) throws IOException {
     GtfsMergerMain m = new GtfsMergerMain();
@@ -76,7 +75,7 @@ public class GtfsMergerMain {
   }
 
   public GtfsMergerMain() {
-    buildOptions(_options);
+    buildOptions(options);
     mapEntityClassesToFilenames();
   }
 
@@ -92,12 +91,9 @@ public class GtfsMergerMain {
     }
 
     try {
-      CommandLine cli = _parser.parse(_options, args, true);
-      runApplication(cli, args);
-    } catch (MissingOptionException ex) {
-      System.err.println("Missing argument: " + ex.getMessage());
-      printHelp();
-    } catch (MissingArgumentException ex) {
+      CommandLine cli = _parser.parse(options, args, true);
+      runApplication(cli);
+    } catch (MissingOptionException | MissingArgumentException ex) {
       System.err.println("Missing argument: " + ex.getMessage());
       printHelp();
     } catch (UnrecognizedOptionException ex) {
@@ -128,11 +124,11 @@ public class GtfsMergerMain {
         "error on dropped duplicates");
   }
 
-  protected void printHelp(PrintWriter out, Options options) throws IOException {
+  protected void printHelp() throws IOException {
 
     InputStream is = getClass().getResourceAsStream("usage.txt");
     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-    String line = null;
+    String line;
 
     while ((line = reader.readLine()) != null) {
       System.err.println(line);
@@ -141,7 +137,7 @@ public class GtfsMergerMain {
     reader.close();
   }
 
-  protected void runApplication(CommandLine cli, String[] originalArgs)
+  protected void runApplication(CommandLine cli)
       throws Exception {
 
     String[] args = cli.getArgs();
@@ -162,14 +158,6 @@ public class GtfsMergerMain {
     File outputPath = new File(args[args.length - 1]);
 
     merger.run(inputPaths, outputPath);
-  }
-
-  /*****************************************************************************
-   * Protected Methods
-   ****************************************************************************/
-
-  protected void printHelp() throws IOException {
-    printHelp(new PrintWriter(System.err, true), _options);
   }
 
   private boolean needsHelp(String[] args) {

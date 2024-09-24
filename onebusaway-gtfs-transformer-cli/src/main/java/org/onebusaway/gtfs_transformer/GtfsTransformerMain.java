@@ -147,29 +147,29 @@ public class GtfsTransformerMain {
 
   protected void buildOptions(Options options) {
 
-    options.addOption(ARG_AGENCY_ID, true, "agency id");
+    options.addOption(null, ARG_AGENCY_ID, true, "agency id");
 
-    options.addOption(ARG_MODIFICATIONS, true, "data modifications");
-    options.addOption(ARG_TRANSFORM, true, "data transformation");
-    options.addOption(ARG_REFERENCE, true, "reference GTFS to merge from");
-    options.addOption(ARG_STOP_MAPPING, true, "Stop Name Mapping File");
-    options.addOption(ARG_IGNORE_STOPS, true, "List of stops names to ignore");
-    options.addOption(ARG_REGEX_FILE, true, "Regex pattern mapping file");
-    options.addOption(ARG_CONTROL_FILE, true, "file to remap stop ids and other properties");
-    options.addOption(ARG_CONCURRENCY_FILE, true, "file to remap wrong way concurrencies");
-    options.addOption(ARG_OMNY_ROUTES_FILE, true, "file to add OMNY enabled routes to GTFS");
-    options.addOption(ARG_OMNY_STOPS_FILE, true, "file to add OMNY enabled stops to GTFS");
-    options.addOption(ARG_VERIFY_ROUTES_FILE, true, "file to check route names vs route ids in GTFS");
+    options.addOption(null, ARG_MODIFICATIONS, true, "data modifications");
+    options.addOption(null, ARG_TRANSFORM, true, "data transformation");
+    options.addOption(null, ARG_REFERENCE, true, "reference GTFS to merge from");
+    options.addOption(null, ARG_STOP_MAPPING, true, "Stop Name Mapping File");
+    options.addOption(null, ARG_IGNORE_STOPS, true, "List of stops names to ignore");
+    options.addOption(null, ARG_REGEX_FILE, true, "Regex pattern mapping file");
+    options.addOption(null, ARG_CONTROL_FILE, true, "file to remap stop ids and other properties");
+    options.addOption(null, ARG_CONCURRENCY_FILE, true, "file to remap wrong way concurrencies");
+    options.addOption(null, ARG_OMNY_ROUTES_FILE, true, "file to add OMNY enabled routes to GTFS");
+    options.addOption(null, ARG_OMNY_STOPS_FILE, true, "file to add OMNY enabled stops to GTFS");
+    options.addOption(null, ARG_VERIFY_ROUTES_FILE, true, "file to check route names vs route ids in GTFS");
 
-    options.addOption(ARG_LOCAL_VS_EXPRESS, false,
+    options.addOption(null, ARG_LOCAL_VS_EXPRESS, false,
         "add additional local vs express fields");
-    options.addOption(ARG_CHECK_STOP_TIMES, false,
+    options.addOption(null, ARG_CHECK_STOP_TIMES, false,
         "check stop times are in order");
-    options.addOption(ARG_REMOVE_REPEATED_STOP_TIMES, false,
+    options.addOption(null, ARG_REMOVE_REPEATED_STOP_TIMES, false,
         "remove repeated stop times");
-    options.addOption(ARG_REMOVE_DUPLICATE_TRIPS, false,
+    options.addOption(null, ARG_REMOVE_DUPLICATE_TRIPS, false,
         "remove duplicate trips");
-    options.addOption(ARG_OVERWRITE_DUPLICATES, false,
+    options.addOption(null, ARG_OVERWRITE_DUPLICATES, false,
         "overwrite duplicate elements");
   }
 
@@ -210,7 +210,7 @@ public class GtfsTransformerMain {
 
     for (Option option : options) {
 
-      String name = option.getOpt();
+      String name = option.getLongOpt();
 
       if (name.equals(ARG_REMOVE_REPEATED_STOP_TIMES))
         configureRemoveRepeatedStopTimes(transformer);
@@ -281,11 +281,11 @@ public class GtfsTransformerMain {
       String[] originalArgs) {
 
     Option[] options = cli.getOptions();
-    List<Ordered<Option>> orderedOptions = new ArrayList<Ordered<Option>>();
+    List<Ordered<Option>> orderedOptions = new ArrayList<>();
 
     for (Option option : options) {
 
-      String argName = option.getOpt();
+      String argName = option.getLongOpt();
       int optionPosition = originalArgs.length;
 
       for (int i = 0; i < originalArgs.length; i++) {
@@ -295,7 +295,7 @@ public class GtfsTransformerMain {
         }
       }
 
-      orderedOptions.add(new Ordered<Option>(option, optionPosition));
+      orderedOptions.add(new Ordered<>(option, optionPosition));
     }
 
     Collections.sort(orderedOptions);

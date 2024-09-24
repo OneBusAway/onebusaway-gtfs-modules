@@ -3,6 +3,9 @@ changelog:
     - title: Breaking changes
       labels:
         - "Breaking change"
+    - title: Bugfixes
+      labels:
+        - bug
     - title: Dependency upgrades
       labels:
         - dependencies

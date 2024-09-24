@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -87,9 +86,9 @@ public class GtfsTransformerMain {
 
   private static final String ARG_OVERWRITE_DUPLICATES = "overwriteDuplicates";
 
-  private static CommandLineParser _parser = new PosixParser();
+  private static final CommandLineParser parser = new PosixParser();
 
-  private Options _options = new Options();
+  private final Options options = new Options();
 
   public static void main(String[] args) throws IOException {
     GtfsTransformerMain m = new GtfsTransformerMain();
@@ -98,7 +97,7 @@ public class GtfsTransformerMain {
 
   public GtfsTransformerMain() {
 
-    buildOptions(_options);
+    buildOptions(options);
   }
 
   /*****************************************************************************
@@ -113,13 +112,9 @@ public class GtfsTransformerMain {
     }
 
     try {
-      CommandLine cli = _parser.parse(_options, args, true);
+      CommandLine cli = parser.parse(options, args, true);
       runApplication(cli, args);
-    } catch (MissingOptionException ex) {
-      System.err.println("Missing argument: " + ex.getMessage());
-      printHelp();
-      System.exit(-2);
-    } catch (MissingArgumentException ex) {
+    } catch (MissingOptionException | MissingArgumentException ex) {
       System.err.println("Missing argument: " + ex.getMessage());
       printHelp();
       System.exit(-2);
@@ -193,7 +188,7 @@ public class GtfsTransformerMain {
   protected void runApplication(CommandLine cli, String[] originalArgs)
       throws Exception {
 
-    var args = Arrays.stream(cli.getArgs()).toList();
+    var args = cli.getArgList();
 
     if (args.size() < 2) {
       printHelp();
@@ -382,9 +377,9 @@ public class GtfsTransformerMain {
 
   private static class Ordered<T> implements Comparable<Ordered<T>> {
 
-    private T _object;
+    private final T _object;
 
-    private int _order;
+    private final int _order;
 
     public Ordered(T object, int order) {
       _object = object;

@@ -20,8 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 
 public class GtfsTransformerMain {
   
-  private static Logger _log = LoggerFactory.getLogger(GtfsTransformerMain.class);
+  private static final Logger LOG = LoggerFactory.getLogger(GtfsTransformerMain.class);
 
   /****
    * Generic Arguments
@@ -177,11 +177,11 @@ public class GtfsTransformerMain {
         "overwrite duplicate elements");
   }
 
-  protected void printHelp(PrintWriter out, Options options) throws IOException {
+  private void printHelp() throws IOException {
 
     InputStream is = getClass().getResourceAsStream("usage.txt");
     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-    String line = null;
+    String line;
 
     while ((line = reader.readLine()) != null) {
       System.err.println(line);
@@ -193,22 +193,23 @@ public class GtfsTransformerMain {
   protected void runApplication(CommandLine cli, String[] originalArgs)
       throws Exception {
 
-    String[] args = cli.getArgs();
+    var args = Arrays.stream(cli.getArgs()).toList();
 
-    if (args.length < 2) {
+    if (args.size() < 2) {
       printHelp();
       System.exit(-1);
     }
 	
-    List<File> paths = new ArrayList<File>();
-    for (int i = 0; i < args.length - 1; ++i) {
-      paths.add(new File(args[i]));
-      _log.info("input path: " + args[i]);
-    }
+    List<File> inputPaths = args.stream().limit(args.size() - 1).map(File::new
+    ).toList();
+    LOG.info("input paths: {}", inputPaths);
+
     GtfsTransformer transformer = new GtfsTransformer();
-    transformer.setGtfsInputDirectories(paths);
-    transformer.setOutputDirectory(new File(args[args.length - 1]));
-    _log.info("output path: " + args[args.length - 1]);
+    transformer.setGtfsInputDirectories(inputPaths);
+
+    var outputPath = new File(args.getLast());
+    transformer.setOutputDirectory(outputPath);
+    LOG.info("output path: {}", outputPath);
     
     Option[] options = getOptionsInCommandLineOrder(cli, originalArgs);
 
@@ -369,14 +370,6 @@ public class GtfsTransformerMain {
 
   private void configureVerifyRoutesFile(GtfsTransformer updater, String file) {
     updater.addParameter("verifyRoutesFile", file);
-  }
-
-  /*****************************************************************************
-   * Protected Methods
-   ****************************************************************************/
-
-  protected void printHelp() throws IOException {
-    printHelp(new PrintWriter(System.err, true), _options);
   }
 
   private boolean needsHelp(String[] args) {

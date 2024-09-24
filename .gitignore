@@ -12,3 +12,5 @@ pom.xml.releaseBackup
 /pom.xml.versionsBackup
 
 *.iml
+*.zip
+*.jar

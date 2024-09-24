@@ -202,7 +202,7 @@ public class GtfsTransformerMain {
     GtfsTransformer transformer = new GtfsTransformer();
     transformer.setGtfsInputDirectories(inputPaths);
 
-    var outputPath = new File(args.getLast());
+    var outputPath = new File(args.get(args.size() - 1));
     transformer.setOutputDirectory(outputPath);
     LOG.info("output path: {}", outputPath);
     

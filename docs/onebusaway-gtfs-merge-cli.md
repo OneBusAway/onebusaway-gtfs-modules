@@ -15,19 +15,21 @@ https://repo1.maven.org/maven2/org/onebusaway/onebusaway-gtfs-merge-cli/3.2.2/on
 
 ## Using the Application
 
-You'll need a Java 17 runtime installed to run the client.  To run the application:
+You'll need a Java 17 runtime installed to run the client. 
+
+To run the application:
 
 ```
 java -jar onebusaway-gtfs-merge-cli.jar [--args] input_gtfs_path_a input_gtfs_path_b ... output_gtfs_path
 ```
 
-  <<Note>>: Merging large GTFS feeds is often processor and memory intensive.  You'll likely need to increase the
+**Note**: Merging large GTFS feeds is often processor and memory intensive.  You'll likely need to increase the
 max amount of memory allocated to Java with an option like `-Xmx1G` (adjust the limit as needed).  I also recommend
 adding the `-server` argument if you are running the Oracle or OpenJDK, as it can really increase performance. 
 
-Configuring the Application
+## Configuring the Application
 
-  The merge application supports a number of options and arguments for configuring the application's behavior.  The
+The merge application supports a number of options and arguments for configuring the application's behavior.  The
 general pattern is to specify options for each type of file in a GTFS feed using the `--file` option, specifying
 specific options for each file type after the `--file` option.  Here's a quick example:
 

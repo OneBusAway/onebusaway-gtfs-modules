@@ -6,7 +6,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  unit-tests:
 
     runs-on: ubuntu-latest
 
@@ -44,7 +44,7 @@ jobs:
     - name: Test project with Maven
       run: mvn --no-transfer-progress test package
 
-  cli:
+  cli-integration-tests:
 
     runs-on: ubuntu-latest
 
@@ -57,5 +57,5 @@ jobs:
           java-version: '17'
           cache: 'maven'
 
-      - name: Run CLI e2e tests
+      - name: Run CLI integration tests
         run: ./cli-tests/cli-tests.sh

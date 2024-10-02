@@ -54,7 +54,7 @@
         "io.github.classgraph:classgraph",
       ],
       "automerge": true,
-      "schedule": "after 1am every weekday"
+      "schedule": "monthly"
     }
   ],
   "timezone": "Europe/Berlin"

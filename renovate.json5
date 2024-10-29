@@ -1,61 +1,57 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
   ],
-  "prConcurrentLimit": 3,
-  "rebaseWhen": "conflicted",
-  "labels": [
-    "dependencies"
+  prConcurrentLimit: 3,
+  rebaseWhen: 'conflicted',
+  labels: [
+    'dependencies',
   ],
-  "packageRules": [
-    // some dependencies that we auto-merge release very often and even the auto-merges create a lot of
-    // noise, so we slow it down a bit
+  packageRules: [
     {
-      "description": "Automerge test dependencies in a single PR",
-      "groupName": "Test dependencies",
-      "matchPackageNames": [
-        "org.mockito:mockito-core",
-        "com.tngtech.archunit:archunit",
-        "org.apache.maven.plugins:maven-surefire-plugin",
-        "me.fabriciorby:maven-surefire-junit5-tree-reporter",
-        "com.google.truth:truth",
-        "org.jacoco:jacoco-maven-plugin", // coverage plugin
-        "org.apache.commons:commons-compress" // only used by tests
+      description: 'Automerge test dependencies in a single PR',
+      groupName: 'Test dependencies',
+      matchPackageNames: [
+        'org.mockito:mockito-core',
+        'com.tngtech.archunit:archunit',
+        'org.apache.maven.plugins:maven-surefire-plugin',
+        'me.fabriciorby:maven-surefire-junit5-tree-reporter',
+        'com.google.truth:truth',
+        'org.jacoco:jacoco-maven-plugin',
+        'org.apache.commons:commons-compress',
+        'org.junit.jupiter:{/,}**',
       ],
-      "matchPackagePrefixes": [
-        "org.junit.jupiter:",
-      ],
-      "automerge": true,
-      "schedule": "on the 17th day of the month"
+      automerge: true,
+      schedule: 'on the 17th day of the month',
     },
     {
-      "description": "Automerge Maven plugins in a single PR",
-      "groupName": "Maven plugins",
-      "matchPackagePrefixes": [
-        "org.apache.maven.plugins:"
+      description: 'Automerge Maven plugins in a single PR',
+      groupName: 'Maven plugins',
+      schedule: 'on the 23rd day of the month',
+      automerge: true,
+      matchPackageNames: [
+        'org.apache.maven.plugins:{/,}**',
       ],
-      "schedule": "on the 23rd day of the month",
-      "automerge": true
     },
     {
-      "description": "Automerge logging dependencies in a single PR",
-      "groupName": "logging dependencies",
-      "matchPackagePrefixes": [
-        "org.slf4j:",
-        "ch.qos.logback:"
+      description: 'Automerge logging dependencies in a single PR',
+      groupName: 'logging dependencies',
+      automerge: true,
+      schedule: 'on the 4th day of the month',
+      matchPackageNames: [
+        'org.slf4j:{/,}**',
+        'ch.qos.logback:{/,}**',
       ],
-      "automerge": true,
-      "schedule": "on the 4th day of the month"
     },
     {
-      "description": "Automerge dependencies",
-      "matchPackageNames": [
-        "io.github.classgraph:classgraph",
+      description: 'Automerge dependencies',
+      matchPackageNames: [
+        'io.github.classgraph:classgraph',
       ],
-      "automerge": true,
-      "schedule": "monthly"
-    }
+      automerge: true,
+      schedule: 'monthly',
+    },
   ],
-  "timezone": "Europe/Berlin"
+  timezone: 'Europe/Berlin',
 }

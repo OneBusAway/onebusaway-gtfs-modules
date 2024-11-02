@@ -16,6 +16,7 @@ jobs:
 
     env:
       LANG: ${{ matrix.locale }}
+      MAVEN_ARGS: "--no-transfer-progress"
 
     steps:
     - uses: actions/checkout@v4
@@ -42,7 +43,7 @@ jobs:
         cache: 'maven'
 
     - name: Test project with Maven
-      run: mvn --no-transfer-progress test package
+      run: mvn test package
 
   cli-integration-tests:
 

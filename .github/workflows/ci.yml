@@ -44,8 +44,7 @@ jobs:
 
     - name: Test project with Maven
       run: |
-        mvn --version
-        mvn test package
+        mvn $MAVEN_ARGS test package
 
   cli-integration-tests:
 

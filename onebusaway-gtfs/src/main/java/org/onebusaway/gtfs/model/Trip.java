@@ -54,6 +54,12 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, defaultValue = "0")
   private int wheelchairAccessible = 0;
 
+  /**
+   * 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes NOT allowed
+   */
+  @CsvField(optional = true, defaultValue = "0")
+  private int bikesAllowed = 0;
+
   @Experimental(proposedBy = "https://github.com/MobilityData/gtfs-flex/pull/79")
   @CsvField(optional = true)
   private Double meanDurationFactor;
@@ -69,13 +75,6 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @Experimental(proposedBy = "https://github.com/MobilityData/gtfs-flex/pull/79")
   @CsvField(optional = true)
   private Double safeDurationOffset;
-
-
-  /**
-   * 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes NOT allowed
-   */
-  @CsvField(optional = true, defaultValue = "0")
-  private int bikesAllowed = 0;
 
   /**
    * 0 = unknown / unspecified, 1 = cars allowed, 2 = cars NOT allowed

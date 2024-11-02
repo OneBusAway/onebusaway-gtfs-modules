@@ -71,10 +71,6 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   private Double safeDurationOffset;
 
 
-  @Deprecated
-  @CsvField(optional = true, defaultValue = "0")
-  private int tripBikesAllowed = 0;
-
   /**
    * 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes NOT allowed
    */
@@ -131,7 +127,6 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.meanDurationOffset = obj.meanDurationOffset;
     this.safeDurationFactor = obj.safeDurationFactor;
     this.safeDurationOffset = obj.safeDurationOffset;
-    this.tripBikesAllowed = obj.tripBikesAllowed;
     this.bikesAllowed = obj.bikesAllowed;
     this.carsAllowed = obj.carsAllowed;
     this.fareId = obj.fareId;
@@ -243,16 +238,6 @@ public final class Trip extends IdentityBean<AgencyAndId> {
 
   public void setSafeDurationOffset(Double safeDurationOffset) {
     this.safeDurationOffset = safeDurationOffset;
-  }
-
-  @Deprecated
-  public void setTripBikesAllowed(int tripBikesAllowed) {
-    this.tripBikesAllowed = tripBikesAllowed;
-  }
-
-  @Deprecated
-  public int getTripBikesAllowed() {
-    return tripBikesAllowed;
   }
 
   /**

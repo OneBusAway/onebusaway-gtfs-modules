@@ -207,7 +207,6 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals("1", trip.getDirectionId());
     assertEquals("B1", trip.getBlockId());
     assertEquals(new AgencyAndId("1", "SHP1"), trip.getShapeId());
-    assertEquals(1, trip.getTripBikesAllowed());
     assertEquals(2, trip.getBikesAllowed());
     assertEquals(1, trip.getCarsAllowed());
     assertEquals(1, trip.getWheelchairAccessible());

@@ -58,10 +58,6 @@ public final class Route extends IdentityBean<AgencyAndId> {
 
   @CsvField(name = "eligibility_restricted", optional = true, defaultValue = "-999")
   private int eligibilityRestricted = MISSING_VALUE;
-  
-  @Deprecated
-  @CsvField(name="route_bikes_allowed", optional = true, defaultValue = "0")
-  private int routeBikesAllowed = 0;
 
   /**
    * 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes NOT allowed
@@ -167,16 +163,6 @@ public final class Route extends IdentityBean<AgencyAndId> {
 
   public void setTextColor(String textColor) {
     this.textColor = textColor;
-  }
-  
-  @Deprecated
-  public int getRouteBikesAllowed() {
-    return routeBikesAllowed;
-  }
-
-  @Deprecated
-  public void setRouteBikesAllowed(int routeBikesAllowed) {
-    this.routeBikesAllowed = routeBikesAllowed;
   }
 
   /**

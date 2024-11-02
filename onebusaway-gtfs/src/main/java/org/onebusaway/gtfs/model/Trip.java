@@ -84,10 +84,6 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, defaultValue = "0")
   private int carsAllowed = 0;
 
-  // Custom extension for KCM to specify a fare per-trip
-  @CsvField(optional = true)
-  private String fareId;
-
   // Custom extension for MNR
   @CsvField(optional = true, name = "note_id", mapping = EntityFieldMappingFactory.class, order = -1)
   private Note note;
@@ -129,7 +125,6 @@ public final class Trip extends IdentityBean<AgencyAndId> {
     this.safeDurationOffset = obj.safeDurationOffset;
     this.bikesAllowed = obj.bikesAllowed;
     this.carsAllowed = obj.carsAllowed;
-    this.fareId = obj.fareId;
     this.note = obj.note;
     this.peakOffpeak = obj.peakOffpeak;
     this.mtaTripId = obj.mtaTripId;
@@ -272,14 +267,6 @@ public final class Trip extends IdentityBean<AgencyAndId> {
 
   public String toString() {
     return "<Trip " + getId() + ">";
-  }
-  
-  public String getFareId() {
-	  return fareId;
-  }
-  
-  public void setFareId(String fareId) {
-	  this.fareId = fareId;
   }
 
   public Note getNote() {

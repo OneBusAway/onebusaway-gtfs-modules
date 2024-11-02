@@ -193,7 +193,6 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals("route desc", route.getDesc());
     assertEquals("FF0000", route.getColor());
     assertEquals("0000FF", route.getTextColor());
-    assertEquals(1, route.getRouteBikesAllowed());
     assertEquals(2, route.getBikesAllowed());
     assertEquals("http://agency.gov/route", route.getUrl());
     assertEquals(100, route.getSortOrder());

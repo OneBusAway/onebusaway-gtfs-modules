@@ -43,7 +43,9 @@ jobs:
         cache: 'maven'
 
     - name: Test project with Maven
-      run: mvn test package
+      run: |
+        mvn --version
+        mvn test package
 
   cli-integration-tests:
 

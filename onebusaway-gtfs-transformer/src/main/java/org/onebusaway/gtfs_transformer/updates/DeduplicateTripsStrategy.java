@@ -115,8 +115,6 @@ public class DeduplicateTripsStrategy implements GtfsTransformStrategy {
       return "directionId";
     if (!equals(tripA.getRoute(), tripB.getRoute()))
       return "route";
-    if (!equals(tripA.getRouteShortName(), tripB.getRouteShortName()))
-      return "routeShortName";
     if (!equals(tripA.getShapeId(), tripB.getShapeId()))
       return "shapeId";
     if (!equals(tripA.getTripHeadsign(), tripB.getTripHeadsign()))

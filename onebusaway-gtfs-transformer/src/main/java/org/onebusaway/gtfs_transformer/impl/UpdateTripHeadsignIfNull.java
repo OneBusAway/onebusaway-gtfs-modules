@@ -44,21 +44,9 @@ public class UpdateTripHeadsignIfNull implements GtfsTransformStrategy {
                     if (tripHeadSign != null) {
                         trip.setTripHeadsign(tripHeadSign);
                     }
-                    else {
-                        fallbackSetHeadsign(trip);
-                    }
-                }
-                else {
-                    fallbackSetHeadsign(trip);
                 }
             }
         }
     }
 
-    private void fallbackSetHeadsign (Trip trip) {
-        if (trip.getTripHeadsign() == null) {
-            trip.setTripHeadsign(trip.getRouteShortName());
-            _log.info("Setting headsign to route short name: ", trip.getRouteShortName());
-        }
-    }
 }

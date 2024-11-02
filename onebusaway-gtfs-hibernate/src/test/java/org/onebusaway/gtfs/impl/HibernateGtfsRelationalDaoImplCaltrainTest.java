@@ -226,7 +226,6 @@ public class HibernateGtfsRelationalDaoImplCaltrainTest {
     assertNull(trip.getBlockId());
     assertEquals("0", trip.getDirectionId());
     assertEquals(route, trip.getRoute());
-    assertNull(trip.getRouteShortName());
     assertEquals(aid("WD01272009"), trip.getServiceId());
     assertEquals(aid("cal_sj_sf"), trip.getShapeId());
     assertEquals("101", trip.getTripShortName());

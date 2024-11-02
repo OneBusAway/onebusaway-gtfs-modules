@@ -203,6 +203,7 @@
           </consoleOutputReporter>
           <statelessTestsetInfoReporter
             implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoTreeReporter">
+            <theme>UNICODE</theme>
           </statelessTestsetInfoReporter>
         </configuration>
       </plugin>

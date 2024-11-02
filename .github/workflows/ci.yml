@@ -16,7 +16,7 @@ jobs:
 
     env:
       LANG: ${{ matrix.locale }}
-      MAVEN_ARGS: "--batch-mode --no-transfer-progress"
+      MAVEN_ARGS: "--no-transfer-progress -Dstyle.color=always"
 
     steps:
     - uses: actions/checkout@v4

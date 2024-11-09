@@ -71,7 +71,6 @@ public class LocalVsExpressUpdateStrategy implements GtfsTransformStrategy {
         boolean isExpress = trip.getTripShortName().equals("EXPRESS");
         if (isExpress) {
           _log.info("route(" + route.getShortName() + ") gets an E for trip " + trip.getId());
-          trip.setRouteShortName(trip.getRoute().getShortName() + "E");
           if (addLocalVsExpressToTripName) {
             String tripHeadsign = trip.getTripHeadsign();
             if (tripHeadsign != null)

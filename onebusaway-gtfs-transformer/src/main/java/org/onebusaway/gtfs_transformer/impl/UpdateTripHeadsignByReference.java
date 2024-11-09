@@ -44,7 +44,6 @@ public class UpdateTripHeadsignByReference implements GtfsTransformStrategy {
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
-        String agency = reference.getAllTrips().iterator().next().getId().getAgencyId();
         ArrayList<String> missingStops = new ArrayList<>();
 
         for (Trip trip : dao.getAllTrips()) {
@@ -74,13 +73,10 @@ public class UpdateTripHeadsignByReference implements GtfsTransformStrategy {
             }
             else {
                 _log.error("No stoptimes for trip {} mta id", trip.toString(), trip.getMtaTripId());
-                if (trip.getTripHeadsign() == null && trip.getRouteShortName() == null) {
+                if (trip.getTripHeadsign() == null) {
                     //if trip has no headsign, no stoptimes and no shortname, remove it
                     _log.error("Removing trip {}", trip.getId());
                     dao.removeEntity(trip);
-                }
-                else {
-                    genericSetHeadsign(trip);
                 }
             }
         }
@@ -90,16 +86,6 @@ public class UpdateTripHeadsignByReference implements GtfsTransformStrategy {
         if (stop != null && stop.getName() != null) {
             trip.setTripHeadsign(stop.getName());
             //_log.info("Setting headsign {} on {}", stop.getName(), trip.toString());
-        }
-        else {
-            genericSetHeadsign(trip);
-        }
-    }
-
-    private void genericSetHeadsign (Trip trip) {
-        if (trip.getRouteShortName() != null) {
-            trip.setTripHeadsign(trip.getRouteShortName());
-            //_log.info("Setting headsign {} on {}", trip.getRouteShortName(), trip.toString());
         }
     }
 

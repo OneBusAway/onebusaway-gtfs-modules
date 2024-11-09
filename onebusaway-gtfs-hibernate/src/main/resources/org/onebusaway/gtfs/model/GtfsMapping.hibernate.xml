@@ -312,7 +312,6 @@
 
         <property name="tripShortName" />
         <property name="tripHeadsign" />
-        <property name="routeShortName" />
         <property name="directionId" />
         <property name="blockId" index="blockId" />
         <property name="wheelchairAccessible"/>

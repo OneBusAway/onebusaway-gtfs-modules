@@ -196,6 +196,16 @@
             <version>1.3.0</version>
           </dependency>
         </dependencies>
+        <configuration>
+          <reportFormat>plain</reportFormat>
+          <consoleOutputReporter>
+            <disable>true</disable>
+          </consoleOutputReporter>
+          <statelessTestsetInfoReporter
+            implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoTreeReporter">
+            <theme>UNICODE</theme>
+          </statelessTestsetInfoReporter>
+        </configuration>
       </plugin>
     </plugins>
 

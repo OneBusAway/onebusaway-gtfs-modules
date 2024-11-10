@@ -3,7 +3,7 @@
 
   <groupId>org.onebusaway</groupId>
   <artifactId>onebusaway-gtfs-modules</artifactId>
-  <version>3.2.5-SNAPSHOT</version>
+  <version>4.0.0</version>
   <packaging>pom</packaging>
 
   <name>onebusaway-gtfs-modules</name>
@@ -38,7 +38,7 @@
     <connection>scm:git:https://github.com/OneBusAway/onebusaway-gtfs-modules.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/OneBusAway/onebusaway-gtfs-modules.git</developerConnection>
     <url>https://github.com/OneBusAway/onebusaway-gtfs-modules</url>
-    <tag>HEAD</tag>
+    <tag>v4.0.0</tag>
   </scm>
 
   <issueManagement>
@@ -201,8 +201,7 @@
           <consoleOutputReporter>
             <disable>true</disable>
           </consoleOutputReporter>
-          <statelessTestsetInfoReporter
-            implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoTreeReporter">
+          <statelessTestsetInfoReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoTreeReporter">
             <theme>UNICODE</theme>
           </statelessTestsetInfoReporter>
         </configuration>

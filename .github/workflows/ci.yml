@@ -5,9 +5,10 @@ on:
   pull_request:
     branches: [ master ]
 
-jobs:
-  unit-tests:
 
+jobs:
+
+  build:
     runs-on: ubuntu-latest
 
     strategy:
@@ -17,6 +18,9 @@ jobs:
     env:
       LANG: ${{ matrix.locale }}
       MAVEN_ARGS: "--no-transfer-progress -Dstyle.color=always"
+      CONTAINER_REPO: ${{ env.REGISTRY }}
+      CONTAINER_REGISTRY_USER: ${{ github.actor }}
+      CONTAINER_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
     - uses: actions/checkout@v4

@@ -63,7 +63,7 @@
       <plugin>
         <groupId>io.github.zlika</groupId>
         <artifactId>reproducible-build-maven-plugin</artifactId>
-        <version>0.11</version>
+        <version>0.17</version>
         <executions>
           <execution>
             <id>run-when-packaged</id>

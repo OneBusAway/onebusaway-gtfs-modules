@@ -48,7 +48,8 @@ jobs:
 
     - name: Build container image tarball
       run: |
-        mvn $MAVEN_ARGS jib:buildTar
+        MAVEN_SKIP_ARGS="-Dmaven.test.skip=true -Dmaven.source.skip=true"
+        mvn $MAVEN_ARGS $MAVEN_SKIP_ARGS package jib:buildTar
 
   cli-integration-tests:
 

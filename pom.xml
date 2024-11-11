@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.onebusaway</groupId>
@@ -211,26 +212,26 @@
         <artifactId>jib-maven-plugin</artifactId>
         <version>3.4.4</version>
         <configuration>
-            <from>
-                <image>eclipse-temurin:21-jre</image>
-                <platforms>
-                    <platform>
-                        <architecture>amd64</architecture>
-                        <os>linux</os>
-                    </platform>
-                    <platform>
-                        <architecture>arm64</architecture>
-                        <os>linux</os>
-                    </platform>
-                </platforms>
-            </from>
-            <to>
-                <image>${env.CONTAINER_REPO}/${project.artifactId}:${project.version}</image>
-                <auth>
-                    <username>${env.CONTAINER_REGISTRY_USER}</username>
-                    <password>${env.CONTAINER_REGISTRY_PASSWORD}</password>
-                </auth>
-            </to>
+          <from>
+            <image>eclipse-temurin:21-jre</image>
+            <platforms>
+              <platform>
+                <architecture>amd64</architecture>
+                <os>linux</os>
+              </platform>
+              <platform>
+                <architecture>arm64</architecture>
+                <os>linux</os>
+              </platform>
+            </platforms>
+          </from>
+          <to>
+            <image>${env.CONTAINER_REPO}/${project.artifactId}:${project.version}</image>
+            <auth>
+              <username>${env.CONTAINER_REGISTRY_USER}</username>
+              <password>${env.CONTAINER_REGISTRY_PASSWORD}</password>
+            </auth>
+          </to>
         </configuration>
       </plugin>
     </plugins>

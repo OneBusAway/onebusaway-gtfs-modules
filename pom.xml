@@ -213,7 +213,6 @@
         <version>3.4.4</version>
         <configuration>
           <from>
-            <image>eclipse-temurin:21-jre</image>
             <platforms>
               <platform>
                 <architecture>amd64</architecture>

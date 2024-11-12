@@ -18,9 +18,9 @@ jobs:
     env:
       LANG: ${{ matrix.locale }}
       MAVEN_ARGS: "--no-transfer-progress -Dstyle.color=always"
-      CONTAINER_REPO: ${{ env.REGISTRY }}
-      CONTAINER_REGISTRY_USER: ${{ github.actor }}
-      CONTAINER_REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+      CONTAINER_REGISTRY_NAMESPACE: docker.io/opentransitsoftwarefoundation/
+      CONTAINER_REGISTRY_USER: onebusawaybot
+      CONTAINER_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
 
     steps:
     - uses: actions/checkout@v4

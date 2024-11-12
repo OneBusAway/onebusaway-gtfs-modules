@@ -5,6 +5,8 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  MAVEN_ARGS: "--no-transfer-progress -Dstyle.color=always"
 
 jobs:
 
@@ -17,10 +19,6 @@ jobs:
 
     env:
       LANG: ${{ matrix.locale }}
-      MAVEN_ARGS: "--no-transfer-progress -Dstyle.color=always"
-      CONTAINER_REGISTRY_NAMESPACE: docker.io/opentransitsoftwarefoundation/
-      CONTAINER_REGISTRY_USER: onebusawaybot
-      CONTAINER_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
 
     steps:
     - uses: actions/checkout@v4
@@ -50,13 +48,7 @@ jobs:
       run: |
         mvn $MAVEN_ARGS test package
 
-    - name: Build container image tarball
-      run: |
-        MAVEN_SKIP_ARGS="-Dmaven.test.skip=true -Dmaven.source.skip=true"
-        mvn $MAVEN_ARGS $MAVEN_SKIP_ARGS package jib:buildTar
-
   cli-integration-tests:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -70,3 +62,25 @@ jobs:
 
       - name: Run CLI integration tests
         run: ./cli-tests/cli-tests.sh
+
+  container-image:
+    runs-on: ubuntu-latest
+
+    env:
+      CONTAINER_REGISTRY_NAMESPACE: docker.io/opentransitsoftwarefoundation
+      CONTAINER_REGISTRY_USER: onebusawaybot
+      CONTAINER_REGISTRY_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+
+      - name: Build container image tarball
+        run: |
+          MAVEN_SKIP_ARGS="-Dmaven.test.skip=true -Dmaven.source.skip=true"
+          mvn $MAVEN_ARGS $MAVEN_SKIP_ARGS package jib:build

@@ -76,6 +76,7 @@ public class GtfsEntitySchemaFactory {
     entityClasses.add(DirectionEntry.class);
     entityClasses.add(AlternateStopNameException.class);
     entityClasses.add(Icon.class);
+    entityClasses.add(Network.class);
     return entityClasses;
   }
 

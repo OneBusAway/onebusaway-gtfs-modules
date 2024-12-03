@@ -70,12 +70,12 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
 
   @Override
   public List<Agency> getAllAgencies() {
-    return _ops.find("from Agency");
+    return _ops.find("FROM Agency");
   }
 
   @Override
   public List<Block> getAllBlocks() {
-    return _ops.find("from Block");
+    return _ops.find("FROM Block");
   }
   
   @Override
@@ -294,7 +294,7 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
 
   @Override
   public Collection<Area> getAllAreas() {
-    return _ops.find("from Area");
+    return _ops.find("FROM Area");
   }
 
   @Deprecated
@@ -327,7 +327,7 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
   @Override
   public Collection<StopArea> getAllStopAreas() {
-    return _ops.find("from StopArea");
+    return _ops.find("FROM StopArea");
   }
   @Override
   public Collection<Location> getAllLocations() {
@@ -336,12 +336,17 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
 
   @Override
   public Collection<BookingRule> getAllBookingRules() {
-    return _ops.find("from BookingRule");
+    return _ops.find("FROM BookingRule");
   }
 
   @Override
   public Collection<Translation> getAllTranslations() {
-    return _ops.find("from Translation");
+    return _ops.find("FROM Translation");
+  }
+
+  @Override
+  public Collection<Network> getAllNetworks() {
+    return _ops.find("FROM Network");
   }
 
   @Override

@@ -220,6 +220,12 @@ public interface GtfsDao extends GenericDao {
 
   public Collection<Translation> getAllTranslations();
 
+    /****
+   * {@link Network} Methods
+   ****/
+
+   public Collection<Network> getAllNetworks();
+
   public Collection<DirectionEntry> getAllDirectionEntries();
 
   public Collection<WrongWayConcurrency> getAllWrongWayConcurrencies();

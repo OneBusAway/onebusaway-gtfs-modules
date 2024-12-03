@@ -404,6 +404,11 @@ public class GtfsDataServiceImpl implements GtfsDataService {
     }
 
     @Override
+    public Collection<Network> getAllNetworks() {
+        return _dao.getAllNetworks();
+    }
+
+    @Override
     public List<String> getOptionalMetadataFilenames() {
         return _dao.getOptionalMetadataFilenames();
     }

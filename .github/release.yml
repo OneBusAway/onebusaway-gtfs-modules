@@ -6,6 +6,9 @@ changelog:
     - title: Bugfixes
       labels:
         - bug
+    - title: Non-breaking changes
+      labels:
+        - "*"
     - title: Dependency upgrades
       labels:
         - dependencies

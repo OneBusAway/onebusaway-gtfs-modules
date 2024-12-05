@@ -23,6 +23,7 @@
       * [Trim a Trip](#trim-a-trip)
       * [Generate Stop Times](#generate-stop-times)
       * [Extend Service Calendars](#extend-service-calendars)
+      * [Remove Old Calendar Statements](#remove-old-calendar-statements)
       * [Deduplicate Calendar Entries](#deduplicate-calendar-entries)
       * [Merge Trips and Simplify Calendar Entries](#merge-trips-and-simplify-calendar-entries)
       * [Shift Negative Stop Times](#shift-negative-stop-times)
@@ -337,7 +338,27 @@ Calendars that have expired before the specified date will be considered inactiv
 
 _Note_: We don't make any effort to extend canceled service dates, as specified in `calendar_dates.txt` for holidays and
 other special events.  It's too tricky to automatically determine how they should be handled.  You may need to still handle
-those manually. 
+those manually.
+
+#### Remove Old Calendar Statements
+
+RemoveOldCalendarStatements is an operation designed to remove calendar entries that are no longer valid on today's date.
+
+By default, it deletes entries from the calendar.txt file whose end_date field has passed, including those valid until today.
+
+With the remove_today attribute added to the JSON transformer snippet, users can control whether calendar entries valid for today are included or excluded in the output GTFS.
+
+  * If remove_today is set to true or not specified, the transformer will remove the calendar entries for the current date.
+  
+```
+  {"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.RemoveOldCalendarStatements", "remove_today":true}
+```
+  
+  * If remove_today is set to false, the transformer will retain the calendar entries for the current date.
+  
+```
+{"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.RemoveOldCalendarStatements", "remove_today":false}
+```
 
 #### Deduplicate Calendar Entries
 

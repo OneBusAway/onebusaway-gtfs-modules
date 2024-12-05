@@ -1,13 +1,12 @@
 package org.onebusaway.gtfs_transformer.impl;
 
-import static org.junit.Assert.assertEquals;
-
+import static  org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.MockGtfs;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
@@ -18,7 +17,7 @@ public class RemoveOldCalendarStatementsTest {
     private TransformContext _context = new TransformContext();
     private MockGtfs _gtfs;
 
-    @Before
+    @BeforeEach
     public void setup() throws IOException{
 
         _gtfs = MockGtfs.create();

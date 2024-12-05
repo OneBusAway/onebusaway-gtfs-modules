@@ -24,6 +24,7 @@
       * [Generate Stop Times](#generate-stop-times)
       * [Extend Service Calendars](#extend-service-calendars)
       * [Deduplicate Calendar Entries](#deduplicate-calendar-entries)
+      * [Truncate New Calendar Statements](#truncate-new-calendar-statements)
       * [Merge Trips and Simplify Calendar Entries](#merge-trips-and-simplify-calendar-entries)
       * [Shift Negative Stop Times](#shift-negative-stop-times)
       * [Arbitrary Transform](#arbitrary-transform)
@@ -346,6 +347,46 @@ ids to a single service_id entry.
 
 ```
 {"op":"deduplicate_service_ids"}
+```
+
+#### Truncate New Calendar Statements
+
+This operation truncates calendar and calendar date entries based on the configuration attributes in the JSON transformer snippet:
+
+	* calendar_field: Specifies the unit of time for truncation. It can have one of the following values:
+	- `Calendar.YEAR` = 1
+	- `Calendar.MONTH` = 2 (default)
+	- `Calendar.DAY_OF_MONTH` = 5
+	- `Calendar.DAY_OF_YEAR` = 6
+	
+	* calendar_amount: Specifies the number of units to truncate entries.
+	The value is an integer representing the amount (default = 1).
+  
+Both `calendar_field` and `calendar_amount` must be provided as integers in the JSON transformer.
+
+If these parameters are not specified, the default behavior is truncation by 1 month.
+
+Example :
+
+Truncate calendar and calendar dates to the next 21 days:
+	
+```
+{"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.TruncateNewCalendarStatements","calendar_field":6,"calendar_amount":21}
+```
+
+Truncate entries to the next 3 months:
+
+```
+{"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.TruncateNewCalendarStatements","calendar_field":2,"calendar_amount":3}
+```
+
+Additionally, after truncating the calendar entries, it is recommended to use a **retain operation** to ensure that only trips with valid calendar dates are retained. 
+
+Without this retain operation, the `trips.txt` file will contain trips with non-existent calendar dates, leading to invalid data.
+
+```
+{"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.TruncateNewCalendarStatements","calendar_field":6,"calendar_amount":21}
+{"op":"retain", "match":{"file":"calendar_dates.txt"}, "retainBlocks":false}
 ```
   
 #### Merge Trips and Simplify Calendar Entries

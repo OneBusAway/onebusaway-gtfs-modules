@@ -28,11 +28,11 @@ import org.onebusaway.gtfs_transformer.util.CalendarFunctions;
 /**
  * Remove calendar dates that are past.
  *
- * remove_today: delete today's calendar dates if true. Default value is true
+ * remove_today: delete today's calendar dates if true. Default value is false
  */
 public class RemoveOldCalendarStatements implements GtfsTransformStrategy {
     @CsvField(optional = true)
-    private boolean removeToday = true;
+    private boolean removeToday = false;
 
     @CsvField(ignore = true)
     private CalendarFunctions helper = new CalendarFunctions();

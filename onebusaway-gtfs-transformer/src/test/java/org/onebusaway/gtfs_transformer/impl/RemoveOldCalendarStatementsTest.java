@@ -51,7 +51,7 @@ public class RemoveOldCalendarStatementsTest {
     @Test
     public void testRemoveCalendar() throws IOException  {
         GtfsMutableRelationalDao dao = _gtfs.read();
-        removeOldCalendarStatements.setRemoveToday(false);
+        // Keep the default value as false and do not change it
         removeOldCalendarStatements.run(_context, dao);
         // Verify that GtfsMutableRelationalDao object still contain the initially added calendar entry
         assertEquals(1,dao.getAllCalendars().size());

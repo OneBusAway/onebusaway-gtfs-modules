@@ -344,17 +344,17 @@ those manually.
 
 RemoveOldCalendarStatements is an operation designed to remove calendar entries that are no longer valid on today's date.
 
-By default, it deletes entries from the calendar.txt file whose end_date field has passed, including those valid until today.
+By default, it deletes entries from the calendar.txt file whose end_date field has passed.
 
 With the remove_today attribute added to the JSON transformer snippet, users can control whether calendar entries valid for today are included or excluded in the output GTFS.
 
-  * If remove_today is set to true or not specified, the transformer will remove the calendar entries for the current date.
+  * If remove_today is set to true, the transformer will remove the calendar entries for the current date.
   
 ```
   {"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.RemoveOldCalendarStatements", "remove_today":true}
 ```
   
-  * If remove_today is set to false, the transformer will retain the calendar entries for the current date.
+  * If remove_today is set to false or not specified, the transformer will retain the calendar entries for the current date.
   
 ```
 {"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.RemoveOldCalendarStatements", "remove_today":false}

@@ -15,8 +15,6 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.cloud.api.ExternalServices;
-import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -143,7 +141,6 @@ public class ValidateGTFS implements GtfsTransformStrategy {
                 dao.getAllTrips().size(), curSerTrips, dao.getAllStops().size(),
                 dao.getAllStopTimes().size(), countSt, countNoSt, countNoHs);
 
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         String feed = CloudContextService.getLikelyFeedName(dao);
 
         HashSet<String> ids = new HashSet<String>();
@@ -168,9 +165,6 @@ public class ValidateGTFS implements GtfsTransformStrategy {
             }
         }
 
-        es.publishMetric(CloudContextService.getNamespace(),"TripsWithServiceToday","feed", feed,curSerTrips);
-        es.publishMetric(CloudContextService.getNamespace(),"TripsWithServiceTomorrow","feed", feed,tomSerTrips);
-
         if (curSerTrips + tomSerTrips < 1) {
             throw new IllegalStateException(
                     "There is no current service!!");
@@ -179,7 +173,6 @@ public class ValidateGTFS implements GtfsTransformStrategy {
         if (countNoHs > 0) {
             _log.error("There are trips with no headsign");
         }
-        es.publishMetric(CloudContextService.getNamespace(), "TripsWithoutHeadsigns", "feed", feed, countNoHs);
     }
 
     private Date removeTime(Date date) {

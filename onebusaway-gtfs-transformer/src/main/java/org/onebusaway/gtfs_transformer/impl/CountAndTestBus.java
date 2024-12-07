@@ -15,8 +15,6 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.cloud.api.ExternalServices;
-import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
@@ -241,43 +239,23 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         }
         _log.info("ATIS Stops: {}, Reference: {}, ATIS match to reference: {}", dao.getAllStops().size(), reference.getAllStops().size(), matches);
 
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         String feed = CloudContextService.getLikelyFeedName(dao);
-
-        es.publishMetric(CloudContextService.getNamespace(), "ATISBusTripsThisWeek", "feed",feed, atisTripsThisWeek);
-        es.publishMetric(CloudContextService.getNamespace(), "refBusTripsThisWeek", "feed",feed, refTripsThisWeek);
-        es.publishMetric(CloudContextService.getNamespace(), "matchingBusTripsThisWeek", "feed",feed, matchingTripsThisWeek);
-        es.publishMetric(CloudContextService.getNamespace(), "SdonBusTripsThisWeek","feed",feed, refTripsThisWeekWithSdon);
-        es.publishMetric(CloudContextService.getNamespace(), "A9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithA9);
-        es.publishMetric(CloudContextService.getNamespace(), "B9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithB9);
-        es.publishMetric(CloudContextService.getNamespace(), "D9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithD9);
-        es.publishMetric(CloudContextService.getNamespace(), "E9BusTripsThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithE9);
-        es.publishMetric(CloudContextService.getNamespace(), "H9BusTripsWitThisWeek", "feed",feed, refTripsThisWeekWoutSdonWithH9);
-        es.publishMetric(CloudContextService.getNamespace(), "OtherTripsWithoutMatchThisWeek", "feed",feed, leftOverNoMatchThisWeek);
 
         if (curSerTrips < 1) {
             throw new IllegalStateException(
                     "There is no current service!!");
         }
-        es.publishMetric(CloudContextService.getNamespace(),"BusTripsInServiceToday","feed", feed,curSerTrips);
 
         if (countNoHs > 0) {
             _log.error("There are trips with no headsign");
         }
-        es.publishMetric(CloudContextService.getNamespace(), "TripsWithoutHeadsigns", "feed", feed, countNoHs);
 
         HashSet<String> ids = new HashSet<String>();
         for (Stop stop : dao.getAllStops()) {
             //check for duplicate stop ids.
-            if (ids.contains(stop.getId().getId())) {
-                if (ids.contains(stop.getId().getId())) {
-                    _log.error("Duplicate stop ids! Agency {} stop id {}", agency, stop.getId().getId());
-                    es.publishMultiDimensionalMetric(CloudContextService.getLikelyFeedName(dao),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
-                }
-            }
-            else {
-                ids.add(stop.getId().getId());
-            }
+          if (!ids.contains(stop.getId().getId())) {
+              ids.add(stop.getId().getId());
+          }
         }
     }
 

@@ -15,8 +15,6 @@
  */
 package org.onebusaway.gtfs_transformer.updates;
 
-import org.onebusaway.cloud.api.ExternalServices;
-import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Route;
@@ -48,7 +46,6 @@ public class VerifyBusService implements GtfsTransformStrategy {
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         String feed = CloudContextService.getLikelyFeedName(dao);
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
 
@@ -93,8 +90,6 @@ public class VerifyBusService implements GtfsTransformStrategy {
                 }
             }
         }
-        es.publishMetric(CloudContextService.getNamespace(), "RoutesMissingTripsFromAtisButInRefToday", "feed", feed, alarmingRoutes);
-        es.publishMetric(CloudContextService.getNamespace(), "RoutesContainingTripsToday", "feed", feed, curSerRoute);
     }
 
     private Date constructDate(ServiceDate date) {

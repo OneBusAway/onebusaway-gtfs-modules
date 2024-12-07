@@ -15,14 +15,11 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.cloud.api.ExternalServices;
-import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
@@ -58,16 +55,6 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
         RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
 
         File controlFile = new File((String)context.getParameter("controlFile"));
-
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        String feed = CloudContextService.getLikelyFeedName(dao);
-        if(!controlFile.exists()) {
-            es.publishMultiDimensionalMetric(CloudContextService.getNamespace(),"MissingControlFiles",
-                    new String[]{"feed","controlFileName"},
-                    new String[]{feed,controlFile.getName()},1);
-            throw new IllegalStateException(
-                    "Control file does not exist: " + controlFile.getName());
-        }
 
         List<String> controlLines = new InputLibrary().readList((String) context.getParameter("controlFile"));
         int matched = 0;

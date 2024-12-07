@@ -15,18 +15,14 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.cloud.api.ExternalServices;
-import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.util.List;
 
 //based on the control file, we are changing from the "new" id to the "old" id
@@ -46,18 +42,6 @@ public class UpdateStopIdsFromFile implements GtfsTransformStrategy {
 
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-
-        File controlFile = new File((String)context.getParameter("controlFile"));
-
-        String feed=dao.getAllFeedInfos().iterator().next().getPublisherName();
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        if(!controlFile.exists()) {
-            es.publishMultiDimensionalMetric(CloudContextService.getNamespace(), "MissingControlFiles",
-                    new String[] {"feed","controlFileName"},
-                    new String[] {feed,controlFile.getName()},1);
-            throw new IllegalStateException(
-                    "Control file does not exist: " + controlFile.getName());
-        }
 
         List<String> controlLines = new InputLibrary().readList((String) context.getParameter("controlFile"));
         int matched = 0;

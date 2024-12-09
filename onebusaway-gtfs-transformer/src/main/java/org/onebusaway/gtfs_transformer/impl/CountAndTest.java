@@ -15,8 +15,6 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.cloud.api.ExternalServices;
-import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -154,7 +152,6 @@ public class CountAndTest implements GtfsTransformStrategy {
                 dao.getAllTrips().size(), curSerTrips, dao.getAllStops().size(),
                 dao.getAllStopTimes().size(), countSt, countNoSt, countNoHs);
 
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         String feed = CloudContextService.getLikelyFeedName(dao);
 
         HashSet<String> ids = new HashSet<String>();
@@ -162,7 +159,6 @@ public class CountAndTest implements GtfsTransformStrategy {
             //check for duplicate stop ids.
             if (ids.contains(stop.getId().getId())) {
                 _log.error("Duplicate stop ids! Agency {} stop id {}", agency, stop.getId().getId());
-                es.publishMultiDimensionalMetric(CloudContextService.getNamespace(),"DuplicateStopIds", new String[]{"feed","stopId"}, new String[] {feed,stop.getId().toString()},1);
                 throw new IllegalStateException(
                         "There are duplicate stop ids!");
             }
@@ -170,11 +166,6 @@ public class CountAndTest implements GtfsTransformStrategy {
                 ids.add(stop.getId().getId());
             }
         }
-
-
-        es.publishMetric(CloudContextService.getNamespace(),"TripsInServiceToday","feed", feed,curSerTrips);
-        es.publishMetric(CloudContextService.getNamespace(),"TripsInServiceTomorrow","feed", feed,tomSerTrips);
-
 
 
         if (curSerTrips + tomSerTrips < 1) {
@@ -185,7 +176,6 @@ public class CountAndTest implements GtfsTransformStrategy {
         if (countNoHs > 0) {
             _log.error("There are trips with no headsign");
         }
-        es.publishMetric(CloudContextService.getNamespace(), "TripsWithoutHeadsigns", "feed", feed, countNoHs);
     }
 
     private Date removeTime(Date date) {

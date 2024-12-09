@@ -15,8 +15,6 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.cloud.api.ExternalServices;
-import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
@@ -64,7 +62,6 @@ public class CompareToReferenceService implements GtfsTransformStrategy {
       defaultAgencyId = CloudContextService.getLikelyFeedName(gtfsDao);
       String summaryTopic = CloudContextService.getTopic() + "-atis-summary";
       String detailTopic = CloudContextService.getTopic() + "-atis-detail";
-      ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
 
       String summaryHeader = "depot,unmatched_gtfs_trips,unmatched_reference_trips\n";
       String detailHeader = "depot,unmatched_gtfs_trip_ds,unmatched_reference_trip_ids\n";
@@ -126,8 +123,6 @@ public class CompareToReferenceService implements GtfsTransformStrategy {
       String time = lpad(cal.get(Calendar.HOUR_OF_DAY), 2) + ":" + lpad(cal.get(Calendar.MINUTE),2 );
       String baseurl = s3BasePath
               + "/" + year + "/" + month + "/" + day + "/" + time + "-";
-      es.putFile(baseurl + "summary.csv", summaryFilename);
-      es.putFile(baseurl + "detail.csv", detailFilename);
 
 
       _log.error("{} Unmatched Summary", getName());

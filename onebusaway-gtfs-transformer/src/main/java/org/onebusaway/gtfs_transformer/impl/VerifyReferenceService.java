@@ -15,8 +15,6 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.cloud.api.ExternalServices;
-import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.csv_entities.CSVLibrary;
 import org.onebusaway.csv_entities.CSVListener;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
@@ -56,7 +54,6 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
         GtfsMutableRelationalDao reference = (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
         CalendarService refCalendarService = CalendarServiceDataFactoryImpl.createService(reference);
         String feed = CloudContextService.getLikelyFeedName(reference);
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
 
         Collection<String> problemRoutes;
         ProblemRouteListener listener = new ProblemRouteListener();
@@ -94,14 +91,6 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
         _log.info("Feed for metrics: {}", feed);
         _log.info("Active routes {}: {}, {}: {}, {}: {}, {}: {}",
                 today, tripsToday, tomorrow, tripsTomorrow, nextDay, tripsNextDay, dayAfterNext, tripsDayAfterNext);
-        es.publishMetric(CloudContextService.getNamespace(), "RefRoutesContainingTripsToday", "feed", feed, tripsTomorrow[ACTIVE_ROUTES]);
-        es.publishMetric(CloudContextService.getNamespace(), "RefRoutesMissingTripsFromRefButInAtisToday", "feed", feed, tripsTomorrow[ALARMING_ROUTES]);
-        es.publishMetric(CloudContextService.getNamespace(), "RefRoutesContainingTripsTomorrow", "feed", feed, tripsTomorrow[ACTIVE_ROUTES]);
-        es.publishMetric(CloudContextService.getNamespace(), "RefRoutesMissingTripsFromRefButInAtisTomorrow", "feed", feed, tripsTomorrow[ALARMING_ROUTES]);
-        es.publishMetric(CloudContextService.getNamespace(), "RefRoutesContainingTripsIn2Days", "feed", feed, tripsNextDay[ACTIVE_ROUTES]);
-        es.publishMetric(CloudContextService.getNamespace(), "RefRoutesMissingTripsFromRefButInAtisIn2Days", "feed", feed, tripsNextDay[ALARMING_ROUTES]);
-        es.publishMetric(CloudContextService.getNamespace(), "RefRoutesContainingTripsIn3Days", "feed", feed, tripsDayAfterNext[ACTIVE_ROUTES]);
-        es.publishMetric(CloudContextService.getNamespace(), "RefRoutesMissingTripsFromRefButInAtisIn3Days", "feed", feed, tripsDayAfterNext[ALARMING_ROUTES]);
     }
 
     int[] hasRouteServiceForDate(GtfsMutableRelationalDao dao, GtfsMutableRelationalDao reference,

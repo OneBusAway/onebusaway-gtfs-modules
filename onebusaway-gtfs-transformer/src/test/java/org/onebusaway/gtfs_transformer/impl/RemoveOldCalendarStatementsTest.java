@@ -31,11 +31,18 @@ public class RemoveOldCalendarStatementsTest {
         String startDate = getCurrentDateFormatted(-3);
         String endDate = getCurrentDateFormatted(null);
 
+        // Define additional date for testing purposes, relative to startDate
+        String threeDaysFromStartDate = getCurrentDateFormatted(3);
+
         _gtfs.putCalendars(
             1,
             "start_date="+startDate,
             "end_date="+endDate
         );
+
+        // Insert calendar dates entries
+        _gtfs.putCalendarDates("sid0="+startDate+","+endDate+","+
+            threeDaysFromStartDate);
     }
 
     @Test
@@ -46,6 +53,8 @@ public class RemoveOldCalendarStatementsTest {
         removeOldCalendarStatements.run(_context, dao);
         // Verify that GtfsMutableRelationalDao object no longer contains any calendar entries after removing the calendar for today's date
         assertEquals(0,dao.getAllCalendars().size());
+        // Verify that GtfsMutableRelationalDao object no longer contains any calendar dates entries after removing invalid dates, including today's date
+        assertEquals(0,dao.getAllCalendarDates().size());
     }
 
     @Test
@@ -55,6 +64,8 @@ public class RemoveOldCalendarStatementsTest {
         removeOldCalendarStatements.run(_context, dao);
         // Verify that GtfsMutableRelationalDao object still contain the initially added calendar entry
         assertEquals(1,dao.getAllCalendars().size());
+        // Verify that GtfsMutableRelationalDao object contains two calendar dates entries after removing invalid dates
+        assertEquals(2,dao.getAllCalendarDates().size());
     }
 
     // Helper function to get today's date in the required format

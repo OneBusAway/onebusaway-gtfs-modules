@@ -343,13 +343,13 @@ those manually.
 
 #### Remove Old Calendar Statements
 
-RemoveOldCalendarStatements is an operation designed to remove calendar entries that are no longer valid on today's date.
+RemoveOldCalendarStatements is an operation designed to remove calendar and calendar dates entries that are no longer valid on today's date.
 
-By default, it deletes entries from the calendar.txt file whose end_date field has passed.
+By default, it deletes entries from both the calendar.txt and calendar_dates.txt files, where the end_date in calendar.txt or the date field in calendar_dates.txt has passed.
 
-With the remove_today attribute added to the JSON transformer snippet, users can control whether calendar entries valid for today are included or excluded in the output GTFS.
+With the remove_today attribute added to the JSON transformer snippet, users can control whether entries in calendar or calendar_dates that are valid for today are included or excluded in the GTFS output.
 
-  * If remove_today is set to true, the transformer will remove the calendar entries for the current date.
+  * If remove_today is set to true, the transformer will remove entries for the current date.
   
 ```
   {"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.RemoveOldCalendarStatements", "remove_today":true}
@@ -359,6 +359,15 @@ With the remove_today attribute added to the JSON transformer snippet, users can
   
 ```
 {"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.RemoveOldCalendarStatements", "remove_today":false}
+```
+
+Additionally, after truncating the calendar entries, it is recommended to use a **retain operation** to ensure that only trips with valid calendar dates are retained. 
+
+Without this retain operation, the `trips.txt` file will contain trips with non-existent calendar dates, leading to invalid data.
+
+```
+{"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.RemoveOldCalendarStatements", "remove_today":false}
+{"op":"retain", "match":{"file":"calendar_dates.txt"}, "retainBlocks":false}
 ```
 
 #### Deduplicate Calendar Entries

@@ -21,14 +21,14 @@ import org.slf4j.Logger;
 
 import org.slf4j.LoggerFactory;
 
-public class RemoveStopsOutsidePolygone implements GtfsTransformStrategy {
-    private final Logger log = LoggerFactory.getLogger(RemoveStopsOutsidePolygone.class);
+public class RetainUpFromPolygon implements GtfsTransformStrategy {
+    private final Logger log = LoggerFactory.getLogger(RetainUpFromPolygon.class);
 
-    @CsvField(optional = true)
-    private String polygone;
+    @CsvField(optional = false)
+    private String polygon;
 
-    public void setPolygone(String polygone) {
-        this.polygone = polygone;
+    public void setPolygon(String polygon) {
+        this.polygon = polygon;
     }
 
     @Override
@@ -36,17 +36,12 @@ public class RemoveStopsOutsidePolygone implements GtfsTransformStrategy {
         return this.getClass().getSimpleName();
     }
 
-    /*
-     * example:
-     *  {"op":"transform","class":"org.onebusaway.gtfs_transformer.impl.RemoveStopsOutsidePolygone","polygone":wkt_polygone ..."}
-     */
-
-     @Override
+    @Override
     public void run(TransformContext transformContext, GtfsMutableRelationalDao gtfsMutableRelationalDao) {
-        Geometry geometry = buildPolygone(polygone);
+        Geometry geometry = buildPolygon(polygon);
         EntityRetentionGraph graph = new EntityRetentionGraph(gtfsMutableRelationalDao);
         graph.setRetainBlocks(false);
-        // browse all stops and retain only those inside polygone/multiPolygone
+        // browse all stops and retain only those inside polygon/multipolygon
         if (geometry.isValid() && !geometry.isEmpty()){
             for (Stop stop : gtfsMutableRelationalDao.getAllStops()) {
                 if (insidePolygon(geometry,stop.getLon(),stop.getLat())){
@@ -70,14 +65,14 @@ public class RemoveStopsOutsidePolygone implements GtfsTransformStrategy {
         }   
     
     /*
-     * create polygone/multiPolygone from 'polygone' variable in json file
+     * create polygon/multiPolygon from 'polygon' variable in json file
         * return Geometry variable
         * return null if an exception is encountered when parsing the wkt string
      */
-    private Geometry buildPolygone(String wktPolygone) {
+    private Geometry buildPolygon(String polygonWKT) {
         WKTReader reader = new WKTReader();
         try{
-            return  reader.read(wktPolygone);
+            return  reader.read(polygonWKT);
         } catch (ParseException e){
             String message = String.format("Error parsing WKT string : %s", e.getMessage());
             log.error(message);
@@ -86,9 +81,9 @@ public class RemoveStopsOutsidePolygone implements GtfsTransformStrategy {
         
     }
     /*
-     * insidePolygone returns boolean variable
-        * true: if polygone contains point
-        * false if point is outside polygone
+     * insidePolygon returns boolean variable
+        * true: if polygon contains point
+        * false if point is outside polygon
      */
     private boolean insidePolygon(Geometry geometry, double lon, double lat) {
         GeometryFactory geometryFactory = new GeometryFactory();

@@ -278,11 +278,15 @@ Retain Up From Polygon is an operation that filters GTFS input data based on a s
 
 This strategy applies two main functions:
 
-  * **Retain Function**: retains **up** all stops, trips, and routes that are located inside the defined polygon, then the algorithm automatically applies a retain **down** to these entities.
+  * **Retain Function**: retains **up** all stops, trips, and routes that are located inside the defined polygon.
+  
+  The algorithm starts by applying retain up to each entity, traversing the entity dependency tree. Starting from the stop, retain up is applied to the stop_times referencing this stop, then to the trips, and so on.
+
+  Once the base of the entity tree is reached, it automatically applies retain **down** to all the traversed entities. Therefore, all the trips of the route and then all the stop_times of each trip will be tagged as **retain**.
 
   * **Remove Function**: any entities not retained within the polygon are removed.
 
-This strategy ensures that the GTFS output only contains data relevant to the geographical area concerned.
+This strategy ensures that the GTFS output retains only the entities directly or indirectly linked to the geographical area concerned.
 
 **Parameters**:
 

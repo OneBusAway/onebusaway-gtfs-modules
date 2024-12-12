@@ -17,18 +17,22 @@ import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.factory.EntityRetentionGraph;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
-import org.slf4j.Logger;
-
-import org.slf4j.LoggerFactory;
 
 public class RetainUpFromPolygon implements GtfsTransformStrategy {
-    private final Logger log = LoggerFactory.getLogger(RetainUpFromPolygon.class);
 
     @CsvField(optional = false)
     private String polygon;
 
+    @CsvField(ignore = true)
+    private Geometry polygonGeometry;
+
     public void setPolygon(String polygon) {
         this.polygon = polygon;
+        this.polygonGeometry = buildPolygon(polygon);
+
+        if (this.polygonGeometry == null || !this.polygonGeometry.isValid() || this.polygonGeometry.isEmpty()) {
+            throw new IllegalArgumentException("The provided polygon is invalid or empty.");
+        }
     }
 
     @Override
@@ -38,15 +42,12 @@ public class RetainUpFromPolygon implements GtfsTransformStrategy {
 
     @Override
     public void run(TransformContext transformContext, GtfsMutableRelationalDao gtfsMutableRelationalDao) {
-        Geometry geometry = buildPolygon(polygon);
         EntityRetentionGraph graph = new EntityRetentionGraph(gtfsMutableRelationalDao);
         graph.setRetainBlocks(false);
         // browse all stops and retain only those inside polygon/multipolygon
-        if (geometry.isValid() && !geometry.isEmpty()){
-            for (Stop stop : gtfsMutableRelationalDao.getAllStops()) {
-                if (insidePolygon(geometry,stop.getLon(),stop.getLat())){
-                    graph.retain(stop, true);
-                }
+        for (Stop stop : gtfsMutableRelationalDao.getAllStops()) {
+            if (insidePolygon(polygonGeometry,stop.getLon(),stop.getLat())){
+                graph.retain(stop, true);
             }
         }
 
@@ -65,25 +66,29 @@ public class RetainUpFromPolygon implements GtfsTransformStrategy {
         }   
     
     /*
-     * create polygon/multiPolygon from 'polygon' variable in json file
-        * return Geometry variable
-        * return null if an exception is encountered when parsing the wkt string
+     * Creates a Geometry object (polygon or multi-polygon) from the provided WKT string.
+     * 
+     * @param polygonWKT The WKT representation of the polygon.
+     * @return The Geometry object.
+     * @throws IllegalArgumentException if the WKT string is invalid or cannot be parsed.
      */
     private Geometry buildPolygon(String polygonWKT) {
         WKTReader reader = new WKTReader();
         try{
             return  reader.read(polygonWKT);
         } catch (ParseException e){
-            String message = String.format("Error parsing WKT string : %s", e.getMessage());
-            log.error(message);
-            return null;
+            throw new IllegalArgumentException(
+                String.format("Error parsing WKT string: %s", e.getMessage()), e
+            );
         }
-        
     }
     /*
-     * insidePolygon returns boolean variable
-        * true: if polygon contains point
-        * false if point is outside polygon
+     * insidePolygon Checks whether a given point (specified by its longitude and latitude) is inside a given polygon or multipolygon.
+     *
+     * @param geometry The Geometry object representing the polygon or multipolygon.
+     * @param lon the longitude of the point to check.
+     * @param lat the latitude of the point to check.
+     * @return true if the point is within the boundaries of the geometry; false otherwise.
      */
     private boolean insidePolygon(Geometry geometry, double lon, double lat) {
         GeometryFactory geometryFactory = new GeometryFactory();

@@ -20,6 +20,9 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class RetainUpFromPolygon implements GtfsTransformStrategy {
 
+    private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+    private final WKTReader wktReader = new WKTReader(GEOMETRY_FACTORY);
+
     @CsvField(optional = false)
     private String polygon;
 
@@ -73,9 +76,8 @@ public class RetainUpFromPolygon implements GtfsTransformStrategy {
      * @throws IllegalArgumentException if the WKT string is invalid or cannot be parsed.
      */
     private Geometry buildPolygon(String polygonWKT) {
-        WKTReader reader = new WKTReader();
         try{
-            return  reader.read(polygonWKT);
+            return wktReader.read(polygonWKT);
         } catch (ParseException e){
             throw new IllegalArgumentException(
                 String.format("Error parsing WKT string: %s", e.getMessage()), e
@@ -91,8 +93,7 @@ public class RetainUpFromPolygon implements GtfsTransformStrategy {
      * @return true if the point is within the boundaries of the geometry; false otherwise.
      */
     private boolean insidePolygon(Geometry geometry, double lon, double lat) {
-        GeometryFactory geometryFactory = new GeometryFactory();
-        Point point = geometryFactory.createPoint(new Coordinate(lon, lat));
+        Point point = GEOMETRY_FACTORY.createPoint(new Coordinate(lon, lat));
         return geometry.contains(point);
     }
 

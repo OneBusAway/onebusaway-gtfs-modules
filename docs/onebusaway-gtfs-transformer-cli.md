@@ -20,6 +20,7 @@
       * [Path Expressions](#path-expressions-)
       * [Retain an Entity](#retain-an-entity)
       * [Remove an Entity](#remove-an-entity)
+      * [Retain Up From Polygon](#retain-up-from-polygon)
       * [Trim a Trip](#trim-a-trip)
       * [Generate Stop Times](#generate-stop-times)
       * [Extend Service Calendars](#extend-service-calendars)
@@ -270,6 +271,30 @@ You can remove a specific entity from a feed.
 
 Note that removing an entity has a cascading effect.  If you remove a trip, all the stop times that depend on that
 trip will also be removed.  If you remove a route, all the trips and stop times for that route will be removed.
+
+#### Retain Up From Polygon
+
+Retain Up From Polygon is an operation that filters GTFS input data based on a specified geographic area, using a polygon defined in WKT (Well-Known Text) format, which is configurable in the JSON transformer snippet.
+
+This strategy applies two main functions:
+
+  * **Retain Function**: retains **up** all stops, trips, and routes that are located inside the defined polygon.
+  
+  The algorithm starts by applying retain up to each entity, traversing the entity dependency tree. Starting from the stop, retain up is applied to the stop_times referencing this stop, then to the trips, and so on.
+
+  Once the base of the entity tree is reached, it automatically applies retain **down** to all the traversed entities. Therefore, all the trips of the route and then all the stop_times of each trip will be tagged as **retain**.
+
+  * **Remove Function**: any entities not retained within the polygon are removed.
+
+This strategy ensures that the GTFS output retains only the entities directly or indirectly linked to the geographical area concerned.
+
+**Parameters**:
+
+  * **polygon**: a required argument, which accepts the polygon in WKT format using the WGS84 coordinate system (SRID: 4326). This polygon defines the area of interest for filtering.
+
+```
+{"op":"transform","class":"org.onebusaway.gtfs_transformer.impl.RetainUpFromPolygon","polygon":"POLYGON ((-123.0 37.0, -123.0 38.0, -122.0 38.0, -122.0 37.0, -123.0 37.0))"}
+```
   
 #### Trim a Trip
 

@@ -21,6 +21,7 @@
       * [Retain an Entity](#retain-an-entity)
       * [Remove an Entity](#remove-an-entity)
       * [Retain Up From Polygon](#retain-up-from-polygon)
+      * [Trim Trip From Polygon](#trim-trip-from-polygon)
       * [Trim a Trip](#trim-a-trip)
       * [Generate Stop Times](#generate-stop-times)
       * [Extend Service Calendars](#extend-service-calendars)
@@ -31,6 +32,7 @@
       * [Shift Negative Stop Times](#shift-negative-stop-times)
       * [Arbitrary Transform](#arbitrary-transform)
     * [How to Reduce your GTFS](#how-to-reduce-your-gtfs)
+    * [Cleap National GTFS for Regional Integration and Consistency](#cleap-national-gtfs-for-regional-integration-and-consistency)
 <!-- TOC -->
 
 ## Introduction
@@ -294,6 +296,22 @@ This strategy ensures that the GTFS output retains only the entities directly or
 
 ```
 {"op":"transform","class":"org.onebusaway.gtfs_transformer.impl.RetainUpFromPolygon","polygon":"POLYGON ((-123.0 37.0, -123.0 38.0, -122.0 38.0, -122.0 37.0, -123.0 37.0))"}
+```
+
+#### Trim Trip From Polygon
+
+The Trim Trip From Polygon strategy refines GTFS data by removing all stop_times associated with stops located outside a specified geographical area. The area is defined using a configurable WKT Polygon or Multipolygon in the JSON transformer snippet.
+
+This removal of stop_times is achieved by invoking the **TrimTrip operation**, ensuring that only stops within the defined polygon are retained.
+
+Only valid stop_times within the polygon are retained, maintaining the integrity of the trips.
+
+**Parameters**:
+
+  * **polygon**: a required argument, which accepts the polygon in WKT format using the WGS84 coordinate system (SRID: 4326). This polygon defines the area of interest for filtering.
+
+```
+{"op":"transform","class":"org.onebusaway.gtfs_transformer.impl.TrimTripFromPolygon","polygon":"POLYGON ((-123.0 37.0, -123.0 38.0, -122.0 38.0, -122.0 37.0, -123.0 37.0))"}
 ```
   
 #### Trim a Trip
@@ -595,4 +613,23 @@ and frequency-based service, using the transform.  This can be handy to add temp
 {"op":"stop_times_factory", "trip_id":"t1", "start_time":"06:00:00", "end_time":"06:20:00", "stop_ids":["s3", "s2", "s1", "s0"]}
 ```
 
-     
+### Clean National GTFS for Regional Integration and Consistency
+
+To prepare for the integration of the national GTFS with our regional GTFS, several transformations have benn applied to the national GTFS in order to clean up and adapt the data to regional requirements. Below is an overview of the operations carried out:
+
+  * Removing Inactive Calendars and Dates.
+  * Truncating Calendars and Dates to 21 days.
+  * Retaining Data Within a Specific Geographic Area: a smaller geographic area was used for retaining only the entities within our area of interest.
+  * Trimming Stop Times Outside a Specific Geographic Area: a larger polygon was used to ensure that only the relevant stops_times within a wider region are retained.
+
+```
+{"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.RemoveOldCalendarStatements"}
+
+{"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.TruncateNewCalendarStatements","calendar_field":6,"calendar_amount":21}
+
+{"op":"retain", "match":{"file":"calendar_dates.txt"}, "retainBlocks":false}
+
+{"op":"transform","class":"org.onebusaway.gtfs_transformer.impl.RetainUpFromPolygon","polygon":"MULTIPOLYGON (((1.2 43.7, 1.55 43.7, 1.55 43.4, 1.2 43.4, 1.2 43.7)))"}
+
+{"op":"transform","class":"org.onebusaway.gtfs_transformer.impl.TrimTripFromPolygon","polygon":"MULTIPOLYGON (((1.0 44.2, 2.2 44.2, 2.2 43.3, 1.0 43.3, 1.0 44.2)))"}
+```

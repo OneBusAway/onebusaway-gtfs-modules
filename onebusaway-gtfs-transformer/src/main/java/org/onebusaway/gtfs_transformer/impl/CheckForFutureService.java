@@ -15,8 +15,6 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.cloud.api.ExternalServices;
-import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
@@ -59,7 +57,6 @@ public class CheckForFutureService implements GtfsTransformStrategy {
         Date dayAfterNext = helper.removeTime(helper.addDays(new Date(), 3));
 
         String feed = CloudContextService.getLikelyFeedName(dao);
-        ExternalServices es = new ExternalServicesBridgeFactory().getExternalServices();
         String agency = dao.getAllAgencies().iterator().next().getId();
         String agencyName = dao.getAllAgencies().iterator().next().getName();
 
@@ -69,10 +66,6 @@ public class CheckForFutureService implements GtfsTransformStrategy {
         tripsDayAfterNext = hasServiceForDate(dao, dayAfterNext);
 
         _log.info("Feed for metrics: {}, agency id: {}", feed, agencyName);
-        es.publishMetric(CloudContextService.getNamespace(), "TripsToday", "feed", feed, tripsToday);
-        es.publishMetric(CloudContextService.getNamespace(), "TripsTomorrow", "feed", feed, tripsTomorrow);
-        es.publishMetric(CloudContextService.getNamespace(), "TripsIn2Days", "feed", feed, tripsNextDay);
-        es.publishMetric(CloudContextService.getNamespace(), "TripsIn3Days", "feed", feed, tripsDayAfterNext);
 
         _log.info("TripsToday: {}, feed: {}, namespace: {}", tripsToday, feed, CloudContextService.getNamespace());
         _log.info("TripsTomorrow: {}, feed: {}, namespace: {}", tripsTomorrow, feed, CloudContextService.getNamespace());

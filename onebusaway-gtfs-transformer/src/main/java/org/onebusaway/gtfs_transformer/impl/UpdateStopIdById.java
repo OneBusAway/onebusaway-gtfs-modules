@@ -16,8 +16,6 @@
 
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.cloud.api.ExternalServices;
-import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -53,7 +51,6 @@ public class UpdateStopIdById implements GtfsTransformStrategy {
         ArrayList<Stop> stopsToDelete = new ArrayList<>();
         ArrayList<String> existingStops = new ArrayList<>();
         String feed = CloudContextService.getLikelyFeedName(dao);
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         String agency = dao.getAllAgencies().iterator().next().getId();
         String name = dao.getAllAgencies().iterator().next().getName();
 
@@ -73,7 +70,6 @@ public class UpdateStopIdById implements GtfsTransformStrategy {
                 }
             }
         }
-        es.publishMetric(CloudContextService.getNamespace(), "DuplicateStopCount", "feed", feed, stopsToDelete.size());
         for (Stop stop : stopsToDelete) {
             removeEntityLibrary.removeStop(dao, stop);
         }

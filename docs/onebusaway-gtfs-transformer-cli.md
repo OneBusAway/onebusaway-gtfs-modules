@@ -32,7 +32,7 @@
       * [Shift Negative Stop Times](#shift-negative-stop-times)
       * [Arbitrary Transform](#arbitrary-transform)
     * [How to Reduce your GTFS](#how-to-reduce-your-gtfs)
-    * [Cleap National GTFS for Regional Integration and Consistency](#cleap-national-gtfs-for-regional-integration-and-consistency)
+    * [Clip National GTFS for Regional Integration and Consistency](#clip-national-gtfs-for-regional-integration-and-consistency)
 <!-- TOC -->
 
 ## Introduction
@@ -41,7 +41,7 @@ The `onebusaway-gtfs-transformer-cli` command-line application is a simple comma
 [GTFS](https://developers.google.com/transit/gtfs) feeds.
 
 ### Requirements
-  
+
   * Java 17 or greater
 
 ### Getting the Application
@@ -49,7 +49,7 @@ The `onebusaway-gtfs-transformer-cli` command-line application is a simple comma
 You can download the application from Maven Central: https://repo1.maven.org/maven2/org/onebusaway/onebusaway-gtfs-transformer-cli/
 
 Select the largest jar file from the version you would like to use, for example https://repo1.maven.org/maven2/org/onebusaway/onebusaway-gtfs-transformer-cli/2.0.0/onebusaway-gtfs-transformer-cli-2.0.0.jar
-  
+
 ### Using the Application
 
 To run the application:
@@ -61,20 +61,20 @@ java -jar onebusaway-gtfs-transformer-cli.jar [-args] input_gtfs_path ... output
 `input_gtfs_path` and `output_gtfs_path` can be either a directory containing a GTFS feed or a .zip file.
 
 _Note_: Transforming large GTFS feeds is processor and memory intensive.  You'll likely need to increase the
-max amount of memory allocated to Java with an option like `-Xmx1G` or greater.  Adding the `-server` argument 
-if you are running the Oracle or OpenJDK can also increase performance. 
+max amount of memory allocated to Java with an option like `-Xmx1G` or greater.  Adding the `-server` argument
+if you are running the Oracle or OpenJDK can also increase performance.
 
 ### Arguments
 
   * `--transform=...` : specify a transformation to apply to the input GTFS feed (see syntax below)
   * `--agencyId=id` : specify a default agency id for the input GTFS feed
   * `--overwriteDuplicates` : specify that duplicate GTFS entities should overwrite each other when read
-  
-  
+
+
 ### Transform Syntax
 
 Transforms are specified as snippets of example.  A simple example to remove a stop might look like:
-  
+
 ```
 {"op":"remove","match":{"file":"stops.txt","stop_name":"Stop NameP"}}
 ```
@@ -89,17 +89,17 @@ You can have multiple `--transform` arguments to specify multiple transformation
 transformations that you wish to apply, it can be easier to put them in a file, with a JSON snippet per line.  Then
 specify the file on the command-line:
 
-```  
+```
   --transform=path/to/local-file
 ```
 
 You can even specify a URL where the transformations will be read:
-  
-```  
+
+```
 --transform=http://server/path
 ```
 
-### Matching 
+### Matching
 
 We provide a number of configurable transformations out-of-the-box that can do simple operations like adding,
 updating, retaining, and removing GTFS entities.  Many of the transforms accept a "`match`" term that controls how the
@@ -183,7 +183,7 @@ collection.
 
 You can use the calendar collection matches, for example, to retain a calendar, including all `calendar.txt`,
 `calendar_dates.txt`, and `trip.txt` entries that reference the specified `service_id` value.  This convenient
-short-hand is easier than writing the equivalent expression using references to the three file types separately.    
+short-hand is easier than writing the equivalent expression using references to the three file types separately.
 
 ### Types of Transforms
 
@@ -206,7 +206,7 @@ You can update arbitrary fields of a GTFS entity.
 
 Normally, update values are used as-is.  However, we support a number of
 special update operations:
-  
+
 #### Find/Replace
 
 ```
@@ -220,16 +220,16 @@ following example:
 ```
 {"op":"update", "match":{"file":"trips.txt"}, "update":{"trip_short_name":"s/North/N/"}}
 ```
-  
+
 Here, a trip with a headsign of `North Seattle` will be updated to `N Seattle`.
-  
-#### Path Expressions 
+
+#### Path Expressions
 
 By using `path(...)` syntax in the update value, the expression will be
 treated as a compound Java bean properties path expression.  This path
 expression will be evaluated against the target entity to produce the update
 value.  Consider the following example:
-  
+
 ```
 {"op":"update", "match":{"file":"trips.txt"}, "update":{"trip_short_name":"path(route.longName)"}}
 ```
@@ -240,10 +240,10 @@ associated route.
 
 #### Retain an Entity
 
-We also provide a powerful mechanism for selecting just a sub-set of a feed.  
-You can apply retain operations to entities you wish to keep and all the supporting entities referenced 
+We also provide a powerful mechanism for selecting just a sub-set of a feed.
+You can apply retain operations to entities you wish to keep and all the supporting entities referenced
 by the retained entity will be retained as well.  Unreferenced entities will be pruned.
- 
+
 In the following example, only route B15 will be retained, along with all the stops, trips, stop times, shapes, and agencies linked to directly by that route.
 
 ```
@@ -281,7 +281,7 @@ Retain Up From Polygon is an operation that filters GTFS input data based on a s
 This strategy applies two main functions:
 
   * **Retain Function**: retains **up** all stops, trips, and routes that are located inside the defined polygon.
-  
+
   The algorithm starts by applying retain up to each entity, traversing the entity dependency tree. Starting from the stop, retain up is applied to the stop_times referencing this stop, then to the trips, and so on.
 
   Once the base of the entity tree is reached, it automatically applies retain **down** to all the traversed entities. Therefore, all the trips of the route and then all the stop_times of each trip will be tagged as **retain**.
@@ -313,11 +313,11 @@ Only valid stop_times within the polygon are retained, maintaining the integrity
 ```
 {"op":"transform","class":"org.onebusaway.gtfs_transformer.impl.TrimTripFromPolygon","polygon":"POLYGON ((-123.0 37.0, -123.0 38.0, -122.0 38.0, -122.0 37.0, -123.0 37.0))"}
 ```
-  
+
 #### Trim a Trip
 
 You can remove stop times from the beginning or end of a trip using the "trim_trip" operation.  Example:
-  
+
 ```
 {"op":"trim_trip", "match":{"file":"trips.txt", "route_id":"R10"}, "from_stop_id":"138S"}
 ```
@@ -338,7 +338,7 @@ Or both:
 #### Generate Stop Times
 
 You can generate stop time entries for a trip.  Example:
-  
+
 ```
 {"op":"stop_times_factory", "trip_id":"TRIP01", "start_time":"06:00:00", "end_time":"06:20:00", "stop_ids":["S01", "S02", "S03"]}
 ```
@@ -393,18 +393,18 @@ By default, it deletes entries from both the calendar.txt and calendar_dates.txt
 With the remove_today attribute added to the JSON transformer snippet, users can control whether entries in calendar or calendar_dates that are valid for today are included or excluded in the GTFS output.
 
   * If remove_today is set to true, the transformer will remove entries for the current date.
-  
+
 ```
   {"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.RemoveOldCalendarStatements", "remove_today":true}
 ```
-  
+
   * If remove_today is set to false or not specified, the transformer will retain the calendar entries for the current date.
-  
+
 ```
 {"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.RemoveOldCalendarStatements", "remove_today":false}
 ```
 
-Additionally, after truncating the calendar entries, it is recommended to use a **retain operation** to ensure that only trips with valid calendar dates are retained. 
+Additionally, after truncating the calendar entries, it is recommended to use a **retain operation** to ensure that only trips with valid calendar dates are retained.
 
 Without this retain operation, the `trips.txt` file will contain trips with non-existent calendar dates, leading to invalid data.
 
@@ -431,10 +431,10 @@ This operation truncates calendar and calendar date entries based on the configu
 	- `Calendar.MONTH` = 2 (default)
 	- `Calendar.DAY_OF_MONTH` = 5
 	- `Calendar.DAY_OF_YEAR` = 6
-	
+
 	* calendar_amount: Specifies the number of units to truncate entries.
 	The value is an integer representing the amount (default = 1).
-  
+
 Both `calendar_field` and `calendar_amount` must be provided as integers in the JSON transformer.
 
 If these parameters are not specified, the default behavior is truncation by 1 month.
@@ -442,7 +442,7 @@ If these parameters are not specified, the default behavior is truncation by 1 m
 Example :
 
 Truncate calendar and calendar dates to the next 21 days:
-	
+
 ```
 {"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.TruncateNewCalendarStatements","calendar_field":6,"calendar_amount":21}
 ```
@@ -453,7 +453,7 @@ Truncate entries to the next 3 months:
 {"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.TruncateNewCalendarStatements","calendar_field":2,"calendar_amount":3}
 ```
 
-Additionally, after truncating the calendar entries, it is recommended to use a **retain operation** to ensure that only trips with valid calendar dates are retained. 
+Additionally, after truncating the calendar entries, it is recommended to use a **retain operation** to ensure that only trips with valid calendar dates are retained.
 
 Without this retain operation, the `trips.txt` file will contain trips with non-existent calendar dates, leading to invalid data.
 
@@ -461,7 +461,7 @@ Without this retain operation, the `trips.txt` file will contain trips with non-
 {"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.TruncateNewCalendarStatements","calendar_field":6,"calendar_amount":21}
 {"op":"retain", "match":{"file":"calendar_dates.txt"}, "retainBlocks":false}
 ```
-  
+
 #### Merge Trips and Simplify Calendar Entries
 
 Some agencies model their transit schedule favoring multiple entries in calendar_dates.txt as opposed to a more concise
@@ -477,7 +477,7 @@ calendar entries to match.  To run it, apply the following transform:
 ```
 
 The transform takes additional optional arguments to control its behavior:
-  
+
   * min_number_of_weeks_for_calendar_entry - how many weeks does a service id need to
     span before it gets its own entry in calendar.txt (default=3)
 
@@ -491,14 +491,14 @@ The transform takes additional optional arguments to control its behavior:
     Frequency is defined as how often the target day of the week occurs vs the
     count for day of the week appearing MOST frequently for the service id
     (default=0.5)
-  
+
   * undo_google_transit_data_feed_merge_tool - set to true to indicate that merged trip ids,
     as produced by the [GoogleTransitDataFeedMergeTool](http://code.google.com/p/googletransitdatafeed/wiki/Merge),
     should be un-mangled where possible.  Merged trip ids will often have the form
     `OriginalTripId_merged_1234567`.  We attempt to set the trip id back to `OrginalTripId`
     where appropriate.
-  
-    
+
+
 #### Shift Negative Stop Times
 
 Some agencies have trips that they model as starting BEFORE midnight on a given service date.  For these agencies, it
@@ -514,21 +514,21 @@ To run it, apply the following transform:
 ```
 {"op":"shift_negative_stop_times"}
 ```
-    
+
 _A note on negative stop times:_ When writing negative stop times, the negative value ONLY applies to the hour portion
   of the time.  Here are a few examples:
-  
+
   * "-01:45:00" => "23:45:00" on the previous day
-  
-  * "-05:13:32" => "19:13:32" on the previous day 
+
+  * "-05:13:32" => "19:13:32" on the previous day
 
 * Remove non-revenue stops
 
-  Stop_times which do not allow pick up or drop off are also known as non-revenue stops. Some GTFS consumers display 
-  these stops as if they were stops that passengers can use, at which point it is helpful to remove them. 
-  
+  Stop_times which do not allow pick up or drop off are also known as non-revenue stops. Some GTFS consumers display
+  these stops as if they were stops that passengers can use, at which point it is helpful to remove them.
+
   To remove them, apply the following transform:
-  
+
 ```
 {"op":"remove_non_revenue_stops"}
 ```
@@ -597,7 +597,7 @@ to support those routes.
 
 Consider an existing feed with a number of routes and stops.  We can add an entirely new route, with trips and stop-times
 and frequency-based service, using the transform.  This can be handy to add temporary service to an existing feed.
-  
+
 ```
 {"op":"add", "obj":{"file":"routes.txt", "route_id":"r0", "route_long_name":"Temporary Shuttle", "route_type":3}}
 
@@ -613,23 +613,27 @@ and frequency-based service, using the transform.  This can be handy to add temp
 {"op":"stop_times_factory", "trip_id":"t1", "start_time":"06:00:00", "end_time":"06:20:00", "stop_ids":["s3", "s2", "s1", "s0"]}
 ```
 
-### Clean National GTFS for Regional Integration and Consistency
+### Clip National GTFS for Regional Integration and Consistency
 
-To prepare for the integration of the national GTFS with our regional GTFS, several transformations have benn applied to the national GTFS in order to clean up and adapt the data to regional requirements. Below is an overview of the operations carried out:
+This section of the document describes how to reduce a large GTFS to a smaller area. Several transformations can be applied to a national GTFS to clean it up and adjust the data to a regional area in order to get ready for the integration with another regional GTFS. Below is an overview of the operations carried out:
 
   * Removing Inactive Calendars and Dates.
   * Truncating Calendars and Dates to 21 days.
-  * Retaining Data Within a Specific Geographic Area: a smaller geographic area was used for retaining only the entities within our area of interest.
-  * Trimming Stop Times Outside a Specific Geographic Area: a larger polygon was used to ensure that only the relevant stops_times within a wider region are retained.
+  * Retaining Data Within a Specific Geographic Area: a small geographic area is used for retaining only the entities within our area of interest. All routes and trips that do not pass through this area will therefore be eliminated.
+  * Trimming Stop Times Outside a Specific Geographic Area: a larger polygon is used to ensure that only the relevant stops_times within a wider region are retained. That means that all trips that go outside the area are truncated.
+  * Clean up entities that are no longer referenced by any trips.
+
+RetainUpFromPolygon and TrimTripFromPolygon together will clip the GTFS data to a small area and allow some Origin/Destination transit to nearby cities.
 
 ```
 {"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.RemoveOldCalendarStatements"}
-
 {"op":"transform", "class":"org.onebusaway.gtfs_transformer.impl.TruncateNewCalendarStatements","calendar_field":6,"calendar_amount":21}
-
 {"op":"retain", "match":{"file":"calendar_dates.txt"}, "retainBlocks":false}
 
 {"op":"transform","class":"org.onebusaway.gtfs_transformer.impl.RetainUpFromPolygon","polygon":"MULTIPOLYGON (((1.2 43.7, 1.55 43.7, 1.55 43.4, 1.2 43.4, 1.2 43.7)))"}
 
 {"op":"transform","class":"org.onebusaway.gtfs_transformer.impl.TrimTripFromPolygon","polygon":"MULTIPOLYGON (((1.0 44.2, 2.2 44.2, 2.2 43.3, 1.0 43.3, 1.0 44.2)))"}
+{"op":"retain", "match":{"file":"trips.txt"}, "retainBlocks":false}
 ```
+
+![RetainUpFromPolygon and TrimTripFromPolygon](onebusaway-gtfs-transformer-cli-sample1.png "RetainUpFromPolygon and TrimTripFromPolygon")

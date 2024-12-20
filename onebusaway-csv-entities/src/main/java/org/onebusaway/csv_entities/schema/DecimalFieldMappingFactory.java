@@ -24,6 +24,7 @@ import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.Currency;
 import java.util.Locale;
 import java.util.Map;
 
@@ -37,6 +38,8 @@ public class DecimalFieldMappingFactory implements FieldMappingFactory {
 
   private Locale _locale = Locale.US;
 
+  private Currency _currency;
+
   public DecimalFieldMappingFactory() {
 
   }
@@ -48,6 +51,10 @@ public class DecimalFieldMappingFactory implements FieldMappingFactory {
   public DecimalFieldMappingFactory(String format, Locale locale) {
     _format = format;
     _locale = locale;
+  }
+
+  public DecimalFieldMappingFactory(Currency currency) {
+    _currency = currency;
   }
 
   @Override
@@ -63,7 +70,11 @@ public class DecimalFieldMappingFactory implements FieldMappingFactory {
 
   private NumberFormat getFormat(Class<?> entityType, String objFieldName) {
     String format = determineFormat(entityType, objFieldName);
-    if (_locale == null) {
+    if (_currency != null) {
+      NumberFormat currFormatter = NumberFormat.getCurrencyInstance(Locale.US);
+      currFormatter.setCurrency(_currency);
+      return currFormatter;
+    } else if (_locale == null) {
       return new DecimalFormat(format);
     } else {
       return new DecimalFormat(format, new DecimalFormatSymbols(_locale));

@@ -30,9 +30,6 @@ public final class Area extends IdentityBean<AgencyAndId> {
   @CsvField(name="area_name", optional = true)
   private String name;
 
-  @CsvField(name="wkt", optional = true)
-  private String wkt;
-
   public Area() {
 
   }
@@ -40,7 +37,6 @@ public final class Area extends IdentityBean<AgencyAndId> {
   public Area(Area a) {
     this.id = a.id;
     this.name = a.name;
-    this.wkt = a.wkt;
   }
 
 
@@ -60,11 +56,4 @@ public final class Area extends IdentityBean<AgencyAndId> {
 
   public void setName(String name) { this.name = name; }
 
-  public String getWkt() {
-    return wkt;
-  }
-
-  public void setWkt(String wkt) {
-    this.wkt = wkt;
-  }
 }

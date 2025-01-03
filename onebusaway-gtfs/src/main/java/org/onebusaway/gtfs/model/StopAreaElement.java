@@ -25,8 +25,8 @@ public final class StopAreaElement extends IdentityBean<AgencyAndId> {
 
   @CsvField(name = "area_id", mapping = EntityFieldMappingFactory.class)
   private Area area;
-  @CsvField(name = "stop_id", mapping = StopLocationFieldMappingFactory.class)
-  private StopLocation stopLocation;
+  @CsvField(name = "stop_id", mapping = EntityFieldMappingFactory.class)
+  private Stop stop;
 
   public void setArea(Area area) {
     this.area = area;
@@ -38,7 +38,7 @@ public final class StopAreaElement extends IdentityBean<AgencyAndId> {
 
   @Override
   public AgencyAndId getId() {
-    return new AgencyAndId(getArea().getId().getAgencyId(), String.format("%s_%s", area.getId().getId(), stopLocation.getId().getId()));
+    return new AgencyAndId(getArea().getId().getAgencyId(), String.format("%s_%s", area.getId().getId(), stop.getId().getId()));
   }
 
   @Override
@@ -46,11 +46,11 @@ public final class StopAreaElement extends IdentityBean<AgencyAndId> {
 
   }
 
-  public void setStopLocation(StopLocation stopLocation) {
-    this.stopLocation = stopLocation;
+  public void setStop(Stop stop) {
+    this.stop = stop;
   }
 
-  public StopLocation getStopLocation() {
-    return stopLocation;
+  public Stop getStop() {
+    return stop;
   }
 }

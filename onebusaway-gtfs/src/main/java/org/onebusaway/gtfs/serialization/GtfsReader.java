@@ -347,22 +347,16 @@ public class GtfsReader extends CsvEntityReader {
         registerAgencyId(Note.class, note.getId());
       } else if (entity instanceof final Area area) {
         registerAgencyId(Area.class, area.getId());
-
       } else if (entity instanceof final Location location) {
         registerAgencyId(Location.class, location.getId());
       } else if (entity instanceof final LocationGroup group) {
         registerAgencyId(LocationGroup.class, group.getId());
       } else if (entity instanceof final LocationGroupElement locationGroupElement) {
-        LocationGroup locationGroup = _entityStore.getEntityForId(LocationGroup.class, locationGroupElement.getLocationGroupId());
+        var locationGroup = _entityStore.getEntityForId(LocationGroup.class, locationGroupElement.getLocationGroupId());
         locationGroup.addLocation(locationGroupElement.getStop());
       } else if (entity instanceof final StopAreaElement stopAreaElement) {
-        var stopArea = _entityStore.getEntityForId(StopArea.class, stopAreaElement.getArea().getId());
-        if (stopArea == null) {
-          stopArea = new StopArea();
-          stopArea.setArea(stopAreaElement.getArea());
-          _entityStore.saveEntity(stopArea);
-        }
-        stopArea.addLocation(stopAreaElement.getStopLocation());
+        var area = _entityStore.getEntityForId(Area.class, stopAreaElement.getArea().getId());
+        area.addStop(stopAreaElement.getStop());
       } else if (entity instanceof final Vehicle vehicle) {
         registerAgencyId(Vehicle.class, vehicle.getId());
       } else if (entity instanceof final Facility facility){
@@ -384,7 +378,7 @@ public class GtfsReader extends CsvEntityReader {
       Map<String, String> agencyIdsByEntityId = _agencyIdsByEntityClassAndId.get(entityType);
 
       if (agencyIdsByEntityId == null) {
-        agencyIdsByEntityId = new HashMap<String, String>();
+        agencyIdsByEntityId = new HashMap<>();
         _agencyIdsByEntityClassAndId.put(entityType, agencyIdsByEntityId);
       }
 

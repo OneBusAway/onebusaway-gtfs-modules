@@ -17,6 +17,7 @@ package org.onebusaway.gtfs.serialization;
 
 import static  org.junit.jupiter.api.Assertions.assertEquals;
 import static  org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static  org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -34,11 +35,14 @@ import org.onebusaway.gtfs.model.FareProduct;
 import org.onebusaway.gtfs.model.FareTransferRule;
 import org.onebusaway.gtfs.model.RiderCategory;
 import org.onebusaway.gtfs.model.Route;
+import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopAreaElement;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs.services.MockGtfs;
 
 public class FaresV2ReaderTest extends BaseGtfsTest {
+
+  private static final String AGENCY_ID = "1";
 
   @Test
   public void turlockFaresV2() throws CsvEntityIOException, IOException {
@@ -139,6 +143,30 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
 
     assertFalse(dao.hasFaresV1());
     assertTrue(dao.hasFaresV2());
+  }
+
+  @Test
+  public void pierceTransitStopAreas() throws CsvEntityIOException, IOException {
+    var dao = processFeed(GtfsTestData.getPierceTransitFlex(), AGENCY_ID, false);
+
+    var areaElements = List.copyOf(dao.getAllStopAreaElements());
+    assertEquals(12, areaElements.size());
+
+    var first = areaElements.get(0);
+    assertEquals("1_4210813", first.getArea().getId().toString());
+    var stop = first.getStop();
+    assertEquals("4210806", stop.getId().getId());
+    assertEquals("Bridgeport Way & San Francisco Ave SW (Northbound)", stop.getName());
+    assertSame(Stop.class, stop.getClass());
+
+    var area = areaElements.get(0);
+
+    assertSame(Stop.class, area.getStop().getClass());
+
+    var areas = List.copyOf(dao.getAllAreas());
+    assertEquals(1, areas.size());
+
+    areas.forEach(stopArea -> assertFalse(stopArea.getStops().isEmpty()));
   }
 
 

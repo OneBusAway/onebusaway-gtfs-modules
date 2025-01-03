@@ -312,11 +312,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
 
   @Override
   public Collection<StopAreaElement> getAllStopAreaElements() {
-    Collection<StopArea> groups = _ops.find("FROM StopArea");
-    return groups.stream().flatMap(group -> group.getLocations().stream().map(stopLocation -> {
+    Collection<Area> areas = _ops.find("FROM StopArea");
+    return areas.stream().flatMap(area -> area.getStops().stream().map(stopLocation -> {
       var stopAreaElement = new StopAreaElement();
-      stopAreaElement.setId(group.getId());
-      stopAreaElement.setStopLocation(stopLocation);
+      stopAreaElement.setId(area.getId());
+      stopAreaElement.setStop(stopLocation);
       return stopAreaElement;
     })).collect(Collectors.toList());
   }
@@ -325,10 +325,7 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   public Collection<LocationGroup> getAllLocationGroups() {
     return _ops.find("FROM LocationGroup");
   }
-  @Override
-  public Collection<StopArea> getAllStopAreas() {
-    return _ops.find("FROM StopArea");
-  }
+
   @Override
   public Collection<Location> getAllLocations() {
     return _ops.find("FROM Location");

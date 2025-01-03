@@ -72,4 +72,7 @@ public final class Area extends IdentityBean<AgencyAndId> {
 
   public void setName(String name) { this.name = name; }
 
+  public Collection<Stop> getStops() {
+    return List.copyOf(stops);
+  }
 }

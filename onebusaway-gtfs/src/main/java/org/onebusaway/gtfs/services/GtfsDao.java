@@ -208,8 +208,6 @@ public interface GtfsDao extends GenericDao {
 
   public Collection<StopAreaElement> getAllStopAreaElements();
 
-  public Collection<StopArea> getAllStopAreas();
-
   public Collection<Location> getAllLocations();
 
   public Collection<BookingRule> getAllBookingRules();

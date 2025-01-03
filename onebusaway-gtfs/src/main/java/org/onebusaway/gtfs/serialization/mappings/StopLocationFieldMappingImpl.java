@@ -45,7 +45,7 @@ public class StopLocationFieldMappingImpl extends EntityFieldMappingImpl {
         public Object convert(@SuppressWarnings("rawtypes") Class type, Object value) {
             if (type == String.class) {
                 if (value instanceof String)
-                    return (String) value;
+                    return value;
                 return null;
             } else if (type == StopLocation.class) {
                 String entityId = value.toString();
@@ -57,13 +57,12 @@ public class StopLocationFieldMappingImpl extends EntityFieldMappingImpl {
                 if (location != null) return location;
                 Object locationGroup = _context.getEntity(LocationGroup.class, id);
                 if (locationGroup != null) return locationGroup;
-                Object stopArea = _context.getEntity(StopArea.class, id);
-                if (stopArea != null) return stopArea;
                 return null;
             }
             // we fell through -- unexpected situation
-            throw new ConversionException("Could not convert " + value + " of type "
-                    + value.getClass() + " to " + type);
+            throw new ConversionException(
+                    "Could not convert %s of type %s to %s".formatted(
+                            value, value.getClass(), type));
         }
     }
 }

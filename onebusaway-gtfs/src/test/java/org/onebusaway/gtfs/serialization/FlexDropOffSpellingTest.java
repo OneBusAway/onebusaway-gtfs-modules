@@ -41,10 +41,6 @@ public class FlexDropOffSpellingTest {
 
   @Test
   public void newSpelling() throws IOException {
-    testFlexStopTimeWithSpelling("drop_off");
-  }
-
-  private static void testFlexStopTimeWithSpelling(String dropOffSpelling) throws IOException {
     MockGtfs gtfs = MockGtfs.create();
     gtfs.putMinimal();
     gtfs.putDefaultTrips();
@@ -52,7 +48,7 @@ public class FlexDropOffSpellingTest {
     String rows =
             String.format(
                     "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_booking_rule_id,drop_off_booking_rule_id,start_pickup_%s_window,end_pickup_%s_window",
-                    dropOffSpelling, dropOffSpelling
+                    "drop_off", "drop_off"
             );
 
     gtfs.putLines(
@@ -70,4 +66,5 @@ public class FlexDropOffSpellingTest {
     assertEquals(LocalTime.parse("10:00").toSecondOfDay(), stopTime.getStartPickupDropOffWindow());
     assertEquals(LocalTime.parse("18:00").toSecondOfDay(), stopTime.getEndPickupDropOffWindow());
   }
+
 }

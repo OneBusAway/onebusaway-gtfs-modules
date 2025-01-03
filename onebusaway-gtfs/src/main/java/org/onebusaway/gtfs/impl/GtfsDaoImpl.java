@@ -313,11 +313,6 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getAllEntitiesForType(StopAreaElement.class);
   }
 
-  @Override
-  public Collection<StopArea> getAllStopAreas() {
-    return getAllEntitiesForType(StopArea.class);
-  }
-
   public Collection<Location> getAllLocations() {
     return getAllEntitiesForType(Location.class);
   }

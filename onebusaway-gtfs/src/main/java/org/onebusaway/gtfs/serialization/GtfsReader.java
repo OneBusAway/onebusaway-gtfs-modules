@@ -323,55 +323,39 @@ public class GtfsReader extends CsvEntityReader {
           return;
 
         _agencies.add((Agency) entity);
-      } else if (entity instanceof BookingRule) {
-        BookingRule bookingRule = (BookingRule) entity;
+      } else if (entity instanceof final BookingRule bookingRule) {
         registerAgencyId(BookingRule.class, bookingRule.getId());
-      } else if (entity instanceof Pathway) {
-        Pathway pathway = (Pathway) entity;
+      } else if (entity instanceof final Pathway pathway) {
         registerAgencyId(Pathway.class, pathway.getId());
-      } else if (entity instanceof Level) {
-        Level level = (Level) entity;
+      } else if (entity instanceof final Level level) {
         registerAgencyId(Level.class, level.getId());
-      } else if (entity instanceof Route) {
-        Route route = (Route) entity;
+      } else if (entity instanceof final Route route) {
         registerAgencyId(Route.class, route.getId());
-      } else if (entity instanceof Trip) {
-        Trip trip = (Trip) entity;
+      } else if (entity instanceof final Trip trip) {
         registerAgencyId(Trip.class, trip.getId());
-      } else if (entity instanceof Stop) {
-        Stop stop = (Stop) entity;
+      } else if (entity instanceof final Stop stop) {
         registerAgencyId(Stop.class, stop.getId());
-      } else if (entity instanceof FareProduct) {
-        FareProduct product = (FareProduct) entity;
+      } else if (entity instanceof final FareProduct product) {
         registerAgencyId(FareProduct.class, product.getId());
-      } else if (entity instanceof FareMedium) {
-        FareMedium medium = (FareMedium) entity;
+      } else if (entity instanceof final FareMedium medium) {
         registerAgencyId(FareMedium.class, medium.getId());
-      } else if (entity instanceof RiderCategory) {
-        RiderCategory category = (RiderCategory) entity;
+      } else if (entity instanceof final RiderCategory category) {
         registerAgencyId(RiderCategory.class, category.getId());
-      } else if (entity instanceof FareAttribute) {
-        FareAttribute fare = (FareAttribute) entity;
+      } else if (entity instanceof final FareAttribute fare) {
         registerAgencyId(FareAttribute.class, fare.getId());
-      } else if (entity instanceof Note) {
-        Note note = (Note) entity;
+      } else if (entity instanceof final Note note) {
         registerAgencyId(Note.class, note.getId());
-      } else if (entity instanceof Area) {
-        Area area = (Area) entity;
+      } else if (entity instanceof final Area area) {
         registerAgencyId(Area.class, area.getId());
 
-      } else if (entity instanceof Location) {
-        Location location = (Location) entity;
+      } else if (entity instanceof final Location location) {
         registerAgencyId(Location.class, location.getId());
-      } else if (entity instanceof LocationGroup) {
-        var group = (LocationGroup) entity;
+      } else if (entity instanceof final LocationGroup group) {
         registerAgencyId(LocationGroup.class, group.getId());
-      } else if (entity instanceof LocationGroupElement) {
-        LocationGroupElement locationGroupElement = (LocationGroupElement) entity;
+      } else if (entity instanceof final LocationGroupElement locationGroupElement) {
         LocationGroup locationGroup = _entityStore.getEntityForId(LocationGroup.class, locationGroupElement.getLocationGroupId());
         locationGroup.addLocation(locationGroupElement.getStop());
-      } else if (entity instanceof StopAreaElement) {
-        var stopAreaElement = (StopAreaElement) entity;
+      } else if (entity instanceof final StopAreaElement stopAreaElement) {
         var stopArea = _entityStore.getEntityForId(StopArea.class, stopAreaElement.getArea().getId());
         if (stopArea == null) {
           stopArea = new StopArea();
@@ -379,17 +363,13 @@ public class GtfsReader extends CsvEntityReader {
           _entityStore.saveEntity(stopArea);
         }
         stopArea.addLocation(stopAreaElement.getStopLocation());
-      } else if (entity instanceof Vehicle) {
-        Vehicle vehicle = (Vehicle) entity;
+      } else if (entity instanceof final Vehicle vehicle) {
         registerAgencyId(Vehicle.class, vehicle.getId());
-      } else if (entity instanceof Facility){
-        Facility facility = (Facility) entity;
+      } else if (entity instanceof final Facility facility){
         registerAgencyId(Facility.class, facility.getId());
-      } else if (entity instanceof FacilityPropertyDefinition){
-        FacilityPropertyDefinition facilityPropertyDefinition = (FacilityPropertyDefinition) entity;
+      } else if (entity instanceof final FacilityPropertyDefinition facilityPropertyDefinition){
         registerAgencyId(FacilityPropertyDefinition.class, facilityPropertyDefinition.getId());
-      } else if (entity instanceof Icon){
-        Icon icon = (Icon) entity;
+      } else if (entity instanceof final Icon icon){
         registerAgencyId(Icon.class, icon.getId());
       }
 

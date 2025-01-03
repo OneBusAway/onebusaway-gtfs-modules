@@ -15,6 +15,10 @@
  */
 package org.onebusaway.gtfs.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
@@ -22,13 +26,17 @@ import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFac
 @CsvFields(filename = "areas.txt", required = false)
 public final class Area extends IdentityBean<AgencyAndId> {
 
-  private static final long serialVersionUID = 1L;
-
   @CsvField(name="area_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 
   @CsvField(name="area_name", optional = true)
   private String name;
+
+  // we use a List, not Set to keep the insertion order. by definition these stops don't have an
+  // order but it's nice for clients to not randomly change it.
+  @CsvField(ignore = true)
+  private List<Stop> stops = new ArrayList<>();
+
 
   public Area() {
 
@@ -39,7 +47,6 @@ public final class Area extends IdentityBean<AgencyAndId> {
     this.name = a.name;
   }
 
-
   public String getAreaId() {
     return id.getId();
   }
@@ -47,6 +54,15 @@ public final class Area extends IdentityBean<AgencyAndId> {
   public AgencyAndId getId() {
     return id;
   }
+
+  private void setStops(Collection<Stop> stops) {
+    this.stops = List.copyOf(stops);
+  }
+
+  public void addStop(Stop stop) {
+    this.stops.add(stop);
+  }
+
 
   public void setId(AgencyAndId areaId) {
     this.id = areaId;

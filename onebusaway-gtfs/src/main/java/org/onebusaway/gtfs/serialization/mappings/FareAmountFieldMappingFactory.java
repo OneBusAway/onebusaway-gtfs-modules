@@ -76,7 +76,7 @@ public class FareAmountFieldMappingFactory implements FieldMappingFactory {
   
         Object value = csvValues.get(_csvFieldName);
 
-        Float amount = (float) value;
+        Float amount = Float.parseFloat(value.toString());
         object.setPropertyValue(_objFieldName, amount);
     }
   }

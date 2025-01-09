@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.CsvEntityContextImpl;
 import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
-import org.onebusaway.csv_entities.schema.DefaultFieldMapping;
 import org.onebusaway.csv_entities.schema.FieldMapping;
 import org.onebusaway.gtfs.model.FareProduct;
 import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
@@ -42,11 +41,41 @@ public class FareAmountFieldMappingFactoryTest {
   @Test
   public void testTranslateFromCSVToObject() {
     Map<String, Object> csvValues = new HashMap<String, Object>();
-    csvValues.put("amount", 47.1234f);
+    csvValues.put("amount", "47.12");
     csvValues.put("currency", "USD");
     FareProduct fp = new FareProduct();
     _fieldMapping.translateFromCSVToObject(new CsvEntityContextImpl(), csvValues, BeanWrapperFactory.wrap(fp));
-    assertEquals(47.1234, fp.getAmount(), 0.00001);
+    assertEquals(47.12, fp.getAmount(), 0.001);
+  }
+
+  @Test
+  public void testTranslateFromCSVToObjectWhole() {
+    Map<String, Object> csvValues = new HashMap<String, Object>();
+    csvValues.put("amount", "47");
+    csvValues.put("currency", "USD");
+    FareProduct fp = new FareProduct();
+    _fieldMapping.translateFromCSVToObject(new CsvEntityContextImpl(), csvValues, BeanWrapperFactory.wrap(fp));
+    assertEquals(47, fp.getAmount(), 0.001);
+  }
+
+  @Test
+  public void testTranslateFromCSVToObjectWholeDecimals() {
+    Map<String, Object> csvValues = new HashMap<String, Object>();
+    csvValues.put("amount", "47.00");
+    csvValues.put("currency", "USD");
+    FareProduct fp = new FareProduct();
+    _fieldMapping.translateFromCSVToObject(new CsvEntityContextImpl(), csvValues, BeanWrapperFactory.wrap(fp));
+    assertEquals(47, fp.getAmount(), 0.001);
+  }
+
+  @Test
+  public void testTranslateFromCSVToObjectNonUSD() {
+    Map<String, Object> csvValues = new HashMap<String, Object>();
+    csvValues.put("amount", "47");
+    csvValues.put("currency", "JPY");
+    FareProduct fp = new FareProduct();
+    _fieldMapping.translateFromCSVToObject(new CsvEntityContextImpl(), csvValues, BeanWrapperFactory.wrap(fp));
+    assertEquals(47, fp.getAmount(), 0.001);
   }
 
   @Test

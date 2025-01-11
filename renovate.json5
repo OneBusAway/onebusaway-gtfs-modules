@@ -32,6 +32,7 @@
       automerge: true,
       matchPackageNames: [
         'org.apache.maven.plugins:{/,}**',
+        'org.sonatype.central:central-publishing-maven-plugin'
       ],
     },
     {

@@ -16,17 +16,14 @@
 
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.cloud.api.ExternalServices;
-import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
+import java.util.ArrayList;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
-import org.onebusaway.gtfs_transformer.services.CloudContextService;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.ArrayList;
 
 public class UpdateStopTimesForTime implements GtfsTransformStrategy {
 
@@ -71,10 +68,6 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
             }
         }
         _log.info("Decreasing times: {}, TripsToRemove: {}", negativeTimes, tripsToRemove.size());
-
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        String feed = CloudContextService.getLikelyFeedName(dao);
-        es.publishMetric(CloudContextService.getNamespace(), "TripsWithDecreasingStopTimes", "feed", feed, tripsToRemove.size());
 
         StringBuffer illegalTripList = new StringBuffer();
         for (Trip trip : tripsToRemove) {

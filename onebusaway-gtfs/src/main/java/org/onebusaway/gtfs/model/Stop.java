@@ -22,7 +22,10 @@ import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFac
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.LatLonFieldMappingFactory;
 
-@CsvFields(filename = "stops.txt", prefix = "stop_")
+/**
+ * Stops are not required when pickup/drop off is based on areas.
+ */
+@CsvFields(filename = "stops.txt", prefix = "stop_", required = false)
 public final class Stop extends IdentityBean<AgencyAndId> implements StopLocation {
 
   private static final long serialVersionUID = 1L;

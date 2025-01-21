@@ -316,6 +316,45 @@ public class GtfsReaderTest extends BaseGtfsTest {
   }
 
   @Test
+  public void testReadFilesWithoutStops() throws IOException {
+    MockGtfs gtfs = MockGtfs.create();
+    gtfs.putLines(
+            "agency.txt",
+            "agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_email",
+            "1,Agency,http://agency.gov/,America/Los_Angeles,en,555-1234,http://agency.gov/fares,agency@email.com");
+    gtfs.putLines(
+            "routes.txt",
+            "agency_id,route_id,route_short_name,route_long_name,route_type,route_desc,route_color,route_text_color,"
+                    + "route_bikes_allowed,bikes_allowed,route_url,route_sort_order",
+            "1,R1,10,The Ten,3,route desc,FF0000,0000FF,1,2,http://agency.gov/route,100");
+    gtfs.putLines(
+            "trips.txt",
+            "route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,block_id,shape_id,route_short_name,"
+                    + "trip_bikes_allowed,bikes_allowed,wheelchair_accessible,peak_offpeak,cars_allowed",
+            "R1,WEEK,T1,head-sign,short-name,1,B1,SHP1,10X,1,2,1,3,1");
+    gtfs.putLines(
+            "stop_times.txt",
+            "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_type,drop_off_type,"
+                    + "shape_dist_traveled,route_short_name,timepoint,start_pickup_drop_off_window,end_pickup_drop_off_window,pickup_booking_rule_id,drop_off_booking_rule_id",
+            "T1,09:01:30,10:20:02,S1,2,head-sign,1,2,23.1,10X,1,0:00:00,24:00:00,br_id,br_id");
+    gtfs.putLines(
+            "calendar.txt",
+            "service_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday",
+            "WEEK,20120105,20120215,1,1,1,1,1,1,1");
+    gtfs.putLines("calendar_dates.txt", "service_id,date,exception_type",
+            "WEEK,20120304,2");
+    gtfs.putLines(
+            "feed_info.txt",
+            "feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version,feed_contact_email,feed_contact_url",
+            "Test,http://agency.gov/,en,20120110,20120217,2.0,agency@email.com,http://agency.gov/");
+    gtfs.putLines("booking_rules.txt",
+            "booking_rule_id,booking_type,booking_url,prior_notice_last_day,phone_number,info_url",
+            "br_id,2,http://agency-br-url.com,1,1234567890,http://agency-info-url.com");
+
+    processFeed(gtfs.getPath(), "1", false);
+  }
+
+  @Test
   public void testIslandTransit() throws IOException {
 
     String agencyId = "26";

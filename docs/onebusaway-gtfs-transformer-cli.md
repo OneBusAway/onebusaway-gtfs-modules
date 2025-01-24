@@ -263,6 +263,15 @@ example:
 {"op":"retain","match":{"file":"routes.txt", "route_short_name":"B15"}, "retainBlocks":false}
 ```
 
+If you retain for example some route using the snippet above, every entity which is not referenced by this route or any other entity in relation to this route
+will also be removed. This includes reference-less information like feed_info.txt. To keep the optional feed_info.txt, simply retain the file like any other entity
+type, but without an ID:
+```
+{"op":"retain", "match":{"file":"feed_info.txt"}}
+```
+
+This ensures, that a file is also retained regardless of any reference to the data in this file.
+
 #### Remove an Entity
 
 You can remove a specific entity from a feed.

@@ -134,6 +134,26 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
     assertEquals("charmcard_senior", medium.getId().getId());
     assertEquals("Senior CharmCard", medium.getName());
 
+    List<RiderCategory> riderCats = new ArrayList<>(dao.getAllRiderCategories());
+    assertEquals(5, riderCats.size());
+
+    RiderCategory riderCat = riderCats.stream().sorted(Comparator.comparing(RiderCategory::getId)).filter(c -> c.getId().getId().equals("reg")).findAny().get();
+    assertEquals("reg", riderCat.getId().getId());
+    assertEquals("Regular", riderCat.getName());
+    assertEquals(1, riderCat.getIsDefaultFareCategory());
+    assertEquals(RiderCategory.MISSING_VALUE, riderCat.getMaxAge());
+    assertEquals(RiderCategory.MISSING_VALUE, riderCat.getMinAge());
+    assertEquals("https://www.mta.maryland.gov/regular-fares", riderCat.getEligibilityUrl());
+
+    RiderCategory riderCat2 = riderCats.stream().sorted(Comparator.comparing(RiderCategory::getId)).filter(c -> c.getId().getId().equals("sen")).findAny().get();
+    assertEquals("sen", riderCat2.getId().getId());
+    assertEquals("Senior", riderCat2.getName());
+    assertEquals(0, riderCat2.getIsDefaultFareCategory());
+    assertEquals(RiderCategory.MISSING_VALUE, riderCat2.getMaxAge());
+    assertEquals(65, riderCat2.getMinAge());
+    assertEquals("https://www.mta.maryland.gov/senior-reduced-fare-program", riderCat2.getEligibilityUrl());
+
+
     List<StopAreaElement> stopAreaElements = new ArrayList<>(dao.getAllStopAreaElements());
     assertEquals(0, stopAreaElements.size());
 

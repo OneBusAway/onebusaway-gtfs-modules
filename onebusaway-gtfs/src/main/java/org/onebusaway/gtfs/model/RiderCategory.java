@@ -17,7 +17,6 @@ package org.onebusaway.gtfs.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
-import org.onebusaway.gtfs.serialization.mappings.AgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 
 /**
@@ -30,8 +29,14 @@ public final class RiderCategory extends IdentityBean<AgencyAndId> {
 
   @CsvField(name = "rider_category_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
-  @CsvField(name = "rider_category_name", optional = true)
+  @CsvField(name = "rider_category_name", optional = false)
   private String name;
+
+  /**
+   * 0 = not default category, 1 = default category
+   */
+  @CsvField(optional = true, defaultValue = "0")
+  private int isDefaultFareCategory = 0;
   @CsvField(optional = true)
   private int minAge = MISSING_VALUE;
   @CsvField(optional = true)
@@ -45,6 +50,14 @@ public final class RiderCategory extends IdentityBean<AgencyAndId> {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public int getIsDefaultFareCategory() {
+    return isDefaultFareCategory;
+  }
+
+  public void setIsDefaultFareCategory(int isDefaultFareCategory) {
+    this.isDefaultFareCategory = isDefaultFareCategory;
   }
 
   public int getMinAge() {

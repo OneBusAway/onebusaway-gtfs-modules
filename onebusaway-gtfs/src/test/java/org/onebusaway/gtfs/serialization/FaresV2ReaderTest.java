@@ -87,6 +87,7 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
     assertEquals("Youth Age 18 and Under", riderCat.getName());
     assertEquals(18, riderCat.getMaxAge());
     assertEquals(RiderCategory.MISSING_VALUE, riderCat.getMinAge());
+    assertEquals(0, riderCat.getIsDefaultFareCategory(), "isDefaultFareCategory not 0 when unspecified");
     assertEquals("http://www.turlocktransit.com/fares.html", riderCat.getEligibilityUrl());
 
     assertTrue(dao.hasFaresV1());

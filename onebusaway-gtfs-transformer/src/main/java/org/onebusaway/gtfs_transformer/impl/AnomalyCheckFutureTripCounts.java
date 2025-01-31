@@ -17,8 +17,6 @@
 
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.cloud.api.ExternalServices;
-import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.csv_entities.CSVLibrary;
 import org.onebusaway.csv_entities.CSVListener;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
@@ -110,8 +108,6 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
         }
 
 
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-
         String[] days = {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday","Holiday"};
 
 
@@ -145,9 +141,6 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
                     _log.info(dateDay + " has " + tripCount + " trips, and we are ignoring this possible anomoly");
                 } else {
                     _log.info(dateDay + " has " + tripCount + " trips, this may indicate a problem.");
-                    if (!silentMode) {
-                        es.publishMessage(CloudContextService.getTopic(), dateDay.toString() + " has " + tripCount + " trips, this may indicate a problem.");
-                    }
                 }
             }
             dayCounter ++;

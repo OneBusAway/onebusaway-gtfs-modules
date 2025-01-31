@@ -16,8 +16,6 @@
 
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.cloud.api.ExternalServices;
-import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -63,14 +61,6 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
 
         File controlFile = new File((String) context.getParameter("controlFile"));
         String feed = CloudContextService.getLikelyFeedName(dao);
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
-        if(!controlFile.exists()) {
-            es.publishMultiDimensionalMetric(CloudContextService.getNamespace(),"MissingControlFiles",
-                    new String[]{"feed","controlFileName"},
-                    new String[]{feed,controlFile.getName()},1);
-            throw new IllegalStateException(
-                    "Control file does not exist: " + controlFile.getName());
-        }
 
         AgencyAndId agencyAndId = dao.getAllTrips().iterator().next().getId();
         List<String> controlLines = new InputLibrary().readList((String) context.getParameter("controlFile"));

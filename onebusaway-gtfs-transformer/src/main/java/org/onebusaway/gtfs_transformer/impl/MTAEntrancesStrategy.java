@@ -15,8 +15,6 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.cloud.api.ExternalServices;
-import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FeedInfo;
@@ -142,29 +140,12 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     @Override
     public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-        ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
         Collection<FeedInfo> feedInfos = dao.getAllFeedInfos();
         String feed = null;
         if(feedInfos.size() > 0)
          feed = feedInfos.iterator().next().getPublisherName();
-        File entrancesFile = new File(entrancesCsv);
-        if(!entrancesFile.exists()) {
-            es.publishMultiDimensionalMetric(getNamespace(),"MissingControlFiles",
-                    new String[]{"feed","controlFileName"},
-                    new String[]{feed,entrancesCsv},1);
-            throw new IllegalStateException(
-                    "Entrances file does not exist: " + entrancesFile.getName());
-        }
-
         if (elevatorsCsv != null) {
             File elevatorsFile = new File(elevatorsCsv);
-            if(!elevatorsFile.exists()) {
-                es.publishMultiDimensionalMetric(getNamespace(),"MissingControlFiles",
-                        new String[]{"feed","controlFileName"},
-                        new String[]{feed,elevatorsCsv},1);
-                throw new IllegalStateException(
-                        "Elevators file does not exist: " + elevatorsFile.getName());
-            }
         }
 
         _log.info("elevatorCsv={}, entrancesCsv={}, accessibleComplexFile={}", elevatorsCsv, entrancesCsv, accessibleComplexFile);

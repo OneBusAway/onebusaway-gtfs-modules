@@ -15,8 +15,6 @@
  */
 package org.onebusaway.gtfs_transformer.impl;
 
-import org.onebusaway.cloud.api.ExternalServices;
-import org.onebusaway.cloud.api.ExternalServicesBridgeFactory;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Stop;
@@ -55,7 +53,6 @@ public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-    ExternalServices es =  new ExternalServicesBridgeFactory().getExternalServices();
     Collection<FeedInfo> feedInfos = dao.getAllFeedInfos();
 
     // name the feed for logging/reference
@@ -69,13 +66,6 @@ public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
     }
 
     File stationsFile = new File(stationsCsv);
-    if (!stationsFile.exists()) {
-      es.publishMultiDimensionalMetric(getNamespace(), "MissingControlFiles",
-              new String[]{"feed", "controlFileName"},
-              new String[]{feed, stationsCsv}, 1);
-      throw new IllegalStateException(
-              "Entrances file does not exist: " + stationsFile.getName());
-    }
 
     // see MTAStationAccessibilityStrategyTest for discussion of how this works
     List<MTAStation> stations = getStations();

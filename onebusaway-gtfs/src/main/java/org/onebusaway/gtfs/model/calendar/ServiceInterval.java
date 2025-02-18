@@ -34,8 +34,10 @@ public final class ServiceInterval implements Serializable {
 
   /**
    * 
-   * @param arrival arrival time in seconds since midnight
-   * @param departure departure time in seconds since midnight
+   * @param arrival arrival time in seconds since "noon minus 12h" (effectively midnight, except for days on which
+   * daylight savings time changes occur) at the beginning of the service date
+   * @param departure departure time in seconds since "noon minus 12h" (effectively midnight, except for days on which
+   * daylight savings time changes occur) at the beginning of the service date
    */
   public ServiceInterval(int arrival, int departure) {
     this(arrival, departure, arrival, departure);
@@ -58,7 +60,8 @@ public final class ServiceInterval implements Serializable {
 
   /**
    * 
-   * @return min arrival time in seconds since midnight
+   * @return min arrival time in seconds since "noon minus 12h" (effectively midnight, except for days on which daylight
+   * savings time changes occur) at the beginning of the service date
    */
   public int getMinArrival() {
     return minArrival;
@@ -66,7 +69,8 @@ public final class ServiceInterval implements Serializable {
 
   /**
    * 
-   * @return min departure time in seconds since midnight
+   * @return min departure time in seconds since "noon minus 12h" (effectively midnight, except for days on which
+   * daylight savings time changes occur) at the beginning of the service date
    */
   public int getMinDeparture() {
     return minDeparture;
@@ -74,7 +78,8 @@ public final class ServiceInterval implements Serializable {
 
   /**
    * 
-   * @return max arrival time in seconds since midnight
+   * @return max arrival time in seconds since "noon minus 12h" (effectively midnight, except for days on which
+   * daylight savings time changes occur) at the beginning of the service date
    */
   public int getMaxArrival() {
     return maxArrival;
@@ -82,7 +87,8 @@ public final class ServiceInterval implements Serializable {
 
   /**
    * 
-   * @return max departure time in seconds since midnight
+   * @return max departure time in seconds since "noon minus 12h" (effectively midnight, except for days on which
+   * daylight savings time changes occur) at the beginning of the service date
    */
   public int getMaxDeparture() {
     return maxDeparture;

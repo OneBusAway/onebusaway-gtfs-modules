@@ -15,6 +15,7 @@
  */
 package org.onebusaway.gtfs.model;
 
+import org.jspecify.annotations.Nullable;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
@@ -92,6 +93,7 @@ public final class FareTransferRule extends IdentityBean<String> {
     this.fareTransferType = fareTransferType;
   }
 
+  @Nullable
   public AgencyAndId getFareProductId() {
     return fareProductId;
   }

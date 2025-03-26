@@ -45,6 +45,7 @@ public final class FareTransferRule extends IdentityBean<String> {
   @CsvField(name = "fare_product_id", optional = true, mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId fareProductId;
 
+  @Nullable
   public AgencyAndId getFromLegGroupId() {
     return fromLegGroupId;
   }
@@ -53,6 +54,7 @@ public final class FareTransferRule extends IdentityBean<String> {
     this.fromLegGroupId = fromLegGroupId;
   }
 
+  @Nullable
   public AgencyAndId getToLegGroupId() {
     return toLegGroupId;
   }

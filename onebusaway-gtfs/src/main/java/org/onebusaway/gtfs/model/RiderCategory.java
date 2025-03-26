@@ -28,18 +28,15 @@ public final class RiderCategory extends IdentityBean<AgencyAndId> {
 
   public static final int MISSING_VALUE = -999;
 
-  @Experimental(proposedBy = "https://github.com/google/transit/pull/511")
   @CsvField(name = "rider_category_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 
-  @Experimental(proposedBy = "https://github.com/google/transit/pull/511")
-  @CsvField(name = "rider_category_name", optional = false)
+  @CsvField(name = "rider_category_name")
   private String name;
 
   /**
    * 0 = not default category, 1 = default category
    */
-  @Experimental(proposedBy = "https://github.com/google/transit/pull/511")
   @CsvField(optional = true, defaultValue = "0")
   private int isDefaultFareCategory = 0;
   
@@ -51,7 +48,6 @@ public final class RiderCategory extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true)
   private int maxAge = MISSING_VALUE;
 
-  @Experimental(proposedBy = "https://github.com/google/transit/pull/511")
   @CsvField(optional = true)
   private String eligibilityUrl;
 

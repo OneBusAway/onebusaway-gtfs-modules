@@ -143,7 +143,6 @@ public class UpdateTripsForSdon implements GtfsTransformStrategy {
                         st.setDepartureTime(stopTime.getDepartureTime());
                         st.setStopSequence(stopTime.getStopSequence());
                         st.setDropOffType(stopTime.getDropOffType());
-                        st.setDepartureBuffer(stopTime.getDepartureBuffer());
                         dao.saveOrUpdateEntity(st);
 
                         countdao++;

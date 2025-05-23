@@ -23,111 +23,99 @@ package org.onebusaway.gtfs.model;
  */
 public interface StopTimeProxy {
 
-  public Integer getId();
+  Integer getId();
 
-  public void setId(Integer id);
+  void setId(Integer id);
 
-  public Trip getTrip();
+  Trip getTrip();
 
-  public Area getStartServiceArea();
+  void setTrip(Trip trip);
 
-  public void setStartServiceArea(Area area);
+  int getStopSequence();
 
-  public Area getEndServiceArea();
+  void setStopSequence(int stopSequence);
 
-  public void setEndServiceArea(Area area);
+  StopLocation getStop();
 
-  public void setTrip(Trip trip);
+  StopLocation getLocation();
+  StopLocation getLocationGroup();
 
-  public int getStopSequence();
+  void setStop(StopLocation stop);
 
-  public void setStopSequence(int stopSequence);
+  void setLocation(StopLocation stop);
 
-  public StopLocation getStop();
+  void setLocationGroup(StopLocation stop);
 
-  public StopLocation getLocation();
-  public StopLocation getLocationGroup();
+  boolean isArrivalTimeSet();
 
-  public void setStop(StopLocation stop);
+  int getArrivalTime();
 
-  public void setLocation(StopLocation stop);
+  void setArrivalTime(int arrivalTime);
 
-  public void setLocationGroup(StopLocation stop);
+  void clearArrivalTime();
 
-  public boolean isArrivalTimeSet();
+  boolean isDepartureTimeSet();
 
-  public int getArrivalTime();
+  int getDepartureTime();
 
-  public void setArrivalTime(int arrivalTime);
+  void setDepartureTime(int departureTime);
 
-  public void clearArrivalTime();
-
-  public boolean isDepartureTimeSet();
-
-  public int getDepartureTime();
-
-  public void setDepartureTime(int departureTime);
-
-  public void clearDepartureTime();
+  void clearDepartureTime();
   
-  public boolean isTimepointSet();
+  boolean isTimepointSet();
   
-  public int getTimepoint();
+  int getTimepoint();
   
-  public void setTimepoint(int timepoint);
+  void setTimepoint(int timepoint);
   
-  public void clearTimepoint();
+  void clearTimepoint();
 
-  public String getStopHeadsign();
+  String getStopHeadsign();
 
-  public void setStopHeadsign(String headSign);
+  void setStopHeadsign(String headSign);
 
-  public String getRouteShortName();
+  String getRouteShortName();
 
-  public void setRouteShortName(String routeShortName);
+  void setRouteShortName(String routeShortName);
 
-  public int getPickupType();
+  int getPickupType();
 
-  public void setPickupType(int pickupType);
+  void setPickupType(int pickupType);
 
-  public int getDropOffType();
+  int getDropOffType();
 
-  public void setDropOffType(int dropOffType);
+  void setDropOffType(int dropOffType);
 
-  public boolean isShapeDistTraveledSet();
+  boolean isShapeDistTraveledSet();
 
-  public double getShapeDistTraveled();
+  double getShapeDistTraveled();
 
-  public void setShapeDistTraveled(double shapeDistTraveled);
+  void setShapeDistTraveled(double shapeDistTraveled);
 
-  public void clearShapeDistTraveled();
+  void clearShapeDistTraveled();
 
-  public BookingRule getPickupBookingRule();
+  BookingRule getPickupBookingRule();
 
-  public void setPickupBookingRule(BookingRule pickupBookingRule);
+  void setPickupBookingRule(BookingRule pickupBookingRule);
 
-  public BookingRule getDropOffBookingRule();
+  BookingRule getDropOffBookingRule();
 
-  public void setDropOffBookingRule(BookingRule dropOffBookingRule);
+  void setDropOffBookingRule(BookingRule dropOffBookingRule);
 
-  public double getMeanDurationFactor();
+  double getMeanDurationFactor();
 	
-  public void setMeanDurationFactor(double meanDurationFactor);	
+  void setMeanDurationFactor(double meanDurationFactor);	
 	
-  public double getMeanDurationOffset();
+  double getMeanDurationOffset();
 	
-  public void setMeanDurationOffset(double meanDurationOffset);
+  void setMeanDurationOffset(double meanDurationOffset);
 	
-  public double getSafeDurationFactor();
+  double getSafeDurationFactor();
 	
-  public void setSafeDurationFactor(double safeDurationFactor);
+  void setSafeDurationFactor(double safeDurationFactor);
 
-  public double getSafeDurationOffset();
+  double getSafeDurationOffset();
 	
-  public void setSafeDurationOffset(double safeDurationOffset);
-
-  public String getFreeRunningFlag();
-
-  public void setFreeRunningFlag(String freeRunningFlag);
+  void setSafeDurationOffset(double safeDurationOffset);
 
 }

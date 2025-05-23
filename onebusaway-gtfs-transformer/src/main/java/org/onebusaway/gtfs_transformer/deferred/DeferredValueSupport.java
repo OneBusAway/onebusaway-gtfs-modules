@@ -15,8 +15,8 @@
  */
 package org.onebusaway.gtfs_transformer.deferred;
 
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils2.ConvertUtils;
+import org.apache.commons.beanutils2.Converter;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.SingleFieldMapping;
 import org.onebusaway.gtfs.model.AgencyAndId;

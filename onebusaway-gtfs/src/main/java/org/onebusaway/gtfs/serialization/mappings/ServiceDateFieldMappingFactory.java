@@ -19,8 +19,8 @@ package org.onebusaway.gtfs.serialization.mappings;
 import java.text.ParseException;
 import java.util.Map;
 
-import org.apache.commons.beanutils.ConversionException;
-import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils2.ConversionException;
+import org.apache.commons.beanutils2.Converter;
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.exceptions.InvalidValueEntityException;
 import org.onebusaway.csv_entities.schema.AbstractFieldMapping;

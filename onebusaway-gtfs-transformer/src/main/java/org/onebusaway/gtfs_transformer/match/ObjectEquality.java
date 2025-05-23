@@ -15,8 +15,8 @@
  */
 package org.onebusaway.gtfs_transformer.match;
 
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils2.ConvertUtils;
+import org.apache.commons.beanutils2.Converter;
 
 public class ObjectEquality {
   public static boolean objectsAreEqual(Object expected, Object actual) {

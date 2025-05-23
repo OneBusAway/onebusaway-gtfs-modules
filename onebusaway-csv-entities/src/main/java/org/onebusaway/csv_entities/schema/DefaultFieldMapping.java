@@ -17,8 +17,8 @@ package org.onebusaway.csv_entities.schema;
 
 import java.util.Map;
 
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils2.ConvertUtils;
+import org.apache.commons.beanutils2.Converter;
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.exceptions.NoDefaultConverterException;
 

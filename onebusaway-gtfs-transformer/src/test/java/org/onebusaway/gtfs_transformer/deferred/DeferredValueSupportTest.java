@@ -20,8 +20,8 @@ import static  org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils2.ConvertUtils;
+import org.apache.commons.beanutils2.Converter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.schema.BeanWrapper;

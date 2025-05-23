@@ -18,7 +18,7 @@ package org.onebusaway.gtfs_transformer.deferred;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
-import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils2.Converter;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.IdentityBean;

@@ -15,7 +15,7 @@
  */
 package org.onebusaway.gtfs.serialization.mappings;
 
-import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils2.Converter;
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.schema.FieldMapping;
 

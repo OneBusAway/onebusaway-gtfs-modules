@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.beanutils.ConversionException;
-import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils2.ConversionException;
+import org.apache.commons.beanutils2.Converter;
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.schema.AbstractFieldMapping;
 import org.onebusaway.csv_entities.schema.BeanWrapper;

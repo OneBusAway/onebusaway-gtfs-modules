@@ -15,7 +15,7 @@
  */
 package org.onebusaway.csv_entities.schema;
 
-import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils2.Converter;
 
 public class DefaultConverter implements Converter {
 

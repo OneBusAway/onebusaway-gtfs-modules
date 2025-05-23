@@ -15,8 +15,8 @@
  */
 package org.onebusaway.gtfs.serialization.mappings;
 
-import org.apache.commons.beanutils.ConversionException;
-import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils2.ConversionException;
+import org.apache.commons.beanutils2.Converter;
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.serialization.GtfsReader;

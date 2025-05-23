@@ -15,7 +15,7 @@
  */
 package org.onebusaway.gtfs_transformer.deferred;
 
-import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils2.Converter;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.serialization.GtfsReader;

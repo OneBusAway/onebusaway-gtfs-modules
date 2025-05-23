@@ -15,7 +15,7 @@
  */
 package org.onebusaway.csv_entities.exceptions;
 
-import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils2.ConvertUtils;
 
 /**
  * Error indicating that no default converter could be found for converting CSV

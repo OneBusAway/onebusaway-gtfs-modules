@@ -17,7 +17,7 @@ package org.onebusaway.gtfs_transformer.factory;
 
 import java.text.ParseException;
 
-import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils2.Converter;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 
 public class ServiceDateConverter implements Converter {

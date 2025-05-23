@@ -85,8 +85,6 @@ public class StopTimeArray extends AbstractList<StopTime> {
     size++;
     ensureCapacity(size);
     trips[index] = stopTime.getTrip();
-    startServiceAreas[index] = stopTime.getStartServiceArea();
-    endServiceAreas[index] = stopTime.getEndServiceArea();
     stops[index] = stopTime.getStop();
     locations[index] = stopTime.getLocation();
     locationGroups[index] = stopTime.getLocationGroup();
@@ -105,7 +103,6 @@ public class StopTimeArray extends AbstractList<StopTime> {
     safeFactors[index] = stopTime.getSafeDurationFactor();
     meanOffsets[index] = stopTime.getMeanDurationOffset();
     meanFactors[index] = stopTime.getMeanDurationFactor();
-    freeRunningFlags[index] = stopTime.getFreeRunningFlag();
 
     return true;
   }
@@ -224,26 +221,6 @@ public class StopTimeArray extends AbstractList<StopTime> {
     @Override
     public void setTrip(Trip trip) {
       trips[index] = trip;
-    }
-
-    @Override
-    public Area getStartServiceArea() {
-      return startServiceAreas[index];
-    }
-
-    @Override
-    public void setStartServiceArea(Area area) {
-      startServiceAreas[index] = area;
-    }
-
-    @Override
-    public Area getEndServiceArea() {
-      return endServiceAreas[index];
-    }
-
-    @Override
-    public void setEndServiceArea(Area area) {
-      endServiceAreas[index] = area;
     }
 
     @Override
@@ -466,14 +443,5 @@ public class StopTimeArray extends AbstractList<StopTime> {
       safeOffsets[index] = safeDurationOffset;
     }
 
-    @Override
-    public String getFreeRunningFlag() {
-      return freeRunningFlags[index];
-    }
-
-    @Override
-    public void setFreeRunningFlag(String freeRunningFlag) {
-      freeRunningFlags[index] = freeRunningFlag;
-    }
   }
 }

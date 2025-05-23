@@ -28,8 +28,6 @@ import org.slf4j.LoggerFactory;
 public final class StopTime extends IdentityBean<Integer> implements
     Comparable<StopTime>, StopTimeProxy {
 
-  private static Logger _log = LoggerFactory.getLogger(StopTime.class);
-
   private static final long serialVersionUID =2L;
 
   public static final int MISSING_VALUE = -999;
@@ -96,18 +94,6 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, defaultValue = "1")
   private int continuousDropOff = MISSING_FLEX_VALUE;
 
-  @CsvField(optional = true, name = "start_service_area_id", mapping = EntityFieldMappingFactory.class, order = -2)
-  private Area startServiceArea;
-
-  @CsvField(optional = true, name = "end_service_area_id", mapping = EntityFieldMappingFactory.class, order = -2)
-  private Area endServiceArea;
-
-  @CsvField(optional = true, defaultValue = "-999.0")/*note defaultValue quirk for non-proxied comparison*/
-  private double startServiceAreaRadius = MISSING_VALUE;
-
-  @CsvField(optional = true, defaultValue = "-999.0")/*note defaultValue quirk for non-proxied comparison*/
-  private double endServiceAreaRadius = MISSING_VALUE;
-
   @CsvField(ignore = true)
   private transient StopTimeProxy proxy = null;
 
@@ -117,22 +103,6 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   @CsvField(optional = true, name = "drop_off_booking_rule_id", mapping = EntityFieldMappingFactory.class, order = -2)
   private BookingRule dropOffBookingRule;
-
-  /** This is a Conveyal extension to the GTFS spec to support Seattle on/off peak fares. */
-  @CsvField(optional = true)
-  private String farePeriodId;
-
-  /** Extension to support departure buffer https://groups.google.com/forum/#!msg/gtfs-changes/sHTyliLgMQk/gfpaGkI_AgAJ */
-  @CsvField(optional = true, defaultValue = "-999")
-  private int departureBuffer;
-
-  /** Support track extension */
-  @CsvField(optional = true)
-  private String track;
-
-  // Custom extension for MNR
-  @CsvField(optional = true, name = "note_id", mapping = EntityFieldMappingFactory.class, order = -1)
-  private Note note;
 
   // See https://github.com/MobilityData/gtfs-flex/blob/master/spec/reference.md
   @CsvField(optional = true, name = "mean_duration_factor", defaultValue = "-999.0")/*note defaultValue quirk for non-proxied comparison*/
@@ -147,9 +117,6 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, name = "safe_duration_offset", defaultValue = "-999.0")
   private double safeDurationOffset = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "free_running_flag")
-  private String freeRunningFlag;
-  
   public StopTime() {
 
   }
@@ -166,7 +133,6 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.continuousDropOff = st.continuousDropOff;
     this.routeShortName = st.routeShortName;
     this.shapeDistTraveled = st.shapeDistTraveled;
-    this.farePeriodId = st.farePeriodId;
     this.stop = st.stop;
     this.location = st.location;
     this.locationGroup = st.locationGroup;
@@ -175,20 +141,12 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.toStopSequence = st.toStopSequence;
     this.timepoint = st.timepoint;
     this.trip = st.trip;
-    this.startServiceArea = st.startServiceArea;
-    this.endServiceArea = st.endServiceArea;
-    this.startServiceAreaRadius = st.startServiceAreaRadius;
-    this.endServiceAreaRadius = st.endServiceAreaRadius;
-    this.departureBuffer = st.departureBuffer;
-    this.track = st.track;
-    this.note = st.note;
     this.pickupBookingRule = st.pickupBookingRule;
     this.dropOffBookingRule = st.dropOffBookingRule;
     this.safeDurationFactor= st.safeDurationFactor;
     this.safeDurationOffset= st.safeDurationOffset;
     this.meanDurationOffset= st.meanDurationOffset;
     this.meanDurationFactor= st.meanDurationFactor;
-    this.freeRunningFlag = st.freeRunningFlag;
   }
 
   public Integer getId() {
@@ -536,85 +494,6 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.shapeDistTraveled = MISSING_VALUE;
   }
 
-  public String getFarePeriodId() {
-    return farePeriodId;
-  }
-
-  public void setFarePeriodId(String farePeriodId) {
-    this.farePeriodId = farePeriodId;
-  }
-
-  public Area getStartServiceArea() {
-    if (proxy != null) {
-      return proxy.getStartServiceArea();
-    }
-    return startServiceArea;
-  }
-
-  public void setStartServiceArea(Area startServiceArea) {
-    if (proxy != null) {
-      proxy.setStartServiceArea(startServiceArea);
-      return;
-    }
-    this.startServiceArea = startServiceArea;
-  }
-
-  public Area getEndServiceArea() {
-    if (proxy != null) {
-      return proxy.getEndServiceArea();
-    }
-    return endServiceArea;
-  }
-
-
-  public void setEndServiceArea(Area endServiceArea) {
-    if (proxy != null) {
-      proxy.setEndServiceArea(endServiceArea);
-      return;
-    }
-    this.endServiceArea = endServiceArea;
-  }
-
-  public double getStartServiceAreaRadius() {
-    return startServiceAreaRadius;
-  }
-
-  public void setStartServiceAreaRadius(double startServiceAreaRadius) {
-    this.startServiceAreaRadius = startServiceAreaRadius;
-  }
-
-  public double getEndServiceAreaRadius() {
-    return endServiceAreaRadius;
-  }
-
-  public void setEndServiceAreaRadius(double endServiceAreaRadius) {
-    this.endServiceAreaRadius = endServiceAreaRadius;
-  }
-
-  public int getDepartureBuffer() {
-    return departureBuffer;
-  }
-
-  public void setDepartureBuffer(int departureBuffer) {
-    this.departureBuffer = departureBuffer;
-  }
-
-  public String getTrack() {
-    return track;
-  }
-
-  public void setTrack(String track) {
-    this.track = track;
-  }
-
-  public Note getNote() {
-    return note;
-  }
-
-  public void setNote(Note note) {
-    this.note = note;
-  }
-
   public int compareTo(StopTime o) {
     return this.getStopSequence() - o.getStopSequence();
   }
@@ -724,20 +603,5 @@ public final class StopTime extends IdentityBean<Integer> implements
 	      }
 	    this.safeDurationOffset = safeDurationOffset;
 	}
-
-  public String getFreeRunningFlag() {
-    if (proxy != null) {
-      return proxy.getFreeRunningFlag();
-    }
-    return freeRunningFlag;
-  }
-
-  public void setFreeRunningFlag(String freeRunningFlag) {
-    if (proxy != null) {
-      proxy.setFreeRunningFlag(freeRunningFlag);
-      return;
-    }
-    this.freeRunningFlag = freeRunningFlag;
-  }
 
 }

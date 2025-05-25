@@ -3,7 +3,7 @@ name: CI
 on:
   push:
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 env:
   MAVEN_ARGS: "--no-transfer-progress -Dstyle.color=always"
@@ -64,7 +64,7 @@ jobs:
         run: ./cli-tests/cli-tests.sh
 
   container-image:
-    if: github.repository_owner == 'onebusaway' && github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.repository_owner == 'onebusaway' && github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     env:

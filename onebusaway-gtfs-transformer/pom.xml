@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.onebusaway</groupId>
     <artifactId>onebusaway-gtfs-modules</artifactId>
-    <version>7.0.1-SNAPSHOT</version>
+    <version>7.0.1</version>
   </parent>
 
   <dependencies>

@@ -32,6 +32,8 @@
     <slf4j.version>2.0.17</slf4j.version>
     <onebusaway.cloud.version>0.0.13</onebusaway.cloud.version>
     <junit.version>5.12.2</junit.version>
+    <jmh.version>1.36</jmh.version>
+    <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
   </properties>
 
   <scm>
@@ -46,7 +48,6 @@
     <url>https://github.com/OneBusAway/onebusaway-gtfs-modules/issues</url>
   </issueManagement>
 
-
   <modules>
     <module>onebusaway-csv-entities</module>
     <module>onebusaway-collections</module>
@@ -57,6 +58,7 @@
     <module>onebusaway-gtfs-transformer-cli</module>
     <module>onebusaway-gtfs-merge</module>
     <module>onebusaway-gtfs-merge-cli</module>
+    <module>onebusaway-jmh</module>
   </modules>
 
   <dependencyManagement>
@@ -64,6 +66,11 @@
       <dependency>
         <groupId>org.onebusaway</groupId>
         <artifactId>onebusaway-csv-entities</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.onebusaway</groupId>
+        <artifactId>onebusaway-gtfs</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

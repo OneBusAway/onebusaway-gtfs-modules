@@ -1,0 +1,411 @@
+stop_id,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url
+2,"Greenbank Farm: SR 525 at Smugglers Cove Rd","blank",48.108303,-122.580446,1,http://islandtransit.org/stops/2
+3,"SR 525 at Ellwood Dr","blank",48.120790,-122.587469,1,http://islandtransit.org/stops/3
+4,"SR 525 at Gramayre Rd","blank",48.128428,-122.589342,1,http://islandtransit.org/stops/4
+6,"SR 525 at Houston Rd","blank",48.152945,-122.595395,1,http://islandtransit.org/stops/6
+7,"SR 525 south of Admiral's Dr","blank",48.160050,-122.603747,1,http://islandtransit.org/stops/7
+8,"SR 525 at Race Rd and Poggensee Rd","blank",48.171013,-122.608671,1,http://islandtransit.org/stops/8
+9,"SR 20 at W Welcher Rd","blank",48.190656,-122.626602,1,http://islandtransit.org/stops/9
+10,"SR 20 at Rhododendron St Park and Animal Shelter","blank",48.207922,-122.651545,1,http://islandtransit.org/stops/10
+11,"SR 20 at S Quail Trail Ln","blank",48.208741,-122.657918,1,http://islandtransit.org/stops/11
+12,"SR 20 at Sherman St","blank",48.212347,-122.703866,1,http://islandtransit.org/stops/12
+13,"SR 20 at NW Madrona Way","blank",48.233058,-122.735745,1,http://islandtransit.org/stops/13
+14,"SR 20 at N Power Rd (San Juan De Fuca Store)","blank",48.234950,-122.723481,1,http://islandtransit.org/stops/14
+15,"Arnold Rd at N Riepma Rd","blank",48.240700,-122.708547,1,http://islandtransit.org/stops/15
+16,"Monroe Landing at Arnold Rd (Penn Cove)","blank",48.246229,-122.681076,1,http://islandtransit.org/stops/16
+17,"Oak Harbor Wes Lupien Airport","blank",48.251006,-122.680469,1,http://islandtransit.org/stops/17
+18,"SR 20 at Arnold Rd (Penn Cove) to Clinton","blank",48.240810,-122.714324,1,http://islandtransit.org/stops/18
+19,"SR 20 at Haga Rd","blank",48.278778,-122.669378,1,http://islandtransit.org/stops/19
+20,"SR 20 at Hastie Lake","blank",48.259427,-122.699046,1,http://islandtransit.org/stops/20
+21,"Dock St at Barrington Dr","blank",48.290179,-122.649026,1,http://islandtransit.org/stops/21
+22,"SR 20 at SW Swantown Ave","blank",48.282946,-122.669525,1,http://islandtransit.org/stops/22
+23,"SR 20 at Haga Rd","blank",48.278922,-122.669558,1,http://islandtransit.org/stops/23
+25,"Oak Harbor Wes Lupien Airport","blank",48.250971,-122.680635,1,http://islandtransit.org/stops/25
+26,"Madrona at Kennedy Lagoon","blank",48.228547,-122.734827,1,http://islandtransit.org/stops/26
+27,"Arnold Rd at Sharon St (Penn Cove)","blank",48.241110,-122.700291,1,http://islandtransit.org/stops/27
+28,"Arnold Rd at N Riepma Rd","blank",48.240842,-122.708699,1,http://islandtransit.org/stops/28
+29,"SR 20 at N Power Rd (San Juan De Fuca)","blank",48.235253,-122.723416,1,http://islandtransit.org/stops/29
+30,"SR 20 at Libbey Rd to Coupeville","blank",48.231377,-122.739412,1,http://islandtransit.org/stops/30
+31,"SR 20 at Sherman St","blank",48.212226,-122.702877,1,http://islandtransit.org/stops/31
+32,"Coupeville High School: on Terry Rd near S Main St","blank",48.207422,-122.685271,1,http://islandtransit.org/stops/32
+33,"SR 20 at E Jacob Rd","blank",48.208626,-122.658899,1,http://islandtransit.org/stops/33
+35,"SR 20 at Navy OLF","blank",48.183915,-122.626863,1,http://islandtransit.org/stops/35
+36,"SR 525 at Admiral's Drive","blank",48.163040,-122.606322,1,http://islandtransit.org/stops/36
+37,"SR 525 at Houston Rd","blank",48.152216,-122.595103,1,http://islandtransit.org/stops/37
+38,"SR 525 at Ledgewood Beach Road / Cox Dr","blank",48.137084,-122.591615,1,http://islandtransit.org/stops/38
+39,"SR 525 at Gramayre Rd","blank",48.128145,-122.589784,1,http://islandtransit.org/stops/39
+40,"SR 525 at Ellwood Dr","blank",48.120479,-122.587665,1,http://islandtransit.org/stops/40
+42,"SR 525 at Classic Rd","blank",48.061977,-122.566803,1,http://islandtransit.org/stops/42
+44,"Smuggler Cove Rd at High St","blank",48.033438,-122.594074,1,http://islandtransit.org/stops/44
+45,"Smugglers Cove at Scurlock Rd","blank",48.025825,-122.595174,1,http://islandtransit.org/stops/45
+46,"South Whidbey State Park to Clinton","blank",48.056398,-122.591114,1,http://islandtransit.org/stops/46
+47,"SR 525 at Bakken Rd in Greenbank Park and Ride","blank",48.097882,-122.573007,1,http://islandtransit.org/stops/47
+48,"Mutiny Bay at Bush Point Rd","blank",48.014432,-122.560541,1,http://islandtransit.org/stops/48
+49,"SR 525 at Bush Point Road in Freeland","blank",48.014799,-122.545159,1,http://islandtransit.org/stops/49
+50,"Freeland Park and Ride on SR 525","blank",48.010063,-122.535671,1,http://islandtransit.org/stops/50
+51,"Payless Foods: Main St near SR 525 (Freeland)","blank",48.009482,-122.528447,1,http://islandtransit.org/stops/51
+52,"Madrona at Captain Whidbey Inn","blank",48.222443,-122.730407,1,http://islandtransit.org/stops/52
+54,"SR 525 at Newman Rd","blank",48.007094,-122.494469,1,http://islandtransit.org/stops/54
+55,"SR 525 West of Newman Rd (Red Barn)","blank",48.006983,-122.495254,1,http://islandtransit.org/stops/55
+56,"SR 525 at Useless Bay Ave","blank",48.006466,-122.485371,1,http://islandtransit.org/stops/56
+57,"Bay View Park and Ride @ SR 525","blank",48.003353,-122.461829,1,http://islandtransit.org/stops/57
+59,"SR 525 at Maxwelton Rd","blank",48.000889,-122.414442,1,http://islandtransit.org/stops/59
+60,"SR 525 at Langley Rd /Cultus Bay Rd","blank",47.991513,-122.396972,1,http://islandtransit.org/stops/60
+61,"SR 525 at Cedar Vista.","blank",47.979997,-122.380453,1,http://islandtransit.org/stops/61
+62,"Clinton Park and Ride: SR 525 at Deer Lake Rd","blank",47.979543,-122.359030,1,http://islandtransit.org/stops/62
+63,"Clinton Ferry Dock (Ferry to Mukilteo)","blank",47.975038,-122.350027,1,http://islandtransit.org/stops/63
+64,"Clinton Library on Deer Lake Rd near SR 525","blank",47.978920,-122.358341,1,http://islandtransit.org/stops/64
+65,"Patty's Park at Humphrey Rd (Clinton)","blank",47.974996,-122.355436,1,http://islandtransit.org/stops/65
+66,"SR 525 at Storkson Dr (south)","blank",47.979730,-122.362096,1,http://islandtransit.org/stops/66
+67,"SR 525 at Cedar Vista","blank",47.980608,-122.381123,1,http://islandtransit.org/stops/67
+68,"SR 525 at Campbell Rd","blank",47.982870,-122.386322,1,http://islandtransit.org/stops/68
+69,"SR 525 at Langley Rd /Cultus Bay Rd","blank",47.991600,-122.396720,1,http://islandtransit.org/stops/69
+71,"KFC: SR 20 at SW Barrington Dr","blank",48.288414,-122.659342,1,http://islandtransit.org/stops/71
+74,"Main St between 4th and 5th (Coupeville)","blank",48.216650,-122.686240,1,http://islandtransit.org/stops/74
+76,"Coupeville Park and Ride at S Main St","blank",48.210939,-122.686251,1,http://islandtransit.org/stops/76
+78,"Harbor Station Transfer Center Bayshore Dr.","blank",48.287553,-122.649007,1,http://islandtransit.org/stops/78
+79,"Freeland Park","blank",48.015047,-122.530936,1,http://islandtransit.org/stops/79
+80,"Main at Harbor Rd: Freeland","blank",48.009522,-122.525737,1,http://islandtransit.org/stops/80
+81,"Freeland Library","blank",48.011197,-122.524230,1,http://islandtransit.org/stops/81
+82,"East Harbor Rd at Goodell Rd","blank",48.033293,-122.506829,1,http://islandtransit.org/stops/82
+85,"Bells Beach: E Saratoga Rd at Wells to Freeland","blank",48.074466,-122.469739,1,http://islandtransit.org/stops/85
+87,"Bells Beach: E Saratoga Rd at Wells Rd to Langley","blank",48.074825,-122.470436,1,http://islandtransit.org/stops/87
+89,"East Harbor Rd at Holmes View Dr (Langley)","blank",48.085907,-122.516064,1,http://islandtransit.org/stops/89
+90,"East Harbor Rd at Harbor Sands Ln","blank",48.032255,-122.506985,1,http://islandtransit.org/stops/90
+91,"Hewitt and Wetmore toward Camano","blank",47.979746,-122.207150,1,http://islandtransit.org/stops/91
+93,"Third St @ Anthes Ave: Langley","blank",48.039230,-122.409542,1,http://islandtransit.org/stops/93
+94,"Sixth St at Cascade Ave in Langley","blank",48.036428,-122.406660,1,http://islandtransit.org/stops/94
+95,"Langley Middle School: Camano Ave at Edgecliff Dr","blank",48.034461,-122.402465,1,http://islandtransit.org/stops/95
+97,"South Whidbey High School","blank",48.006237,-122.411956,1,http://islandtransit.org/stops/97
+98,"Maxwelton at Campbell","blank",47.982281,-122.417994,1,http://islandtransit.org/stops/98
+100,"San Juan at Harper","blank",47.923354,-122.417729,1,http://islandtransit.org/stops/100
+101,"Bailey's Store: Jewett Rd and Bailey","blank",47.931867,-122.389128,1,http://islandtransit.org/stops/101
+102,"Chapman Rd at Falcon Rd","blank",48.177505,-122.520061,1,http://islandtransit.org/stops/102
+103,"Indian Beach","blank",48.164087,-122.520782,1,http://islandtransit.org/stops/103
+104,"Lost Lake: Monticello Dr at Lakewood Dr","blank",48.159619,-122.491468,1,http://islandtransit.org/stops/104
+105,"SE Camano Dr at Patricia Ann (Lehman)","blank",48.182484,-122.480328,1,http://islandtransit.org/stops/105
+106,"SE Camano Dr at Short Rd","blank",48.192672,-122.479132,1,http://islandtransit.org/stops/106
+107,"Cemetary Rd at SR 20","blank",48.311179,-122.638568,1,http://islandtransit.org/stops/107
+110,"N Arrowhead Beach Rd at East North Camano Dr","blank",48.252372,-122.469109,1,http://islandtransit.org/stops/110
+111,"Terry's Corner - Camano Island SR 532","blank",48.242531,-122.454759,1,http://islandtransit.org/stops/111
+113,"Camano Dr at Bayview (Utsalady)","blank",48.254698,-122.504210,1,http://islandtransit.org/stops/113
+114,"Driftwood Shores: SE Camano Dr at Short Rd","blank",48.192563,-122.479458,1,http://islandtransit.org/stops/114
+115,"West Beach at Hastie Lake Rd","blank",48.264027,-122.747111,1,http://islandtransit.org/stops/115
+117,"Camano Dr SE at Dan St","blank",48.142074,-122.454029,1,http://islandtransit.org/stops/117
+120,"Camano Dr SE at Shuksan Dr","blank",48.100080,-122.402480,1,http://islandtransit.org/stops/120
+121,"Dallman Rd at Glacier Ln","blank",48.094389,-122.406895,1,http://islandtransit.org/stops/121
+122,"Dallman Rd at So Camano","blank",48.094366,-122.411189,1,http://islandtransit.org/stops/122
+123,"Camano Dr S at El Camano St","blank",48.109014,-122.435375,1,http://islandtransit.org/stops/123
+126,"Elger Bay Grocery: Elger Bay Rd at E Mountain","blank",48.139267,-122.467620,1,http://islandtransit.org/stops/126
+1,"Capehart: E Crescent Harbor Rd at Alder Ln","blank",48.307090,-122.603822,1,http://islandtransit.org/stops/1
+129,"Heller and NW 2nd Ave","blank",48.301342,-122.674705,1,http://islandtransit.org/stops/129
+130,"Ault Field: Ault Field Rd near N Langley Blvd","blank",48.325774,-122.670816,1,http://islandtransit.org/stops/130
+132,"KMART/Saars Marketplace: E Whidbey Ave (Oak Harbor)","blank",48.298375,-122.656053,1,http://islandtransit.org/stops/132
+133,"March's Point Rd and Thompson Rd","blank",48.463003,-122.567859,1,http://islandtransit.org/stops/133
+134,"Skagit Station","blank",48.418501,-122.334191,1,http://islandtransit.org/stops/134
+135,"Sleeper Road","blank",48.340198,-122.593625,1,http://islandtransit.org/stops/135
+729,"Swantown at Fort Nugent","blank",48.285299,-122.671580,1,http://islandtransit.org/stops/729
+730,"Swantown at Heller Rd","blank",48.288618,-122.674756,1,http://islandtransit.org/stops/730
+731,"Heller Rd at SW 6th Ave","blank",48.294131,-122.674745,1,http://islandtransit.org/stops/731
+732,"Heller at 5th","blank",48.302709,-122.674917,1,http://islandtransit.org/stops/732
+733,"Heller Rd at NW Crosby","blank",48.306962,-122.674509,1,http://islandtransit.org/stops/733
+734,"Wagon Wheel","blank",48.316073,-122.674712,1,http://islandtransit.org/stops/734
+735,"Marketown","blank",48.325814,-122.666906,1,http://islandtransit.org/stops/735
+736,"Sea Breeze Apartments","blank",48.322280,-122.655403,1,http://islandtransit.org/stops/736
+737,"Crosby Ave at Cherry Hill Loop","blank",48.307740,-122.658856,1,http://islandtransit.org/stops/737
+738,"Crosby Ave at Oak Harbor","blank",48.307761,-122.657096,1,http://islandtransit.org/stops/738
+739,"Whidbey Ave at NW Jib St","blank",48.298445,-122.668274,1,http://islandtransit.org/stops/739
+740,"Whidbey Ave across from NW Bosun","blank",48.298422,-122.659614,1,http://islandtransit.org/stops/740
+742,"Dock at 8th","blank",48.291286,-122.650028,1,http://islandtransit.org/stops/742
+743,"Dock St at Barrington","blank",48.289826,-122.649221,1,http://islandtransit.org/stops/743
+745,"Bayshore at Pioneer Ave NB","blank",48.288894,-122.643799,1,http://islandtransit.org/stops/745
+746,"Pioneer Ave at Regatta Dr","blank",48.289454,-122.637383,1,http://islandtransit.org/stops/746
+747,"Regatta at Ninth NB","blank",48.290919,-122.635732,1,http://islandtransit.org/stops/747
+748,"Regatta at SE 4th toward 6th","blank",48.294335,-122.635673,1,http://islandtransit.org/stops/748
+749,"Regatta at Whidbey Ave NB","blank",48.298584,-122.635331,1,http://islandtransit.org/stops/749
+750,"Country Place (Taylor at Boe Rd)","blank",48.327982,-122.593617,1,http://islandtransit.org/stops/750
+751,"Taylor at Fakkema SB","blank",48.325003,-122.596135,1,http://islandtransit.org/stops/751
+752,"Taylor at Silver Lake SB","blank",48.313292,-122.593642,1,http://islandtransit.org/stops/752
+753,"Crescent Harbor Rd at Valley Rd","blank",48.307404,-122.602637,1,http://islandtransit.org/stops/753
+754,"Opportunity Council","blank",48.298449,-122.635634,1,http://islandtransit.org/stops/754
+755,"Midway Blvd at SE 6th","blank",48.292732,-122.643192,1,http://islandtransit.org/stops/755
+757,"Midway Blvd at NE 4th Ave","blank",48.301106,-122.643172,1,http://islandtransit.org/stops/757
+758,"Goldie Road at Industrial","blank",48.322388,-122.647977,1,http://islandtransit.org/stops/758
+760,"Goldie at Technical Dr NB","blank",48.315810,-122.647406,1,http://islandtransit.org/stops/760
+761,"Liberty Market toward Deception Pass","blank",48.332118,-122.630234,1,http://islandtransit.org/stops/761
+762,"SR 20 at Dugwalla Farm","blank",48.351686,-122.612185,1,http://islandtransit.org/stops/762
+763,"SR 20 at Monroe Landing","blank",48.264170,-122.681494,1,http://islandtransit.org/stops/763
+764,"SR 20 at Banta Rd toward Deception Pass","blank",48.369631,-122.653040,1,http://islandtransit.org/stops/764
+765,"SR 20 at Troxell Rd: Soundview Shopper Park & Ride","blank",48.376659,-122.650859,1,http://islandtransit.org/stops/765
+766,"Troxell at Monkey Hill Rd NB","blank",48.376555,-122.637427,1,http://islandtransit.org/stops/766
+767,"Cornet Bay Road","blank",48.391051,-122.645712,1,http://islandtransit.org/stops/767
+769,"SR 20 at Ducken Rd (to Oak Harbor)","blank",48.387010,-122.649082,1,http://islandtransit.org/stops/769
+770,"SR 20 at Deception (Yokeko Point)","blank",48.420643,-122.619739,1,http://islandtransit.org/stops/770
+771,"SR 20 at Banta Rd to Oak Harbor","blank",48.368995,-122.652853,1,http://islandtransit.org/stops/771
+774,"SR 20 at Dugwalla Farm","blank",48.351914,-122.612615,1,http://islandtransit.org/stops/774
+775,"Liberty Market toward Oak Harbor","blank",48.332025,-122.630458,1,http://islandtransit.org/stops/775
+776,"Goldie Rd s. of Ault Field Rd, North Whidbey Center","blank",48.324245,-122.648607,1,http://islandtransit.org/stops/776
+777,"Goldie at Oak Island Industrial Park","blank",48.317422,-122.647612,1,http://islandtransit.org/stops/777
+778,"Goldie Rd at Hwy 20 (N of Easy St)","blank",48.308746,-122.644072,1,http://islandtransit.org/stops/778
+779,"Midway at 8th (McDonalds)","blank",48.305070,-122.643481,1,http://islandtransit.org/stops/779
+780,"Midway Blvd at NE 5th Ave SEARS","blank",48.301857,-122.643372,1,http://islandtransit.org/stops/780
+781,"Oak Harbor Elementary on SE Midway Blvd","blank",48.296573,-122.643415,1,http://islandtransit.org/stops/781
+782,"Regatta at 4th","blank",48.295329,-122.635810,1,http://islandtransit.org/stops/782
+784,"Midway Blvd at SE 9th St","blank",48.290824,-122.643975,1,http://islandtransit.org/stops/784
+785,"Midway Blvd at SE 4th Ave","blank",48.294900,-122.643085,1,http://islandtransit.org/stops/785
+787,"Midway Blvd at NE 9th Ave","blank",48.304601,-122.643168,1,http://islandtransit.org/stops/787
+789,"SR 20 at Sleeper Rd","blank",48.340469,-122.625768,1,http://islandtransit.org/stops/789
+790,"SR 20 at Jones Rd","blank",48.358245,-122.622421,1,http://islandtransit.org/stops/790
+792,"SR 20 at S Side Deception Pass","blank",48.394154,-122.645928,1,http://islandtransit.org/stops/792
+793,"SR 20 East at West Sharp's Corner","blank",48.462382,-122.581756,1,http://islandtransit.org/stops/793
+796,"SR 20 East at West Sharp's Corner","blank",48.462142,-122.582015,1,http://islandtransit.org/stops/796
+797,"SR 20 at S Side Deception Pass","blank",48.394391,-122.646121,1,http://islandtransit.org/stops/797
+798,"SR 20 at Deception Pass State Park","blank",48.390829,-122.647170,1,http://islandtransit.org/stops/798
+799,"SR 20 at Soundview Ln","blank",48.375416,-122.652289,1,http://islandtransit.org/stops/799
+800,"SR 20 at DeGraff Rd","blank",48.365024,-122.650198,1,http://islandtransit.org/stops/800
+801,"SR 20 at Jones Rd SB","blank",48.358117,-122.622120,1,http://islandtransit.org/stops/801
+802,"SR 20 at Frostad","blank",48.347487,-122.612968,1,http://islandtransit.org/stops/802
+803,"SR 20 at Sleeper Rd","blank",48.340527,-122.625886,1,http://islandtransit.org/stops/803
+804,"SR 20 at Monroe Landing","blank",48.264798,-122.679520,1,http://islandtransit.org/stops/804
+806,"Midway Blvd at NE Sixth","blank",48.302973,-122.643170,1,http://islandtransit.org/stops/806
+807,"Midway Blvd at SE 6th Ave","blank",48.293744,-122.643410,1,http://islandtransit.org/stops/807
+808,"Honeymoon Bay Loop","blank",48.053019,-122.551083,1,http://islandtransit.org/stops/808
+809,"Athletic Center: on Freeland Ave near SR 525","blank",48.010469,-122.534139,1,http://islandtransit.org/stops/809
+812,"Fort Casey just south of Terry","blank",48.203618,-122.674198,1,http://islandtransit.org/stops/812
+813,"Ely at Whidbey Ave","blank",48.297977,-122.652365,1,http://islandtransit.org/stops/813
+814,"Holmes View SB","blank",48.085967,-122.516021,1,http://islandtransit.org/stops/814
+815,"Harbor View Dr. to Langley","blank",48.094564,-122.518653,1,http://islandtransit.org/stops/815
+818,"Harbor View Dr. to Freeland","blank",48.094971,-122.518877,1,http://islandtransit.org/stops/818
+820,"Cultus Bay at French Rd","blank",47.956968,-122.397566,1,http://islandtransit.org/stops/820
+821,"Fort Nugent at Peacock","blank",48.282707,-122.726233,1,http://islandtransit.org/stops/821
+823,"Freeland Park.","blank",48.015054,-122.530732,1,http://islandtransit.org/stops/823
+824,"Jewitt at Glendale","blank",47.941977,-122.387846,1,http://islandtransit.org/stops/824
+825,"WalMart at Erie St","blank",48.287122,-122.663235,1,http://islandtransit.org/stops/825
+826,"Fort Nugent/Swantown to West Beach/Coupeville","blank",48.284864,-122.670722,1,http://islandtransit.org/stops/826
+830,"Fort Nugent/West Beach","blank",48.282893,-122.727499,1,http://islandtransit.org/stops/830
+834,"West Beach Rd at W La Mesa Dr (to Coupeville)","blank",48.238378,-122.751838,1,http://islandtransit.org/stops/834
+837,"Coveland at Alexander Coupeville SB","blank",48.220393,-122.688644,1,http://islandtransit.org/stops/837
+839,"Whidbey General Hospital (opposite) at Cam-Bey Apts","blank",48.213440,-122.686232,1,http://islandtransit.org/stops/839
+841,"Engle Rd at Camp Casey","blank",48.163850,-122.678490,1,http://islandtransit.org/stops/841
+842,"Keystone Ferry Terminal parking (to Port Townsend)","blank",48.159471,-122.671875,1,http://islandtransit.org/stops/842
+844,"Rickover at Admirals Dr","blank",48.163393,-122.611446,1,http://islandtransit.org/stops/844
+845,"Byrd at Halsey","blank",48.165011,-122.620836,1,http://islandtransit.org/stops/845
+846,"Wanamaker at Ferry Ave","blank",48.174751,-122.647131,1,http://islandtransit.org/stops/846
+847,"Prairie View at Wanamaker","blank",48.176893,-122.651830,1,http://islandtransit.org/stops/847
+849,"Coupeville Park and Ride","blank",48.210285,-122.686042,1,http://islandtransit.org/stops/849
+850,"Main St between 4th and 5th","blank",48.216858,-122.686031,1,http://islandtransit.org/stops/850
+851,"Coveland at Alexander","blank",48.220486,-122.688603,1,http://islandtransit.org/stops/851
+852,"Libbey Rd","blank",48.231991,-122.742562,1,http://islandtransit.org/stops/852
+853,"West Beach Rd at West La Mesa Dr (to Oak Harbor)","blank",48.238799,-122.751657,1,http://islandtransit.org/stops/853
+854,"West Beach at Deseret","blank",48.248393,-122.751564,1,http://islandtransit.org/stops/854
+855,"Fort Nugent/West Beach","blank",48.282386,-122.728336,1,http://islandtransit.org/stops/855
+856,"Fort Nugent at Union to Oak Harbor","blank",48.282730,-122.684008,1,http://islandtransit.org/stops/856
+857,"Fort Nugent at Nienhuis NB","blank",48.284078,-122.674965,1,http://islandtransit.org/stops/857
+858,"Fort Nugent at Swantown to Oak Harbor","blank",48.283964,-122.673061,1,http://islandtransit.org/stops/858
+859,"Wannamaker at Perry St","blank",48.170751,-122.631927,1,http://islandtransit.org/stops/859
+860,"Barrington at Barlow","blank",48.288304,-122.659281,1,http://islandtransit.org/stops/860
+861,"Cultus Bay and French","blank",47.956623,-122.397330,1,http://islandtransit.org/stops/861
+863,"Perry at Halsey","blank",48.169291,-122.626444,1,http://islandtransit.org/stops/863
+866,"Country Place (Taylor at Secluded Ln)","blank",48.327981,-122.593367,1,http://islandtransit.org/stops/866
+867,"Kens Corner NB","blank",47.992137,-122.396452,1,http://islandtransit.org/stops/867
+868,"Langley Soccer Fields","blank",48.007458,-122.396470,1,http://islandtransit.org/stops/868
+869,"Langey Rd n of tree frog + s of zig zag+triangle or WINERY","blank",48.019148,-122.396357,1,http://islandtransit.org/stops/869
+870,"Camano Ave at Dalton Ln Langley Fairgrounds","blank",48.033146,-122.401992,1,http://islandtransit.org/stops/870
+871,"Les Schwab (heading north, opposite)","blank",48.242281,-122.346014,1,http://islandtransit.org/stops/871
+872,"Cascade Ave between 4th at 2nd NB","blank",48.039190,-122.405622,1,http://islandtransit.org/stops/872
+878,"SR 525 at Maxwelton","blank",48.001290,-122.415903,1,http://islandtransit.org/stops/878
+880,"Taylor at Fakkema","blank",48.325484,-122.595813,1,http://islandtransit.org/stops/880
+881,"SR 525 at Useless Bay","blank",48.006701,-122.485607,1,http://islandtransit.org/stops/881
+882,"SR 525 at Mutiny Bay","blank",48.038582,-122.564507,1,http://islandtransit.org/stops/882
+883,"SR 525 at Double Bluff","blank",48.009089,-122.507131,1,http://islandtransit.org/stops/883
+884,"Fort Casey at Patmore","blank",48.187777,-122.667868,1,http://islandtransit.org/stops/884
+889,"SR 525 at Mutiny Bay","blank",48.039421,-122.564893,1,http://islandtransit.org/stops/889
+890,"Bayview at Casey's: Howard Rd near SR 525","blank",47.999964,-122.459993,1,http://islandtransit.org/stops/890
+891,"Bailey Rd at French","blank",47.953052,-122.430235,1,http://islandtransit.org/stops/891
+894,"Langley Intermediate School","blank",48.014155,-122.409495,1,http://islandtransit.org/stops/894
+897,"Bailey at Scatchet Head","blank",47.937097,-122.411073,1,http://islandtransit.org/stops/897
+899,"Langley Soccer Fields","blank",48.007267,-122.396669,1,http://islandtransit.org/stops/899
+900,"NEOMYS SB","blank",47.991759,-122.396424,1,http://islandtransit.org/stops/900
+901,"SR 525 at Campbell Rd","blank",47.982996,-122.386142,1,http://islandtransit.org/stops/901
+903,"High Crest SB","blank",48.016281,-122.458806,1,http://islandtransit.org/stops/903
+904,"Wheel Estates","blank",48.028391,-122.448686,1,http://islandtransit.org/stops/904
+908,"Maxwelton at French Rd toward Scatchet","blank",47.955227,-122.437589,1,http://islandtransit.org/stops/908
+909,"SR 20 at Lake Campbell","blank",48.440561,-122.602100,1,http://islandtransit.org/stops/909
+910,"Deer Lake at Cultus Bay (toward Scatchet)","blank",47.968462,-122.397566,1,http://islandtransit.org/stops/910
+911,"Deer Lake at Haven Ln","blank",47.973893,-122.375979,1,http://islandtransit.org/stops/911
+913,"Deer Lake at Cultus Bay to Clinton","blank",47.969015,-122.396750,1,http://islandtransit.org/stops/913
+914,"Scatchet Head at Bailey Rd","blank",47.936702,-122.410719,1,http://islandtransit.org/stops/914
+915,"Scatchet Head","blank",47.927215,-122.418933,1,http://islandtransit.org/stops/915
+917,"Maxwelton at French Rd toward Langley","blank",47.955378,-122.437762,1,http://islandtransit.org/stops/917
+918,"SR 20 at Lake Campbell","blank",48.440305,-122.602701,1,http://islandtransit.org/stops/918
+919,"Health Service NB","blank",48.011751,-122.409798,1,http://islandtransit.org/stops/919
+920,"Langley Intermediate School","blank",48.035535,-122.402423,1,http://islandtransit.org/stops/920
+921,"Creek Terrace NB","blank",48.036529,-122.406685,1,http://islandtransit.org/stops/921
+922,"Sixth at Melsen Alley (Langley)","blank",48.036544,-122.410492,1,http://islandtransit.org/stops/922
+924,"Wheel Estates","blank",48.028462,-122.448849,1,http://islandtransit.org/stops/924
+925,"High Crest NB","blank",48.016010,-122.459085,1,http://islandtransit.org/stops/925
+926,"Bush Point at Mutiny Bay","blank",48.014509,-122.560397,1,http://islandtransit.org/stops/926
+928,"West Beach at Van Dam","blank",48.253298,-122.751553,1,http://islandtransit.org/stops/928
+929,"SR 20 at Kennedy Ln","blank",48.345597,-122.615254,1,http://islandtransit.org/stops/929
+930,"Swantown at Quinault St (Shannon Forest)","blank",48.290584,-122.680033,1,http://islandtransit.org/stops/930
+931,"Swantown Rd at Loerland","blank",48.294923,-122.686948,1,http://islandtransit.org/stops/931
+932,"Loerland Dr and Roeder Dr in Oak Harbor","blank",48.297697,-122.678923,1,http://islandtransit.org/stops/932
+934,"Crosby Rd at Heller Rd","blank",48.306612,-122.674756,1,http://islandtransit.org/stops/934
+935,"Parkwood Manor","blank",48.307564,-122.666785,1,http://islandtransit.org/stops/935
+936,"Parkwood Manor (toward Heller)","blank",48.307747,-122.664950,1,http://islandtransit.org/stops/936
+937,"Oak Harbor Rd South of Crosby Rd at 10th Pl","blank",48.306745,-122.656888,1,http://islandtransit.org/stops/937
+938,"Oak Harbor Rd at Columbia Dr","blank",48.302497,-122.657685,1,http://islandtransit.org/stops/938
+939,"Saar's/K-Mart on SR 20 in Oak Harbor","blank",48.296717,-122.654719,1,http://islandtransit.org/stops/939
+940,"Summerhill Sixth Ave from SR 20","blank",48.293133,-122.660609,1,http://islandtransit.org/stops/940
+941,"I-5 P&R at SR 532 toward Camano","blank",48.238219,-122.243291,1,http://islandtransit.org/stops/941
+942,"College (Skagit)","blank",48.289548,-122.633961,1,http://islandtransit.org/stops/942
+943,"Regatta at Whidbey Ave (Opportunity Council)","blank",48.298137,-122.636196,1,http://islandtransit.org/stops/943
+944,"Whidbey Ave at Midway","blank",48.298153,-122.642003,1,http://islandtransit.org/stops/944
+945,"WGH North (Goldie Rd at Catfish Ln)","blank",48.309345,-122.643817,1,http://islandtransit.org/stops/945
+946,"Seventh before Oak Harbor Rd","blank",48.303922,-122.656646,1,http://islandtransit.org/stops/946
+948,"Senior Center/Oak Harbor Civic Center on Jerome St","blank",48.297025,-122.645574,1,http://islandtransit.org/stops/948
+949,"Cambridge Cove on Cabot Dr East of SR 20","blank",48.295304,-122.653471,1,http://islandtransit.org/stops/949
+950,"SR 20 at Safeway (Oak Harbor)","blank",48.289929,-122.658017,1,http://islandtransit.org/stops/950
+951,"SR 20 at Fakkema","blank",48.325841,-122.628794,1,http://islandtransit.org/stops/951
+955,"SR 532 at Fox Trot Way","blank",48.239966,-122.433765,1,http://islandtransit.org/stops/955
+956,"SR 532 at E Juniper Beach Rd","blank",48.239623,-122.428937,1,http://islandtransit.org/stops/956
+962,"Pioneer Hwy at 300th St","blank",48.268698,-122.361356,1,http://islandtransit.org/stops/962
+963,"Pioneer Hwy at Milltown Rd (to Mt Vernon)","blank",48.308303,-122.348160,1,http://islandtransit.org/stops/963
+964,"Pioneer Hwy at Rt 534/Fir Island Rd (Cedardale)","blank",48.340869,-122.338943,1,http://islandtransit.org/stops/964
+966,"Pioneer Hwy at Rt 534/Fir Island Rd (Cedardale)","blank",48.339956,-122.341025,1,http://islandtransit.org/stops/966
+967,"Pioneer Hwy at Milltown Rd (to Terry's Corner)","blank",48.308632,-122.348557,1,http://islandtransit.org/stops/967
+968,"Pioneer Hwy at 300th St NW W","blank",48.268298,-122.361023,1,http://islandtransit.org/stops/968
+970,"Park and Ride 2 on 267th St SW at 88th Ave NW","blank",48.239238,-122.349157,1,http://islandtransit.org/stops/970
+971,"Rite Aid on 88th near SR 532 Park and Ride","blank",48.240524,-122.351625,1,http://islandtransit.org/stops/971
+973,"SR 20 at Deception Rd (Yokeko Point)","blank",48.420194,-122.620189,1,http://islandtransit.org/stops/973
+975,"SR 532 at E Juniper Beach Rd","blank",48.239966,-122.427692,1,http://islandtransit.org/stops/975
+978,"North Camano at Essex St","blank",48.250597,-122.479842,1,http://islandtransit.org/stops/978
+979,"Huntingtons Store","blank",48.247698,-122.519373,1,http://islandtransit.org/stops/979
+981,"Sunset Dr at Vista","blank",48.225660,-122.532449,1,http://islandtransit.org/stops/981
+982,"Sunset Dr at Beachwood (Yacht Club) Camano Is","blank",48.216168,-122.535549,1,http://islandtransit.org/stops/982
+986,"Camano Dr at Shumway","blank",48.217124,-122.477345,1,http://islandtransit.org/stops/986
+988,"Camano Dr at Fairway","blank",48.159323,-122.470264,1,http://islandtransit.org/stops/988
+989,"S Camano Dr and S Broadmoore Rd","blank",48.108807,-122.429398,1,http://islandtransit.org/stops/989
+991,"Camano Dr at Awa Ln","blank",48.120666,-122.450840,1,http://islandtransit.org/stops/991
+993,"Windermere","blank",48.164371,-122.478690,1,http://islandtransit.org/stops/993
+996,"Glendale at Jewitt","blank",47.942207,-122.388403,1,http://islandtransit.org/stops/996
+998,"Ely between 5th and 6th","blank",48.293673,-122.652333,1,http://islandtransit.org/stops/998
+999,"Camano St.","blank",48.241289,-122.367724,1,http://islandtransit.org/stops/999
+1001,"Middle School - Camano Island","blank",48.242065,-122.360692,1,http://islandtransit.org/stops/1001
+1003,"Frontier Bank","blank",48.242100,-122.353349,1,http://islandtransit.org/stops/1003
+1004,"VIKING VILLAGE","blank",48.241252,-122.352103,1,http://islandtransit.org/stops/1004
+1006,"Haggen's - Stanwood Camano Village","blank",48.237117,-122.329396,1,http://islandtransit.org/stops/1006
+1007,"Haggen Stanwood Camano Village","blank",48.237468,-122.330158,1,http://islandtransit.org/stops/1007
+1008,"Church Creek","blank",48.240669,-122.330267,1,http://islandtransit.org/stops/1008
+1010,"Stanwood High School","blank",48.243120,-122.336841,1,http://islandtransit.org/stops/1010
+1011,"Bayview Garden on 272nd St at 78th","blank",48.243145,-122.339716,1,http://islandtransit.org/stops/1011
+1013,"Les Schwab","blank",48.242074,-122.346067,1,http://islandtransit.org/stops/1013
+1014,"QFC/SR 532","blank",48.240016,-122.357917,1,http://islandtransit.org/stops/1014
+1015,"SR 532 at Smith Rd","blank",48.239860,-122.406178,1,http://islandtransit.org/stops/1015
+1018,"SR 532 at Heichel Rd","blank",48.241367,-122.439945,1,http://islandtransit.org/stops/1018
+1019,"SR 532 at Hiechel Rd","blank",48.241214,-122.440386,1,http://islandtransit.org/stops/1019
+1020,"SR 532 at Fox Trot","blank",48.239823,-122.433612,1,http://islandtransit.org/stops/1020
+1023,"SR 532 at Smith Rd","blank",48.239595,-122.406020,1,http://islandtransit.org/stops/1023
+1024,"RITE AID at Stanwood Park at Ride","blank",48.241060,-122.351958,1,http://islandtransit.org/stops/1024
+1030,"I-5 P&R at SR 532 toward Everett","blank",48.238716,-122.243178,1,http://islandtransit.org/stops/1030
+1031,"Broadway and Tower toward downtown Everett","blank",48.006319,-122.196872,1,http://islandtransit.org/stops/1031
+1032,"Hewitt and Wetmore toward downtown Everett","blank",47.979408,-122.207386,1,http://islandtransit.org/stops/1032
+1033,"Everett Station","blank",47.974886,-122.197508,1,http://islandtransit.org/stops/1033
+1034,"SR 525 at Storkson","blank",47.979696,-122.361109,1,http://islandtransit.org/stops/1034
+1035,"Regatta at Ninth","blank",48.291089,-122.636003,1,http://islandtransit.org/stops/1035
+1038,"Cultus Bay at Glendale","blank",47.942452,-122.398703,1,http://islandtransit.org/stops/1038
+1039,"Monroe Landing Rd at Blue Fox","blank",48.261127,-122.680635,1,http://islandtransit.org/stops/1039
+1041,"Monroe Landing at Arnold","blank",48.246298,-122.681135,1,http://islandtransit.org/stops/1041
+1042,"Arnold Rd at Sharon St","blank",48.241440,-122.700428,1,http://islandtransit.org/stops/1042
+1043,"SR 20 at Arnold to Coupeville/Oak Harbor","blank",48.240424,-122.714238,1,http://islandtransit.org/stops/1043
+1045,"Maxwelton and Campbell","blank",47.982626,-122.418251,1,http://islandtransit.org/stops/1045
+1046,"SR 20 at Ducken Rd (to Deception Pass/Mt Vernon)","blank",48.386995,-122.648921,1,http://islandtransit.org/stops/1046
+1047,"Broadway at Madrona (Coupeville)","blank",48.219269,-122.693253,1,http://islandtransit.org/stops/1047
+1049,"Madrona at Vine","blank",48.218840,-122.696943,1,http://islandtransit.org/stops/1049
+1052,"SR 20 at Recycling Center","blank",48.207622,-122.646484,1,http://islandtransit.org/stops/1052
+1054,"Race Rd and Wanamaker at SR 20","blank",48.170923,-122.608957,1,http://islandtransit.org/stops/1054
+1056,"SR 525 and Honemoon Bay Dr","blank",48.015047,-122.545109,1,http://islandtransit.org/stops/1056
+1064,"SR 20 at Libbey Rd to Oak Harbor","blank",48.230826,-122.739558,1,http://islandtransit.org/stops/1064
+1066,"French at Bailey","blank",47.953310,-122.430589,1,http://islandtransit.org/stops/1066
+1067,"Fort Nugent at Zylstra","blank",48.282786,-122.713959,1,http://islandtransit.org/stops/1067
+1068,"Main St near Newman Rd: Freeland","blank",48.009707,-122.519885,1,http://islandtransit.org/stops/1068
+1069,"Broadway and Tower toward Camano","blank",48.005967,-122.196733,1,http://islandtransit.org/stops/1069
+1074,"Taylor at Silver Lake","blank",48.312956,-122.593238,1,http://islandtransit.org/stops/1074
+1076,"Maple Ridge Senior Condos","blank",48.009793,-122.520551,1,http://islandtransit.org/stops/1076
+1077,"Freeland at Harbor on Main St","blank",48.009644,-122.525827,1,http://islandtransit.org/stops/1077
+1078,"SR 525 at Woodard Rd: Freeland Park & Ride","blank",48.010451,-122.536966,1,http://islandtransit.org/stops/1078
+1079,"Smugglers Cove Rd at Scurlock Rd","blank",48.025681,-122.594935,1,http://islandtransit.org/stops/1079
+1080,"Smugglers Cove at High St","blank",48.033528,-122.593870,1,http://islandtransit.org/stops/1080
+1081,"South Whidbey State Park to Greenbank/Oak Harbor","blank",48.056369,-122.590685,1,http://islandtransit.org/stops/1081
+1082,"Smugglers Cove so. of Lagoon Point Rd","blank",48.078377,-122.604694,1,http://islandtransit.org/stops/1082
+1083,"Greenbank Store","blank",48.098875,-122.573269,1,http://islandtransit.org/stops/1083
+1084,"SR 525 at Ledgewood Beach Rd","blank",48.137363,-122.591488,1,http://islandtransit.org/stops/1084
+1089,"SR 20 at Fakkema","blank",48.325420,-122.628547,1,http://islandtransit.org/stops/1089
+1090,"Coupeville High School on SW Terry","blank",48.207580,-122.685699,1,http://islandtransit.org/stops/1090
+1092,"Whidbey General Hospital (Coupeville)","blank",48.213546,-122.686038,1,http://islandtransit.org/stops/1092
+1093,"SR 20 at Henni","blank",48.361795,-122.645102,1,http://islandtransit.org/stops/1093
+1097,"Glendale at Cultus Bay Rd","blank",47.942207,-122.398274,1,http://islandtransit.org/stops/1097
+1099,"Monroe Landing near SR 20 (Blue Fox)","blank",48.261114,-122.680497,1,http://islandtransit.org/stops/1099
+1100,"SR 20 and Swantown Ave","blank",48.282734,-122.669296,1,http://islandtransit.org/stops/1100
+1102,"Barrington Dr at Post Office (Oak Harbor)","blank",48.289008,-122.654316,1,http://islandtransit.org/stops/1102
+1103,"Plaza (off Camano Dr)","blank",48.224666,-122.474420,1,http://islandtransit.org/stops/1103
+1105,"SR 525 and Classic Rd","blank",48.061389,-122.566395,1,http://islandtransit.org/stops/1105
+1114,"Bailey Rd","blank",47.936824,-122.399604,1,http://islandtransit.org/stops/1114
+1112,"Deer Lake at Harding Ln","blank",47.977139,-122.358384,1,http://islandtransit.org/stops/1112
+1107,"Seventh at Harvest (near SR 20)","blank",48.303772,-122.647741,1,http://islandtransit.org/stops/1107
+1108,"SR 20 at DeGraff Rd","blank",48.365944,-122.650959,1,http://islandtransit.org/stops/1108
+1109,"Crosby Ave at Anchor","blank",48.307647,-122.659285,1,http://islandtransit.org/stops/1109
+1110,"Fourth and Glencoe","blank",48.294979,-122.648546,1,http://islandtransit.org/stops/1110
+1111,"Maxwellton at Midvale and SR 525","blank",48.001754,-122.415075,1,http://islandtransit.org/stops/1111
+1113,"Deer Lake Rd","blank",47.968943,-122.387609,1,http://islandtransit.org/stops/1113
+1115,"Bayview at Marshview Ave","blank",48.007381,-122.460930,1,http://islandtransit.org/stops/1115
+1117,"SR 525 at Coles Rd","blank",48.002407,-122.424302,1,http://islandtransit.org/stops/1117
+1118,"SR 525 at Coles","blank",48.002464,-122.425890,1,http://islandtransit.org/stops/1118
+1120,"SR 525 at Mills Dr","blank",48.007927,-122.474384,1,http://islandtransit.org/stops/1120
+1122,"SE Camano at Mountain View Rd","blank",48.138471,-122.450877,1,http://islandtransit.org/stops/1122
+1124,"North Camano Dr at Maple Grove Rd","blank",48.252177,-122.509757,1,http://islandtransit.org/stops/1124
+1125,"Sunset at SW Camano","blank",48.197447,-122.527170,1,http://islandtransit.org/stops/1125
+1127,"Camano Hill Rd at Chapman Rd","blank",48.182341,-122.518802,1,http://islandtransit.org/stops/1127
+1128,"Chapman and Rowe","blank",48.178506,-122.519370,1,http://islandtransit.org/stops/1128
+1130,"Camano at Chapman Rd","blank",48.175394,-122.528125,1,http://islandtransit.org/stops/1130
+1131,"Monticello Dr at SW Camano","blank",48.156539,-122.515905,1,http://islandtransit.org/stops/1131
+1132,"Monticello Dr at Dry Lake","blank",48.157176,-122.497376,1,http://islandtransit.org/stops/1132
+1133,"Lakewood Dr at Lake (Lost Lake)","blank",48.157397,-122.489061,1,http://islandtransit.org/stops/1133
+1134,"Lake at Lakewood","blank",48.157498,-122.491797,1,http://islandtransit.org/stops/1134
+1135,"South Whidbey Community Park (Castle Park)","blank",48.010181,-122.410376,1,http://islandtransit.org/stops/1135
+1140,"Southwest Camano and Admiralty Way","blank",48.182598,-122.527599,1,http://islandtransit.org/stops/1140
+1166,"Camano at CanKu","blank",48.217181,-122.477860,1,http://islandtransit.org/stops/1166
+1141,"North Camano and Arrowhead Rd","blank",48.252484,-122.468816,1,http://islandtransit.org/stops/1141
+1142,"North Camano at Fay Lane","blank",48.250755,-122.491475,1,http://islandtransit.org/stops/1142
+1143,"Northwest Camano and Swanson Ln","blank",48.234864,-122.521012,1,http://islandtransit.org/stops/1143
+1144,"Northwest Camano at Tara Ln","blank",48.239516,-122.520915,1,http://islandtransit.org/stops/1144
+1145,"Vista Dr at Grandview Ave","blank",48.224851,-122.526290,1,http://islandtransit.org/stops/1145
+1146,"Sunset Dr at Doubleview Dr","blank",48.208867,-122.532728,1,http://islandtransit.org/stops/1146
+1147,"SE Camano at Cavalero Rd","blank",48.175466,-122.479974,1,http://islandtransit.org/stops/1147
+1148,"SE Camano Dr at Beach Rd","blank",48.167660,-122.481658,1,http://islandtransit.org/stops/1148
+1149,"SE Camano Dr at Russell Rd","blank",48.207129,-122.479041,1,http://islandtransit.org/stops/1149
+1150,"Arrowhead at Baker View Ln (across from Chick)","blank",48.247383,-122.471766,1,http://islandtransit.org/stops/1150
+1151,"E North Camano Dr at Terry Heights Ln","blank",48.250376,-122.464600,1,http://islandtransit.org/stops/1151
+1153,"Southwest Camano at Saratoga Way","blank",48.180445,-122.527395,1,http://islandtransit.org/stops/1153
+1154,"Monticello Dr at Bonnie Lane","blank",48.162379,-122.484652,1,http://islandtransit.org/stops/1154
+1155,"Utsalady Elementary School on Arrowhead","blank",48.233335,-122.471895,1,http://islandtransit.org/stops/1155
+1156,"SE Camano at W Brejon Way","blank",48.167617,-122.481830,1,http://islandtransit.org/stops/1156
+1158,"SE Camano at Dallman Rd","blank",48.094255,-122.396182,1,http://islandtransit.org/stops/1158
+1159,"SE Camano at Sunnyshore Dr","blank",48.107911,-122.413058,1,http://islandtransit.org/stops/1159
+1160,"SE Camano at Karen Way","blank",48.103190,-122.406793,1,http://islandtransit.org/stops/1160
+1161,"SE Camano Dr at S Broadmore Rd","blank",48.116600,-122.425000,1,http://islandtransit.org/stops/1161
+1162,"Elger Bay Rd at Dry Lake Rd","blank",48.147627,-122.471294,1,http://islandtransit.org/stops/1162
+1164,"S Camano at Sunnyshore","blank",48.103935,-122.418981,1,http://islandtransit.org/stops/1164
+1165,"SE Camano at E Sandell Rd","blank",48.121657,-122.431673,1,http://islandtransit.org/stops/1165
+1167,"Maxwellton and SR 525","blank",48.001466,-122.414732,1,http://islandtransit.org/stops/1167
+1168,"Honeymoon Lake Rd at Walden","blank",48.052655,-122.553123,1,http://islandtransit.org/stops/1168
+1169,"Honeymoon Lake Rd at S Minor Way","blank",48.050919,-122.551117,1,http://islandtransit.org/stops/1169
+1170,"Honeymoon Lake Dr at Walden Loop","blank",48.051356,-122.555344,1,http://islandtransit.org/stops/1170
+1171,"Bercot at Honeymoon Bay","blank",48.025503,-122.544787,1,http://islandtransit.org/stops/1171
+1172,"Bercot at Reed Pl","blank",48.023802,-122.540517,1,http://islandtransit.org/stops/1172
+1173,"Bercot at Honeymoon Bay near Shipshaven","blank",48.018284,-122.544755,1,http://islandtransit.org/stops/1173
+1174,"Honeymoon Lake Rd (W)","blank",48.050202,-122.555194,1,http://islandtransit.org/stops/1174
+1175,"Honeymoon Lake Dr at Honeymoon Bay Rd (S)","blank",48.051564,-122.549905,1,http://islandtransit.org/stops/1175
+1176,"Bercot at Reed Pl","blank",48.023888,-122.540420,1,http://islandtransit.org/stops/1176
+1177,"Bercot at Honeymon Bay Rd","blank",48.025546,-122.544712,1,http://islandtransit.org/stops/1177
+1178,"Bercot at Honeymoon Bay Shipshaven","blank",48.018190,-122.544122,1,http://islandtransit.org/stops/1178

@@ -1,0 +1,24 @@
+route_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color
+1,1,"Clinton to Oak Harbor","",3,http://islandtransit.org/routes/13,ff0000,ffffff
+4,1,"Express: Clinton to Oak Harbor on SR 525","",3,http://islandtransit.org/routes/13,ff0000,ffffff
+7,3,"East Oak Harbor/Sleeper Rd","",3,http://islandtransit.org/routes/14,0000cc,ffffff
+9,2,"West Oak Harbor/Crosby Road","",3,http://islandtransit.org/routes/15,cccc00,ffffff
+11,411W,"Oak Harbor - Deception Pass - Mt. Vernon/Skagit","",3,http://islandtransit.org/routes/16,,
+19,1,"Oak Harbor/Coupeville/Greenbank/Clinton Ferry","",3,http://islandtransit.org/routes/17,ff0000,ffffff
+21,1,"Express: Oak Harbor - Clinton SR 525","",3,http://islandtransit.org/routes/17,ff0000,ffffff
+24,1,"Oak Harbor/Keystone/Greenbank/Clinton","",3,http://islandtransit.org/routes/17,ff0000,ffffff
+25,4,"Oak Harbor - Deception Pass","",3,http://islandtransit.org/routes/19,006600,ffffff
+33,5,"Freeland/Langley","",3,http://islandtransit.org/routes/20,ffcc00,000000
+35,6,"West Beach/Keystone Ferry","",3,http://islandtransit.org/routes/22,ff6600,ffffff
+42,7,"Langley Loop","",3,http://islandtransit.org/routes/23,0099ff,ffffff
+46,8,"Scatchet Head","",3,http://islandtransit.org/routes/24,990099,ffffff
+50,10,"Oak Harbor City Shuttle - East","",3,http://islandtransit.org/routes/25,990000,ffffff
+51,10,"Oak Harbor City Shuttle","",3,http://islandtransit.org/routes/25,990000,ffffff
+54,9,"Oak Harbor City Shuttle - West","",3,http://islandtransit.org/routes/26,cccccc,000000
+56,2C,"East Loop Camano","",3,http://islandtransit.org/routes/28,00ffff,ffffff
+57,3C,"Terry's Corner - Stanwood","",3,http://islandtransit.org/routes/29,cc0099,ffffff
+58,411C,"Camano Island - Mt. Vernon","",3,http://islandtransit.org/routes/30,,
+62,4C,"Commuter PM Express","",3,http://islandtransit.org/routes/31,,
+63,5C,"Camano Loop","",3,http://islandtransit.org/routes/33,cc3333,ffffff
+64,412C,"Camano Island to Everett Express","",3,http://islandtransit.org/routes/34,,
+66,1C,"Camano Island West Loop","",3,http://islandtransit.org/routes/37,00ff00,ffffff

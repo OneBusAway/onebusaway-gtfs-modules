@@ -4,13 +4,15 @@ pom.xml.releaseBackup
 .settings
 .project
 .classpath
+.factorypath
 .metadata/
 /.idea/
 /onebusaway-gtfs-transformer/onebusaway-gtfs-transformer.iml
 /onebusaway-gtfs-transformer/pom.xml.versionsBackup
 /onebusaway-gtfs-modules.iml
 /pom.xml.versionsBackup
-
+/onebusaway-jmh/dependency-reduced-pom.xml
 *.iml
 *.zip
 *.jar
+jmh-result-*.json

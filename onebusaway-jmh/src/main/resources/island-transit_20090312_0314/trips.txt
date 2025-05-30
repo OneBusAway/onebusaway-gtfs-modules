@@ -1,0 +1,585 @@
+route_id,service_id,trip_id,trip_headsign,direction_id,block_id
+9,23,2450089,West Oak Harbor,0,100
+46,23,3000079,Scatchet/Langley,0,125
+4,23,3200089,Northbound Oak Harbor,0,113
+24,24,3600119,Southbound Clinton Ferry,0,78
+35,23,2750089,West Beach/Keystone,0,102
+25,23,2550059,NB Deception Pass,0,104
+42,23,2900059,NB Freeland via Langley,0,114
+57,25,1250069,Stanwood,0,165
+54,23,3100089,City Shuttle,0,103
+51,24,3300139,10/2 City Shuttle,0,80
+64,25,2050069,Terry's Corner,0,167
+7,23,2500059,East Oak Harbor,0,133
+25,24,3500059,SB Oak Harbor,0,77
+25,24,3450059,NB Deception Pass,0,77
+25,23,2600059,SB Oak Harbor,0,104
+50,23,3150079,City Shuttle,0,100
+58,25,1350049,Camano,0,174
+58,25,1300049,Mt Vernon,0,174
+19,23,2350009,Southbound Clinton Ferry,0,111
+11,23,3850049,Mt Vernon,0,100
+62,25,1750009,Terry's Corner,0,164
+11,24,3350049,Mt Vernon,0,145
+42,28,5050059,,0,111
+11,24,3400049,Whidbey,0,145
+35,23,2800069,West Beach/Keystone,0,103
+42,23,2950069,SB Clinton via Langley,0,124
+62,25,1750839,Terry's Corner,0,164
+11,28,4750049,Whidbey,0,101
+11,23,4400049,Whidbey,0,100
+58,28,5450049,Mt Vernon,0,174
+58,28,5400049,Camano,0,174
+35,28,4850089,West Beach/Keystone,0,133
+21,23,3250099,Southbound Clinton Ferry,0,124
+11,28,4700049,Mt Vernon,0,101
+64,28,5500069,Terry's Corner,0,167
+62,25,1751669,Terry's Corner,0,164
+58,26,1600059,Mt Vernon,0,161
+35,23,2850079,West Beach/Keystone,0,103
+9,28,4650089,West Oak Harbor,0,103
+46,23,3050009,Scatchet,0,124
+58,26,1650059,Camano,0,161
+64,25,2000069,Everett,0,167
+58,25,1350879,Camano,0,173
+58,25,1300879,Mt Vernon,0,173
+64,28,5550069,Everett Station,0,167
+25,23,2550889,NB Deception Pass,0,104
+35,28,4900069,West Beach/Keystone,0,102
+42,23,2900889,NB Freeland via Langley,0,115
+42,28,5000069,,0,111
+7,23,2500889,East Oak Harbor,0,104
+25,24,3500889,SB Oak Harbor,0,79
+25,24,3450889,NB Deception Pass,0,79
+25,23,2600889,SB Oak Harbor,0,104
+11,24,3350879,Mt Vernon,0,77
+57,28,5350069,Stanwood,0,163
+11,23,4400879,Whidbey,0,101
+11,24,3400879,Whidbey,0,77
+50,28,5200079,City Shuttle,0,100
+1,24,3550119,Northbound Oak Harbor,0,76
+57,25,1250899,Stanwood,0,163
+35,28,4950079,West Beach/Keystone,0,102
+64,25,2050899,Terry's Corner,0,169
+46,28,5150079,Scatchet/Langley,0,126
+56,28,5250389,East Camano,0,171
+42,28,5050889,,0,112
+11,28,4700879,Mt Vernon,0,104
+46,23,3000909,Scatchet/Langley,0,126
+35,23,2850909,West Beach/Keystone,0,102
+4,28,4500089,Northbound Oak Harbor,0,113
+11,28,4750879,Whidbey,0,104
+58,28,5400879,Camano,0,165
+11,23,3850879,Mt Vernon,0,101
+58,28,5450879,Mt Vernon,0,169
+50,23,3150909,City Shuttle,0,103
+62,25,1752499,Terry's Corner,0,164
+46,28,5100089,Scatchet,0,125
+9,23,2450919,West Oak Harbor,0,101
+4,23,3200919,Northbound Oak Harbor,0,114
+62,25,1753329,Terry's Corner,0,172
+19,28,4600109,,0,111
+35,23,2750919,West Beach/Keystone,0,133
+54,23,3100919,City Shuttle,0,100
+42,23,2950899,SB Clinton via Langley,0,124
+21,28,4550099,Clinton,0,120
+58,25,1351709,Camano,0,174
+58,25,1301709,Mt Vernon,0,174
+58,26,1600889,Mt Vernon,0,161
+58,28,5401709,Camano,0,170
+58,26,1650889,Camano,0,161
+11,24,3351709,Mt Vernon,0,88
+4,28,4500919,Northbound Oak Harbor,0,114
+11,24,3401709,Whidbey,0,88
+62,25,1754159,Terry's Corner,0,172
+25,23,2551719,NB Deception Pass,0,132
+11,23,3851709,Mt Vernon,0,104
+42,23,2901719,NB Freeland via Langley,0,111
+19,23,2350839,Southbound Clinton Ferry,0,112
+1,23,4300119,Northbound Oak Harbor,0,111
+7,23,2501719,East Oak Harbor,0,100
+25,24,3501719,SB Oak Harbor,0,78
+25,24,3451719,NB Deception Pass,0,78
+1,28,4450119,Northbound Oak Harbor,0,115
+25,23,2601719,SB Oak Harbor,0,132
+11,28,4701709,Mt Vernon,0,134
+64,28,5550899,Everett Station,0,169
+64,28,5500899,Terry's Corner,0,169
+11,28,4751709,Whidbey,0,134
+24,24,3600949,Southbound Clinton Ferry,0,76
+11,23,4401709,Whidbey,0,104
+35,28,4900899,West Beach/Keystone,0,133
+42,28,5000899,,0,112
+33,28,4800129,,0,136
+33,23,4350129,,0,136
+57,28,5350899,Stanwood,0,167
+64,25,2000899,Everett,0,169
+58,28,5451709,Mt Vernon,0,166
+58,25,1352539,Camano,0,169
+58,25,1302539,Mt Vernon,0,169
+46,23,3050839,Scatchet,0,125
+57,25,1251729,Stanwood,0,167
+46,28,5100919,Scatchet,0,126
+64,25,2051729,Terry's Corner,0,167
+21,23,3250929,Southbound Clinton Ferry,0,125
+11,23,4402539,Whidbey,0,134
+42,28,5051719,,0,113
+50,28,5200909,City Shuttle,0,103
+35,28,4950909,West Beach/Keystone,0,133
+11,24,3352539,Mt Vernon,0,147
+46,28,5150909,Scatchet/Langley,0,125
+51,24,3300969,10/2 City Shuttle,0,144
+11,24,3402539,Whidbey,0,147
+46,23,3001739,Scatchet/Langley,0,125
+58,26,1651719,Camano,0,162
+35,23,2851739,West Beach/Keystone,0,133
+9,28,4650919,West Oak Harbor,0,102
+50,23,3151739,City Shuttle,0,102
+58,26,1601719,Mt Vernon,0,162
+11,28,4752539,Whidbey,0,101
+35,28,4850919,West Beach/Keystone,0,130
+11,28,4702539,Mt Vernon,0,101
+25,23,2552549,NB Deception Pass,0,107
+42,23,2902549,NB Freeland via Langley,0,112
+58,28,5402539,Camano,0,174
+64,25,2001729,Everett,0,167
+58,28,5452539,Mt Vernon,0,174
+7,23,2502549,East Oak Harbor,0,107
+25,24,3502549,SB Oak Harbor,0,77
+25,24,3452549,NB Deception Pass,0,77
+42,23,2951729,SB Clinton via Langley,0,124
+25,23,2602549,SB Oak Harbor,0,107
+58,25,1353369,Camano,0,166
+58,25,1303369,Mt Vernon,0,166
+9,23,2451749,West Oak Harbor,0,103
+4,23,3201749,Northbound Oak Harbor,0,118
+35,28,4951739,West Beach/Keystone,0,130
+35,23,2751749,West Beach/Keystone,0,130
+46,28,5151739,Scatchet/Langley,0,125
+54,23,3101749,City Shuttle,0,103
+35,28,4901729,West Beach/Keystone,0,130
+19,28,4600939,,0,112
+42,28,5001729,,0,113
+11,24,3353369,Mt Vernon,0,84
+57,28,5351729,Stanwood,0,167
+64,28,5501729,Terry's Corner,0,168
+64,28,5551729,Everett Station,0,168
+11,24,3403369,Whidbey,0,84
+58,26,1652549,Camano,0,161
+35,23,2802559,West Beach/Keystone,0,130
+1,24,3550949,Northbound Oak Harbor,0,77
+57,25,1252559,Stanwood,0,167
+64,25,2052559,Terry's Corner,0,169
+21,23,3251759,Southbound Clinton Ferry,0,114
+42,28,5052549,,0,128
+11,28,4703369,Mt Vernon,0,131
+58,28,5403369,Camano,0,172
+11,23,3853369,Mt Vernon,0,101
+58,28,5453369,Mt Vernon,0,172
+58,26,1602549,Mt Vernon,0,161
+25,24,3453379,NB Deception Pass,0,77
+50,28,5201739,City Shuttle,0,102
+58,26,1653379,Camano,0,162
+58,25,1354199,Camano,0,174
+58,25,1304199,Mt Vernon,0,174
+46,23,3051669,Scatchet,0,125
+42,23,2952559,SB Clinton via Langley,0,126
+19,23,2351669,Southbound Clinton Ferry,0,113
+42,23,2903379,NB Freeland via Langley,0,113
+7,23,2503379,East Oak Harbor,0,110
+25,24,3503379,SB Oak Harbor,0,147
+46,23,3002569,Scatchet/Langley,0,125
+35,23,2852569,West Beach/Keystone,0,130
+1,23,4300949,Northbound Oak Harbor,0,112
+1,28,4450949,Northbound Oak Harbor,0,111
+50,23,3152569,City Shuttle,0,102
+24,24,3601779,Southbound Clinton Ferry,0,80
+11,23,3854199,Mt Vernon,0,131
+64,28,5552559,Everett Station,0,166
+35,28,4902559,West Beach/Keystone,0,100
+64,25,2002559,Everett,0,169
+4,28,4501749,Northbound Oak Harbor,0,118
+42,28,5002559,,0,118
+33,28,4800959,,0,136
+35,28,4851749,West Beach/Keystone,0,100
+46,28,5101749,Scatchet,0,125
+9,28,4651749,West Oak Harbor,0,101
+57,28,5352559,Stanwood,0,167
+33,23,4350959,,0,136
+11,28,4704199,Mt Vernon,0,132
+64,28,5502559,Terry's Corner,0,166
+11,28,4754199,Whidbey,0,132
+1,23,4301779,Northbound Oak Harbor,0,115
+9,23,2452579,West Oak Harbor,0,102
+42,28,5053379,,0,115
+58,25,1355029,Camano,0,172
+58,25,1305029,Mt Vernon,0,172
+4,23,3202579,Northbound Oak Harbor,0,119
+35,23,2752579,West Beach/Keystone,0,100
+46,23,3052499,Scatchet,0,125
+58,26,1603379,Mt Vernon,0,162
+35,23,2803389,West Beach/Keystone,0,100
+54,23,3102579,City Shuttle,0,130
+57,25,1253389,Stanwood,0,167
+64,25,2053389,Terry's Corner,0,168
+7,23,2504209,East Oak Harbor,0,131
+25,24,3504209,SB Oak Harbor,0,146
+25,24,3454209,NB Deception Pass,0,146
+66,25,4100399,West,0,174
+42,23,2904209,NB Freeland via Langley,0,118
+35,28,4903389,West Beach/Keystone,0,102
+19,28,4601769,,0,113
+42,23,2953389,SB Clinton via Langley,0,115
+51,24,3301799,10/2 City Shuttle,0,145
+64,25,2003389,Everett,0,168
+21,23,3252589,Southbound Clinton Ferry,0,113
+46,28,5152569,Scatchet/Langley,0,141
+35,28,4952569,West Beach/Keystone,0,100
+11,23,3855029,Mt Vernon,0,132
+50,28,5202569,City Shuttle,0,102
+11,28,4705029,Mt Vernon,0,105
+11,28,4755029,Whidbey,0,105
+50,23,3153399,City Shuttle,0,133
+58,25,1355859,Camano,0,173
+46,23,3003399,Scatchet/Langley,0,141
+58,25,1305859,Mt Vernon,0,173
+35,23,2853399,West Beach/Keystone,0,100
+42,28,5003389,,0,119
+57,28,5353389,Stanwood,0,168
+1,24,3551779,Northbound Oak Harbor,0,78
+42,28,5054209,,0,120
+64,25,2054219,Terry's Corner,0,166
+56,25,4150389,East Camano,0,165
+25,24,3505039,SB Oak Harbor,0,88
+25,24,3455039,NB Deception Pass,0,88
+19,23,2352499,Southbound Clinton Ferry,0,128
+35,23,2804219,West Beach/Keystone,0,102
+57,25,1254219,Stanwood,0,168
+42,23,2905039,NB Freeland via Langley,0,115
+35,28,4852579,West Beach/Keystone,0,102
+46,28,5102579,Scatchet,0,141
+9,28,4652579,West Oak Harbor,0,103
+11,28,4705859,Mt Vernon,0,108
+11,28,4755859,Whidbey,0,108
+4,28,4502579,Northbound Oak Harbor,0,119
+57,28,5354219,Stanwood,0,168
+42,23,2954219,SB Clinton via Langley,0,111
+9,23,2453409,West Oak Harbor,0,101
+4,23,3203409,Northbound Oak Harbor,0,120
+58,25,1356689,Camano,0,164
+1,28,4451779,Northbound Oak Harbor,0,112
+58,25,1306689,Mt Vernon,0,164
+35,23,2753409,West Beach/Keystone,0,102
+46,23,3053329,Scatchet,0,126
+54,23,3103409,City Shuttle,0,133
+24,24,3602609,Southbound Clinton Ferry,0,144
+1,24,3552609,Northbound Oak Harbor,0,79
+46,28,5153399,Scatchet/Langley,0,141
+50,28,5203399,City Shuttle,0,133
+35,28,4953399,West Beach/Keystone,0,102
+66,28,5300399,West,0,165
+42,28,5055039,,0,116
+1,23,4302609,Northbound Oak Harbor,0,111
+42,28,5004219,,0,120
+42,23,2905869,NB Freeland via Langley,0,120
+11,23,3856689,Mt Vernon,0,108
+50,23,3154229,City Shuttle,0,133
+64,25,2004219,Everett,0,166
+33,28,4801789,,0,137
+25,24,3505869,SB Oak Harbor,0,146
+25,24,3455869,NB Deception Pass,0,146
+11,28,4706689,Mt Vernon,0,131
+33,23,4351789,,0,136
+35,28,4904219,West Beach/Keystone,0,205
+46,23,3004229,Scatchet/Langley,0,141
+11,28,4756689,Whidbey,0,131
+19,28,4602599,,0,128
+35,23,2854229,West Beach/Keystone,0,102
+11,23,4406689,Whidbey,0,108
+4,28,4503409,Northbound Oak Harbor,0,120
+57,25,1255049,Stanwood,0,168
+21,23,3253419,Southbound Clinton Ferry,0,115
+64,25,2055049,Terry's Corner,0,168
+35,23,2805049,West Beach/Keystone,0,104
+64,25,2005049,Everett,0,168
+63,26,4200549,,0,161
+42,23,2955049,SB Clinton via Langley,0,112
+35,28,4853409,West Beach/Keystone,0,104
+11,23,3857519,Mt Vernon,0,131
+9,28,4653409,West Oak Harbor,0,130
+46,28,5103409,Scatchet,0,141
+42,28,5055869,,0,117
+11,23,4407519,Whidbey,0,131
+51,24,3302629,10/2 City Shuttle,0,79
+54,23,3104239,City Shuttle,0,130
+42,23,2906699,NB Freeland via Langley,0,116
+25,24,3506699,SB Oak Harbor,0,147
+25,24,3456699,NB Deception Pass,0,147
+9,23,2454239,West Oak Harbor,0,103
+35,23,2754239,West Beach/Keystone,0,104
+46,23,3054159,Scatchet,0,125
+19,23,2353329,Southbound Clinton Ferry,0,115
+35,28,4954229,West Beach/Keystone,0,105
+57,28,5355049,Stanwood,0,168
+35,28,4905049,West Beach/Keystone,0,110
+42,28,5005049,,0,116
+46,28,5154229,Scatchet/Langley,0,142
+50,28,5204229,City Shuttle,0,133
+35,23,2805879,West Beach/Keystone,0,133
+57,25,1255879,Stanwood,0,168
+64,25,2055879,Terry's Corner,0,166
+50,23,3155059,City Shuttle,0,103
+64,25,2005879,Everett,0,166
+42,28,5056699,,0,121
+46,23,3005059,Scatchet/Langley,0,142
+35,23,2855059,West Beach/Keystone,0,105
+1,28,4452609,Northbound Oak Harbor,0,113
+11,23,4408349,Whidbey,0,110
+11,23,3858349,Mt Vernon,0,110
+42,23,2955879,SB Clinton via Langley,0,113
+24,24,3603439,Southbound Clinton Ferry,0,145
+1,24,3553439,Northbound Oak Harbor,0,76
+42,23,2907529,NB Freeland via Langley,0,117
+1,23,4303439,Northbound Oak Harbor,0,112
+9,28,4654239,West Oak Harbor,0,101
+46,28,5104239,Scatchet,0,141
+33,28,4802619,,0,137
+57,28,5355879,Stanwood,0,170
+33,23,4352619,,0,137
+11,23,4409179,Whidbey,0,106
+42,28,5005879,,0,117
+35,28,4905879,West Beach/Keystone,0,106
+11,23,3859179,Mt Vernon,0,106
+35,28,4854239,West Beach/Keystone,0,110
+54,23,3105069,City Shuttle,0,108
+35,23,2806709,West Beach/Keystone,0,106
+21,23,3254249,Southbound Clinton Ferry,0,126
+57,25,1256709,Stanwood,0,170
+4,23,3205069,Northbound Oak Harbor,0,117
+9,23,2455069,West Oak Harbor,0,130
+46,28,5155059,Scatchet/Langley,0,122
+50,28,5205059,City Shuttle,0,103
+46,23,3054989,Scatchet,0,141
+46,28,5105069,Scatchet,0,142
+35,28,4955059,West Beach/Keystone,0,110
+42,28,5057529,,0,121
+50,23,3155889,City Shuttle,0,100
+19,28,4603429,,0,115
+46,23,3005889,Scatchet/Langley,0,122
+35,23,2855889,West Beach/Keystone,0,110
+19,23,2354159,Southbound Clinton Ferry,0,129
+42,23,2956709,SB Clinton via Langley,0,118
+42,23,2908359,NB Freeland via Langley,0,121
+42,28,5058359,,0,141
+51,24,3303459,10/2 City Shuttle,0,79
+57,28,5356709,Stanwood,0,170
+42,28,5006709,,0,121
+35,28,4906709,West Beach/Keystone,0,135
+35,23,2807539,West Beach/Keystone,0,135
+1,28,4453439,Northbound Oak Harbor,0,118
+57,25,1257539,Stanwood,0,170
+35,23,2755069,West Beach/Keystone,0,133
+1,24,3554269,Northbound Oak Harbor,0,81
+42,23,2909189,NB Freeland via Langley,0,121
+24,24,3604269,Southbound Clinton Ferry,0,150
+35,28,4955889,West Beach/Keystone,0,106
+50,28,5205889,City Shuttle,0,100
+35,28,4855069,West Beach/Keystone,0,106
+9,28,4655069,West Oak Harbor,0,108
+35,23,2856719,West Beach/Keystone,0,106
+46,23,3055819,Scatchet,0,141
+54,23,3105899,City Shuttle,0,110
+50,23,3156719,City Shuttle,0,132
+1,23,4304269,Northbound Oak Harbor,0,113
+9,23,2455899,West Oak Harbor,0,101
+35,23,2755899,West Beach/Keystone,0,106
+46,23,3006719,Scatchet/Langley,0,142
+42,23,2957539,SB Clinton via Langley,0,119
+42,28,5059189,,0,123
+57,28,5357539,Stanwood,0,174
+33,28,4803449,,0,137
+19,28,4604259,,0,129
+33,23,4353449,,0,137
+42,28,5007539,,0,141
+35,28,4907539,West Beach/Keystone,0,132
+19,23,2354989,Southbound Clinton Ferry,0,127
+35,23,2808369,West Beach/Keystone,0,132
+57,25,1258369,Stanwood,0,170
+42,23,2910019,NB Freeland via Langley,0,141
+42,28,5060019,,0,141
+50,28,5206719,City Shuttle,0,132
+35,28,4956719,West Beach/Keystone,0,135
+42,23,2958369,SB Clinton via Langley,0,120
+46,23,3007549,Scatchet/Langley,0,142
+35,23,2857549,West Beach/Keystone,0,135
+46,28,5105899,Scatchet,0,122
+9,28,4655899,West Oak Harbor,0,131
+50,23,3157549,City Shuttle,0,108
+35,28,4855899,West Beach/Keystone,0,135
+46,23,3056649,Scatchet,0,141
+54,23,3106729,City Shuttle,0,131
+9,23,2456729,West Oak Harbor,0,108
+35,23,2756729,West Beach/Keystone,0,135
+51,24,3304289,10/2 City Shuttle,0,86
+1,28,4454269,Northbound Oak Harbor,0,119
+35,28,4908369,West Beach/Keystone,0,135
+42,23,2910849,NB Freeland via Langley,0,123
+1,24,3555099,Northbound Oak Harbor,0,82
+35,23,2809199,West Beach/Keystone,0,135
+57,25,1259199,Stanwood,0,174
+24,24,3605099,Southbound Clinton Ferry,0,149
+1,23,4305099,Northbound Oak Harbor,0,118
+42,23,2959199,SB Clinton via Langley,0,116
+56,25,4151219,East Camano,0,165
+19,28,4605089,,0,127
+50,28,5207549,City Shuttle,0,108
+35,28,4957549,West Beach/Keystone,0,132
+42,28,5060849,,0,123
+46,23,3008379,Scatchet/Langley,0,142
+35,23,2858379,West Beach/Keystone,0,132
+19,23,2355819,Southbound Clinton Ferry,0,117
+50,23,3158379,City Shuttle,0,106
+42,23,2911679,NB Freeland via Langley,0,141
+66,25,4101229,West,0,163
+33,23,4354279,,0,137
+35,28,4909199,West Beach/Keystone,0,132
+9,28,4656729,West Oak Harbor,0,107
+35,28,4856729,West Beach/Keystone,0,132
+35,23,2757559,West Beach/Keystone,0,132
+66,28,5301229,West,0,163
+46,23,3057479,Scatchet,0,142
+54,23,3107559,City Shuttle,0,110
+35,23,2810029,West Beach/Keystone,0,132
+9,23,2457559,West Oak Harbor,0,131
+33,23,4355109,,0,137
+42,23,2960029,SB Clinton via Langley,0,117
+56,28,5251219,East Camano,0,165
+42,23,2912509,NB Freeland via Langley,0,123
+1,28,4455099,Northbound Oak Harbor,0,120
+50,28,5208379,City Shuttle,0,106
+1,24,3555929,Northbound Oak Harbor,0,83
+24,24,3605929,Southbound Clinton Ferry,0,86
+50,23,3159209,City Shuttle,0,105
+51,24,3305119,10/2 City Shuttle,0,88
+1,23,4305929,Northbound Oak Harbor,0,119
+35,23,2810859,West Beach/Keystone,0,131
+35,28,4857559,West Beach/Keystone,0,135
+9,28,4657559,West Oak Harbor,0,106
+19,28,4605919,,0,117
+42,23,2913339,NB Freeland via Langley,0,141
+9,23,2458389,West Oak Harbor,0,107
+35,23,2758389,West Beach/Keystone,0,135
+19,23,2356649,Southbound Clinton Ferry,0,118
+46,23,3058309,Scatchet,0,122
+42,23,2960859,SB Clinton via Langley,0,121
+54,23,3108389,City Shuttle,0,108
+21,23,3257569,Southbound Clinton Ferry,0,120
+50,28,5209209,City Shuttle,0,105
+35,23,2811689,West Beach/Keystone,0,125
+50,23,3160039,City Shuttle,0,135
+42,23,2914169,NB Freeland via Langley,0,142
+1,28,4455929,Northbound Oak Harbor,0,116
+35,28,4858389,West Beach/Keystone,0,132
+9,28,4658389,West Oak Harbor,0,105
+9,23,2459219,West Oak Harbor,0,106
+35,23,2759219,West Beach/Keystone,0,132
+1,24,3556759,Northbound Oak Harbor,0,84
+24,24,3606759,Southbound Clinton Ferry,0,87
+1,23,4306759,Northbound Oak Harbor,0,120
+19,28,4606749,,0,118
+50,28,5210039,City Shuttle,0,135
+42,23,2914999,NB Freeland via Langley,0,123
+19,23,2357479,Southbound Clinton Ferry,0,119
+35,23,2812519,West Beach/Keystone,0,122
+50,23,3160869,City Shuttle,0,108
+51,24,3305949,10/2 City Shuttle,0,146
+42,23,2963349,SB Clinton via Langley,0,123
+35,23,2813349,West Beach/Keystone,0,123
+9,23,2460049,West Oak Harbor,0,105
+35,23,2760049,West Beach/Keystone,0,131
+50,28,5210869,City Shuttle,0,108
+50,23,3161699,City Shuttle,0,131
+1,28,4456759,Northbound Oak Harbor,0,117
+24,24,3607589,Southbound Clinton Ferry,0,88
+1,24,3557589,Northbound Oak Harbor,0,85
+19,28,4607579,,0,119
+63,26,4201379,,0,162
+1,23,4307589,Northbound Oak Harbor,0,116
+19,23,2358309,Southbound Clinton Ferry,0,116
+50,28,5211699,City Shuttle,0,131
+51,24,3306779,10/2 City Shuttle,0,84
+9,23,2460879,West Oak Harbor,0,135
+50,23,3162529,City Shuttle,0,106
+56,25,4152049,East Camano,0,163
+1,28,4457589,Northbound Oak Harbor,0,121
+66,25,4102059,West,0,171
+24,24,3608419,Southbound Clinton Ferry,0,146
+1,24,3558419,Northbound Oak Harbor,0,86
+19,23,2359139,Southbound Clinton Ferry,0,117
+1,23,4308419,Northbound Oak Harbor,0,117
+50,28,5212529,City Shuttle,0,106
+50,23,3163359,City Shuttle,0,110
+56,28,5252049,East Camano,0,163
+66,28,5302059,West,0,165
+50,28,5213359,City Shuttle,0,110
+50,23,3164189,City Shuttle,0,105
+19,23,2359969,Southbound Clinton Ferry,0,121
+1,24,3559249,Northbound Oak Harbor,0,87
+1,23,4309249,Northbound Oak Harbor,0,121
+50,28,5214189,City Shuttle,0,105
+24,24,3609249,Southbound Clinton Ferry,0,85
+50,23,3165019,City Shuttle,0,106
+19,23,2360799,Southbound Clinton Ferry,0,122
+24,24,3610079,Southbound Clinton Ferry,0,85
+50,28,5215019,City Shuttle,0,106
+1,24,3560079,Northbound Oak Harbor,0,88
+50,23,3165849,City Shuttle,0,106
+1,23,4310079,Northbound Oak Harbor,0,122
+50,28,5215849,City Shuttle,0,105
+50,23,3166679,City Shuttle,0,105
+56,25,4152879,East Camano,0,171
+50,28,5216679,City Shuttle,0,105
+50,23,3167509,City Shuttle,0,105
+66,25,4102889,West,0,165
+1,23,4310909,Northbound Oak Harbor,0,123
+56,28,5252879,East Camano,0,163
+66,28,5302889,West,0,165
+63,26,4202209,,0,162
+56,28,5253709,East Camano,0,166
+56,25,4153709,East Camano,0,165
+66,25,4103719,West,0,163
+66,28,5303719,West,0,163
+63,26,4203039,,0,161
+56,25,4154539,East Camano,0,163
+66,28,5304549,West,0,166
+66,25,4104549,West,0,165
+56,28,5254539,East Camano,0,163
+56,25,4155369,East Camano,0,163
+63,26,4203869,,0,162
+56,28,5255369,East Camano,0,164
+66,28,5305379,West,0,164
+66,25,4105379,West,0,165
+56,25,4156199,East Camano,0,166
+56,28,5256199,East Camano,0,173
+66,25,4106209,West,0,163
+66,28,5306209,West,0,172
+56,25,4157029,East Camano,0,164
+56,28,5257029,East Camano,0,175
+66,25,4107039,West,0,166
+66,28,5307039,West,0,173
+66,28,5307869,West,0,174
+56,25,4157859,East Camano,0,172
+56,28,5257859,East Camano,0,173
+66,25,4107869,West,0,164
+56,25,4158689,East Camano,0,173
+66,25,4108699,West,0,172
+56,25,4159519,East Camano,0,175
+66,25,4109529,West,0,173
+56,25,4160349,East Camano,0,173
+66,25,4110359,West,0,174
+56,25,4161179,East Camano,0,170
+66,25,4111189,West,0,164
+56,25,4162009,East Camano,0,173
+66,25,4112019,West,0,173
+56,25,4162839,East Camano,0,164
+66,25,4112849,West,0,164

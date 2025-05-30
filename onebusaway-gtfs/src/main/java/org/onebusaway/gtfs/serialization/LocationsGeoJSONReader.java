@@ -17,6 +17,8 @@
 package org.onebusaway.gtfs.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+
 import org.geojson.FeatureCollection;
 import org.geojson.Feature;
 import org.onebusaway.gtfs.model.AgencyAndId;
@@ -29,7 +31,7 @@ import java.util.Collection;
 
 public class LocationsGeoJSONReader {
   
-  private static final ObjectMapper objectMapper = new ObjectMapper();
+  private static final ObjectReader FEATURE_COLLECTION_OBJECT_READER = new ObjectMapper().readerFor(FeatureCollection.class);
 
   private final Reader reader;
   private final String defaultAgencyId;
@@ -40,10 +42,7 @@ public class LocationsGeoJSONReader {
   }
 
   public Collection<Location> read() throws IOException {
-    FeatureCollection featureCollection = objectMapper.readValue(
-        reader,
-        FeatureCollection.class
-    );
+    FeatureCollection featureCollection = FEATURE_COLLECTION_OBJECT_READER.readValue(reader);
 
     Collection<Location> locations = new ArrayList<>(featureCollection.getFeatures().size());
 

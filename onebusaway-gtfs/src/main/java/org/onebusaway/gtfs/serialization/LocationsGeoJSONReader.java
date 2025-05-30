@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class LocationsGeoJSONReader {
+  
+  private static final ObjectMapper objectMapper = new ObjectMapper();
 
   private final Reader reader;
   private final String defaultAgencyId;
@@ -38,7 +40,7 @@ public class LocationsGeoJSONReader {
   }
 
   public Collection<Location> read() throws IOException {
-    FeatureCollection featureCollection = new ObjectMapper().readValue(
+    FeatureCollection featureCollection = objectMapper.readValue(
         reader,
         FeatureCollection.class
     );

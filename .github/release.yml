@@ -6,6 +6,9 @@ changelog:
     - title: Bugfixes
       labels:
         - bug
+    - title: Performance improvements
+      labels:
+        - Performance
     - title: Dependency upgrades
       labels:
         - dependencies

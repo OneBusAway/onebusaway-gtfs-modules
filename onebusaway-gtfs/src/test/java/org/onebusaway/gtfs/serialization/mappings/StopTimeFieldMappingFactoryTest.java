@@ -69,6 +69,7 @@ public class StopTimeFieldMappingFactoryTest {
     assertEquals(60, getStringAsSeconds("-00:01:00"));
 
     assertEquals(3660, getStringAsSeconds("01:01:00"));
+    assertEquals(3660, getStringAsSeconds("1:01:00"));
     assertEquals(-3540, getStringAsSeconds("-01:01:00"));
 
     assertEquals(37230, getStringAsSeconds("10:20:30"));

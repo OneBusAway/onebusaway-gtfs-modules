@@ -20,8 +20,6 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils2.ConversionException;
 import org.apache.commons.beanutils2.Converter;
@@ -35,8 +33,6 @@ import org.onebusaway.csv_entities.schema.FieldMappingFactory;
 public class StopTimeFieldMappingFactory implements FieldMappingFactory {
 
   private static DecimalFormat _format = new DecimalFormat("00", new DecimalFormatSymbols(Locale.ENGLISH));
-
-  private static Pattern _pattern = Pattern.compile("^(-{0,1}\\d+):(\\d{2}):(\\d{2})$");
 
   public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
       Class<?> entityType, String csvFieldName, String objFieldName,
@@ -67,20 +63,33 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
     }
     return m;
   }
-
+  
   public static int getStringAsSeconds(String value) {
-    Matcher m = _pattern.matcher(value);
-    if (!m.matches())
-      throw new InvalidStopTimeException(value);
+    // strictly the value must match regexp: ^(-{0,1}\d+):(\d{2}):(\d{2})$.
     try {
-      int hours = Integer.parseInt(m.group(1));
-      int minutes = Integer.parseInt(m.group(2));
-      int seconds = Integer.parseInt(m.group(3));
+      // Skip index bounds check; rely on catch block instead.
+      // Skip check for digit/minus; rely on parseInt(..) instead.
+      
+      // optimize for the most common case
+      int length = value.length();
+      
+      // colons are at fixed positions relative to end of string
+      int colon1Index = length - 6;
+      int colon2Index = length - 3;
+      
+      if(value.charAt(colon2Index) == ':' && value.charAt(colon1Index) == ':') {
+        // xxx:yy:zz
+        
+        int hours = Integer.parseInt(value, 0, colon1Index, 10);
+        int minutes = Integer.parseInt(value, length - 5, colon2Index, 10);
+        int seconds = Integer.parseInt(value, length - 2, length, 10);
 
-      return seconds + 60 * (minutes + 60 * hours);
-    } catch (NumberFormatException ex) {
-      throw new InvalidStopTimeException(value);
+        return seconds + 60 * (minutes + 60 * hours);
+      }
+    } catch (Exception ex) {
+      // fall through
     }
+    throw new InvalidStopTimeException(value);
   }
 
   private static class StopTimeFieldMapping extends AbstractFieldMapping

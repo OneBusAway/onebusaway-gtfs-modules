@@ -2,8 +2,10 @@ package org.onebusaway.jmh.gtfs;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
+import org.onebusaway.csv_entities.zip.CommonsZipFileCsvInputSource;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
@@ -43,10 +45,15 @@ public class GtfsBenchmark {
 
   @Benchmark
   public GtfsRelationalDao testParse(ThreadState state) throws Exception {
-    return processFeed(new File("./src/main/resources/island-transit_20090312_0314"), "abcd", false, state.entityStore, state.reader);
+    return processFeedFromFile(new File("./src/main/resources/island-transit_20090312_0314"), "abcd", false, state.entityStore, state.reader);
+  }
+  
+  @Benchmark
+  public GtfsRelationalDao testParseURL(ThreadState state) throws Exception {
+    return processFeedFromURL(new File("./src/main/resources/island-transit_20090312_0314").toURL(), "abcd", false, state.entityStore, state.reader, 10);
   }
 
-  public static GtfsRelationalDao processFeed(
+  public static GtfsRelationalDao processFeedFromFile(
       File resourcePath, String agencyId,
       boolean internStrings, GtfsRelationalDaoImpl entityStore, GtfsReader reader
       ) throws IOException {
@@ -55,6 +62,24 @@ public class GtfsBenchmark {
     reader.setInternStrings(internStrings);
 
     reader.setInputLocation(resourcePath);
+    
+    try {
+      reader.run();
+      return entityStore;
+    } finally {
+      entityStore.clearAllCaches();
+    }
+  }
+
+  public static GtfsRelationalDao processFeedFromURL(
+      URL url, String agencyId,
+      boolean internStrings, GtfsRelationalDaoImpl entityStore, GtfsReader reader, int maxBytesPerSecond
+      ) throws IOException {
+
+    reader.setDefaultAgencyId(agencyId);
+    reader.setInternStrings(internStrings);
+    
+    reader.setInputSource(new CommonsZipFileCsvInputSource(url, 1024 * 1024, maxBytesPerSecond));
     
     try {
       reader.run();

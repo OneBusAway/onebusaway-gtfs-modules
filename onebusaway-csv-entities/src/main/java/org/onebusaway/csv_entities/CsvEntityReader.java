@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -129,7 +130,7 @@ public class CsvEntityReader {
         _context, schema, _handler);
     entityLoader.setTrimValues(_trimValues);
 
-    BufferedReader lineReader = new BufferedReader(reader);
+    BufferedReader lineReader = new BufferedReader(reader, 32 * 1024);
 
     /**
      * Skip the initial UTF BOM, if present

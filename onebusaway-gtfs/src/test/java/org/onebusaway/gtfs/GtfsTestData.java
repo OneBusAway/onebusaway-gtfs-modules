@@ -19,11 +19,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
+import org.onebusaway.csv_entities.zip.CommonsZipFileCsvInputSource;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.services.GenericMutableDao;
 
@@ -54,6 +56,8 @@ public class GtfsTestData {
   public static final String LOCATIONS_GEOJSON = gtfsPath("locations.geojson");
 
   public static final String TEST_AGENCY_VEHICLES_EXT_GTFS = gtfsPath("testagency-vehicles-ext");
+
+  public static final String ENTUR_GTFS = gtfsPath("rb_norway-aggregated-gtfs-basic.zip");
 
   public static File getCaltrainGtfs() {
     return getResourceAsTemporaryFile(CALTRAIN_GTFS);
@@ -99,6 +103,10 @@ public class GtfsTestData {
   public static File getTestAgencyVehiclesExt(){
     return new File("src/test/resources", TEST_AGENCY_VEHICLES_EXT_GTFS);
   }
+  
+  public static File getEnturGtfs(){
+    return new File("src/test/resources", ENTUR_GTFS);
+  }
 
   public static <T extends GenericMutableDao> void readGtfs(T entityStore,
       File resourcePath, String defaultAgencyId) throws IOException {
@@ -112,6 +120,20 @@ public class GtfsTestData {
 
     reader.run();
   }
+  
+  public static <T extends GenericMutableDao> void readGtfs(T entityStore,
+      URL resourceUrl, String defaultAgencyId, int maxBytesPerSecond) throws IOException {
+
+    GtfsReader reader = new GtfsReader();
+    reader.setDefaultAgencyId(defaultAgencyId);
+    
+    reader.setInputSource(new CommonsZipFileCsvInputSource(resourceUrl, 1024 * 1024, maxBytesPerSecond));
+
+    reader.setEntityStore(entityStore);
+
+    reader.run();
+  }
+
 
   private static File getResourceAsTemporaryFile(String path) {
     try {

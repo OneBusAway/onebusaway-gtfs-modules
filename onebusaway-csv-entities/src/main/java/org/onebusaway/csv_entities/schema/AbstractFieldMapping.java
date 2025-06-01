@@ -125,9 +125,12 @@ public abstract class AbstractFieldMapping implements SingleFieldMapping {
     return isMissing(csvValues, _csvFieldName);
   }
 
-  protected static boolean isMissing(Map<String, Object> csvValues,
-      String csvFieldName) {
-    return !(csvValues.containsKey(csvFieldName) && csvValues.get(csvFieldName).toString().length() > 0);
+  protected static boolean isMissing(Map<String, Object> csvValues, String csvFieldName) {
+    Object object = csvValues.get(csvFieldName);
+    if(object == null) {
+      return true;
+    }
+    return object.toString().length() == 0;
   }
 
   protected boolean isMissing(BeanWrapper object) {

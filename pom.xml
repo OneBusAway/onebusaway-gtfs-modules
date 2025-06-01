@@ -143,6 +143,9 @@
         <configuration>
           <publishingServerId>central</publishingServerId>
           <autoPublish>true</autoPublish>
+          <excludeArtifacts>
+            <artifact>onebusaway-jmh</artifact>
+          </excludeArtifacts>
         </configuration>
       </plugin>
       <plugin>

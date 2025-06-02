@@ -72,7 +72,6 @@ public class UpdateTripHeadsignByReference implements GtfsTransformStrategy {
                 }
             }
             else {
-                _log.error("No stoptimes for trip {} mta id", trip.toString(), trip.getMtaTripId());
                 if (trip.getTripHeadsign() == null) {
                     //if trip has no headsign, no stoptimes and no shortname, remove it
                     _log.error("Removing trip {}", trip.getId());

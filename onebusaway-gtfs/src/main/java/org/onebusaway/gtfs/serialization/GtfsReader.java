@@ -66,7 +66,6 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Block.class);
     _entityClasses.add(ShapePoint.class);
     _entityClasses.add(Icon.class);
-    _entityClasses.add(Note.class);
     _entityClasses.add(Area.class);
     _entityClasses.add(BookingRule.class);
     _entityClasses.add(Route.class);
@@ -343,8 +342,6 @@ public class GtfsReader extends CsvEntityReader {
         registerAgencyId(RiderCategory.class, category.getId());
       } else if (entity instanceof final FareAttribute fare) {
         registerAgencyId(FareAttribute.class, fare.getId());
-      } else if (entity instanceof final Note note) {
-        registerAgencyId(Note.class, note.getId());
       } else if (entity instanceof final Area area) {
         registerAgencyId(Area.class, area.getId());
       } else if (entity instanceof final Location location) {

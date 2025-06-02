@@ -196,7 +196,7 @@ public class GtfsRelationalDaoImplTest {
   @Test
   public void testEnturParseInflightURL() throws Exception {
 
-    int bandwithInMegaBytesPerSecond = 5;
+    int bandwithInMegaBytesPerSecond = 30;
 
     File enturGtfs = GtfsTestData.getEnturGtfs();
 
@@ -220,7 +220,7 @@ public class GtfsRelationalDaoImplTest {
   @Test
   public void testEnturSaveURLToFileAndParse() throws Exception {
 
-    int bandwithInMegaBytesPerSecond = 5;
+    int bandwithInMegaBytesPerSecond = 30;
     
     File enturGtfs = GtfsTestData.getEnturGtfs();
 
@@ -241,7 +241,7 @@ public class GtfsRelationalDaoImplTest {
           FileOutputStream fileOutputStream = new FileOutputStream(file)) {
         byte dataBuffer[] = new byte[16 * 1024];
         int bytesRead;
-        while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+        while ((bytesRead = in.read(dataBuffer, 0, dataBuffer.length)) != -1) {
           fileOutputStream.write(dataBuffer, 0, bytesRead);
         }
       }

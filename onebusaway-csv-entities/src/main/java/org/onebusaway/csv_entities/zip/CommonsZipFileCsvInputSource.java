@@ -26,17 +26,17 @@ import org.onebusaway.csv_entities.CsvInputSource;
 public class CommonsZipFileCsvInputSource implements CsvInputSource {
 
   private ZipFile _zipFile;
-  private UrlByteChannelCache cache;
-  private UrlSeekableByteChannel channel;
-  private int maxBytesPerSecond;
+  private UrlByteChannelCache _cache;
+  private UrlSeekableByteChannel _channel;
+  private int _maxBytesPerSecond;
   
   public CommonsZipFileCsvInputSource(URL url, int chunkLength, int maxBytesPerSecond) throws IOException {
-    this.cache = new UrlByteChannelCache(url, chunkLength);
-    this.maxBytesPerSecond = maxBytesPerSecond;
+    this._cache = new UrlByteChannelCache(url, chunkLength);
+    this._maxBytesPerSecond = maxBytesPerSecond;
     
-    this.channel = new UrlSeekableByteChannel(64 * 1024, cache);
+    this._channel = new UrlSeekableByteChannel(64 * 1024, _cache);
     
-    this._zipFile = ZipFile.builder().setSeekableByteChannel(channel).get();
+    this._zipFile = ZipFile.builder().setSeekableByteChannel(_channel).get();
   }
 
   public boolean hasResource(String name) throws IOException {
@@ -51,7 +51,7 @@ public class CommonsZipFileCsvInputSource implements CsvInputSource {
     long length = entry.getCompressedSize();
     
     try {
-      channel.transfer((int)offset, (int)length, maxBytesPerSecond);
+      _channel.transfer((int)offset, (int)length, _maxBytesPerSecond);
     } catch (InterruptedException e) {
       throw new IOException(e);
     }

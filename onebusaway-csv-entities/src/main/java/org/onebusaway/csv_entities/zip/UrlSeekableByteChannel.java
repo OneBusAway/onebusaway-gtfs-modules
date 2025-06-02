@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SeekableByteChannel;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -31,17 +30,6 @@ public class UrlSeekableByteChannel implements SeekableByteChannel {
   public UrlSeekableByteChannel(int chunkLength, UrlByteChannelCache cache) {
     this.chunkLength = chunkLength;
     this.cache = cache;
-  }
-
-  public final void readFully(InputStream in, byte[] b, int off, int len) throws IOException {
-    Objects.checkFromIndexSize(off, len, b.length);
-    int n = 0;
-    while (n < len) {
-      int count = in.read(b, off + n, len - n);
-      if (count < 0)
-        throw new EOFException();
-      n += count;
-    }
   }
 
   @Override
@@ -171,7 +159,7 @@ public class UrlSeekableByteChannel implements SeekableByteChannel {
         int len = length;
         int off = 0;
         try {
-          System.out.println("Transfer whole file: " + offset + " -> " + length);
+          System.out.println("Transfer full zip file: " + offset + " -> " + length);
           try (InputStream is = cache.openInputStream(offset, offset + length - 1, maxBytesPerSecond)) {
             int n = 0;
             while (n < len) {
@@ -197,7 +185,7 @@ public class UrlSeekableByteChannel implements SeekableByteChannel {
             UrlSeekableByteChannel.this.notify();
           }
 
-          System.out.println("Transferred " + offset + " " + length);
+          System.out.println("Transferred full zip file " + offset + " -> " + length);
         } catch(Exception e) {
           throw new RuntimeException(e);
         }

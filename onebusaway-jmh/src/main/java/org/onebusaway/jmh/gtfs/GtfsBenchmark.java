@@ -26,7 +26,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @BenchmarkMode(Mode.Throughput)
-@Warmup(time=10, timeUnit=TimeUnit.SECONDS, iterations=1)
+@Warmup(time=10, timeUnit=TimeUnit.SECONDS, iterations=0)
 @Measurement(time=10, timeUnit=TimeUnit.SECONDS, iterations=1)
 @Timeout(timeUnit=TimeUnit.SECONDS, time=10)
 public class GtfsBenchmark {

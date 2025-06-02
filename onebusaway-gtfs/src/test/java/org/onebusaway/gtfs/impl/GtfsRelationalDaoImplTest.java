@@ -16,12 +16,28 @@
  */
 package org.onebusaway.gtfs.impl;
 
+import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+
 import static  org.junit.jupiter.api.Assertions.assertEquals;
 import static  org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.URL;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.ThrottledInputStream;
+import org.apache.commons.io.input.ThrottledInputStream.Builder;
 import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.GtfsTestData;
 import org.onebusaway.gtfs.model.Agency;
@@ -121,39 +137,39 @@ public class GtfsRelationalDaoImplTest {
     assertTrue(agencyIds.contains("A"));
     assertTrue(agencyIds.contains("B"));
   }
-  
+
   @Test
   public void testStationSubStops() {
-	  
-	  GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();
-	  
-	  Stop st = new Stop();
-	  st.setLocationType(1);
-	  st.setId(new AgencyAndId("X", "ST"));
-	  dao.saveEntity(st);
-	  
-	  Stop st1 = new Stop();
-	  st1.setLocationType(0);
-	  st1.setId(new AgencyAndId("X", "ST1"));
-	  st1.setParentStation("ST");
-	  dao.saveEntity(st1);
-	  
-	  Stop st2 = new Stop();
-	  st2.setLocationType(0);
-	  st2.setId(new AgencyAndId("X", "ST2"));
-	  st2.setParentStation("ST");
-	  dao.saveEntity(st2);
 
-	  Stop st3 = new Stop();
-	  st3.setLocationType(0);
-	  st3.setId(new AgencyAndId("X", "ST3"));
-	  dao.saveEntity(st3);
+    GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();
 
-	  List<Stop> sts = dao.getStopsForStation(st);
-	  assertTrue(sts.contains(st1));
-	  assertTrue(sts.contains(st2));
-	  assertTrue(!sts.contains(st3));
-	  assertEquals(sts.size(), 2);
+    Stop st = new Stop();
+    st.setLocationType(1);
+    st.setId(new AgencyAndId("X", "ST"));
+    dao.saveEntity(st);
+
+    Stop st1 = new Stop();
+    st1.setLocationType(0);
+    st1.setId(new AgencyAndId("X", "ST1"));
+    st1.setParentStation("ST");
+    dao.saveEntity(st1);
+
+    Stop st2 = new Stop();
+    st2.setLocationType(0);
+    st2.setId(new AgencyAndId("X", "ST2"));
+    st2.setParentStation("ST");
+    dao.saveEntity(st2);
+
+    Stop st3 = new Stop();
+    st3.setLocationType(0);
+    st3.setId(new AgencyAndId("X", "ST3"));
+    dao.saveEntity(st3);
+
+    List<Stop> sts = dao.getStopsForStation(st);
+    assertTrue(sts.contains(st1));
+    assertTrue(sts.contains(st2));
+    assertTrue(!sts.contains(st3));
+    assertEquals(sts.size(), 2);
   }
 
   @Test
@@ -164,4 +180,181 @@ public class GtfsRelationalDaoImplTest {
     List<Trip> trips = dao.getTripsForBlockId(new AgencyAndId(agencyId, "block.1"));
     assertEquals(2, trips.size());
   }
+
+  @Test
+  public void testEnturFile() throws IOException {
+    GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();
+    GtfsTestData.readGtfs(dao, GtfsTestData.getEnturGtfs(), "ENTUR");
+  }
+
+  @Test
+  public void testEnturFileURL() throws IOException {
+    GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();
+    GtfsTestData.readGtfs(dao, GtfsTestData.getEnturGtfs().toURL(), "ENTUR", -1);
+  }
+
+  @Test
+  public void testEnturParseInflightURL() throws Exception {
+
+    int bandwithInMegaBytesPerSecond = 30;
+
+    File enturGtfs = GtfsTestData.getEnturGtfs();
+
+    HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
+    server.createContext("/gtfs.zip", new GtfsServerHandler(enturGtfs, bandwithInMegaBytesPerSecond));
+    server.setExecutor(null); // creates a default executor
+    server.start();
+
+    try {
+      URL url = new URL("http://127.0.0.1:8000/gtfs.zip");
+      //URL url = new URL("https://storage.googleapis.com/marduk-production/outbound/gtfs/rb_norway-aggregated-gtfs.zip");
+
+      GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();
+      GtfsTestData.readGtfs(dao, url, "ENTUR", -1);
+
+    } finally {
+      server.stop(1);
+    }
+  }
+
+  @Test
+  public void testEnturSaveURLToFileAndParse() throws Exception {
+
+    int bandwithInMegaBytesPerSecond = 30;
+    
+    File enturGtfs = GtfsTestData.getEnturGtfs();
+
+    HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
+    server.createContext("/gtfs.zip", new GtfsServerHandler(enturGtfs, bandwithInMegaBytesPerSecond));
+    server.setExecutor(null); // creates a default executor
+    server.start();
+
+    try {
+      URL url = new URL("http://127.0.0.1:8000/gtfs.zip");
+      //URL url = new URL("https://storage.googleapis.com/marduk-production/outbound/gtfs/rb_norway-aggregated-gtfs.zip");
+
+      long timestamp = System.currentTimeMillis();
+      File file = File.createTempFile("gtfs-", ".zip");
+      file.deleteOnExit();
+      
+      try (InputStream in = url.openStream();
+          FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+        byte dataBuffer[] = new byte[16 * 1024];
+        int bytesRead;
+        while ((bytesRead = in.read(dataBuffer, 0, dataBuffer.length)) != -1) {
+          fileOutputStream.write(dataBuffer, 0, bytesRead);
+        }
+      }
+      long duration = System.currentTimeMillis() - timestamp;
+      
+      System.out.println("Transferred file size " + (file.length() / 1000_000) + "MB in " + duration + "ms (" + (file.length() / (duration * 1000) + "MB/s)") );
+
+      GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();
+      GtfsTestData.readGtfs(dao, file, "ENTUR");
+
+    } finally {
+      server.stop(1);
+    }
+  }
+
+  static class GtfsServerHandler implements HttpHandler {
+
+    private final File file;
+    private final int bandwithInMegaBytesPerSecond;
+
+    public GtfsServerHandler(File file, int bandwithInMegaBytesPerSecond) {
+      this.file = file;
+      this.bandwithInMegaBytesPerSecond = bandwithInMegaBytesPerSecond;
+    }
+
+    @Override
+    public void handle(HttpExchange t) throws IOException {
+      String requestMethod = t.getRequestMethod();
+      boolean skipBody = requestMethod.equals("HEAD");
+
+      Headers requestHeaders = t.getRequestHeaders();
+      String range = requestHeaders.getFirst("Range");
+      if(range == null) {
+        Headers responseHeaders = t.getResponseHeaders();
+        responseHeaders.set("Content-Length", Long.toString(file.length()));
+        if(skipBody) {
+          t.sendResponseHeaders(200, -1);
+          t.close();
+          return;
+        }
+        t.sendResponseHeaders(200, file.length());
+
+        OutputStream os = t.getResponseBody();
+        InputStream in = new FileInputStream(file);
+        try {
+          if(bandwithInMegaBytesPerSecond != -1) {
+            Builder builder = ThrottledInputStream.builder();
+            builder.setInputStream(in);
+            builder.setMaxBytesPerSecond(bandwithInMegaBytesPerSecond * 1000_000);
+            in = builder.get();
+          }
+          
+          byte[] buffer = new byte[16 * 1024];
+
+          while(true) {
+            int count = in.read(buffer);
+            if(count <= 0) {
+              break;
+            }
+            os.write(buffer, 0, count);
+          }
+        } finally {
+          os.close();
+          in.close();
+        }
+      } else {
+
+        int equals = range.indexOf('=');
+        int dash = range.indexOf('-');
+
+        int start = Integer.parseInt(range.substring(equals + 1, dash)); // inclusive
+        int end = Integer.parseInt(range.substring(dash + 1)) + 1; // exclusive
+
+        int length = end - start;
+        System.out.println(requestMethod + " " + start + "-" + (end -1));
+        Headers responseHeaders = t.getResponseHeaders();
+        responseHeaders.set("Content-Length", Long.toString(file.length()));
+        if(skipBody) {
+          t.sendResponseHeaders(200, -1);
+          t.close();
+          return;
+        }
+        t.sendResponseHeaders(200, length);
+
+        OutputStream os = t.getResponseBody();
+        try { 
+          FileInputStream fin = new FileInputStream(file);
+          fin.getChannel().position(start);
+
+          InputStream in = fin;
+          if(bandwithInMegaBytesPerSecond != -1) {
+            Builder builder = ThrottledInputStream.builder();
+            builder.setInputStream(fin);
+            builder.setMaxBytesPerSecond(bandwithInMegaBytesPerSecond * 1000_000);
+            in = builder.get();
+          }          
+          
+          byte[] buffer = new byte[16 * 1024];
+
+          while(length > 0) {
+            int count = in.read(buffer, 0, Math.min(buffer.length, length));
+            if(count <= 0) {
+              break;
+            }
+            os.write(buffer, 0, count);
+
+            length -= count;
+          }
+        } finally {
+          os.close();
+        }
+      }
+    }
+  }
+
 }

@@ -123,6 +123,11 @@ public class GtfsReader extends CsvEntityReader {
 
     addEntityHandler(new EntityHandlerImpl());
   }
+  
+  public void setInputSource(CsvInputSource source) {
+    super.setInputSource(source);
+  }
+
 
   public void setInputLocation(File path) throws IOException {
     super.setInputLocation(path);

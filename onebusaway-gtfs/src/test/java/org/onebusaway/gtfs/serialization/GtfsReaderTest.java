@@ -209,7 +209,6 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals(2, trip.getBikesAllowed());
     assertEquals(1, trip.getCarsAllowed());
     assertEquals(1, trip.getWheelchairAccessible());
-    assertEquals(3, trip.getPeakOffpeak());
 
     List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
     StopTime stopTime = stopTimes.get(0);

@@ -231,12 +231,6 @@ public class TransformFactory {
         else if (opType.equals("merge_route_five")) {
           handleTransformOperation(line, json, new MergeRouteFive());
         }
-        else if (opType.equals("update_calendar_dates_for_dups")) {
-          handleTransformOperation(line, json, new UpdateCalendarDatesForDuplicateTrips());
-        }
-        else if (opType.equals("update_trip_id_by_id")) {
-          handleTransformOperation(line, json, new UpdateTripIdById());
-        }
         else if (opType.equals("update_stop_id_by_id")) {
           handleTransformOperation(line, json, new UpdateStopIdById());
         }
@@ -260,9 +254,6 @@ public class TransformFactory {
         }
         else if (opType.equals("update_stoptimes_for_time")) {
           handleTransformOperation(line, json, new UpdateStopTimesForTime());
-        }
-        else if (opType.equals("update_trips_for_sdon")) {
-          handleTransformOperation(line, json, new UpdateTripsForSdon());
         }
         else if (opType.equals("last_stop_to_headsign")){
           handleTransformOperation(line, json, new LastStopToHeadsignStrategy());

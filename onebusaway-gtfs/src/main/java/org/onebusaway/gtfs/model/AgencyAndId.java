@@ -63,23 +63,6 @@ public class AgencyAndId implements Serializable, Comparable<AgencyAndId> {
       c = this.id.compareTo(o.id);
     return c;
   }
-  
-  /**
-   * Given an id of the form "agencyId_entityId", parses into a
-   * {@link AgencyAndId} id object.
-   * 
-   * @param value id of the form "agencyId_entityId"
-   * @return an id object
-   */
-  public static AgencyAndId convertFromString(String value, char separator) {
-    int index = value.indexOf(separator);
-    if (index == -1) {
-      throw new IllegalStateException("invalid agency-and-id: " + value);
-    } else {
-      return new AgencyAndId(value.substring(0, index),
-          value.substring(index + 1));
-    }
-  }
 
   @Override
   public int hashCode() {

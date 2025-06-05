@@ -144,4 +144,94 @@ public class CSVLibraryTest {
     assertEquals("c", tokens.get(1));
     assertEquals("d", tokens.get(2));
   }
+
+  @Test
+  public void testParseEmptyString() {
+    List<String> tokens = _csv.parse("");
+    assertEquals(1, tokens.size());
+    assertEquals("", tokens.get(0));
+  }
+
+  @Test
+  public void testParseEmptyWhitespaceString() {
+    _csv.setTrimInitialWhitespace(true);
+    List<String> tokens = _csv.parse("  ");
+    assertEquals(1, tokens.size());
+    assertEquals("", tokens.get(0));
+  }
+
+  @Test
+  public void testParseEmptyColumsString() {
+    List<String> tokens = _csv.parse(",,");
+    assertEquals(3, tokens.size());
+    assertEquals("", tokens.get(0));
+    assertEquals("", tokens.get(1));
+    assertEquals("", tokens.get(2));
+  }
+
+  @Test
+  public void testParseEmptyColumsWhitespaceString() {
+    _csv.setTrimInitialWhitespace(true);
+    List<String> tokens = _csv.parse("  ,  ,  ");
+    assertEquals(3, tokens.size());
+    assertEquals("", tokens.get(0));
+    assertEquals("", tokens.get(1));
+    assertEquals("", tokens.get(2));
+  }
+
+  @Test
+  public void testParseOpenQuotedLastColumn() {
+    List<String> tokens = _csv.parse("\"open");
+    assertEquals(1, tokens.size());
+    assertEquals("open", tokens.get(0));
+  }
+
+  @Test
+  public void testParseQuotedColumnFollowedByEmptyLastColumn() {
+    List<String> tokens = _csv.parse("\"open\",");
+    assertEquals(2, tokens.size());
+    assertEquals("open", tokens.get(0));
+    assertEquals("", tokens.get(1));
+  }
+
+  @Test
+  public void testParseColumnFollowedByEmptyLastColumn() {
+    List<String> tokens = _csv.parse("open,");
+    assertEquals(2, tokens.size());
+    assertEquals("open", tokens.get(0));
+    assertEquals("", tokens.get(1));
+  }
+
+  @Test
+  public void testParseQuotedColumnWithEscapesFollowedByEmptyLastColumn() {
+    List<String> tokens = _csv.parse("1997,Ford,E350,\"Super \"\"luxurious\"\" truck\" is expensive,");
+    assertEquals(5, tokens.size());
+    assertEquals("1997", tokens.get(0));
+    assertEquals("Ford", tokens.get(1));
+    assertEquals("E350", tokens.get(2));
+    assertEquals("Super \"luxurious\" truck is expensive", tokens.get(3));
+    assertEquals("", tokens.get(4));
+  }
+
+  @Test
+  public void testParseQuotedWithEscapesFollowedByColumn() {
+    List<String> tokens = _csv.parse("1997,Ford,E350,\"Super \"\"luxurious\"\" truck\" is expensive,\"luxurious\"");
+    assertEquals(5, tokens.size());
+    assertEquals("1997", tokens.get(0));
+    assertEquals("Ford", tokens.get(1));
+    assertEquals("E350", tokens.get(2));
+    assertEquals("Super \"luxurious\" truck is expensive", tokens.get(3));
+    assertEquals("luxurious", tokens.get(4));
+  }
+
+  @Test
+  public void testParseOpenQuoteWithEscapes() {
+    List<String> tokens = _csv.parse("1997,Ford,E350,\"Super \"\"luxurious\"\" truck");
+    assertEquals(4, tokens.size());
+    assertEquals("1997", tokens.get(0));
+    assertEquals("Ford", tokens.get(1));
+    assertEquals("E350", tokens.get(2));
+    assertEquals("Super \"luxurious\" truck", tokens.get(3));
+  }
+
 }

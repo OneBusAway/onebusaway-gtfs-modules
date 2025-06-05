@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class CSVLibrary {
 
-  private DelimitedTextParser _parser = new DelimitedTextParser();
+  private final DelimitedTextParser _parser = new DelimitedTextParser();
 
   public static String escapeValue(String value) {
     if (value.indexOf(',') != -1 || value.indexOf('"') != -1)

@@ -40,10 +40,9 @@ public class ParseStopTimeBenchmark {
       try {
         BufferedReader r = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/brown-county-flex/stop_times.txt")));
         String line = null;
-        DelimitedTextParser parser = new DelimitedTextParser(',');
         r.readLine(); // skip first line
         while ((line = r.readLine()) != null) {
-          List<String> values = parser.parse(line);
+          List<String> values = DelimitedTextParser.parse(line);
           String string = values.get(values.size() - 6);
           if(string.length() > 0) {
             time.add(values.get(values.size() - 6));

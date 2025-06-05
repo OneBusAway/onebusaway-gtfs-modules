@@ -25,115 +25,244 @@ import java.util.List;
  * malformed CSV that most parsers would choke on but that agencies produce and
  * google seems to validate as well.
  * 
- * @author bdferris
- * 
  */
 public class DelimitedTextParser {
 
-  private enum EParseState {
-    TRIM_INIT_WHITESPACE, DATA, DATA_IN_QUOTES, END_QUOTE
-  }
-
-  private final char _delimiter;
+  // estimate: number of columns, used for list capacity.
+  private int _lastLineColumnCount = 16;
 
   private boolean _trimInitialWhitespace = false;
-
-  public DelimitedTextParser(char delimiter) {
-    _delimiter = delimiter;
-  }
 
   public void setTrimInitialWhitespace(boolean trimInitialWhitespace) {
     _trimInitialWhitespace = trimInitialWhitespace;
   }
 
-  public final List<String> parse(String line) {
+  public List<String> parse(String line) {
+    if (line.length() == 0) {
+      List<String> tokens = new ArrayList<>(1);
+      tokens.add("");
+      return tokens;
+    }
 
-    StringBuilder token = new StringBuilder();
-    List<StringBuilder> tokens = new ArrayList<StringBuilder>();
-    if (line.length() > 0)
-      tokens.add(token);
+    // Definitions:
+    // Divider: the comma character
+    // Column:
+    // * characters between dividers.
+    // Payload:
+    // * if whitespace skipping is disabled, all the chars in the column.
+    // * if whitespace skipping is enabled, the whole column except spaces in the
+    // start of the column.
+    //
+    // Rules:
+    // * to be a quoted Column, the first Payload char must be a double quote.
+    // * within a quoted Column:
+    // ** two double quotes after one another is considered an escaped double quote
+    // ** the divider counts as a regular character
+    // * after the end quote, any content before the divider is appended as-is
+    //
+    // Performance considerations:
+    //
+    // Assume most frequent input data:
+    // 1.unquoted value
+    // 2.empty value
+    // 3.quoted value without escaped content
+    // 4.quoted value with escaped content
+    //
+    // Try to avoid using a StringBuilder, rather substring the String directly
+    // whenever possible.
 
-    EParseState resetState = _trimInitialWhitespace
-        ? EParseState.TRIM_INIT_WHITESPACE : EParseState.DATA;
-    EParseState state = resetState;
+    // set the initial capacity to the same as the previous line
+    List<String> tokens = new ArrayList<>(_lastLineColumnCount);
 
-    for (int i = 0; i < line.length(); i++) {
+    int lineLength = line.length();
+    int i = 0;
+
+    main: while (true) {
+      if (_trimInitialWhitespace && line.charAt(i) == ' ') {
+        // one or more whitespace
+        do {
+          i++;
+          if (i >= lineLength) {
+            // last column; just whitespace
+            tokens.add("");
+
+            break main;
+          }
+        } while (line.charAt(i) == ' ');
+      }
+
       char c = line.charAt(i);
-      switch (state) {
-        case TRIM_INIT_WHITESPACE:
-          if (c == _delimiter) {
-            token = new StringBuilder();
-            tokens.add(token);
-          } else {
-            switch (c) {
-              case ' ':
-                break;
-              case '"':
-                if (token.length() == 0)
-                  state = EParseState.DATA_IN_QUOTES;
-                else
-                  token.append(c);
-                break;
-              default:
-                state = EParseState.DATA;
-                token.append(c);
-                break;
-            }
+
+      if (c == ',') {
+        // empty column
+        tokens.add("");
+
+        i++;
+        if (i >= lineLength) {
+          // delimiter followed by end of line
+          tokens.add("");
+
+          break main;
+        }
+
+        continue;
+      }
+
+      if (c == '"') {
+        // quoted value
+        int startIndex = i + 1;
+
+        do {
+          i++;
+          if (i >= lineLength) {
+            // last column
+            // open-ended quoted value
+            // keep what we have read
+            tokens.add(line.substring(startIndex));
+
+            break main;
           }
-          break;
-        case DATA:
-          if (c == _delimiter) {
-            token = new StringBuilder();
-            tokens.add(token);
-            state = resetState;
-          } else {
-            switch (c) {
-              case '"':
-                if (token.length() == 0)
-                  state = EParseState.DATA_IN_QUOTES;
-                else
-                  token.append(c);
-                break;
-              default:
-                token.append(c);
-                break;
-            }
+        } while (line.charAt(i) != '"');
+
+        int endIndex = i;
+        i++;
+        if (i >= lineLength) {
+          // last column
+          // quoted value but no escaped values within
+
+          tokens.add(line.substring(startIndex, endIndex));
+
+          break main;
+        }
+
+        if (line.charAt(i) == ',') {
+          // regular column
+          // quoted value but no escaped values within
+          tokens.add(line.substring(startIndex, endIndex));
+
+          i++;
+          if (i >= lineLength) {
+            // delimiter followed by end of line
+            tokens.add("");
+
+            break main;
           }
-          break;
-        case DATA_IN_QUOTES:
-          switch (c) {
-            case '"':
-              state = EParseState.END_QUOTE;
-              break;
-            default:
-              token.append(c);
-              break;
+
+          continue main;
+        }
+
+        i = handleQuotedColumnWithEscape(line, tokens, startIndex, endIndex, i, lineLength);
+        if (i >= lineLength) {
+          break main;
+        }
+      } else {
+
+        // unquoted column
+        // find delimiter
+
+        int startIndex = i;
+        do {
+          i++;
+          if (i >= lineLength) {
+            // last column
+            tokens.add(line.substring(startIndex));
+
+            break main;
           }
-          break;
-        case END_QUOTE:
-          if (c == _delimiter) {
-            token = new StringBuilder();
-            tokens.add(token);
-            state = resetState;
-            break;
-          } else {
-            switch (c) {
-              case '"':
-                token.append('"');
-                state = EParseState.DATA_IN_QUOTES;
-                break;
-              default:
-                token.append(c);
-                state = EParseState.DATA;
-                break;
-            }
-          }
-          break;
+        } while (line.charAt(i) != ',');
+
+        tokens.add(line.substring(startIndex, i));
+
+        i++;
+        if (i >= lineLength) {
+          // delimiter followed by end of line
+          tokens.add("");
+
+          break main;
+        }
       }
     }
-    List<String> retro = new ArrayList<String>(tokens.size());
-    for (StringBuilder b : tokens)
-      retro.add(b.toString());
-    return retro;
+
+    if (_lastLineColumnCount != tokens.size()) {
+      _lastLineColumnCount = tokens.size();
+    }
+
+    return tokens;
+  }
+
+  private static int handleQuotedColumnWithEscape(String line, List<String> tokens, int startIndex, int endIndex, int i,
+      int lineLength) {
+    // escaped value not yet at delimiter
+
+    StringBuilder builder = new StringBuilder(Math.max(32, (endIndex - startIndex) * 2)); // rough estimate
+    builder.append(line, startIndex, endIndex);
+
+    if (line.charAt(i) != '"') {
+      // additional non-quoted chars, append
+      return appendToDelimiter(line, tokens, i, lineLength, builder);
+    }
+
+    // found double quotes
+    do {
+      builder.append('"');
+
+      i++;
+      startIndex = i;
+
+      do {
+        i++;
+        if (i >= lineLength) {
+          // last column
+          // open-ended quoted value
+          // keep what we have read
+          builder.append(line, startIndex, i);
+
+          tokens.add(builder.toString());
+          return i;
+        }
+      } while (line.charAt(i) != '"');
+
+      builder.append(line, startIndex, i);
+
+      i++;
+      if (i >= lineLength) {
+        // last column
+        tokens.add(builder.toString());
+
+        return i;
+      }
+
+      if (line.charAt(i) != '"') {
+        // additional non-quoted chars, append
+        return appendToDelimiter(line, tokens, i, lineLength, builder);
+      }
+
+    } while (true);
+
+  }
+
+  private static int appendToDelimiter(String line, List<String> tokens, int offset, int lineLength,
+      StringBuilder builder) {
+    int start = offset;
+    do {
+      offset++;
+      if (offset >= lineLength) {
+        // last column
+        builder.append(line, start, lineLength);
+        tokens.add(builder.toString());
+        return offset;
+      }
+    } while (line.charAt(offset) != ',');
+
+    builder.append(line, start, offset);
+    tokens.add(builder.toString());
+
+    offset++;
+    if (offset >= lineLength) {
+      // delimiter followed by end of line
+      tokens.add("");
+    }
+
+    return offset;
   }
 }

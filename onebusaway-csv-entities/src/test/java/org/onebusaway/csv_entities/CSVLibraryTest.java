@@ -53,6 +53,17 @@ public class CSVLibraryTest {
   }
 
   @Test
+  public void testParseTrailingQuotedChars() {
+
+    List<String> tokens = _csv.parse("1997,Ford,E350,\"Super \"\"luxurious\"\" truck\" is expensive");
+    assertEquals(4, tokens.size());
+    assertEquals("1997", tokens.get(0));
+    assertEquals("Ford", tokens.get(1));
+    assertEquals("E350", tokens.get(2));
+    assertEquals("Super \"luxurious\" truck is expensive", tokens.get(3));
+  }
+
+  @Test
   public void testParseWikipedia() {
 
     List<String> tokens = _csv.parse("1997,Ford,E350");

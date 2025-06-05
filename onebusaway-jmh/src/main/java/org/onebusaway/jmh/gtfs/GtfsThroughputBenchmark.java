@@ -22,7 +22,7 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-@Fork(1)
+@Fork(10)
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @BenchmarkMode(Mode.Throughput)

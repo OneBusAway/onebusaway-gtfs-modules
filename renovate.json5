@@ -21,6 +21,7 @@
         'org.jacoco:jacoco-maven-plugin',
         'org.apache.commons:commons-compress',
         'org.junit.jupiter:{/,}**',
+        'org.junit.vintage:junit-vintage-engine'
       ],
       automerge: true,
       schedule: 'on the 17th day of the month',

@@ -16,24 +16,23 @@
  */
 package org.onebusaway.csv_entities;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Before;
-import org.junit.Test;
-
-public class CSVLibraryTest {
+class CSVLibraryTest {
 
   private CSVLibrary _csv;
 
-  @Before
+  @BeforeEach
   public void before() {
     _csv = new CSVLibrary();
   }
 
   @Test
-  public void testParse() {
+  void testParse() {
 
     List<String> tokens = _csv.parse("a,b,c");
     assertEquals(3, tokens.size());
@@ -53,7 +52,7 @@ public class CSVLibraryTest {
   }
 
   @Test
-  public void testParseWikipedia() {
+  void testParseWikipedia() {
 
     List<String> tokens = _csv.parse("1997,Ford,E350");
     assertEquals(3, tokens.size());
@@ -96,7 +95,7 @@ public class CSVLibraryTest {
   }
 
   @Test
-  public void testParseWhitespace() {
+  void testParseWhitespace() {
     List<String> tokens = _csv.parse(" \"g\" ");
     assertEquals(" \"g\" ", tokens.get(0));
 
@@ -114,7 +113,7 @@ public class CSVLibraryTest {
   }
 
   @Test
-  public void testTrimInitialWhitespace() {
+  void testTrimInitialWhitespace() {
 
     _csv.setTrimInitialWhitespace(true);
 

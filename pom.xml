@@ -31,7 +31,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <slf4j.version>2.0.17</slf4j.version>
     <onebusaway.cloud.version>0.0.13</onebusaway.cloud.version>
-    <junit.version>5.12.2</junit.version>
+    <junit.version>5.13.0</junit.version>
     <jmh.version>1.37</jmh.version>
     <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
   </properties>

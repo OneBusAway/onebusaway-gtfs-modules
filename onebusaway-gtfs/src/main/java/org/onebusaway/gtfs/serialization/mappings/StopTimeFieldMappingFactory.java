@@ -97,8 +97,6 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
       
       if(value.charAt(colon2Index) == ':' && value.charAt(colon1Index) == ':') {
         // xxx:yy:zz
-        
-        int hours = Integer.parseInt(value, 0, colon1Index, 10);
 
         // A pure lookup-approach gives 
         // First digit: 
@@ -115,6 +113,19 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
         // Although throwing exceptions is expensive, it is assumed that the whole
         // parsing operation fails whenever this occurs, so this will only happen once
         // per parsing operation.
+
+        int hours;
+        if(length == 8) {
+          // HH:mm:ss
+          char hoursDigit2 = value.charAt(1);
+          if(hoursDigit2 < '0') {
+            break main;
+          }
+          hours = DIGITS[value.charAt(0)][hoursDigit2];
+        } else {
+          // handle minus, more than two hour digits
+          hours = Integer.parseInt(value, 0, colon1Index, 10);
+        }
         
         char secondsDigit2 = value.charAt(length - 1);
         if(secondsDigit2 < '0') {
@@ -123,12 +134,12 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
         
         int seconds = DIGITS[value.charAt(length - 2)][secondsDigit2];
 
-        char hoursDigit2 = value.charAt(length - 4);
-        if(hoursDigit2 < '0') {
+        char minutesDigit2 = value.charAt(length - 4);
+        if(minutesDigit2 < '0') {
           break main;
         }
 
-        int minutes = DIGITS[value.charAt(length - 5)][hoursDigit2];
+        int minutes = DIGITS[value.charAt(length - 5)][minutesDigit2];
 
         return seconds + 60 * (minutes + 60 * hours);
       }

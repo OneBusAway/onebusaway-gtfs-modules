@@ -1,15 +1,13 @@
 package org.onebusaway.jmh.gtfs;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
-import org.onebusaway.gtfs.serialization.GtfsReader;
+import org.onebusaway.csv_entities.DelimitedTextParser;
 import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
-import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Measurement;
@@ -32,25 +30,36 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 @Timeout(timeUnit=TimeUnit.SECONDS, time=5)
 public class ParseStopTimeBenchmark {
 
+
   @State(Scope.Thread)
   public static class ThreadState {
-    List<String> time = new ArrayList<>();
+    private List<String> time = new ArrayList<>();
+    
     public ThreadState() {
-      
-      time.add("00:00:00");
-      time.add("-00:00:00");
-
-      time.add("00:01:00");
-      time.add("-00:01:00");
-
-      time.add("01:01:00");
-      time.add("-01:01:00");
-
-      time.add("10:20:30");
-      time.add("-10:20:30");
-
-      time.add("100:15:13");
-      time.add("-100:15:13");
+      // use real data as input to the performance test
+      try {
+        BufferedReader r = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/brown-county-flex/stop_times.txt")));
+        String line = null;
+        DelimitedTextParser parser = new DelimitedTextParser(',');
+        r.readLine(); // skip first line
+        while ((line = r.readLine()) != null) {
+          List<String> values = parser.parse(line);
+          String string = values.get(values.size() - 6);
+          if(string.length() > 0) {
+            time.add(values.get(values.size() - 6));
+          }
+          string = values.get(values.size() - 7);
+          if(string.length() > 0) {
+            time.add(values.get(values.size() - 7));
+          }
+        }
+        r.close();
+        if(time.size() < 100) {
+          throw new IllegalStateException();
+        }
+      } catch(Exception e) {
+        throw new RuntimeException(e);
+      }
     }
   }
   
@@ -62,7 +71,6 @@ public class ParseStopTimeBenchmark {
     }
     return count;
   }
-  
   
   @Benchmark
   public long testLegacyRegexpStopTimeFieldMappingFactory(ThreadState state) throws Exception {

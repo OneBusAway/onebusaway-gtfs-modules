@@ -30,7 +30,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 @Warmup(time=5, timeUnit=TimeUnit.SECONDS, iterations=1)
 @Measurement(time=5, timeUnit=TimeUnit.SECONDS, iterations=1)
 @Timeout(timeUnit=TimeUnit.SECONDS, time=5)
-public class ParseBenchmark {
+public class ParseStopTimeBenchmark {
 
   @State(Scope.Thread)
   public static class ThreadState {
@@ -65,16 +65,25 @@ public class ParseBenchmark {
   
   
   @Benchmark
-  public long testLegacyStopTimeFieldMappingFactory(ThreadState state) throws Exception {
+  public long testLegacyRegexpStopTimeFieldMappingFactory(ThreadState state) throws Exception {
     long count = 0;
     for(String time : state.time) {
-      count += LegacyStopTimeFieldMappingFactory.getStringAsSeconds(time); 
+      count += LegacyRegexpStopTimeFieldMappingFactory.getStringAsSeconds(time); 
+    }
+    return count;
+  }
+
+  @Benchmark
+  public long testLegacyParseIntStopTimeFieldMappingFactory(ThreadState state) throws Exception {
+    long count = 0;
+    for(String time : state.time) {
+      count += LegacyParseIntStopTimeFieldMappingFactory.getStringAsSeconds(time); 
     }
     return count;
   }
 
   public static void main(String[] args) throws RunnerException {
-    Options opt = new OptionsBuilder().include(ParseBenchmark.class.getSimpleName()).build();
+    Options opt = new OptionsBuilder().include(ParseStopTimeBenchmark.class.getSimpleName()).build();
     new Runner(opt).run();
   }
 }

@@ -1,20 +1,4 @@
-/**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.onebusaway.gtfs.serialization.mappings;
+package org.onebusaway.jmh.gtfs;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -29,28 +13,12 @@ import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.FieldMapping;
 import org.onebusaway.csv_entities.schema.FieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.InvalidStopTimeException;
 
-public class StopTimeFieldMappingFactory implements FieldMappingFactory {
+public class LegacyParseIntStopTimeFieldMappingFactory implements FieldMappingFactory {
 
   private static DecimalFormat _format = new DecimalFormat("00", new DecimalFormatSymbols(Locale.ENGLISH));
 
-  // lookup table for char digits 0-9, for lookup of seconds and minutes
-  // consumes about 2k bytes of memory for improved speed.
-  private static int[][] DIGITS;
-  
-  static {
-    DIGITS = new int['0' + 10][];
-    for(int i = 0; i < 10; i++) {
-      DIGITS['0' + i] = new int['0' + 10];
-      
-      int base = i * 10;
-      
-      for(int k = 0; k < 10; k++) {
-        DIGITS['0' + i]['0' + k] = base + k;
-      }
-    }
-  }
-  
   public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
       Class<?> entityType, String csvFieldName, String objFieldName,
       Class<?> objFieldType, boolean required) {
@@ -83,7 +51,6 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
   
   public static int getStringAsSeconds(String value) {
     // strictly the value must match regexp: ^(-{0,1}\d+):(\d{2}):(\d{2})$.
-    main:
     try {
       // Skip index bounds check; rely on catch block instead.
       // Skip check for digit/minus; rely on parseInt(..) instead.
@@ -97,49 +64,10 @@ public class StopTimeFieldMappingFactory implements FieldMappingFactory {
       
       if(value.charAt(colon2Index) == ':' && value.charAt(colon1Index) == ':') {
         // xxx:yy:zz
-
-        // A pure lookup-approach gives 
-        // First digit: 
-        // * below range -> NullPointerException
-        // * above range -> ArrayIndexOfBoundsException
-        //
-        // Second digit:
-        // * below range -> 0
-        // * above range -> ArrayIndexOfBoundsException
-        //
-        // so we have to validate that the second digit is not below '0'
-        // to avoid returning 0 for invalid data
-        //
-        // Although throwing exceptions is expensive, it is assumed that the whole
-        // parsing operation fails whenever this occurs, so this will only happen once
-        // per parsing operation.
-
-        int hours;
-        if(length == 8) {
-          // HH:mm:ss
-          char hoursDigit2 = value.charAt(1);
-          if(hoursDigit2 < '0') {
-            break main;
-          }
-          hours = DIGITS[value.charAt(0)][hoursDigit2];
-        } else {
-          // handle minus, more than two hour digits
-          hours = Integer.parseInt(value, 0, colon1Index, 10);
-        }
         
-        char secondsDigit2 = value.charAt(length - 1);
-        if(secondsDigit2 < '0') {
-          break main;
-        }
-        
-        int seconds = DIGITS[value.charAt(length - 2)][secondsDigit2];
-
-        char minutesDigit2 = value.charAt(length - 4);
-        if(minutesDigit2 < '0') {
-          break main;
-        }
-
-        int minutes = DIGITS[value.charAt(length - 5)][minutesDigit2];
+        int hours = Integer.parseInt(value, 0, colon1Index, 10);
+        int minutes = Integer.parseInt(value, length - 5, colon2Index, 10);
+        int seconds = Integer.parseInt(value, length - 2, length, 10);
 
         return seconds + 60 * (minutes + 60 * hours);
       }

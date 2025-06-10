@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import org.onebusaway.gtfs.serialization.mappings.InvalidStopTimeException;
 
-public class LegacyStopTimeFieldMappingFactory  {
+public class LegacyRegexpStopTimeFieldMappingFactory  {
 
   private static Pattern _pattern = Pattern.compile("^(-{0,1}\\d+):(\\d{2}):(\\d{2})$");
 

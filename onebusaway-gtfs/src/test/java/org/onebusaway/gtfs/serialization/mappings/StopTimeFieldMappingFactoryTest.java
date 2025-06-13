@@ -54,7 +54,7 @@ class StopTimeFieldMappingFactoryTest {
     assertEquals(timeStr, csvValues.get(propName));
   }
 
-  private static Stream<Arguments> stringSecondsProvider() {
+  private static Stream<Arguments> stringAsSecondsCases() {
     return Stream.of(
             Arguments.of("00:00:00", 0),
             Arguments.of("-00:00:00", 0),
@@ -71,7 +71,7 @@ class StopTimeFieldMappingFactoryTest {
   }
 
   @ParameterizedTest
-  @MethodSource("stringSecondsProvider")
+  @MethodSource("stringAsSecondsCases")
   void testGetStringAsSeconds(String input, int expected) {
     assertEquals(expected, getStringAsSeconds(input));
   }
@@ -90,7 +90,7 @@ class StopTimeFieldMappingFactoryTest {
       assertThrows(InvalidStopTimeException.class, () -> getStringAsSeconds(input));
   }
 
-  private static Stream<Arguments> secondsStringProvider() {
+  private static Stream<Arguments> secondsStringCases() {
     return Stream.of(
             Arguments.of(0, "00:00:00"),
             Arguments.of(60, "00:01:00"),
@@ -105,7 +105,7 @@ class StopTimeFieldMappingFactoryTest {
   }
 
   @ParameterizedTest
-  @MethodSource("secondsStringProvider")
+  @MethodSource("secondsStringCases")
   void testGetSecondsAsString(int input, String expected) {
     assertEquals(expected, getSecondsAsString(input));
   }

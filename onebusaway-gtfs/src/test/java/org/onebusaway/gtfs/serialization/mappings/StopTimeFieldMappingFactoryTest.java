@@ -76,12 +76,16 @@ class StopTimeFieldMappingFactoryTest {
     assertEquals(expected, getStringAsSeconds(input));
   }
 
-  private static Stream<String> invalidTimeStringsProvider() {
-    return Stream.of("", "000000", "00:00", "--00:00:00", "a0:00:00", "0a:00:00", "00:a0:00", "00:0a:00", "00:00:a0", "00:00:0a", "+0:00:00", "0+:00:00", "00:+0:00", "00:0+:00", "00:00:+0", "00:00:0+");
+  private static Stream<String> invalidCases() {
+    return Stream.of(
+            "", "000000", "00:00", "--00:00:00", "a0:00:00", "0a:00:00", "00:a0:00",
+            "00:0a:00", "00:00:a0", "00:00:0a", "+0:00:00", "0+:00:00", "00:+0:00", "00:0+:00",
+            "00:00:+0", "00:00:0+"
+    );
   }
 
   @ParameterizedTest
-  @MethodSource("invalidTimeStringsProvider")
+  @MethodSource("invalidCases")
   void testInvalidTimesThrowException(String input) {
       assertThrows(InvalidStopTimeException.class, () -> getStringAsSeconds(input));
   }

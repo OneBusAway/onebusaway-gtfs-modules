@@ -16,3 +16,5 @@ pom.xml.releaseBackup
 *.zip
 *.jar
 jmh-result-*.json
+*.log
+

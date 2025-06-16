@@ -17,7 +17,7 @@
 package org.onebusaway.csv_entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,22 +59,18 @@ class CSVLibraryTest {
 
   @Test
   void testParseQuotesWithEscapedDoubleQuoteAndUnexpectedTrailingChars() {
-    try {
-      _csv.parse("1997,Ford,E350,\"Super \"\"luxurious\"\" truck\" is expensive");
-      fail();
-    } catch(Exception e) {
-
-    }
+    assertThrows(Exception.class,
+        () -> _csv.parse("1997,Ford,E350,\"Super \"\"luxurious\"\" truck\" is expensive"),
+        "Expected exception"
+        );
   }
 
   @Test
   void testParseQuotesWithUnexpectedTrailingChars() {
-    try {
-      _csv.parse("1997,Ford,E350,\"Super truck\" is expensive");
-      fail();
-    } catch(Exception e) {
-
-    }
+    assertThrows(Exception.class,
+        () -> _csv.parse("1997,Ford,E350,\"Super truck\" is expensive"),
+        "Expected exception"
+        );
   }
 
   @Test
@@ -172,12 +168,10 @@ class CSVLibraryTest {
 
   @Test
   void testParseOpenQuotedLastColumnFails() {
-    try {
-      _csv.parse("\"open");
-      fail();
-    } catch(Exception e) {
-
-    }
+    assertThrows(Exception.class,
+        () -> _csv.parse("\"open"),
+        "Expected exception"
+        );
   }
 
   @Test
@@ -241,12 +235,10 @@ class CSVLibraryTest {
 
   @Test
   void testParseOpenQuoteWithEscapes() {
-    try {
-      _csv.parse("1997,Ford,E350,\"Super \"\"luxurious\"\" truck");
-      fail();
-    } catch(Exception e) {
-
-    }
+    assertThrows(Exception.class,
+        () -> _csv.parse("1997,Ford,E350,\"Super \"\"luxurious\"\" truck"),
+        "Expected exception"
+        );
   }
 
 }

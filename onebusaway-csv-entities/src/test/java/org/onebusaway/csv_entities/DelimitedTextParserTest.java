@@ -1,36 +1,39 @@
 package org.onebusaway.csv_entities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.apache.commons.collections4.iterators.PermutationIterator;
 import org.junit.jupiter.api.Test;
 
 public class DelimitedTextParserTest {
 
   private static class CsvColumn {
 
-    private String encoded;
-    private String decoded;
+    private String _encoded;
+    private String _decoded;
 
     public CsvColumn(String encoded, String decoded) {
       super();
-      this.encoded = encoded;
-      this.decoded = decoded;
+      this._encoded = encoded;
+      this._decoded = decoded;
     }
 
+    public String getDecoded() {
+      return _decoded;
+    }
+
+    public String getEncoded() {
+      return _encoded;
+    }
   }
 
-  private List<CsvColumn> columns;
-
-  @BeforeEach
-  protected void setup() {
+  private static List<CsvColumn> createValidColumns() {
     List<CsvColumn> columns = new ArrayList<>();
-
     columns.add(new CsvColumn("abcdef", "abcdef"));
     columns.add(new CsvColumn("", ""));
     columns.add(new CsvColumn("\"\"", ""));
@@ -38,76 +41,52 @@ public class DelimitedTextParserTest {
     columns.add(new CsvColumn("\"Pre \"\"quoted value\"\"\"", "Pre \"quoted value\""));
     columns.add(new CsvColumn("\"Pre \"\"quoted value\"\" post\"", "Pre \"quoted value\" post"));
     columns.add(new CsvColumn("\"\"\"quoted value\"\" post\"", "\"quoted value\" post"));
-
-    this.columns = columns;
+    return columns;
   }
 
-  @Test
-  void testParseValidCsv() {
-    iterate(columns.toArray(new CsvColumn[columns.size()]), (elements) -> {
-      List<String> outputColumns = DelimitedTextParser.parse(toLine(elements));
-      assertEquals(outputColumns.size(), elements.length);
-      for (int i = 0; i < outputColumns.size(); i++) {
-        assertEquals(outputColumns.get(i), elements[i].decoded);
-      }
-    });
+  protected static Iterator<List<CsvColumn>> iterateValidRows() {
+    return new PermutationIterator<CsvColumn>(createValidColumns());
   }
 
-  @Test
-  void testParseInvalidCsv() {
+  protected static Iterator<List<CsvColumn>> iterateInvalidRows() {
+    List<CsvColumn> columns = createValidColumns();
+
     // add invalid columns
     columns.add(new CsvColumn("\"open quote",  null));
     columns.add(new CsvColumn("\"open quoute with escape\"\"", null));
 
-    iterate(columns.toArray(new CsvColumn[columns.size()]), (elements) -> {
-      try {
-        List<String> outputColumns = DelimitedTextParser.parse(toLine(elements));
-        for (int i = 0; i < outputColumns.size(); i++) {
-          assertEquals(outputColumns.get(i), elements[i].decoded);
-        }
-        Assertions.fail();
-      } catch(Exception e) {
-
-      }
-    });
+    return new PermutationIterator<CsvColumn>(columns);
   }
 
-  public void iterate(CsvColumn[] elements, Consumer<CsvColumn[]> consumer) {
-    // iterate over all possible permutations of the input elements
-    // see https://www.baeldung.com/java-array-permutations
-    int n = elements.length;
-    int[] indexes = new int[n];
-    for (int i = 0; i < n; i++) {
-      indexes[i] = 0;
-    }
-
-    consumer.accept(elements);
-
-    int i = 0;
-    while (i < n) {
-      if (indexes[i] < i) {
-        swap(elements, i % 2 == 0 ?  0: indexes[i], i);
-        consumer.accept(elements);
-        indexes[i]++;
-        i = 0;
-      }
-      else {
-        indexes[i] = 0;
-        i++;
+  @Test
+  void testParseValidCsv() {
+    Iterator<List<CsvColumn>> iterator = iterateValidRows();
+    while(iterator.hasNext()) {
+      List<CsvColumn> columns = iterator.next();
+      List<String> outputColumns = DelimitedTextParser.parse(toLine(columns));
+      assertEquals(outputColumns.size(), columns.size());
+      for (int i = 0; i < outputColumns.size(); i++) {
+        assertEquals(outputColumns.get(i), columns.get(i).getDecoded());
       }
     }
   }
 
-  private static <T> void swap(CsvColumn[] elements, int a, int b) {
-    CsvColumn tmp = elements[a];
-    elements[a] = elements[b];
-    elements[b] = tmp;
+  @Test
+  void testParseInvalidCsv() {
+    Iterator<List<CsvColumn>> iterator = iterateInvalidRows();
+    while(iterator.hasNext()) {
+      List<CsvColumn> columns = iterator.next();
+      assertThrows(Exception.class,
+          () -> DelimitedTextParser.parse(toLine(columns)),
+          "Expected exception"
+          );
+    }
   }
 
-  private static String toLine(CsvColumn[] elements) {
-    StringBuilder builder = new StringBuilder();
+  private static String toLine(List<CsvColumn> elements) {
+    StringBuilder builder = new StringBuilder(128);
     for(CsvColumn column: elements) {
-      builder.append(column.encoded);
+      builder.append(column.getEncoded());
       builder.append(",");
     }
     builder.setLength(builder.length() - 1);

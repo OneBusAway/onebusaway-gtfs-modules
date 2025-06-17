@@ -107,7 +107,6 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Network.class);
 
     CsvTokenizerStrategy tokenizerStrategy = new CsvTokenizerStrategy();
-    tokenizerStrategy.getCsvParser().setTrimInitialWhitespace(true);
     setTokenizerStrategy(tokenizerStrategy);
     
     setTrimValues(true);

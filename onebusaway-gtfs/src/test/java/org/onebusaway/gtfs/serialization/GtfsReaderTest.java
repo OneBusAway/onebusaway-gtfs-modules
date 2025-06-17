@@ -955,7 +955,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
 
     StringBuilder b = new StringBuilder();
     b.append("agency_id,route_id,route_short_name,route_long_name,route_type\n");
-    b.append("        1,    R-10,              10,   \"Ten, Ten\",3\n");
+    b.append("1,R-10,10,\"Ten, Ten\",3\n");
     reader.readEntities(Route.class, new StringReader(b.toString()));
     Route route = reader.getEntityStore().getEntityForId(Route.class,
         new AgencyAndId("1", "R-10"));

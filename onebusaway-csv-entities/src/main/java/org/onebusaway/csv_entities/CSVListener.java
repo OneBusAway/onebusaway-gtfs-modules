@@ -18,5 +18,13 @@ package org.onebusaway.csv_entities;
 import java.util.List;
 
 public interface CSVListener {
+
+  /**
+   * Handle CSV line.
+   * 
+   * @param line line parsed to columns. The same {@linkplain List} instance might be (re)used to pass multiple lines.
+   * @throws Exception
+   */
+
   public void handleLine(List<String> line) throws Exception;
 }

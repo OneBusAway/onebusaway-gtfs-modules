@@ -21,6 +21,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,8 +34,6 @@ import java.util.List;
  * 
  */
 public class CSVLibrary {
-
-  private final DelimitedTextParser _parser = new DelimitedTextParser(',');
 
   public static String escapeValue(String value) {
     if (value.indexOf(',') != -1 || value.indexOf('"') != -1)
@@ -94,10 +93,6 @@ public class CSVLibrary {
     return csv.toString();
   }
 
-  public void setTrimInitialWhitespace(boolean trimInitialWhitespace) {
-    _parser.setTrimInitialWhitespace(trimInitialWhitespace);
-  }
-
   public final void parse(InputStream is, CSVListener handler) throws Exception {
     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
     parse(reader, handler);
@@ -113,14 +108,16 @@ public class CSVLibrary {
     String line = null;
     int lineNumber = 1;
 
+    List<String> values = new ArrayList<>();
     while ((line = r.readLine()) != null) {
-      List<String> values = parse(line);
+      DelimitedTextParser.parse(line, values);
       try {
         handler.handleLine(values);
       } catch (Exception ex) {
         throw new Exception("error handling csv record for lineNumber="
             + lineNumber, ex);
       }
+      values.clear();
       lineNumber++;
     }
 
@@ -128,6 +125,6 @@ public class CSVLibrary {
   }
 
   public final List<String> parse(String line) {
-    return _parser.parse(line);
+    return DelimitedTextParser.parse(line);
   }
 }

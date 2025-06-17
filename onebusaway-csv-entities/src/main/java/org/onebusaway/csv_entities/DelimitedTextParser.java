@@ -42,7 +42,6 @@ public class DelimitedTextParser {
   }
   
   public static List<String> parse(String line) {
-    // set the initial capacity to the same as the previous line
     List<String> tokens = new ArrayList<>();
 
     parse(line, tokens);

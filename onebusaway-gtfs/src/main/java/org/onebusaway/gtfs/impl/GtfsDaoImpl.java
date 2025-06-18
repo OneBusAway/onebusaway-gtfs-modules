@@ -310,10 +310,6 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getAllEntitiesForType(AlternateStopNameException.class);
   }
 
-  public Collection<WrongWayConcurrency> getAllWrongWayConcurrencies() {
-    return getAllEntitiesForType(WrongWayConcurrency.class);
-  }
-
   public Collection<Area> getAllAreas() {
     return getAllEntitiesForType(Area.class);
   }

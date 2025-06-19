@@ -216,7 +216,7 @@ public interface GtfsDao extends GenericDao {
    * {@link Network} Methods
    ****/
 
-   Collection<Network> getAllNetworks();
+  Collection<Network> getAllNetworks();
 
   Collection<DirectionEntry> getAllDirectionEntries();
 

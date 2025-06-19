@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs;
@@ -21,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.gtfs.serialization.GtfsReader;
@@ -30,7 +27,7 @@ import org.onebusaway.gtfs.services.GenericMutableDao;
 public class GtfsTestData {
 
   private static String gtfsPath(String name) {
-    return String.format("org/onebusaway/gtfs/%s",name);
+    return String.format("org/onebusaway/gtfs/%s", name);
   }
 
   public static final String CALTRAIN_GTFS = gtfsPath("caltrain_20090308_1937.zip");
@@ -38,7 +35,7 @@ public class GtfsTestData {
   public static final String ISLAND_GTFS = gtfsPath("island-transit_20090312_0314.zip");
 
   public static final String BART_GTFS = gtfsPath("bart.zip");
-  
+
   public static final String TEST_AGENCY_GTFS = gtfsPath("testagency");
 
   public static final String TURLOCK_FARES_V2 = gtfsPath("turlock-fares-v2");
@@ -72,8 +69,8 @@ public class GtfsTestData {
   }
 
   public static File getTestAgencyGtfs() {
-    return new File("src/test/resources",TEST_AGENCY_GTFS);
-    //return getResourceAsTemporaryFile(TEST_AGENCY_GTFS);
+    return new File("src/test/resources", TEST_AGENCY_GTFS);
+    // return getResourceAsTemporaryFile(TEST_AGENCY_GTFS);
   }
 
   public static File getTurlockFaresV2() {
@@ -96,12 +93,12 @@ public class GtfsTestData {
     return new File("src/test/resources", AUBURN_TRANSIT_FLEX);
   }
 
-  public static File getTestAgencyVehiclesExt(){
+  public static File getTestAgencyVehiclesExt() {
     return new File("src/test/resources", TEST_AGENCY_VEHICLES_EXT_GTFS);
   }
 
-  public static <T extends GenericMutableDao> void readGtfs(T entityStore,
-      File resourcePath, String defaultAgencyId) throws IOException {
+  public static <T extends GenericMutableDao> void readGtfs(
+      T entityStore, File resourcePath, String defaultAgencyId) throws IOException {
 
     GtfsReader reader = new GtfsReader();
     reader.setDefaultAgencyId(defaultAgencyId);
@@ -119,19 +116,16 @@ public class GtfsTestData {
       ClassLoader loader = GtfsTestData.class.getClassLoader();
       InputStream in = loader.getResourceAsStream(path);
 
-      if (in == null)
-        throw new IllegalStateException("unknown classpath resource: " + path);
+      if (in == null) throw new IllegalStateException("unknown classpath resource: " + path);
 
-      File tmpFile = File.createTempFile("Tmp-" + path.replace('/', '_'),
-          ".file");
+      File tmpFile = File.createTempFile("Tmp-" + path.replace('/', '_'), ".file");
       tmpFile.deleteOnExit();
       FileOutputStream out = new FileOutputStream(tmpFile);
 
       byte[] buffer = new byte[1024];
       while (true) {
         int rc = in.read(buffer);
-        if (rc <= 0)
-          break;
+        if (rc <= 0) break;
         out.write(buffer, 0, rc);
       }
       in.close();
@@ -142,8 +136,7 @@ public class GtfsTestData {
     }
   }
 
-  public static <T> List<T> grep(Iterable<T> elements,
-      String propertyExpression, Object value) {
+  public static <T> List<T> grep(Iterable<T> elements, String propertyExpression, Object value) {
 
     String[] properties = propertyExpression.split("\\.");
     List<T> matches = new ArrayList<T>();
@@ -154,10 +147,8 @@ public class GtfsTestData {
         BeanWrapper wrapper = BeanWrapperFactory.wrap(v);
         v = wrapper.getPropertyValue(property);
       }
-      if ((value == null && v == null) || (value != null && value.equals(v)))
-        matches.add(element);
+      if ((value == null && v == null) || (value != null && value.equals(v))) matches.add(element);
     }
     return matches;
   }
-
 }

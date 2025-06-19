@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2016 Cambridge Systematics, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.model;
@@ -21,37 +19,34 @@ import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 @CsvFields(filename = "block.txt", required = false)
 public final class Block extends IdentityBean<Integer> {
   private static final long serialVersionUID = 1L;
-  
+
   @CsvField(ignore = true)
   private int id;
-  
+
   @CsvField(name = "block_seq_num")
   private int blockSequence;
-  
+
   @CsvField(name = "block_var_num")
   private int blockVariable;
-  
+
   @CsvField(name = "block_route_num")
   private int blockRoute;
-  
+
   @CsvField(name = "block_run_num")
   private int blockRun;
 
   @CsvField(ignore = true)
   private transient BlockProxy proxy = null;
-  
-  
-  public Block() {
-    
-  }
-  
+
+  public Block() {}
+
   public Block(Block b) {
     this.blockSequence = b.blockSequence;
     this.blockVariable = b.blockVariable;
     this.blockRoute = b.blockRoute;
     this.blockRun = b.blockRun;
   }
-  
+
   @Override
   public Integer getId() {
     if (proxy != null) {
@@ -68,7 +63,7 @@ public final class Block extends IdentityBean<Integer> {
     }
     this.id = id;
   }
-  
+
   public int getBlockSequence() {
     if (proxy != null) {
       return proxy.getBlockSequence();
@@ -83,7 +78,7 @@ public final class Block extends IdentityBean<Integer> {
     }
     this.blockSequence = blockSequence;
   }
-  
+
   public int getBlockVariable() {
     if (proxy != null) {
       return proxy.getBlockVairable();
@@ -128,6 +123,4 @@ public final class Block extends IdentityBean<Integer> {
     }
     this.blockRun = blockRun;
   }
-  
-  
 }

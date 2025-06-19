@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2012 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_merge.strategies;
@@ -26,11 +24,10 @@ import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
 /**
  * Entity merge strategy for handling {@link Agency} entities.
- * 
+ *
  * @author bdferris
  */
-public class AgencyMergeStrategy extends
-    AbstractIdentifiableSingleEntityMergeStrategy<Agency> {
+public class AgencyMergeStrategy extends AbstractIdentifiableSingleEntityMergeStrategy<Agency> {
 
   public AgencyMergeStrategy() {
     super(Agency.class);
@@ -39,8 +36,8 @@ public class AgencyMergeStrategy extends
   }
 
   @Override
-  protected void replaceDuplicateEntry(GtfsMergeContext context,
-      Agency oldAgency, Agency newAgency) {
+  protected void replaceDuplicateEntry(
+      GtfsMergeContext context, Agency oldAgency, Agency newAgency) {
     GtfsRelationalDao source = context.getSource();
     for (Route route : source.getRoutesForAgency(oldAgency)) {
       route.setAgency(newAgency);
@@ -63,22 +60,19 @@ public class AgencyMergeStrategy extends
     renameAgencyId(source, oldAgencyId, newAgencyId);
   }
 
-  private void renameAgencyId(GtfsRelationalDao source, String oldAgencyId,
-      String newAgencyId) {
+  private void renameAgencyId(GtfsRelationalDao source, String oldAgencyId, String newAgencyId) {
     bulkRenameAgencyId(source.getAllStops(), oldAgencyId, newAgencyId);
     bulkRenameAgencyId(source.getAllRoutes(), oldAgencyId, newAgencyId);
     bulkRenameAgencyId(source.getAllTrips(), oldAgencyId, newAgencyId);
     bulkRenameAgencyId(source.getAllFareAttributes(), oldAgencyId, newAgencyId);
     bulkRenameAgencyId(source.getAllPathways(), oldAgencyId, newAgencyId);
 
-    bulkRenameAgencyIdInProperties(source.getAllTrips(), oldAgencyId,
-        newAgencyId, "serviceId", "shapeId");
-    bulkRenameAgencyIdInProperties(source.getAllCalendars(), oldAgencyId,
-        newAgencyId, "serviceId");
-    bulkRenameAgencyIdInProperties(source.getAllCalendarDates(), oldAgencyId,
-        newAgencyId, "serviceId");
-    bulkRenameAgencyIdInProperties(source.getAllShapePoints(), oldAgencyId,
-        newAgencyId, "shapeId");
+    bulkRenameAgencyIdInProperties(
+        source.getAllTrips(), oldAgencyId, newAgencyId, "serviceId", "shapeId");
+    bulkRenameAgencyIdInProperties(source.getAllCalendars(), oldAgencyId, newAgencyId, "serviceId");
+    bulkRenameAgencyIdInProperties(
+        source.getAllCalendarDates(), oldAgencyId, newAgencyId, "serviceId");
+    bulkRenameAgencyIdInProperties(source.getAllShapePoints(), oldAgencyId, newAgencyId, "shapeId");
   }
 
   private <T extends IdentityBean<AgencyAndId>> void bulkRenameAgencyId(
@@ -92,8 +86,8 @@ public class AgencyMergeStrategy extends
     }
   }
 
-  private <T> void bulkRenameAgencyIdInProperties(Iterable<T> elements,
-      String oldAgencyId, String newAgencyId, String... properties) {
+  private <T> void bulkRenameAgencyIdInProperties(
+      Iterable<T> elements, String oldAgencyId, String newAgencyId, String... properties) {
     for (Object element : elements) {
       BeanWrapper wrapped = BeanWrapperFactory.wrap(element);
       for (String property : properties) {
@@ -105,5 +99,4 @@ public class AgencyMergeStrategy extends
       }
     }
   }
-
 }

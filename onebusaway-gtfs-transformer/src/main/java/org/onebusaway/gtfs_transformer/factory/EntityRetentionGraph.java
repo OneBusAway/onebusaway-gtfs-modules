@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.factory;
@@ -20,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.FareAttribute;
@@ -41,15 +38,14 @@ import org.onebusaway.gtfs_transformer.collections.ShapeIdKey;
 /**
  * We have the concept of retaining up and retaining down.
  *
- * Retain up: retain things that depend on the target object
+ * <p>Retain up: retain things that depend on the target object
  *
- * Retain down: retain things that the target object depends on
+ * <p>Retain down: retain things that the target object depends on
  *
- * Usually, we start by retaining some object, which starts as series of
- * "retain up" operations to grab everything that depends on that object. As
- * each object is retained up, it typically at this point also starts a
- * subsequent chain of retain down operations, so that the dependencies of that
- * object are retained as well.
+ * <p>Usually, we start by retaining some object, which starts as series of "retain up" operations
+ * to grab everything that depends on that object. As each object is retained up, it typically at
+ * this point also starts a subsequent chain of retain down operations, so that the dependencies of
+ * that object are retained as well.
  *
  * @author bdferris
  */
@@ -80,8 +76,8 @@ public class EntityRetentionGraph {
   /**
    * Retain up: retain things that depend on the target object
    *
-   * For example, if you retain up on a {@link Route}, we would also retain up
-   * on the {@link Trip} objects depending on this route
+   * <p>For example, if you retain up on a {@link Route}, we would also retain up on the {@link
+   * Trip} objects depending on this route
    *
    * @param object
    */
@@ -92,8 +88,8 @@ public class EntityRetentionGraph {
   /**
    * Retain down: retain things that the target object depends on
    *
-   * For example, if you retain down on a {@link Route}, we would also retain
-   * down on the route's {@link Agency}.
+   * <p>For example, if you retain down on a {@link Route}, we would also retain down on the route's
+   * {@link Agency}.
    *
    * @param object
    */
@@ -104,64 +100,49 @@ public class EntityRetentionGraph {
   /**
    * Retain up: retain things that depend on the target object
    *
-   * For example, if you retain up on a {@link Route}, we would also retain up
-   * on the {@link Trip} objects depending on this route
+   * <p>For example, if you retain up on a {@link Route}, we would also retain up on the {@link
+   * Trip} objects depending on this route
    *
-   * Retain down: retain things that the target object depends on
+   * <p>Retain down: retain things that the target object depends on
    *
-   * For example, if you retain down on a {@link Route}, we would also retain
-   * down on the route's {@link Agency}.
+   * <p>For example, if you retain down on a {@link Route}, we would also retain down on the route's
+   * {@link Agency}.
    *
    * @param object
    */
   public void retain(Object object, boolean retainUp) {
 
-    if (object == null)
-      throw new IllegalArgumentException("object to retain is null");
+    if (object == null) throw new IllegalArgumentException("object to retain is null");
 
     Set<Object> retained = retainUp ? _retainedUp : _retainedDown;
-    if (!retained.add(object))
-      return;
+    if (!retained.add(object)) return;
 
-    if (object instanceof Agency)
-      retainAgency((Agency) object, retainUp);
-    else if (object instanceof Route)
-      retainRoute((Route) object, retainUp);
-    else if (object instanceof Trip)
-      retainTrip((Trip) object, retainUp);
-    else if (object instanceof StopTime)
-      retainStopTime((StopTime) object, retainUp);
-    else if (object instanceof Stop)
-      retainStop((Stop) object, retainUp);
+    if (object instanceof Agency) retainAgency((Agency) object, retainUp);
+    else if (object instanceof Route) retainRoute((Route) object, retainUp);
+    else if (object instanceof Trip) retainTrip((Trip) object, retainUp);
+    else if (object instanceof StopTime) retainStopTime((StopTime) object, retainUp);
+    else if (object instanceof Stop) retainStop((Stop) object, retainUp);
     else if (object instanceof ServiceCalendar)
       retainServiceCalendar((ServiceCalendar) object, retainUp);
     else if (object instanceof ServiceCalendarDate)
       retainServiceCalendarDate((ServiceCalendarDate) object, retainUp);
     else if (object instanceof ServiceIdKey)
       retainServiceId(((ServiceIdKey) object).getId(), retainUp);
-    else if (object instanceof ShapeIdKey)
-      retainShapeId(((ShapeIdKey) object).getId(), retainUp);
-    else if (object instanceof BlockIdKey)
-      retainBlockId(((BlockIdKey) object).getId(), retainUp);
-    else if (object instanceof Frequency)
-      retainFrequency((Frequency) object, retainUp);
-    else if (object instanceof ZoneIdKey)
-      retainZoneId((ZoneIdKey) object, retainUp);
-    else if (object instanceof FareRule)
-      retainFareRule((FareRule) object, retainUp);
-    else if (object instanceof FareAttribute)
-      retainFareAttribute((FareAttribute) object, retainUp);
+    else if (object instanceof ShapeIdKey) retainShapeId(((ShapeIdKey) object).getId(), retainUp);
+    else if (object instanceof BlockIdKey) retainBlockId(((BlockIdKey) object).getId(), retainUp);
+    else if (object instanceof Frequency) retainFrequency((Frequency) object, retainUp);
+    else if (object instanceof ZoneIdKey) retainZoneId((ZoneIdKey) object, retainUp);
+    else if (object instanceof FareRule) retainFareRule((FareRule) object, retainUp);
+    else if (object instanceof FareAttribute) retainFareAttribute((FareAttribute) object, retainUp);
 
-    if (retainUp)
-      retainDown(object);
+    if (retainUp) retainDown(object);
   }
 
   public boolean isRetained(Object object) {
-    if (object == null)
-      throw new IllegalArgumentException("object to check is null");
+    if (object == null) throw new IllegalArgumentException("object to check is null");
     /**
-     * Retained down should contain ALL retained objects, since every object
-     * that is retained up is also retained down (but not vice versa)
+     * Retained down should contain ALL retained objects, since every object that is retained up is
+     * also retained down (but not vice versa)
      */
     return _retainedDown.contains(object);
   }
@@ -176,15 +157,13 @@ public class EntityRetentionGraph {
 
   private void retainAgency(Agency agency, boolean retainUp) {
     if (retainUp) {
-      for (Route route : _dao.getRoutesForAgency(agency))
-        retain(route, retainUp);
+      for (Route route : _dao.getRoutesForAgency(agency)) retain(route, retainUp);
     }
   }
 
   private void retainRoute(Route route, boolean retainUp) {
     if (retainUp) {
-      for (Trip trip : _dao.getTripsForRoute(route))
-        retainUp(trip);
+      for (Trip trip : _dao.getTripsForRoute(route)) retainUp(trip);
       // At this point, all trips, stop-times, and associated stops.
       for (FareRule fareRule : _dao.getFareRulesForRoute(route)) {
         retainUp(fareRule);
@@ -202,45 +181,37 @@ public class EntityRetentionGraph {
 
   private void retainTrip(Trip trip, boolean retainUp) {
     if (retainUp) {
-      for (StopTime stopTime : _dao.getStopTimesForTrip(trip))
-        retainUp(stopTime);
+      for (StopTime stopTime : _dao.getStopTimesForTrip(trip)) retainUp(stopTime);
       if (_retainBlocks && trip.getBlockId() != null) {
-        AgencyAndId blockId = new AgencyAndId(trip.getId().getAgencyId(),
-            trip.getBlockId());
+        AgencyAndId blockId = new AgencyAndId(trip.getId().getAgencyId(), trip.getBlockId());
         retainUp(new BlockIdKey(blockId));
       }
-      for (Frequency frequency : _dao.getFrequenciesForTrip(trip))
-        retainUp(frequency);
+      for (Frequency frequency : _dao.getFrequenciesForTrip(trip)) retainUp(frequency);
     } else {
       retainDown(trip.getRoute());
       retainDown(new ServiceIdKey(trip.getServiceId()));
 
       AgencyAndId shapeId = trip.getShapeId();
-      if (shapeId != null && shapeId.hasValues())
-        retainDown(new ShapeIdKey(shapeId));
+      if (shapeId != null && shapeId.hasValues()) retainDown(new ShapeIdKey(shapeId));
     }
   }
 
   private void retainStopTime(StopTime stopTime, boolean retainUp) {
     if (!retainUp) {
       retainDown(stopTime.getStop());
-      if (_retainAllStopTimesForTrip)
-        retainUp(stopTime.getTrip());
-      else
-        retainDown(stopTime.getTrip());
+      if (_retainAllStopTimesForTrip) retainUp(stopTime.getTrip());
+      else retainDown(stopTime.getTrip());
     }
   }
 
   private void retainStop(Stop stop, boolean retainUp) {
     if (retainUp) {
-      for (StopTime stopTime : _dao.getStopTimesForStop(stop))
-        retainUp(stopTime);
+      for (StopTime stopTime : _dao.getStopTimesForStop(stop)) retainUp(stopTime);
     } else {
       String parentStationId = stop.getParentStation();
       if (parentStationId != null) {
         AgencyAndId id = stop.getId();
-        Stop parent = _dao.getStopForId(
-            new AgencyAndId(id.getAgencyId(), parentStationId));
+        Stop parent = _dao.getStopForId(new AgencyAndId(id.getAgencyId(), parentStationId));
         retainDown(parent);
       }
 
@@ -249,8 +220,8 @@ public class EntityRetentionGraph {
       }
 
       /**
-       * Need to make sure a stop's agency is included as well, since the agency
-       * might not be included by any routes serving that stop
+       * Need to make sure a stop's agency is included as well, since the agency might not be
+       * included by any routes serving that stop
        */
       AgencyAndId stopId = stop.getId();
       String agencyId = stopId.getAgencyId();
@@ -261,8 +232,7 @@ public class EntityRetentionGraph {
     }
   }
 
-  private void retainServiceCalendar(ServiceCalendar calendar,
-      boolean retainUp) {
+  private void retainServiceCalendar(ServiceCalendar calendar, boolean retainUp) {
     if (retainUp) {
       // Retain up: retain things that depend on the target object
       retainUp(new ServiceIdKey(calendar.getServiceId()));
@@ -271,8 +241,7 @@ public class EntityRetentionGraph {
     }
   }
 
-  private void retainServiceCalendarDate(ServiceCalendarDate calendarDate,
-      boolean retainUp) {
+  private void retainServiceCalendarDate(ServiceCalendarDate calendarDate, boolean retainUp) {
     if (retainUp) {
       // Retain up: retain things that depend on the target object
       retainUp(new ServiceIdKey(calendarDate.getServiceId()));
@@ -290,15 +259,13 @@ public class EntityRetentionGraph {
     } else {
       // Retain down: retain things that the target object depends on
       ServiceCalendar calendar = _dao.getCalendarForServiceId(serviceId);
-      if (calendar != null)
-        retainDown(calendar);
-      for (ServiceCalendarDate calendarDate : _dao.getCalendarDatesForServiceId(
-          serviceId))
+      if (calendar != null) retainDown(calendar);
+      for (ServiceCalendarDate calendarDate : _dao.getCalendarDatesForServiceId(serviceId))
         retainDown(calendarDate);
 
       /**
-       * Need to make sure a service id's agency is included as well, since the
-       * agency might not be included by any trips serving that service id
+       * Need to make sure a service id's agency is included as well, since the agency might not be
+       * included by any trips serving that service id
        */
       String agencyId = serviceId.getAgencyId();
       Agency agency = _dao.getAgencyForId(agencyId);
@@ -313,12 +280,11 @@ public class EntityRetentionGraph {
 
     } else {
 
-      for (ShapePoint shapePoint : _dao.getShapePointsForShapeId(shapeId))
-        retainDown(shapePoint);
+      for (ShapePoint shapePoint : _dao.getShapePointsForShapeId(shapeId)) retainDown(shapePoint);
 
       /**
-       * Need to make sure a shape id's agency is included as well, since the
-       * agency might not be included by any trips serving that shape id
+       * Need to make sure a shape id's agency is included as well, since the agency might not be
+       * included by any trips serving that shape id
        */
       String agencyId = shapeId.getAgencyId();
       Agency agency = _dao.getAgencyForId(agencyId);
@@ -330,11 +296,9 @@ public class EntityRetentionGraph {
 
   private void retainBlockId(AgencyAndId blockId, boolean retainUp) {
     if (retainUp) {
-      for (Trip trip : _dao.getTripsForBlockId(blockId))
-        retainUp(trip);
+      for (Trip trip : _dao.getTripsForBlockId(blockId)) retainUp(trip);
     } else {
-      for (Trip trip : _dao.getTripsForBlockId(blockId))
-        retainUp(trip);
+      for (Trip trip : _dao.getTripsForBlockId(blockId)) retainUp(trip);
     }
   }
 
@@ -361,21 +325,19 @@ public class EntityRetentionGraph {
   }
 
   /**
-   * Fare retention is subtle.  We first ask: What is the direction of the
-   * dependency relation for fare rules?
+   * Fare retention is subtle. We first ask: What is the direction of the dependency relation for
+   * fare rules?
    *
-   * In typical usage of the "retain" graph, a user will ask to retain a subset
-   * of agencies, routes, and trips, along with all of their dependencies.  We
-   * treat fare rules as something that the network depends on, in the sense
-   * that if you retained a route+trip+stop-times, you'd probably want to keep
-   * all the fare rules that apply to those trips, but you wouldn't want to
+   * <p>In typical usage of the "retain" graph, a user will ask to retain a subset of agencies,
+   * routes, and trips, along with all of their dependencies. We treat fare rules as something that
+   * the network depends on, in the sense that if you retained a route+trip+stop-times, you'd
+   * probably want to keep all the fare rules that apply to those trips, but you wouldn't want to
    * pull in other fare rules that didn't apply.
    *
-   * As such, we say routes and fare zones conditionally depend on fare rules.
-   * This perhaps counter-intuitive because zone ids, for example, are
-   * referenced by both stops AND fare rules, so you might argue a data
-   * dependency in both directions.  Here, retention is less about the strict
-   * referential data dependency and more about conceptual dependency.
+   * <p>As such, we say routes and fare zones conditionally depend on fare rules. This perhaps
+   * counter-intuitive because zone ids, for example, are referenced by both stops AND fare rules,
+   * so you might argue a data dependency in both directions. Here, retention is less about the
+   * strict referential data dependency and more about conceptual dependency.
    *
    * @param fareRule
    * @param retainUp
@@ -387,8 +349,9 @@ public class EntityRetentionGraph {
       if (fareRule.getRoute() != null) {
         retainUp(fareRule.getRoute());
       }
-      List<String> zoneIds = Arrays.asList(fareRule.getOriginId(),
-          fareRule.getDestinationId(), fareRule.getContainsId());
+      List<String> zoneIds =
+          Arrays.asList(
+              fareRule.getOriginId(), fareRule.getDestinationId(), fareRule.getContainsId());
       for (String zoneId : zoneIds) {
         if (zoneId == null) {
           continue;
@@ -409,10 +372,9 @@ public class EntityRetentionGraph {
   }
 
   /**
-   * For fare-rules, we only want to retain the rules that could actually apply
-   * for the current set of retained routes + zones. More specifically, all
-   * routes + zones referenced by a rule need to be retained before we consider
-   * adding the rule.
+   * For fare-rules, we only want to retain the rules that could actually apply for the current set
+   * of retained routes + zones. More specifically, all routes + zones referenced by a rule need to
+   * be retained before we consider adding the rule.
    */
   private void potentiallyRetainFareRuleDown(FareRule rule) {
     // Skip analysis if this has already been retained.
@@ -423,8 +385,8 @@ public class EntityRetentionGraph {
     if (rule.getRoute() != null && !_retainedDown.contains(rule.getRoute())) {
       return;
     }
-    List<String> zoneIds = Arrays.asList(rule.getOriginId(),
-        rule.getDestinationId(), rule.getContainsId());
+    List<String> zoneIds =
+        Arrays.asList(rule.getOriginId(), rule.getDestinationId(), rule.getContainsId());
     for (String zoneId : zoneIds) {
       if (zoneId != null && !_retainedDown.contains(new ZoneIdKey(zoneId))) {
         return;
@@ -433,8 +395,7 @@ public class EntityRetentionGraph {
     retainDown(rule);
   }
 
-  private void retainFareAttribute(FareAttribute fareAttribute,
-      boolean retainUp) {
+  private void retainFareAttribute(FareAttribute fareAttribute, boolean retainUp) {
     if (retainUp) {
       for (FareRule rule : _dao.getFareRulesForFareAttribute(fareAttribute)) {
         retainUp(rule);
@@ -460,9 +421,7 @@ public class EntityRetentionGraph {
     }
   }
 
-  /**
-   * Retention identifier for a fare zone.
-   */
+  /** Retention identifier for a fare zone. */
   private static class ZoneIdKey {
     private final String _zoneId;
 
@@ -472,10 +431,8 @@ public class EntityRetentionGraph {
 
     @Override
     public boolean equals(Object o) {
-      if (this == o)
-        return true;
-      if (o == null || getClass() != o.getClass())
-        return false;
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
       ZoneIdKey zoneIdKey = (ZoneIdKey) o;
       return _zoneId.equals(zoneIdKey._zoneId);
     }

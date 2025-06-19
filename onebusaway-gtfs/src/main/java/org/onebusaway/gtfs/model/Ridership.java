@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2018 Cambridge Systematics, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.model;
@@ -21,137 +19,157 @@ import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.serialization.mappings.ServiceDateFieldMappingFactory;
 
 /**
- * ridership.txt from https://github.com/ODOT-PTS/GTFS-ride/blob/master/spec/en/reference.md#board_alighttxt
+ * ridership.txt from
+ * https://github.com/ODOT-PTS/GTFS-ride/blob/master/spec/en/reference.md#board_alighttxt
  */
 @CsvFields(filename = "ridership.txt", required = false)
 public final class Ridership extends IdentityBean<Integer> {
 
-    private static final long serialVersionUID = 1L;
-    private static final int MISSING_VALUE = -999;
+  private static final long serialVersionUID = 1L;
+  private static final int MISSING_VALUE = -999;
 
-    @CsvField(ignore = true)
-    private int id; // this is internal only
-    @CsvField(optional = true)
-    private String agencyId;
-    @CsvField(optional = true)
-    private String routeId;
-    @CsvField(optional = true)
-    private String tripId;
-    @CsvField(optional = true)
-    private String stopId;
+  @CsvField(ignore = true)
+  private int id; // this is internal only
 
-    private int totalBoardings;
-    private int totalAlightings;
+  @CsvField(optional = true)
+  private String agencyId;
 
-    @CsvField(name = "ridership_start_date", optional = true, mapping = ServiceDateFieldMappingFactory.class)
-    private ServiceDate startDate;
-    @CsvField(name = "ridership_end_date", optional = true, mapping = ServiceDateFieldMappingFactory.class)
-    private ServiceDate endDate;
-    @CsvField(optional = true)
-    private double averageLoad; // this isn't part of the spec, but a proposed addition
-    @CsvField(optional = true)
-    private int stopSequence; // this isn't part of the spec, but a proposed addition
+  @CsvField(optional = true)
+  private String routeId;
 
+  @CsvField(optional = true)
+  private String tripId;
 
+  @CsvField(optional = true)
+  private String stopId;
 
-    public Integer getId() {
-        return id;
-    }
+  private int totalBoardings;
+  private int totalAlightings;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  @CsvField(
+      name = "ridership_start_date",
+      optional = true,
+      mapping = ServiceDateFieldMappingFactory.class)
+  private ServiceDate startDate;
 
-    public String getAgencyId() {
-        return agencyId;
-    }
+  @CsvField(
+      name = "ridership_end_date",
+      optional = true,
+      mapping = ServiceDateFieldMappingFactory.class)
+  private ServiceDate endDate;
 
-    public void setAgencyId(String id) {
-        this.agencyId = id;
-    }
+  @CsvField(optional = true)
+  private double averageLoad; // this isn't part of the spec, but a proposed addition
 
-    public String getRouteId() {
-        return routeId;
-    }
+  @CsvField(optional = true)
+  private int stopSequence; // this isn't part of the spec, but a proposed addition
 
-    public void setRouteId(String routeId) {
-        this.routeId = routeId;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public String getTripId() {
-        return tripId;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public void setTripId(String tripId) {
-        this.tripId = tripId;
-    }
+  public String getAgencyId() {
+    return agencyId;
+  }
 
-    public String getStopId() {
-        return stopId;
-    }
+  public void setAgencyId(String id) {
+    this.agencyId = id;
+  }
 
-    public void setStopId(String stopId) {
-        this.stopId = stopId;
-    }
+  public String getRouteId() {
+    return routeId;
+  }
 
-    public int getTotalBoardings() {
-        return totalBoardings;
-    }
+  public void setRouteId(String routeId) {
+    this.routeId = routeId;
+  }
 
-    public void setTotalBoardings(int totalBoardings) {
-        this.totalBoardings = totalBoardings;
-    }
+  public String getTripId() {
+    return tripId;
+  }
 
-    public void clearTotalBoardings() {
-        this.totalBoardings = MISSING_VALUE;
-    }
+  public void setTripId(String tripId) {
+    this.tripId = tripId;
+  }
 
-    public int getTotalAlightings() {
-        return totalAlightings;
-    }
+  public String getStopId() {
+    return stopId;
+  }
 
-    public void setTotalAlightings(int totalAlightings) {
-        this.totalAlightings = totalAlightings;
-    }
+  public void setStopId(String stopId) {
+    this.stopId = stopId;
+  }
 
-    public void clearTotalAlightings() {
-        this.totalAlightings = MISSING_VALUE;
-    }
+  public int getTotalBoardings() {
+    return totalBoardings;
+  }
 
-    public ServiceDate getStartDate() {
-        return startDate;
-    }
+  public void setTotalBoardings(int totalBoardings) {
+    this.totalBoardings = totalBoardings;
+  }
 
-    public void setStartDate(ServiceDate startDate) {
-        this.startDate = startDate;
-    }
+  public void clearTotalBoardings() {
+    this.totalBoardings = MISSING_VALUE;
+  }
 
-    public ServiceDate getEndDate() {
-        return endDate;
-    }
+  public int getTotalAlightings() {
+    return totalAlightings;
+  }
 
-    public void setEndDate(ServiceDate endDate) {
-        this.endDate = endDate;
-    }
+  public void setTotalAlightings(int totalAlightings) {
+    this.totalAlightings = totalAlightings;
+  }
 
-    public double getAverageLoad() {
-        return averageLoad;
-    }
+  public void clearTotalAlightings() {
+    this.totalAlightings = MISSING_VALUE;
+  }
 
-    public void setAverageLoad(double averageLoad) {
-        this.averageLoad = averageLoad;
-    }
+  public ServiceDate getStartDate() {
+    return startDate;
+  }
 
-    public int getStopSequence() { return stopSequence; }
+  public void setStartDate(ServiceDate startDate) {
+    this.startDate = startDate;
+  }
 
-    public void setStopSequence(int stopSequence) { this.stopSequence = stopSequence; }
+  public ServiceDate getEndDate() {
+    return endDate;
+  }
 
-    public String toString() { return "<Ridership [" + getId() + "] "
-            + getRouteId() + ":"
-            + getTripId() + ":"
-            + getStopId() + " "
-            +">" ;
-    }
+  public void setEndDate(ServiceDate endDate) {
+    this.endDate = endDate;
+  }
 
+  public double getAverageLoad() {
+    return averageLoad;
+  }
 
+  public void setAverageLoad(double averageLoad) {
+    this.averageLoad = averageLoad;
+  }
+
+  public int getStopSequence() {
+    return stopSequence;
+  }
+
+  public void setStopSequence(int stopSequence) {
+    this.stopSequence = stopSequence;
+  }
+
+  public String toString() {
+    return "<Ridership ["
+        + getId()
+        + "] "
+        + getRouteId()
+        + ":"
+        + getTripId()
+        + ":"
+        + getStopId()
+        + " "
+        + ">";
+  }
 }

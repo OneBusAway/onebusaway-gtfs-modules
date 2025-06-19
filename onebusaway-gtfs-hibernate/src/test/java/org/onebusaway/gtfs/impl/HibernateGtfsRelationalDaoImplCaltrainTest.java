@@ -1,33 +1,29 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2011 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.impl;
 
-import static  org.junit.jupiter.api.Assertions.assertEquals;
-import static  org.junit.jupiter.api.Assertions.assertFalse;
-import static  org.junit.jupiter.api.Assertions.assertNotNull;
-import static  org.junit.jupiter.api.Assertions.assertNull;
-import static  org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.AfterAll;
@@ -63,8 +59,7 @@ public class HibernateGtfsRelationalDaoImplCaltrainTest {
     _dao = new HibernateGtfsRelationalDaoImpl(_sessionFactory);
 
     GtfsReader reader = new GtfsReader();
-    reader.setInputLocation(new File(
-        "src/test/resources/org/onebusaway/gtfs/caltrain.zip"));
+    reader.setInputLocation(new File("src/test/resources/org/onebusaway/gtfs/caltrain.zip"));
     reader.setEntityStore(_dao);
     reader.setDefaultAgencyId(_agencyId);
     reader.run();
@@ -107,24 +102,28 @@ public class HibernateGtfsRelationalDaoImplCaltrainTest {
     List<ServiceCalendarDate> calendarDates = _dao.getAllCalendarDates();
     assertEquals(10, calendarDates.size());
 
-    List<ServiceCalendarDate> weekdays = grep(calendarDates,
-        new Filter<ServiceCalendarDate>() {
-          public boolean isEnabled(ServiceCalendarDate element) {
-            return element.getServiceId().equals(aid("WD01272009"));
-          }
-        });
+    List<ServiceCalendarDate> weekdays =
+        grep(
+            calendarDates,
+            new Filter<ServiceCalendarDate>() {
+              public boolean isEnabled(ServiceCalendarDate element) {
+                return element.getServiceId().equals(aid("WD01272009"));
+              }
+            });
 
     assertEquals(4, weekdays.size());
 
     final ServiceDate serviceDate = new ServiceDate(2009, 5, 25);
 
-    List<ServiceCalendarDate> onDate = grep(weekdays,
-        new Filter<ServiceCalendarDate>() {
-          @Override
-          public boolean isEnabled(ServiceCalendarDate object) {
-            return object.getDate().equals(serviceDate);
-          }
-        });
+    List<ServiceCalendarDate> onDate =
+        grep(
+            weekdays,
+            new Filter<ServiceCalendarDate>() {
+              @Override
+              public boolean isEnabled(ServiceCalendarDate object) {
+                return object.getDate().equals(serviceDate);
+              }
+            });
 
     assertEquals(1, onDate.size());
 
@@ -138,19 +137,21 @@ public class HibernateGtfsRelationalDaoImplCaltrainTest {
     List<ServiceCalendar> calendars = _dao.getAllCalendars();
     assertEquals(6, calendars.size());
 
-    List<ServiceCalendar> weekdays = grep(calendars,
-        new Filter<ServiceCalendar>() {
-          @Override
-          public boolean isEnabled(ServiceCalendar object) {
-            return object.getServiceId().equals(aid("WD"));
-          }
-        });
+    List<ServiceCalendar> weekdays =
+        grep(
+            calendars,
+            new Filter<ServiceCalendar>() {
+              @Override
+              public boolean isEnabled(ServiceCalendar object) {
+                return object.getServiceId().equals(aid("WD"));
+              }
+            });
 
     assertEquals(1, weekdays.size());
     ServiceCalendar weekday = weekdays.get(0);
 
-    assertEquals(new ServiceDate(2009,1,1), weekday.getStartDate());
-    assertEquals(new ServiceDate(2009,3,1), weekday.getEndDate());
+    assertEquals(new ServiceDate(2009, 1, 1), weekday.getStartDate());
+    assertEquals(new ServiceDate(2009, 3, 1), weekday.getEndDate());
     assertEquals(1, weekday.getMonday());
     assertEquals(1, weekday.getTuesday());
     assertEquals(1, weekday.getWednesday());
@@ -281,7 +282,7 @@ public class HibernateGtfsRelationalDaoImplCaltrainTest {
     List<StopTime> stopTimes = _dao.getStopTimesForTrip(trip);
     assertEquals(22, stopTimes.size());
   }
-  
+
   @Test
   public void testGetStopTimesForStop() {
     Stop stop = _dao.getStopForId(aid("Menlo Park Caltrain"));
@@ -296,11 +297,11 @@ public class HibernateGtfsRelationalDaoImplCaltrainTest {
   @Test
   public void testGet() {
     List<AgencyAndId> shapeIds = _dao.getAllShapeIds();
-    assertEquals(6,shapeIds.size());
+    assertEquals(6, shapeIds.size());
     assertTrue(shapeIds.contains(aid("cal_gil_sf")));
     assertTrue(shapeIds.contains(aid("cal_sf_gil")));
   }
-  
+
   @Test
   public void testGetShapePointsByShapeId() {
     List<ShapePoint> shapePoints = _dao.getShapePointsForShapeId(aid("cal_sf_gil"));
@@ -318,8 +319,7 @@ public class HibernateGtfsRelationalDaoImplCaltrainTest {
   private static <T> List<T> grep(Iterable<T> elements, Filter<T> filter) {
     List<T> hits = new ArrayList<T>();
     for (T element : elements) {
-      if (filter.isEnabled(element))
-        hits.add(element);
+      if (filter.isEnabled(element)) hits.add(element);
     }
     return hits;
   }

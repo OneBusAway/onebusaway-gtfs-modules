@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2017 Cambridge Systematics,
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.model;
@@ -18,7 +16,6 @@ package org.onebusaway.gtfs.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
@@ -26,10 +23,10 @@ import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFac
 @CsvFields(filename = "areas.txt", required = false)
 public final class Area extends IdentityBean<AgencyAndId> {
 
-  @CsvField(name="area_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
+  @CsvField(name = "area_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 
-  @CsvField(name="area_name", optional = true)
+  @CsvField(name = "area_name", optional = true)
   private String name;
 
   // we use a List, not Set to keep the insertion order. by definition these stops don't have an
@@ -37,10 +34,7 @@ public final class Area extends IdentityBean<AgencyAndId> {
   @CsvField(ignore = true)
   private List<Stop> stops = new ArrayList<>();
 
-
-  public Area() {
-
-  }
+  public Area() {}
 
   public Area(Area a) {
     this.id = a.id;
@@ -63,14 +57,17 @@ public final class Area extends IdentityBean<AgencyAndId> {
     this.stops.add(stop);
   }
 
-
   public void setId(AgencyAndId areaId) {
     this.id = areaId;
   }
 
-  public String getName() { return name;}
+  public String getName() {
+    return name;
+  }
 
-  public void setName(String name) { this.name = name; }
+  public void setName(String name) {
+    this.name = name;
+  }
 
   public Collection<Stop> getStops() {
     return List.copyOf(stops);

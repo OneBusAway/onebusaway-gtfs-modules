@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.impl.calendar;
@@ -18,7 +16,6 @@ package org.onebusaway.gtfs.impl.calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-
 import org.onebusaway.gtfs.model.calendar.ServiceInterval;
 
 public abstract class ServiceIdOp implements Comparator<Date> {
@@ -43,8 +40,7 @@ public abstract class ServiceIdOp implements Comparator<Date> {
 
   public int compare(Date a, Date b) {
     int rc = a.compareTo(b);
-    if (_reverse)
-      rc = -rc;
+    if (_reverse) rc = -rc;
     return rc;
   }
 
@@ -55,33 +51,28 @@ public abstract class ServiceIdOp implements Comparator<Date> {
 
   /**
    * Returns -1 if the service interval comes before the from-to interval.
-   * 
-   * Returns 0 if the service interval overlaps the from-to interval.
-   * 
-   * Returns 1 if the service interval comes after the from-to interval
-   * 
+   *
+   * <p>Returns 0 if the service interval overlaps the from-to interval.
+   *
+   * <p>Returns 1 if the service interval comes after the from-to interval
+   *
    * @param interval
    * @param serviceDate
    * @param from
    * @param to
    * @return
    */
-  public int compareInterval(ServiceInterval interval, Date serviceDate,
-      Date from, Date to) {
+  public int compareInterval(ServiceInterval interval, Date serviceDate, Date from, Date to) {
     long serviceFrom = serviceDate.getTime() + getFromTime(interval) * 1000;
     long serviceTo = serviceDate.getTime() + getToTime(interval) * 1000;
 
     if (_reverse) {
-      if (serviceTo >= from.getTime())
-        return -1;
-      if (to.getTime() >= serviceFrom)
-        return 1;
+      if (serviceTo >= from.getTime()) return -1;
+      if (to.getTime() >= serviceFrom) return 1;
       return 0;
     } else {
-      if (serviceTo <= from.getTime())
-        return -1;
-      if (to.getTime() <= serviceFrom)
-        return 1;
+      if (serviceTo <= from.getTime()) return -1;
+      if (to.getTime() <= serviceFrom) return 1;
       return 0;
     }
   }
@@ -151,5 +142,4 @@ public abstract class ServiceIdOp implements Comparator<Date> {
       return data.get(index);
     }
   }
-
 }

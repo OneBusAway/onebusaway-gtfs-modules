@@ -1,17 +1,14 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2012 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2012 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.serialization;
@@ -20,7 +17,6 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.*;
-
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.CsvEntityReader;
 import org.onebusaway.csv_entities.CsvInputSource;
@@ -39,8 +35,7 @@ public class GtfsReader extends CsvEntityReader {
 
   private final Logger _log = LoggerFactory.getLogger(GtfsReader.class);
 
-  public static final String KEY_CONTEXT = GtfsReader.class.getName()
-      + ".context";
+  public static final String KEY_CONTEXT = GtfsReader.class.getName() + ".context";
 
   private List<Class<?>> _entityClasses = new ArrayList<Class<?>>();
 
@@ -50,7 +45,8 @@ public class GtfsReader extends CsvEntityReader {
 
   private List<Agency> _agencies = new ArrayList<Agency>();
 
-  private Map<Class<?>, Map<String, String>> _agencyIdsByEntityClassAndId = new HashMap<Class<?>, Map<String, String>>();
+  private Map<Class<?>, Map<String, String>> _agencyIdsByEntityClassAndId =
+      new HashMap<Class<?>, Map<String, String>>();
 
   private String _defaultAgencyId;
 
@@ -107,12 +103,10 @@ public class GtfsReader extends CsvEntityReader {
 
     CsvTokenizerStrategy tokenizerStrategy = new CsvTokenizerStrategy();
     setTokenizerStrategy(tokenizerStrategy);
-    
+
     setTrimValues(true);
 
-    /**
-     * Prep the Entity Schema Factories
-     */
+    /** Prep the Entity Schema Factories */
     DefaultEntitySchemaFactory schemaFactory = createEntitySchemaFactory();
     setEntitySchemaFactory(schemaFactory);
 
@@ -128,11 +122,11 @@ public class GtfsReader extends CsvEntityReader {
   }
 
   public void setLastModifiedTime(Long lastModifiedTime) {
-    if (lastModifiedTime != null)
-      getContext().put("lastModifiedTime", lastModifiedTime);
+    if (lastModifiedTime != null) getContext().put("lastModifiedTime", lastModifiedTime);
   }
+
   public Long getLastModfiedTime() {
-    return (Long)getContext().get("lastModifiedTime");
+    return (Long) getContext().get("lastModifiedTime");
   }
 
   public List<Agency> getAgencies() {
@@ -148,10 +142,8 @@ public class GtfsReader extends CsvEntityReader {
   }
 
   public String getDefaultAgencyId() {
-    if (_defaultAgencyId != null)
-      return _defaultAgencyId;
-    if (_agencies.size() > 0)
-      return _agencies.get(0).getId();
+    if (_defaultAgencyId != null) return _defaultAgencyId;
+    if (_agencies.size() > 0) return _agencies.get(0).getId();
     throw new NoDefaultAgencyIdException();
   }
 
@@ -162,7 +154,7 @@ public class GtfsReader extends CsvEntityReader {
   public GtfsReaderContext getGtfsReaderContext() {
     return _context;
   }
-  
+
   public GenericMutableDao getEntityStore() {
     return _entityStore;
   }
@@ -183,7 +175,8 @@ public class GtfsReader extends CsvEntityReader {
     _overwriteDuplicates = overwriteDuplicates;
   }
 
-  public void readEntities(Class<?> entityClass, Reader reader) throws IOException, CsvEntityIOException {
+  public void readEntities(Class<?> entityClass, Reader reader)
+      throws IOException, CsvEntityIOException {
     if (entityClass == Location.class) {
       for (Location location : new LocationsGeoJSONReader(reader, getDefaultAgencyId()).read()) {
         injectEntity(location);
@@ -220,7 +213,8 @@ public class GtfsReader extends CsvEntityReader {
         for (String metaFile : filenames) {
           if (source.hasResource(metaFile)) {
             _log.info("reading metadata file: " + metaFile);
-            ((GtfsDaoImpl) _entityStore).addMetadata(metaFile, readContent(_inputLocation, metaFile));
+            ((GtfsDaoImpl) _entityStore)
+                .addMetadata(metaFile, readContent(_inputLocation, metaFile));
           }
         }
       }
@@ -230,13 +224,11 @@ public class GtfsReader extends CsvEntityReader {
   private String readContent(File inputLocation, String filename) {
     if (inputLocation.getAbsoluteFile().getName().endsWith(".zip")) {
       // zip file
-      return readContentFromZip(inputLocation,
-        filename);
+      return readContentFromZip(inputLocation, filename);
     } else {
       // file in directory
-      return readContentFromFile(new File(inputLocation.getAbsolutePath()
-              + File.separator
-              + filename));
+      return readContentFromFile(
+          new File(inputLocation.getAbsolutePath() + File.separator + filename));
     }
   }
 
@@ -270,17 +262,14 @@ public class GtfsReader extends CsvEntityReader {
   }
 
   protected Object getEntity(Class<?> entityClass, Serializable id) {
-    if (entityClass == null)
-      throw new IllegalArgumentException("entity class must not be null");
-    if (id == null)
-      throw new IllegalArgumentException("entity id must not be null");
+    if (entityClass == null) throw new IllegalArgumentException("entity class must not be null");
+    if (id == null) throw new IllegalArgumentException("entity id must not be null");
     return _entityStore.getEntityForId(entityClass, id);
   }
 
   protected String getTranslatedAgencyId(String agencyId) {
     String id = _agencyIdMapping.get(agencyId);
-    if (id != null)
-      return id;
+    if (id != null) return id;
     return agencyId;
   }
 
@@ -290,15 +279,13 @@ public class GtfsReader extends CsvEntityReader {
 
     if (agencyIdsByEntityId != null) {
       String id = agencyIdsByEntityId.get(entityId);
-      if (id != null)
-        return id;
+      if (id != null) return id;
     }
 
     throw new EntityReferenceNotFoundException(entityType, entityId);
   }
 
-
-    /****
+  /****
    * Private Internal Classes
    ****/
 
@@ -309,16 +296,13 @@ public class GtfsReader extends CsvEntityReader {
       if (entity instanceof Agency) {
         Agency agency = (Agency) entity;
         if (agency.getId() == null) {
-          if (_defaultAgencyId == null)
-            agency.setId(agency.getName());
-          else
-            agency.setId(_defaultAgencyId);
+          if (_defaultAgencyId == null) agency.setId(agency.getName());
+          else agency.setId(_defaultAgencyId);
         }
 
         // If we already have this agency from a previous load, then we don't
         // add it or save it to the entity store
-        if (_agencies.contains(agency))
-          return;
+        if (_agencies.contains(agency)) return;
 
         _agencies.add((Agency) entity);
       } else if (entity instanceof final BookingRule bookingRule) {
@@ -348,25 +332,26 @@ public class GtfsReader extends CsvEntityReader {
       } else if (entity instanceof final LocationGroup group) {
         registerAgencyId(LocationGroup.class, group.getId());
       } else if (entity instanceof final LocationGroupElement locationGroupElement) {
-        var locationGroup = _entityStore.getEntityForId(LocationGroup.class, locationGroupElement.getLocationGroupId());
+        var locationGroup =
+            _entityStore.getEntityForId(
+                LocationGroup.class, locationGroupElement.getLocationGroupId());
         locationGroup.addLocation(locationGroupElement.getStop());
       } else if (entity instanceof final StopAreaElement stopAreaElement) {
         var area = _entityStore.getEntityForId(Area.class, stopAreaElement.getArea().getId());
         area.addStop(stopAreaElement.getStop());
       } else if (entity instanceof final Vehicle vehicle) {
         registerAgencyId(Vehicle.class, vehicle.getId());
-      } else if (entity instanceof final Facility facility){
+      } else if (entity instanceof final Facility facility) {
         registerAgencyId(Facility.class, facility.getId());
-      } else if (entity instanceof final FacilityPropertyDefinition facilityPropertyDefinition){
+      } else if (entity instanceof final FacilityPropertyDefinition facilityPropertyDefinition) {
         registerAgencyId(FacilityPropertyDefinition.class, facilityPropertyDefinition.getId());
-      } else if (entity instanceof final Icon icon){
+      } else if (entity instanceof final Icon icon) {
         registerAgencyId(Icon.class, icon.getId());
       }
 
       if (entity instanceof IdentityBean<?>) {
         _entityStore.saveEntity(entity);
       }
-
     }
 
     private void registerAgencyId(Class<?> entityType, AgencyAndId id) {

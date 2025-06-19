@@ -1,23 +1,19 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2011 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.serialization.mappings;
 
 import java.util.Map;
-
 import org.apache.commons.beanutils2.ConversionException;
 import org.apache.commons.beanutils2.Converter;
 import org.onebusaway.csv_entities.CsvEntityContext;
@@ -30,31 +26,32 @@ import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsReaderContext;
 
 /**
- * {@link FieldMapping} capable of mapping a CSV string entity id to an entity
- * instance, and vice versa. Assumes field entity type subclasses
- * {@link IdentityBean} and the target entity can be found with
- * {@link GtfsReaderContext#getEntity(Class, java.io.Serializable)}.
- * 
+ * {@link FieldMapping} capable of mapping a CSV string entity id to an entity instance, and vice
+ * versa. Assumes field entity type subclasses {@link IdentityBean} and the target entity can be
+ * found with {@link GtfsReaderContext#getEntity(Class, java.io.Serializable)}.
+ *
  * @author bdferris
  * @see IdentityBean
  * @see GtfsReaderContext#getEntity(Class, java.io.Serializable)
  */
-class EntityFieldMappingImpl extends AbstractFieldMapping implements
-    ConverterFactory {
+class EntityFieldMappingImpl extends AbstractFieldMapping implements ConverterFactory {
 
   private Class<?> _objFieldType;
 
-  public EntityFieldMappingImpl(Class<?> entityType, String csvFieldName,
-      String objFieldName, Class<?> objFieldType, boolean required) {
+  public EntityFieldMappingImpl(
+      Class<?> entityType,
+      String csvFieldName,
+      String objFieldName,
+      Class<?> objFieldType,
+      boolean required) {
     super(entityType, csvFieldName, objFieldName, required);
     _objFieldType = objFieldType;
   }
 
-  public void translateFromCSVToObject(CsvEntityContext context,
-      Map<String, Object> csvValues, BeanWrapper object) {
+  public void translateFromCSVToObject(
+      CsvEntityContext context, Map<String, Object> csvValues, BeanWrapper object) {
 
-    if (isMissingAndOptional(csvValues))
-      return;
+    if (isMissingAndOptional(csvValues)) return;
 
     Converter converter = create(context);
     String entityId = (String) csvValues.get(_csvFieldName);
@@ -63,13 +60,13 @@ class EntityFieldMappingImpl extends AbstractFieldMapping implements
   }
 
   @SuppressWarnings("unchecked")
-  public void translateFromObjectToCSV(CsvEntityContext context,
-      BeanWrapper object, Map<String, Object> csvValues) {
+  public void translateFromObjectToCSV(
+      CsvEntityContext context, BeanWrapper object, Map<String, Object> csvValues) {
 
-    IdentityBean<AgencyAndId> entity = (IdentityBean<AgencyAndId>) object.getPropertyValue(_objFieldName);
+    IdentityBean<AgencyAndId> entity =
+        (IdentityBean<AgencyAndId>) object.getPropertyValue(_objFieldName);
 
-    if (isOptional() && entity == null)
-      return;
+    if (isOptional() && entity == null) return;
 
     AgencyAndId id = entity.getId();
 
@@ -97,16 +94,15 @@ class EntityFieldMappingImpl extends AbstractFieldMapping implements
     @Override
     public Object convert(@SuppressWarnings("rawtypes") Class type, Object value) {
       if (type == String.class) {
-        if (value instanceof String)
-          return (String) value;
+        if (value instanceof String) return (String) value;
       } else if (type == _objFieldType) {
         String entityId = value.toString();
         String agencyId = _context.getAgencyForEntity(_objFieldType, entityId);
         AgencyAndId id = new AgencyAndId(agencyId, entityId);
         return _context.getEntity(_objFieldType, id);
       }
-      throw new ConversionException("Could not convert " + value + " of type "
-          + value.getClass() + " to " + type);
+      throw new ConversionException(
+          "Could not convert " + value + " of type " + value.getClass() + " to " + type);
     }
   }
 }

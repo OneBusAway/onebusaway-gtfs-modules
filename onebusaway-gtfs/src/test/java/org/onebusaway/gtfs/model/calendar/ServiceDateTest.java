@@ -1,31 +1,27 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2011 Google, Inc.
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.model.calendar;
 
-import static  org.junit.jupiter.api.Assertions.assertEquals;
-import static  org.junit.jupiter.api.Assertions.assertTrue;
-import static  org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.onebusaway.gtfs.DateSupport.date;
 
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
-
 import org.junit.jupiter.api.Test;
 
 public class ServiceDateTest {
@@ -84,24 +80,17 @@ public class ServiceDateTest {
 
   @Test
   public void testShift() {
-    assertEquals(new ServiceDate(2012, 03, 15),
-        new ServiceDate(2012, 03, 05).shift(10));
-    assertEquals(new ServiceDate(2012, 03, 05),
-        new ServiceDate(2012, 03, 15).shift(-10));
-    assertEquals(new ServiceDate(2012, 03, 12),
-        new ServiceDate(2012, 03, 11).shift(1));
+    assertEquals(new ServiceDate(2012, 03, 15), new ServiceDate(2012, 03, 05).shift(10));
+    assertEquals(new ServiceDate(2012, 03, 05), new ServiceDate(2012, 03, 15).shift(-10));
+    assertEquals(new ServiceDate(2012, 03, 12), new ServiceDate(2012, 03, 11).shift(1));
   }
 
   @Test
   public void testDifference() {
-    assertEquals(2,
-        new ServiceDate(2012, 03, 05).difference(new ServiceDate(2012, 03, 07)));
-    assertEquals(-2,
-        new ServiceDate(2012, 03, 07).difference(new ServiceDate(2012, 03, 05)));
-    assertEquals(10,
-        new ServiceDate(2012, 03, 05).difference(new ServiceDate(2012, 03, 15)));
-    assertEquals(38,
-        new ServiceDate(2012, 03, 05).difference(new ServiceDate(2012, 04, 12)));
+    assertEquals(2, new ServiceDate(2012, 03, 05).difference(new ServiceDate(2012, 03, 07)));
+    assertEquals(-2, new ServiceDate(2012, 03, 07).difference(new ServiceDate(2012, 03, 05)));
+    assertEquals(10, new ServiceDate(2012, 03, 05).difference(new ServiceDate(2012, 03, 15)));
+    assertEquals(38, new ServiceDate(2012, 03, 05).difference(new ServiceDate(2012, 04, 12)));
   }
 
   @Test

@@ -1,39 +1,32 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2011 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.collections.beans;
 
 /**
  * Simple support for Java bean property path expression parsing and evaluation.
- * 
- * Consider a simple Order bean class with a property named {@code customer} of
- * type Customer that has its own property named {@code name}. A path expression
- * of {@code customer.name}, evaluated on an Order instance will internally make
- * a call to the {@code getCustomer()} method on the Order object, and then make
- * a call to the {@code getName()} method on the Customer object returned in the
- * previous method call. The result of the expression will be the cusomter's
- * name.
- * 
- * Instances of {@link PropertyPathExpression} are thread-safe for concurrent
- * use across threads with one restriction. A call to {@link #initialize(Class)}
- * must be made in advance of concurrent access to ensure that class
- * introspection has been completed.
- * 
+ *
+ * <p>Consider a simple Order bean class with a property named {@code customer} of type Customer
+ * that has its own property named {@code name}. A path expression of {@code customer.name},
+ * evaluated on an Order instance will internally make a call to the {@code getCustomer()} method on
+ * the Order object, and then make a call to the {@code getName()} method on the Customer object
+ * returned in the previous method call. The result of the expression will be the cusomter's name.
+ *
+ * <p>Instances of {@link PropertyPathExpression} are thread-safe for concurrent use across threads
+ * with one restriction. A call to {@link #initialize(Class)} must be made in advance of concurrent
+ * access to ensure that class introspection has been completed.
+ *
  * @author bdferris
- * 
  */
 public final class PropertyPathExpression {
 
@@ -44,11 +37,10 @@ public final class PropertyPathExpression {
   private PropertyMethodResolver _resolver = new DefaultPropertyMethodResolver();
 
   /**
-   * A static convenience method for evaluating a property path expression on a
-   * target object. If you need to repeatedly evaluate the same property path
-   * expression, consider creating a {@link PropertyPathExpression} object
-   * directly so that bean introspection information can be cached.
-   * 
+   * A static convenience method for evaluating a property path expression on a target object. If
+   * you need to repeatedly evaluate the same property path expression, consider creating a {@link
+   * PropertyPathExpression} object directly so that bean introspection information can be cached.
+   *
    * @param target the target bean instance to evaluate against
    * @param query the property path expression to evaluate
    * @return the result of the evaluation of the property path expression
@@ -58,7 +50,6 @@ public final class PropertyPathExpression {
   }
 
   /**
-   * 
    * @param query the property path expression to evaluate
    */
   public PropertyPathExpression(String query) {
@@ -72,27 +63,24 @@ public final class PropertyPathExpression {
   public String getPath() {
     StringBuilder b = new StringBuilder();
     for (int i = 0; i < _properties.length; i++) {
-      if (i > 0)
-        b.append('.');
+      if (i > 0) b.append('.');
       b.append(_properties[i]);
     }
     return b.toString();
   }
 
   /**
-   * Opportunistically complete and cache bean introspection given a source
-   * value target type.
-   * 
-   * @param sourceValueType the class of objects that will be passed in calls to
-   *          {@link #invoke(Object)}
+   * Opportunistically complete and cache bean introspection given a source value target type.
+   *
+   * @param sourceValueType the class of objects that will be passed in calls to {@link
+   *     #invoke(Object)}
    * @return the final return type of the evaluated path expression
    * @throws IllegalStateException on introspection errors
    */
   public Class<?> initialize(Class<?> sourceValueType) {
 
     if (_methods != null) {
-      if (_methods.length == 0)
-        return sourceValueType;
+      if (_methods.length == 0) return sourceValueType;
       return _methods[_methods.length - 1].getReturnType();
     }
 
@@ -107,13 +95,11 @@ public final class PropertyPathExpression {
   }
 
   /**
-   * Returns the type of the parent class containing the property to be
-   * evaluated. For simple property path expressions containing just one
-   * property, the parent class will be equal to the "sourceValueType"
-   * parameter. For compound property path expressions, the parent class is
-   * equal to the class from which the property value will ultimately be
-   * accessed.
-   * 
+   * Returns the type of the parent class containing the property to be evaluated. For simple
+   * property path expressions containing just one property, the parent class will be equal to the
+   * "sourceValueType" parameter. For compound property path expressions, the parent class is equal
+   * to the class from which the property value will ultimately be accessed.
+   *
    * @param sourceValueType
    * @return
    */
@@ -134,7 +120,7 @@ public final class PropertyPathExpression {
 
   /**
    * Invoke the property path expression against the specified object value
-   * 
+   *
    * @param value the target bean to start the property path expression against
    * @return the result of the property path expression evaluation
    * @throws IllegalStateException on introspection and evaluation errors
@@ -144,8 +130,7 @@ public final class PropertyPathExpression {
   }
 
   public PropertyInvocationResult invokeReturningFullResult(Object value) {
-    if (_methods == null)
-      initialize(value.getClass());
+    if (_methods == null) initialize(value.getClass());
 
     Object parent = null;
     String propertyName = null;
@@ -156,8 +141,8 @@ public final class PropertyPathExpression {
       try {
         value = m.invoke(value);
       } catch (Exception ex) {
-        throw new IllegalStateException("error invoking property reader: obj="
-            + value + " property=" + _properties[i], ex);
+        throw new IllegalStateException(
+            "error invoking property reader: obj=" + value + " property=" + _properties[i], ex);
       }
     }
     return new PropertyInvocationResult(parent, propertyName, value);

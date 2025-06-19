@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2023 Cambridge Systematics, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.model;
@@ -24,34 +22,34 @@ public class DirectionEntry extends IdentityBean<Integer> {
   @CsvField(ignore = true)
   private int id;
 
-  @CsvField(name="agency_id")
+  @CsvField(name = "agency_id")
   private String agencyId;
 
-  @CsvField(name="station_id")
+  @CsvField(name = "station_id")
   private String stationId;
 
-  @CsvField(name="stop_id_0")
+  @CsvField(name = "stop_id_0")
   private String gtfsStopIdDirection0;
 
-  @CsvField(name="stop_id_1")
+  @CsvField(name = "stop_id_1")
   private String gtfsStopIdDirection1;
 
-  @CsvField(name="line")
+  @CsvField(name = "line")
   private String line;
 
-  @CsvField(name="stop_name")
+  @CsvField(name = "stop_name")
   private String stopName;
 
-  @CsvField(name="daytime_routes")
+  @CsvField(name = "daytime_routes")
   private String daytimeRoutes;
 
-  @CsvField(name="headsign_direction_0", optional = true)
+  @CsvField(name = "headsign_direction_0", optional = true)
   private String headsignDirection0;
 
-  @CsvField(name="headsign_direction_1", optional = true)
+  @CsvField(name = "headsign_direction_1", optional = true)
   private String headsignDirection1;
 
-  @CsvField(name="notes", ignore=true)
+  @CsvField(name = "notes", ignore = true)
   private String notes;
 
   @Override

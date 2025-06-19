@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.impl;
@@ -22,7 +20,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.services.GenericMutableDao;
 import org.slf4j.Logger;
@@ -32,9 +29,11 @@ public class GenericDaoImpl implements GenericMutableDao {
 
   private final Logger _log = LoggerFactory.getLogger(GenericDaoImpl.class);
 
-  private Map<Class<?>, Map<Object, Object>> _entitiesByClassAndId = new HashMap<Class<?>, Map<Object, Object>>();
+  private Map<Class<?>, Map<Object, Object>> _entitiesByClassAndId =
+      new HashMap<Class<?>, Map<Object, Object>>();
 
-  private Map<Class<?>, EntityHandler<Serializable>> _handlers = new HashMap<Class<?>, EntityHandler<Serializable>>();
+  private Map<Class<?>, EntityHandler<Serializable>> _handlers =
+      new HashMap<Class<?>, EntityHandler<Serializable>>();
 
   private boolean _generateIds = true;
 
@@ -51,8 +50,7 @@ public class GenericDaoImpl implements GenericMutableDao {
   }
 
   @SuppressWarnings("unchecked")
-  public <K, V> Map<K, V> getEntitiesByIdForEntityType(Class<K> keyType,
-      Class<V> entityType) {
+  public <K, V> Map<K, V> getEntitiesByIdForEntityType(Class<K> keyType, Class<V> entityType) {
     return (Map<K, V>) _entitiesByClassAndId.get(entityType);
   }
 
@@ -64,8 +62,7 @@ public class GenericDaoImpl implements GenericMutableDao {
   @Override
   public <T> Collection<T> getAllEntitiesForType(Class<T> type) {
     Map<Object, Object> entitiesById = _entitiesByClassAndId.get(type);
-    if (entitiesById == null)
-      return new ArrayList<T>();
+    if (entitiesById == null) return new ArrayList<T>();
     return (Collection<T>) entitiesById.values();
   }
 
@@ -105,8 +102,15 @@ public class GenericDaoImpl implements GenericMutableDao {
     Object id = bean.getId();
     Object prev = byId.put(id, entity);
     if (prev != null)
-      _log.warn("entity with id already exists: class=" + c + " id=" + id
-          + " prev=" + prev + " new=" + entity);
+      _log.warn(
+          "entity with id already exists: class="
+              + c
+              + " id="
+              + id
+              + " prev="
+              + prev
+              + " new="
+              + entity);
   }
 
   @Override
@@ -124,8 +128,7 @@ public class GenericDaoImpl implements GenericMutableDao {
 
     // If the entity has already been inserted into storage, then we don't need
     // to save it
-    if (existing == entity)
-      return;
+    if (existing == entity) return;
     saveEntity(entity);
   }
 
@@ -135,8 +138,7 @@ public class GenericDaoImpl implements GenericMutableDao {
   }
 
   @Override
-  public <K extends Serializable, T extends IdentityBean<K>> void removeEntity(
-      T entity) {
+  public <K extends Serializable, T extends IdentityBean<K>> void removeEntity(T entity) {
 
     Class<?> type = entity.getClass();
     K id = entity.getId();
@@ -150,24 +152,17 @@ public class GenericDaoImpl implements GenericMutableDao {
 
     Object found = byId.remove(id);
 
-    if (found == null)
-      _log.warn("no stored entity with type " + type + " and id " + id);
+    if (found == null) _log.warn("no stored entity with type " + type + " and id " + id);
   }
 
   @Override
-  public void open() {
-
-  }
+  public void open() {}
 
   @Override
-  public void flush() {
-
-  }
+  public void flush() {}
 
   @Override
-  public void close() {
-
-  }
+  public void close() {}
 
   /****
    * Private Methods
@@ -189,8 +184,7 @@ public class GenericDaoImpl implements GenericMutableDao {
     }
 
     return new EntityHandler<Serializable>() {
-      public void handle(IdentityBean<Serializable> entity) {
-      }
+      public void handle(IdentityBean<Serializable> entity) {}
     };
   }
 
@@ -211,5 +205,4 @@ public class GenericDaoImpl implements GenericMutableDao {
       _maxId = Math.max(_maxId, value.intValue());
     }
   }
-
 }

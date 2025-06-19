@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2013 Google, Inc.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs;
@@ -20,7 +18,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -62,20 +59,17 @@ public class GtfsDatabaseLoaderMain {
     }
 
     Configuration config = new Configuration();
-    config.setProperty("hibernate.connection.driver_class",
-        cli.getOptionValue(ARG_DRIVER_CLASS));
+    config.setProperty("hibernate.connection.driver_class", cli.getOptionValue(ARG_DRIVER_CLASS));
     config.setProperty("hibernate.connection.url", cli.getOptionValue(ARG_URL));
     if (cli.hasOption(ARG_USERNAME)) {
-      config.setProperty("hibernate.connection.username",
-          cli.getOptionValue(ARG_USERNAME));
+      config.setProperty("hibernate.connection.username", cli.getOptionValue(ARG_USERNAME));
     }
     if (cli.hasOption(ARG_PASSWORD)) {
-      config.setProperty("hibernate.connection.password",
-          cli.getOptionValue(ARG_PASSWORD));
+      config.setProperty("hibernate.connection.password", cli.getOptionValue(ARG_PASSWORD));
     }
     config.setProperty("hibernate.connection.pool_size", "1");
-    config.setProperty("hibernate.cache.provider_class",
-        "org.hibernate.cache.internal.NoCachingRegionFactory");
+    config.setProperty(
+        "hibernate.cache.provider_class", "org.hibernate.cache.internal.NoCachingRegionFactory");
     config.setProperty("hibernate.hbm2ddl.auto", "update");
     config.addResource("org/onebusaway/gtfs/model/GtfsMapping.hibernate.xml");
     config.addResource("org/onebusaway/gtfs/impl/HibernateGtfsRelationalDaoImpl.hibernate.xml");
@@ -107,8 +101,7 @@ public class GtfsDatabaseLoaderMain {
   }
 
   protected void buildOptions(Options options) {
-    Option driverClassOption = new Option(ARG_DRIVER_CLASS, true,
-        "JDBC driverClass");
+    Option driverClassOption = new Option(ARG_DRIVER_CLASS, true, "JDBC driverClass");
     driverClassOption.setRequired(true);
     options.addOption(driverClassOption);
 

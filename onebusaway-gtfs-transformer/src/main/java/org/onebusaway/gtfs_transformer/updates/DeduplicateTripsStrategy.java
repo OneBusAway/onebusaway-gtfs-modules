@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.updates;
@@ -20,7 +18,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-
 import org.onebusaway.collections.FactoryMap;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.StopTime;
@@ -45,8 +42,8 @@ public class DeduplicateTripsStrategy implements GtfsTransformStrategy {
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-    Map<String, List<Trip>> tripsByCommonId = new FactoryMap<String, List<Trip>>(
-        new ArrayList<Trip>());
+    Map<String, List<Trip>> tripsByCommonId =
+        new FactoryMap<String, List<Trip>>(new ArrayList<Trip>());
 
     int total = 0;
     int badIds = 0;
@@ -71,8 +68,7 @@ public class DeduplicateTripsStrategy implements GtfsTransformStrategy {
 
     for (List<Trip> trips : tripsByCommonId.values()) {
 
-      if( trips.size() == 1)
-        continue;
+      if (trips.size() == 1) continue;
       if (trips.size() != 2) {
         System.out.println("weird: " + trips);
         weird++;
@@ -106,21 +102,23 @@ public class DeduplicateTripsStrategy implements GtfsTransformStrategy {
       }
     }
 
-    _log.info("weird=" + weird + " pairs=" + pairs + " patternMismatch="
-        + patternMismatch + " propertyMismatch=" + propertyMismatch);
+    _log.info(
+        "weird="
+            + weird
+            + " pairs="
+            + pairs
+            + " patternMismatch="
+            + patternMismatch
+            + " propertyMismatch="
+            + propertyMismatch);
   }
 
   private String areTripsEquivalent(Trip tripA, Trip tripB) {
-    if (!equals(tripA.getDirectionId(), tripB.getDirectionId()))
-      return "directionId";
-    if (!equals(tripA.getRoute(), tripB.getRoute()))
-      return "route";
-    if (!equals(tripA.getShapeId(), tripB.getShapeId()))
-      return "shapeId";
-    if (!equals(tripA.getTripHeadsign(), tripB.getTripHeadsign()))
-      return "tripHeadsign";
-    if (!equals(tripA.getTripShortName(), tripB.getTripShortName()))
-      return "tripShortName";
+    if (!equals(tripA.getDirectionId(), tripB.getDirectionId())) return "directionId";
+    if (!equals(tripA.getRoute(), tripB.getRoute())) return "route";
+    if (!equals(tripA.getShapeId(), tripB.getShapeId())) return "shapeId";
+    if (!equals(tripA.getTripHeadsign(), tripB.getTripHeadsign())) return "tripHeadsign";
+    if (!equals(tripA.getTripShortName(), tripB.getTripShortName())) return "tripShortName";
     return null;
   }
 

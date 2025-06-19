@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.csv_entities;
@@ -24,21 +22,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import org.onebusaway.csv_entities.exceptions.CsvException;
 import org.onebusaway.csv_entities.schema.EntitySchema;
 import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
 
 /**
- * Implementation of {@link OutputStrategy} that supports writing entities to
- * entries within a Zip file. All entities of a particular type must be
- * serialized at the same time. That is to say, writing a few entities of type
- * A, then type B, and then type A again is not supported, since the Java
- * {@link ZipOutputStream} does not support random-access output to different
- * zip entries.
- * 
+ * Implementation of {@link OutputStrategy} that supports writing entities to entries within a Zip
+ * file. All entities of a particular type must be serialized at the same time. That is to say,
+ * writing a few entities of type A, then type B, and then type A again is not supported, since the
+ * Java {@link ZipOutputStream} does not support random-access output to different zip entries.
+ *
  * @author bdferris
- * 
  */
 class ZipOutputStrategy implements OutputStrategy {
 
@@ -63,15 +57,13 @@ class ZipOutputStrategy implements OutputStrategy {
       PrintWriter writer = new PrintWriter(new OutputStreamWriter(out, "UTF-8"));
       return new ZipOutputStrategy(out, writer);
     } catch (IOException ex) {
-      throw new CsvException("Error creating ZipOutputStrategy for path "
-          + path, ex);
+      throw new CsvException("Error creating ZipOutputStrategy for path " + path, ex);
     }
   }
 
   @Override
   public IndividualCsvEntityWriter getEntityWriter(
-      EntitySchemaFactory entitySchemaFactory, CsvEntityContext context,
-      Class<?> entityType) {
+      EntitySchemaFactory entitySchemaFactory, CsvEntityContext context, Class<?> entityType) {
 
     if (_currentType != null && _currentType.equals(entityType)) {
       return _currentWriter;
@@ -121,5 +113,4 @@ class ZipOutputStrategy implements OutputStrategy {
       _currentType = null;
     }
   }
-
 }

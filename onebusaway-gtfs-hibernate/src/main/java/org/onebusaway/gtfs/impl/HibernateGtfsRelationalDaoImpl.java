@@ -1,18 +1,15 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2011 Google, Inc.
  * Copyright (C) 2011 Laurent Gregoire <laurent.gregoire@gmail.com>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.impl;
@@ -24,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.hibernate.SessionFactory;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -36,9 +32,7 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
 
   protected HibernateOperations _ops;
 
-  public HibernateGtfsRelationalDaoImpl() {
-
-  }
+  public HibernateGtfsRelationalDaoImpl() {}
 
   public HibernateGtfsRelationalDaoImpl(SessionFactory sessionFactory) {
     setSessionFactory(sessionFactory);
@@ -49,8 +43,7 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   public SessionFactory getSessionFactory() {
-    if (_ops == null)
-      return null;
+    if (_ops == null) return null;
     return _ops.getSessionFactory();
   }
 
@@ -77,7 +70,7 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   public List<Block> getAllBlocks() {
     return _ops.find("FROM Block");
   }
-  
+
   @Override
   public List<ServiceCalendar> getAllCalendars() {
     return _ops.find("FROM ServiceCalendar");
@@ -159,7 +152,9 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
-  public Collection<Ridership> getAllRiderships() { return _ops.find("FROM Ridership"); }
+  public Collection<Ridership> getAllRiderships() {
+    return _ops.find("FROM Ridership");
+  }
 
   @Override
   public Collection<Vehicle> getAllVehicles() {
@@ -170,7 +165,6 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   public Vehicle getVehicleForId(AgencyAndId id) {
     return (Vehicle) _ops.get(Vehicle.class, id);
   }
-
 
   @Override
   public Collection<DirectionEntry> getAllDirectionEntries() {
@@ -301,24 +295,36 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   @Override
   public Collection<LocationGroupElement> getAllLocationGroupElements() {
     Collection<LocationGroup> groups = _ops.find("FROM LocationGroup");
-    return groups.stream().flatMap(group -> group.getLocations().stream().map(stopLocation -> {
-      LocationGroupElement locationGroupElement = new LocationGroupElement();
-      locationGroupElement.setLocationGroupId(group.getId());
-      locationGroupElement.setName(group.getName());
-      locationGroupElement.setStop(stopLocation);
-      return locationGroupElement;
-    })).collect(Collectors.toList());
+    return groups.stream()
+        .flatMap(
+            group ->
+                group.getLocations().stream()
+                    .map(
+                        stopLocation -> {
+                          LocationGroupElement locationGroupElement = new LocationGroupElement();
+                          locationGroupElement.setLocationGroupId(group.getId());
+                          locationGroupElement.setName(group.getName());
+                          locationGroupElement.setStop(stopLocation);
+                          return locationGroupElement;
+                        }))
+        .collect(Collectors.toList());
   }
 
   @Override
   public Collection<StopAreaElement> getAllStopAreaElements() {
     Collection<Area> areas = _ops.find("FROM StopArea");
-    return areas.stream().flatMap(area -> area.getStops().stream().map(stopLocation -> {
-      var stopAreaElement = new StopAreaElement();
-      stopAreaElement.setId(area.getId());
-      stopAreaElement.setStop(stopLocation);
-      return stopAreaElement;
-    })).collect(Collectors.toList());
+    return areas.stream()
+        .flatMap(
+            area ->
+                area.getStops().stream()
+                    .map(
+                        stopLocation -> {
+                          var stopAreaElement = new StopAreaElement();
+                          stopAreaElement.setId(area.getId());
+                          stopAreaElement.setStop(stopLocation);
+                          return stopAreaElement;
+                        }))
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -362,9 +368,7 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
-  public void addMetadata(String filename, String content) {
-
-  }
+  public void addMetadata(String filename, String content) {}
 
   /****
    * {@link GtfsRelationalDao} Interface
@@ -372,20 +376,19 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
 
   @Override
   public List<String> getTripAgencyIdsReferencingServiceId(AgencyAndId serviceId) {
-    return _ops.findByNamedQueryAndNamedParam("agencyIdsReferencingServiceId",
-        "serviceId", serviceId);
+    return _ops.findByNamedQueryAndNamedParam(
+        "agencyIdsReferencingServiceId", "serviceId", serviceId);
   }
 
   @Override
   public List<Route> getRoutesForAgency(Agency agency) {
-    return _ops.findByNamedQueryAndNamedParam("routesForAgency", "agency",
-        agency);
+    return _ops.findByNamedQueryAndNamedParam("routesForAgency", "agency", agency);
   }
 
   @Override
   public List<Stop> getStopsForStation(Stop station) {
-    String[] names = { "stationId", "agencyId" };
-    Object[] values = { station.getId().getId(), station.getId().getAgencyId() };
+    String[] names = {"stationId", "agencyId"};
+    Object[] values = {station.getId().getId(), station.getId().getAgencyId()};
     return _ops.findByNamedQueryAndNamedParams("stopsForStation", names, values);
   }
 
@@ -398,7 +401,6 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   public List<Trip> getTripsForRoute(Route route) {
     return _ops.findByNamedQueryAndNamedParam("tripsByRoute", "route", route);
   }
-  
 
   @Override
   public List<Trip> getTripsForShapeId(AgencyAndId shapeId) {
@@ -434,16 +436,14 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
 
   @Override
   public List<ShapePoint> getShapePointsForShapeId(AgencyAndId shapeId) {
-    return _ops.findByNamedQueryAndNamedParam("shapePointsForShapeId",
-        "shapeId", shapeId);
+    return _ops.findByNamedQueryAndNamedParam("shapePointsForShapeId", "shapeId", shapeId);
   }
 
   @Override
   public List<Frequency> getFrequenciesForTrip(Trip trip) {
-    return _ops.findByNamedQueryAndNamedParam("frequenciesForTrip", "trip",
-        trip);
+    return _ops.findByNamedQueryAndNamedParam("frequenciesForTrip", "trip", trip);
   }
-  
+
   @Override
   public List<AgencyAndId> getAllServiceIds() {
     List<AgencyAndId> calendarIds = _ops.findByNamedQuery("calendarServiceIds");
@@ -455,17 +455,15 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
-  public List<ServiceCalendarDate> getCalendarDatesForServiceId(
-      AgencyAndId serviceId) {
-    return _ops.findByNamedQueryAndNamedParam("calendarDatesForServiceId",
-        "serviceId", serviceId);
+  public List<ServiceCalendarDate> getCalendarDatesForServiceId(AgencyAndId serviceId) {
+    return _ops.findByNamedQueryAndNamedParam("calendarDatesForServiceId", "serviceId", serviceId);
   }
 
   @Override
   public ServiceCalendar getCalendarForServiceId(AgencyAndId serviceId) {
 
-    List<ServiceCalendar> calendars = _ops.findByNamedQueryAndNamedParam(
-        "calendarsForServiceId", "serviceId", serviceId);
+    List<ServiceCalendar> calendars =
+        _ops.findByNamedQueryAndNamedParam("calendarsForServiceId", "serviceId", serviceId);
 
     switch (calendars.size()) {
       case 0:
@@ -479,26 +477,23 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
 
   @Override
   public List<FareRule> getFareRulesForFareAttribute(FareAttribute fareAttribute) {
-    return _ops.findByNamedQueryAndNamedParam("fareRulesForFareAttribute",
-        "fareAttribute", fareAttribute);
+    return _ops.findByNamedQueryAndNamedParam(
+        "fareRulesForFareAttribute", "fareAttribute", fareAttribute);
   }
 
   @Override
   public List<FareRule> getFareRulesForRoute(Route route) {
-    return _ops.findByNamedQueryAndNamedParam("fareRulesForRoute",
-            "route", route);
+    return _ops.findByNamedQueryAndNamedParam("fareRulesForRoute", "route", route);
   }
 
   @Override
   public List<FareRule> getFareRulesForZoneId(String zoneId) {
-    return _ops.findByNamedQueryAndNamedParam("fareRulesForZoneId",
-            "zoneId", zoneId);
+    return _ops.findByNamedQueryAndNamedParam("fareRulesForZoneId", "zoneId", zoneId);
   }
 
   @Override
   public List<Ridership> getRidershipForTrip(AgencyAndId tripId) {
-    return _ops.findByNamedQueryAndNamedParam("ridershipsForTripId",
-            "tripId", tripId.getId());
+    return _ops.findByNamedQueryAndNamedParam("ridershipsForTripId", "tripId", tripId.getId());
   }
 
   /****
@@ -521,8 +516,7 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
-  public <K extends Serializable, T extends IdentityBean<K>> void removeEntity(
-      T entity) {
+  public <K extends Serializable, T extends IdentityBean<K>> void removeEntity(T entity) {
     _ops.removeEntity(entity);
   }
 

@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.csv_entities.schema;
@@ -25,7 +23,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
-
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.exceptions.CsvEntityException;
 import org.onebusaway.csv_entities.exceptions.IntrospectionException;
@@ -33,37 +30,48 @@ import org.onebusaway.csv_entities.exceptions.IntrospectionException;
 public class DateFieldMappingFactory implements FieldMappingFactory {
 
   @Override
-  public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
-      Class<?> entityType, String csvFieldName, String objFieldName,
-      Class<?> objFieldType, boolean required) {
+  public FieldMapping createFieldMapping(
+      EntitySchemaFactory schemaFactory,
+      Class<?> entityType,
+      String csvFieldName,
+      String objFieldName,
+      Class<?> objFieldType,
+      boolean required) {
 
     Field field = null;
     try {
       field = entityType.getDeclaredField(objFieldName);
     } catch (Exception ex) {
-      throw new IntrospectionException(entityType,ex);
+      throw new IntrospectionException(entityType, ex);
     }
 
     DateFormatAnnotation formatAnnotation = field.getAnnotation(DateFormatAnnotation.class);
 
     if (formatAnnotation == null) {
-      throw new DateFieldMappingException(entityType,
-          "missing required @DateFormatAnnotation for field " + objFieldName
-              + " of type " + entityType);
+      throw new DateFieldMappingException(
+          entityType,
+          "missing required @DateFormatAnnotation for field "
+              + objFieldName
+              + " of type "
+              + entityType);
     }
 
     boolean isLongType = false;
 
-    if (objFieldType == Long.class || objFieldType == Long.TYPE)
-      isLongType = true;
+    if (objFieldType == Long.class || objFieldType == Long.TYPE) isLongType = true;
     else if (objFieldType != Date.class)
-      throw new DateFieldMappingException(entityType, "expected that field "
-          + objFieldName + " of type " + entityType
-          + " is Date or long, but instead was " + objFieldType);
+      throw new DateFieldMappingException(
+          entityType,
+          "expected that field "
+              + objFieldName
+              + " of type "
+              + entityType
+              + " is Date or long, but instead was "
+              + objFieldType);
 
     DateFormat dateFormat = new SimpleDateFormat(formatAnnotation.value());
-    return new FieldMappingImpl(entityType, csvFieldName, objFieldName,
-        required, dateFormat, isLongType);
+    return new FieldMappingImpl(
+        entityType, csvFieldName, objFieldName, required, dateFormat, isLongType);
   }
 
   @Retention(value = RetentionPolicy.RUNTIME)
@@ -80,8 +88,7 @@ public class DateFieldMappingFactory implements FieldMappingFactory {
       super(entityType, message);
     }
 
-    public DateFieldMappingException(Class<?> entityType, String message,
-        Throwable cause) {
+    public DateFieldMappingException(Class<?> entityType, String message, Throwable cause) {
       super(entityType, message, cause);
     }
   }
@@ -91,8 +98,12 @@ public class DateFieldMappingFactory implements FieldMappingFactory {
     private DateFormat _dateFormat;
     private boolean _isLongType;
 
-    public FieldMappingImpl(Class<?> entityType, String csvFieldName,
-        String objFieldName, boolean required, DateFormat dateFormat,
+    public FieldMappingImpl(
+        Class<?> entityType,
+        String csvFieldName,
+        String objFieldName,
+        boolean required,
+        DateFormat dateFormat,
         boolean isLongType) {
       super(entityType, csvFieldName, objFieldName, required);
       _dateFormat = dateFormat;
@@ -100,44 +111,38 @@ public class DateFieldMappingFactory implements FieldMappingFactory {
     }
 
     @Override
-    public void translateFromCSVToObject(CsvEntityContext context,
-        Map<String, Object> csvValues, BeanWrapper object)
+    public void translateFromCSVToObject(
+        CsvEntityContext context, Map<String, Object> csvValues, BeanWrapper object)
         throws CsvEntityException {
 
-      if (isMissingAndOptional(csvValues))
-        return;
+      if (isMissingAndOptional(csvValues)) return;
 
       String dateAsString = (String) csvValues.get(_csvFieldName);
 
       try {
         Date value = _dateFormat.parse(dateAsString);
 
-        if (_isLongType)
-          object.setPropertyValue(_objFieldName, value.getTime());
-        else
-          object.setPropertyValue(_objFieldName, value);
+        if (_isLongType) object.setPropertyValue(_objFieldName, value.getTime());
+        else object.setPropertyValue(_objFieldName, value);
 
       } catch (ParseException e) {
-        throw new DateFieldMappingException(_entityType,
-            "error parsing data value " + dateAsString, e);
+        throw new DateFieldMappingException(
+            _entityType, "error parsing data value " + dateAsString, e);
       }
     }
 
     @Override
-    public void translateFromObjectToCSV(CsvEntityContext context,
-        BeanWrapper object, Map<String, Object> csvValues)
+    public void translateFromObjectToCSV(
+        CsvEntityContext context, BeanWrapper object, Map<String, Object> csvValues)
         throws CsvEntityException {
 
-      if (isMissingAndOptional(object))
-        return;
+      if (isMissingAndOptional(object)) return;
 
       Object obj = object.getPropertyValue(_objFieldName);
 
       Date date = null;
-      if (_isLongType)
-        date = new Date((Long) obj);
-      else
-        date = (Date) obj;
+      if (_isLongType) date = new Date((Long) obj);
+      else date = (Date) obj;
 
       String dateAsString = _dateFormat.format(date);
       csvValues.put(_csvFieldName, dateAsString);

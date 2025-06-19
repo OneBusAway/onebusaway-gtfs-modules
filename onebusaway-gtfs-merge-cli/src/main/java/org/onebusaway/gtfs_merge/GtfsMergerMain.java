@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2012 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_merge;
@@ -25,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.cli.AlreadySelectedException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -59,16 +56,15 @@ public class GtfsMergerMain {
 
   private Options _options = new Options();
 
-  /**
-   * Mapping from GTFS file name to the entity type handled by that class.
-   */
+  /** Mapping from GTFS file name to the entity type handled by that class. */
   private Map<String, Class<?>> _entityClassesByFilename = new HashMap<String, Class<?>>();
 
   /**
-   * If we ever need to register a custom option handler for a specific entity
-   * type, we would do it here.
+   * If we ever need to register a custom option handler for a specific entity type, we would do it
+   * here.
    */
-  private Map<Class<?>, OptionHandler> _optionHandlersByEntityClass = new HashMap<Class<?>, OptionHandler>();
+  private Map<Class<?>, OptionHandler> _optionHandlersByEntityClass =
+      new HashMap<Class<?>, OptionHandler>();
 
   public static void main(String[] args) throws IOException {
     GtfsMergerMain m = new GtfsMergerMain();
@@ -120,12 +116,9 @@ public class GtfsMergerMain {
 
   protected void buildOptions(Options options) {
     options.addOption(ARG_FILE, true, "GTFS file name");
-    options.addOption(ARG_DUPLICATE_DETECTION, true,
-        "duplicate detection strategy");
-    options.addOption(ARG_LOG_DROPPED_DUPLICATES, false,
-        "log dropped duplicates");
-    options.addOption(ARG_ERROR_ON_DROPPED_DUPLICATES, false,
-        "error on dropped duplicates");
+    options.addOption(ARG_DUPLICATE_DETECTION, true, "duplicate detection strategy");
+    options.addOption(ARG_LOG_DROPPED_DUPLICATES, false, "log dropped duplicates");
+    options.addOption(ARG_ERROR_ON_DROPPED_DUPLICATES, false, "error on dropped duplicates");
   }
 
   protected void printHelp(PrintWriter out, Options options) throws IOException {
@@ -141,8 +134,7 @@ public class GtfsMergerMain {
     reader.close();
   }
 
-  protected void runApplication(CommandLine cli, String[] originalArgs)
-      throws Exception {
+  protected void runApplication(CommandLine cli, String[] originalArgs) throws Exception {
 
     String[] args = cli.getArgs();
 
@@ -174,8 +166,7 @@ public class GtfsMergerMain {
 
   private boolean needsHelp(String[] args) {
     for (String arg : args) {
-      if (arg.equals("-h") || arg.equals("--help") || arg.equals("-help"))
-        return true;
+      if (arg.equals("-h") || arg.equals("--help") || arg.equals("-help")) return true;
     }
     return false;
   }
@@ -219,8 +210,7 @@ public class GtfsMergerMain {
       Class<?> entityClass, GtfsMerger merger) {
     EntityMergeStrategy strategy = merger.getEntityMergeStrategyForEntityType(entityClass);
     if (strategy == null) {
-      throw new IllegalStateException("no merge strategy found for entityType="
-          + entityClass);
+      throw new IllegalStateException("no merge strategy found for entityType=" + entityClass);
     }
     return (AbstractEntityMergeStrategy) strategy;
   }
@@ -232,5 +222,4 @@ public class GtfsMergerMain {
     }
     return handler;
   }
-
 }

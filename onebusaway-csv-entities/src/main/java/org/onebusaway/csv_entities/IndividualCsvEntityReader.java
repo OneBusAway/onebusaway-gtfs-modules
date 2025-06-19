@@ -1,23 +1,22 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 
- */
+/** */
 package org.onebusaway.csv_entities;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.onebusaway.csv_entities.exceptions.EntityInstantiationException;
 import org.onebusaway.csv_entities.schema.BaseEntitySchema;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
@@ -28,10 +27,6 @@ import org.onebusaway.csv_entities.schema.ExtensionEntitySchema;
 import org.onebusaway.csv_entities.schema.FieldMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class IndividualCsvEntityReader implements CSVListener {
 
@@ -53,8 +48,8 @@ public class IndividualCsvEntityReader implements CSVListener {
 
   private boolean _trimValues = false;
 
-  public IndividualCsvEntityReader(CsvEntityContext context,
-      EntitySchema schema, EntityHandler handler) {
+  public IndividualCsvEntityReader(
+      CsvEntityContext context, EntitySchema schema, EntityHandler handler) {
     _handler = handler;
     _context = context;
     _schema = schema;
@@ -66,8 +61,8 @@ public class IndividualCsvEntityReader implements CSVListener {
     }
   }
 
-  public IndividualCsvEntityReader(EntityHandler handler,
-      CsvEntityContext context, EntitySchema schema, List<String> fields) {
+  public IndividualCsvEntityReader(
+      EntityHandler handler, CsvEntityContext context, EntitySchema schema, List<String> fields) {
     this(context, schema, handler);
     _initialized = true;
     _fields = fields;
@@ -83,12 +78,10 @@ public class IndividualCsvEntityReader implements CSVListener {
 
   public void handleLine(List<String> line) throws Exception {
 
-    if (line.size() == 0)
-      return;
+    if (line.size() == 0) return;
 
     if (_trimValues) {
-      for (int i = 0; i < line.size(); i++)
-        line.set(i, line.get(i).trim());
+      for (int i = 0; i < line.size(); i++) line.set(i, line.get(i).trim());
     }
 
     if (!_initialized) {
@@ -98,8 +91,7 @@ public class IndividualCsvEntityReader implements CSVListener {
       readEntity(line);
     }
     _line++;
-    if (_verbose && _line % 1000 == 0)
-      System.out.println("entities=" + _line);
+    if (_verbose && _line % 1000 == 0) System.out.println("entities=" + _line);
   }
 
   private void readSchema(List<String> line) {
@@ -109,11 +101,16 @@ public class IndividualCsvEntityReader implements CSVListener {
   private void readEntity(List<String> line) {
 
     if (line.size() != _fields.size()) {
-      _log.warn("expected and actual number of csv fields differ: type="
-          + _schema.getEntityClass().getName() + " line # " + _line
-          + " expected=" + _fields.size() + " actual=" + line.size());
-      while (line.size() < _fields.size())
-        line.add("");
+      _log.warn(
+          "expected and actual number of csv fields differ: type="
+              + _schema.getEntityClass().getName()
+              + " line # "
+              + _line
+              + " expected="
+              + _fields.size()
+              + " actual="
+              + line.size());
+      while (line.size() < _fields.size()) line.add("");
     }
 
     Object object = createNewEntityInstance(_schema);

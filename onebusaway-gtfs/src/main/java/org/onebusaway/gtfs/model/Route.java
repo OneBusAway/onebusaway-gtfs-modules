@@ -1,24 +1,22 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
-import org.onebusaway.gtfs.serialization.mappings.RouteAgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.RouteAgencyFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.RouteAgencyIdFieldMappingFactory;
 
 @CsvFields(filename = "routes.txt", prefix = "route_")
 public final class Route extends IdentityBean<AgencyAndId> {
@@ -30,7 +28,11 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @CsvField(mapping = RouteAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 
-  @CsvField(name = "agency_id", optional = true, mapping = RouteAgencyFieldMappingFactory.class, order = -1)
+  @CsvField(
+      name = "agency_id",
+      optional = true,
+      mapping = RouteAgencyFieldMappingFactory.class,
+      order = -1)
   private Agency agency;
 
   @CsvField(optional = true, alwaysIncludeInOutput = true)
@@ -59,10 +61,8 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @CsvField(name = "eligibility_restricted", optional = true, defaultValue = "-999")
   private int eligibilityRestricted = MISSING_VALUE;
 
-  /**
-   * 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes NOT allowed
-   */
-  @CsvField(name="bikes_allowed", optional = true, defaultValue = "0")
+  /** 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes NOT allowed */
+  @CsvField(name = "bikes_allowed", optional = true, defaultValue = "0")
   private int bikesAllowed = 0;
 
   @CsvField(optional = true)
@@ -73,9 +73,7 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, name = "regional_fare_card", defaultValue = "0")
   private int regionalFareCardAccepted;
 
-  public Route() {
-
-  }
+  public Route() {}
 
   public Route(Route r) {
     this.id = r.id;
@@ -173,8 +171,7 @@ public final class Route extends IdentityBean<AgencyAndId> {
   }
 
   /**
-   * @param bikesAllowed 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes
-   *          NOT allowed
+   * @param bikesAllowed 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes NOT allowed
    */
   public void setBikesAllowed(int bikesAllowed) {
     this.bikesAllowed = bikesAllowed;
@@ -224,5 +221,4 @@ public final class Route extends IdentityBean<AgencyAndId> {
   public String toString() {
     return "<Route " + id + " " + shortName + ">";
   }
-
 }

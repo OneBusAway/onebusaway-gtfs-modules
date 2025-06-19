@@ -1,17 +1,14 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2013 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2013 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.model;
@@ -19,16 +16,14 @@ package org.onebusaway.gtfs.model;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
-import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.StopLocationFieldMappingFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 
 @CsvFields(filename = "stop_times.txt")
-public final class StopTime extends IdentityBean<Integer> implements
-    Comparable<StopTime>, StopTimeProxy {
+public final class StopTime extends IdentityBean<Integer>
+    implements Comparable<StopTime>, StopTimeProxy {
 
-  private static final long serialVersionUID =2L;
+  private static final long serialVersionUID = 2L;
 
   public static final int MISSING_VALUE = -999;
 
@@ -40,18 +35,18 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(name = "trip_id", mapping = EntityFieldMappingFactory.class)
   private Trip trip;
 
-  /**
-   * This is optional because in flex you can also have location_id and location_group_id.
-   */
+  /** This is optional because in flex you can also have location_id and location_group_id. */
   @CsvField(name = "stop_id", optional = true, mapping = StopLocationFieldMappingFactory.class)
   private StopLocation stop;
 
   @CsvField(name = "location_id", optional = true, mapping = StopLocationFieldMappingFactory.class)
   private StopLocation location;
 
-  @CsvField(name = "location_group_id", optional = true, mapping = StopLocationFieldMappingFactory.class)
+  @CsvField(
+      name = "location_group_id",
+      optional = true,
+      mapping = StopLocationFieldMappingFactory.class)
   private StopLocation locationGroup;
-
 
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int arrivalTime = MISSING_VALUE;
@@ -59,10 +54,18 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int departureTime = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "start_pickup_drop_off_window", mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
+  @CsvField(
+      optional = true,
+      name = "start_pickup_drop_off_window",
+      mapping = StopTimeFieldMappingFactory.class,
+      defaultValue = "-999")
   private int startPickupDropOffWindow = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "end_pickup_drop_off_window", mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
+  @CsvField(
+      optional = true,
+      name = "end_pickup_drop_off_window",
+      mapping = StopTimeFieldMappingFactory.class,
+      defaultValue = "-999")
   private int endPickupDropOffWindow = MISSING_VALUE;
 
   @CsvField(optional = true, defaultValue = "-999")
@@ -98,28 +101,43 @@ public final class StopTime extends IdentityBean<Integer> implements
   private transient StopTimeProxy proxy = null;
 
   /** Support for booking rules in GTFS-Flex 2.1 */
-  @CsvField(optional = true, name = "pickup_booking_rule_id", mapping = EntityFieldMappingFactory.class, order = -2)
+  @CsvField(
+      optional = true,
+      name = "pickup_booking_rule_id",
+      mapping = EntityFieldMappingFactory.class,
+      order = -2)
   private BookingRule pickupBookingRule;
 
-  @CsvField(optional = true, name = "drop_off_booking_rule_id", mapping = EntityFieldMappingFactory.class, order = -2)
+  @CsvField(
+      optional = true,
+      name = "drop_off_booking_rule_id",
+      mapping = EntityFieldMappingFactory.class,
+      order = -2)
   private BookingRule dropOffBookingRule;
 
   // See https://github.com/MobilityData/gtfs-flex/blob/master/spec/reference.md
-  @CsvField(optional = true, name = "mean_duration_factor", defaultValue = "-999.0")/*note defaultValue quirk for non-proxied comparison*/
+  @CsvField(
+      optional = true,
+      name = "mean_duration_factor",
+      defaultValue = "-999.0") /*note defaultValue quirk for non-proxied comparison*/
   private double meanDurationFactor = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "mean_duration_offset", defaultValue = "-999.0")/*note defaultValue quirk for non-proxied comparison*/
+  @CsvField(
+      optional = true,
+      name = "mean_duration_offset",
+      defaultValue = "-999.0") /*note defaultValue quirk for non-proxied comparison*/
   private double meanDurationOffset = MISSING_VALUE;
-    
-  @CsvField(optional = true, name = "safe_duration_factor", defaultValue = "-999.0")/*note defaultValue quirk for non-proxied comparison*/
+
+  @CsvField(
+      optional = true,
+      name = "safe_duration_factor",
+      defaultValue = "-999.0") /*note defaultValue quirk for non-proxied comparison*/
   private double safeDurationFactor = MISSING_VALUE;
 
   @CsvField(optional = true, name = "safe_duration_offset", defaultValue = "-999.0")
   private double safeDurationOffset = MISSING_VALUE;
 
-  public StopTime() {
-
-  }
+  public StopTime() {}
 
   public StopTime(StopTime st) {
     this.arrivalTime = st.arrivalTime;
@@ -143,10 +161,10 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.trip = st.trip;
     this.pickupBookingRule = st.pickupBookingRule;
     this.dropOffBookingRule = st.dropOffBookingRule;
-    this.safeDurationFactor= st.safeDurationFactor;
-    this.safeDurationOffset= st.safeDurationOffset;
-    this.meanDurationOffset= st.meanDurationOffset;
-    this.meanDurationFactor= st.meanDurationFactor;
+    this.safeDurationFactor = st.safeDurationFactor;
+    this.safeDurationOffset = st.safeDurationOffset;
+    this.meanDurationOffset = st.meanDurationOffset;
+    this.meanDurationFactor = st.meanDurationFactor;
   }
 
   public Integer getId() {
@@ -227,19 +245,14 @@ public final class StopTime extends IdentityBean<Integer> implements
   }
 
   /**
-   * Returns possible entity for the stop location in this order:
-   *  - stop
-   *  - location
-   *  - location group
+   * Returns possible entity for the stop location in this order: - stop - location - location group
    */
-  public StopLocation getStopLocation(){
-    if(getStop() != null){
+  public StopLocation getStopLocation() {
+    if (getStop() != null) {
       return getStop();
-    }
-    else if(getLocation() != null) {
+    } else if (getLocation() != null) {
       return getLocation();
-    }
-    else if(getLocationGroup() != null){
+    } else if (getLocationGroup() != null) {
       return getLocationGroup();
     }
     return null;
@@ -335,7 +348,6 @@ public final class StopTime extends IdentityBean<Integer> implements
     this.departureTime = MISSING_VALUE;
   }
 
-
   public int getStartPickupDropOffWindow() {
     return startPickupDropOffWindow;
   }
@@ -359,7 +371,7 @@ public final class StopTime extends IdentityBean<Integer> implements
     }
     return timepoint != MISSING_VALUE;
   }
-  
+
   /**
    * @return 1 if the stop-time is a timepoint location
    */
@@ -376,10 +388,10 @@ public final class StopTime extends IdentityBean<Integer> implements
     if (proxy != null) {
       proxy.setTimepoint(timepoint);
       return;
-    }  
+    }
     this.timepoint = timepoint;
   }
-  
+
   @Override
   public void clearTimepoint() {
     if (proxy != null) {
@@ -529,9 +541,8 @@ public final class StopTime extends IdentityBean<Integer> implements
   }
 
   /**
-   * When set, all interactions with this stop time will be redirected through
-   * this proxy.
-   * 
+   * When set, all interactions with this stop time will be redirected through this proxy.
+   *
    * @param proxy
    */
   public void setProxy(StopTimeProxy proxy) {
@@ -544,64 +555,68 @@ public final class StopTime extends IdentityBean<Integer> implements
 
   public String displayArrival() {
     return "StopTime(Arrival time="
-            + StopTimeFieldMappingFactory.getSecondsAsString(getArrivalTime())
-           + ")";
+        + StopTimeFieldMappingFactory.getSecondsAsString(getArrivalTime())
+        + ")";
   }
 
   @Override
   public String toString() {
-    return "StopTime(seq=" + getStopSequence() + " stop=" + (getStopLocation()==null?"NuLl":getStopLocation().getId())
-        + " trip=" + (getTrip()==null?"NuLl":getTrip().getId()) + " times="
+    return "StopTime(seq="
+        + getStopSequence()
+        + " stop="
+        + (getStopLocation() == null ? "NuLl" : getStopLocation().getId())
+        + " trip="
+        + (getTrip() == null ? "NuLl" : getTrip().getId())
+        + " times="
         + StopTimeFieldMappingFactory.getSecondsAsString(getArrivalTime())
         + "-"
         + StopTimeFieldMappingFactory.getSecondsAsString(getDepartureTime())
         + ")";
   }
 
-	public double getMeanDurationFactor() {
-		return meanDurationFactor;
-	}
-	
-	public void setMeanDurationFactor(double meanDurationFactor) {
-		this.meanDurationFactor = meanDurationFactor;
-	}
-	
-	public double getMeanDurationOffset() {
-		return meanDurationOffset;
-	}
-	
-	public void setMeanDurationOffset(double meanDurationOffset) {
-		this.meanDurationOffset = meanDurationOffset;
-	}
-	
-	public double getSafeDurationFactor() {
-	    if (proxy != null) {
-	        return proxy.getSafeDurationFactor();
-	      }
-	      return this.safeDurationFactor;
-	}
-	
-	public void setSafeDurationFactor(double safeDurationFactor) {
-	    if (proxy != null) {
-	        proxy.setSafeDurationFactor(safeDurationFactor);
-	        return;
-	      }
-	      this.safeDurationFactor = safeDurationFactor;
-	}
-	
-	public double getSafeDurationOffset() {
-	    if (proxy != null) {
-	        return proxy.getSafeDurationOffset();
-	      }
-	      return this.safeDurationOffset;
-	}
-	
-	public void setSafeDurationOffset(double safeDurationOffset) {
-	    if (proxy != null) {
-	        proxy.setSafeDurationOffset(safeDurationOffset);
-	        return;
-	      }
-	    this.safeDurationOffset = safeDurationOffset;
-	}
+  public double getMeanDurationFactor() {
+    return meanDurationFactor;
+  }
 
+  public void setMeanDurationFactor(double meanDurationFactor) {
+    this.meanDurationFactor = meanDurationFactor;
+  }
+
+  public double getMeanDurationOffset() {
+    return meanDurationOffset;
+  }
+
+  public void setMeanDurationOffset(double meanDurationOffset) {
+    this.meanDurationOffset = meanDurationOffset;
+  }
+
+  public double getSafeDurationFactor() {
+    if (proxy != null) {
+      return proxy.getSafeDurationFactor();
+    }
+    return this.safeDurationFactor;
+  }
+
+  public void setSafeDurationFactor(double safeDurationFactor) {
+    if (proxy != null) {
+      proxy.setSafeDurationFactor(safeDurationFactor);
+      return;
+    }
+    this.safeDurationFactor = safeDurationFactor;
+  }
+
+  public double getSafeDurationOffset() {
+    if (proxy != null) {
+      return proxy.getSafeDurationOffset();
+    }
+    return this.safeDurationOffset;
+  }
+
+  public void setSafeDurationOffset(double safeDurationOffset) {
+    if (proxy != null) {
+      proxy.setSafeDurationOffset(safeDurationOffset);
+      return;
+    }
+    this.safeDurationOffset = safeDurationOffset;
+  }
 }

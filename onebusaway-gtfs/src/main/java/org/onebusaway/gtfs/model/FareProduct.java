@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2022 Leonard Ehrenfried <mail@leonard.io>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.model;
@@ -20,8 +18,8 @@ import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
-import org.onebusaway.gtfs.serialization.mappings.FareProductFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.FareAmountFieldMappingFactory;
+import org.onebusaway.gtfs.serialization.mappings.FareProductFieldMappingFactory;
 
 @CsvFields(filename = "fare_products.txt", required = false)
 public final class FareProduct extends IdentityBean<AgencyAndId> {
@@ -29,14 +27,17 @@ public final class FareProduct extends IdentityBean<AgencyAndId> {
   private static final long serialVersionUID = 2L;
 
   private static final int MISSING_VALUE = -999;
+
   @CsvField(name = "fare_product_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId fareProductId;
+
   @CsvField(optional = true, name = "fare_product_name")
   private String name;
+
   @CsvField(name = "amount", optional = false, mapping = FareAmountFieldMappingFactory.class)
   private float amount = MISSING_VALUE;
-  @CsvField
-  private String currency;
+
+  @CsvField private String currency;
 
   @CsvField(optional = true)
   private int durationAmount = MISSING_VALUE;
@@ -119,19 +120,15 @@ public final class FareProduct extends IdentityBean<AgencyAndId> {
 
   @Override
   public AgencyAndId getId() {
-    String riderCategoryId = Optional.ofNullable(riderCategory).map(c -> c.getId().getId()).orElse(null);
+    String riderCategoryId =
+        Optional.ofNullable(riderCategory).map(c -> c.getId().getId()).orElse(null);
     String fareMediumId = Optional.ofNullable(fareMedium).map(c -> c.getId().getId()).orElse(null);
     return FareProductFieldMappingFactory.fareProductId(
-            fareProductId.getAgencyId(),
-            fareProductId.getId(),
-            riderCategoryId,
-            fareMediumId
-    );
+        fareProductId.getAgencyId(), fareProductId.getId(), riderCategoryId, fareMediumId);
   }
 
   @Override
-  public void setId(AgencyAndId id) {
-  }
+  public void setId(AgencyAndId id) {}
 
   public RiderCategory getRiderCategory() {
     return riderCategory;

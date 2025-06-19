@@ -1,16 +1,14 @@
 /**
- * Copyright (C) 2012 Google, Inc. 
+ * Copyright (C) 2012 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.updates;
@@ -21,12 +19,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.model.Stop;
-import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.StopLocation;
+import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.match.TypedEntityMatch;
@@ -100,9 +97,7 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
           newStopTimes.add(stopTime);
         }
 
-        /**
-         * If the entire trip was trimmed, we just drop it.
-         */
+        /** If the entire trip was trimmed, we just drop it. */
         if (newStopTimes.isEmpty()) {
           continue;
         }
@@ -151,8 +146,11 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
     return matching;
   }
 
-  private void updateShape(GtfsMutableRelationalDao dao, Trip trip,
-      List<StopTime> stopTimes, Set<AgencyAndId> newShapeIds) {
+  private void updateShape(
+      GtfsMutableRelationalDao dao,
+      Trip trip,
+      List<StopTime> stopTimes,
+      Set<AgencyAndId> newShapeIds) {
     if (stopTimes.size() < 2) {
       trip.setShapeId(null);
       return;
@@ -168,17 +166,16 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
 
     StopLocation firstStop = stopTimes.get(0).getStop();
     StopLocation lastStop = stopTimes.get(stopTimes.size() - 1).getStop();
-    String id = shapeId.getId() + "-" + firstStop.getId().getId() + "-"
-        + lastStop.getId().getId();
+    String id = shapeId.getId() + "-" + firstStop.getId().getId() + "-" + lastStop.getId().getId();
     AgencyAndId newShapeId = new AgencyAndId(shapeId.getAgencyId(), id);
     trip.setShapeId(newShapeId);
 
     if (!(firstStop instanceof Stop)) {
-      //TODO Correct error type
+      // TODO Correct error type
       throw new Error(firstStop + " must be stop");
     }
     if (!(lastStop instanceof Stop)) {
-      //TODO Correct error type
+      // TODO Correct error type
       throw new Error(firstStop + " must be stop");
     }
 

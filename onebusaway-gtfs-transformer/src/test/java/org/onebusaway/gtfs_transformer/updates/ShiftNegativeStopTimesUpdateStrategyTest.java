@@ -1,25 +1,22 @@
 /**
  * Copyright (C) 2013 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.updates;
 
-import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.model.ServiceCalendar;
@@ -33,7 +30,8 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class ShiftNegativeStopTimesUpdateStrategyTest {
 
-  private ShiftNegativeStopTimesUpdateStrategy _strategy = new ShiftNegativeStopTimesUpdateStrategy();
+  private ShiftNegativeStopTimesUpdateStrategy _strategy =
+      new ShiftNegativeStopTimesUpdateStrategy();
 
   private MockGtfs _gtfs;
 
@@ -47,12 +45,13 @@ public class ShiftNegativeStopTimesUpdateStrategyTest {
     _gtfs.putAgencies(1);
     _gtfs.putStops(3);
     _gtfs.putRoutes(1);
-    _gtfs.putCalendars(1, "start_date=20120903", "end_date=20121016",
-        "mask=1111100");
+    _gtfs.putCalendars(1, "start_date=20120903", "end_date=20121016", "mask=1111100");
     _gtfs.putTrips(1, "r0", "sid0");
-    _gtfs.putLines("stop_times.txt",
+    _gtfs.putLines(
+        "stop_times.txt",
         "trip_id,stop_id,stop_sequence,arrival_time,departure_time",
-        "t0,s0,0,-01:00:00,-01:05:00", "t0,s1,1,-01:30:00,-01:30:00",
+        "t0,s0,0,-01:00:00,-01:05:00",
+        "t0,s1,1,-01:30:00,-01:30:00",
         "t0,s2,2,00:30:00,00:30:00");
 
     GtfsMutableRelationalDao dao = _gtfs.read();
@@ -65,24 +64,24 @@ public class ShiftNegativeStopTimesUpdateStrategyTest {
     assertEquals(3, stopTimes.size());
     {
       StopTime stopTime = stopTimes.get(0);
-      assertEquals(stopTime.getArrivalTime(),
-          StopTimeFieldMappingFactory.getStringAsSeconds("23:00:00"));
-      assertEquals(stopTime.getDepartureTime(),
-          StopTimeFieldMappingFactory.getStringAsSeconds("23:05:00"));
+      assertEquals(
+          stopTime.getArrivalTime(), StopTimeFieldMappingFactory.getStringAsSeconds("23:00:00"));
+      assertEquals(
+          stopTime.getDepartureTime(), StopTimeFieldMappingFactory.getStringAsSeconds("23:05:00"));
     }
     {
       StopTime stopTime = stopTimes.get(1);
-      assertEquals(stopTime.getArrivalTime(),
-          StopTimeFieldMappingFactory.getStringAsSeconds("23:30:00"));
-      assertEquals(stopTime.getDepartureTime(),
-          StopTimeFieldMappingFactory.getStringAsSeconds("23:30:00"));
+      assertEquals(
+          stopTime.getArrivalTime(), StopTimeFieldMappingFactory.getStringAsSeconds("23:30:00"));
+      assertEquals(
+          stopTime.getDepartureTime(), StopTimeFieldMappingFactory.getStringAsSeconds("23:30:00"));
     }
     {
       StopTime stopTime = stopTimes.get(2);
-      assertEquals(stopTime.getArrivalTime(),
-          StopTimeFieldMappingFactory.getStringAsSeconds("24:30:00"));
-      assertEquals(stopTime.getDepartureTime(),
-          StopTimeFieldMappingFactory.getStringAsSeconds("24:30:00"));
+      assertEquals(
+          stopTime.getArrivalTime(), StopTimeFieldMappingFactory.getStringAsSeconds("24:30:00"));
+      assertEquals(
+          stopTime.getDepartureTime(), StopTimeFieldMappingFactory.getStringAsSeconds("24:30:00"));
     }
 
     ServiceCalendar c = dao.getCalendarForServiceId(trip.getServiceId());

@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.commons.collections4.iterators.PermutationIterator;
 import org.junit.jupiter.api.Test;
 
@@ -52,7 +51,7 @@ public class DelimitedTextParserTest {
     List<CsvColumn> columns = createValidColumns();
 
     // add invalid columns
-    columns.add(new CsvColumn("\"open quote",  null));
+    columns.add(new CsvColumn("\"open quote", null));
     columns.add(new CsvColumn("\"open quoute with escape\"\"", null));
 
     return new PermutationIterator<CsvColumn>(columns);
@@ -61,7 +60,7 @@ public class DelimitedTextParserTest {
   @Test
   void testParseValidCsv() {
     Iterator<List<CsvColumn>> iterator = iterateValidRows();
-    while(iterator.hasNext()) {
+    while (iterator.hasNext()) {
       List<CsvColumn> columns = iterator.next();
       List<String> outputColumns = DelimitedTextParser.parse(toLine(columns));
       assertEquals(outputColumns.size(), columns.size());
@@ -74,23 +73,20 @@ public class DelimitedTextParserTest {
   @Test
   void testParseInvalidCsv() {
     Iterator<List<CsvColumn>> iterator = iterateInvalidRows();
-    while(iterator.hasNext()) {
+    while (iterator.hasNext()) {
       List<CsvColumn> columns = iterator.next();
-      assertThrows(Exception.class,
-          () -> DelimitedTextParser.parse(toLine(columns)),
-          "Expected exception"
-          );
+      assertThrows(
+          Exception.class, () -> DelimitedTextParser.parse(toLine(columns)), "Expected exception");
     }
   }
 
   private static String toLine(List<CsvColumn> elements) {
     StringBuilder builder = new StringBuilder(128);
-    for(CsvColumn column: elements) {
+    for (CsvColumn column : elements) {
       builder.append(column.getEncoded());
       builder.append(",");
     }
     builder.setLength(builder.length() - 1);
     return builder.toString();
   }
-
 }

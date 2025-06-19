@@ -1,17 +1,14 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2011 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.serialization;
@@ -21,7 +18,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.EntitySchemaFactoryHelper;
 import org.onebusaway.csv_entities.schema.beans.CsvEntityMappingBean;
@@ -81,20 +77,16 @@ public class GtfsEntitySchemaFactory {
 
   public static Map<Class<?>, Comparator<?>> getEntityComparators() {
     Map<Class<?>, Comparator<?>> comparators = new HashMap<Class<?>, Comparator<?>>();
-    comparators.put(Agency.class,
-        getComparatorForIdentityBeanType(Agency.class));
-    comparators.put(Area.class,
-            getComparatorForIdentityBeanType(Area.class));
-    comparators.put(Block.class,
-        getComparatorForIdentityBeanType(Block.class));
+    comparators.put(Agency.class, getComparatorForIdentityBeanType(Agency.class));
+    comparators.put(Area.class, getComparatorForIdentityBeanType(Area.class));
+    comparators.put(Block.class, getComparatorForIdentityBeanType(Block.class));
     comparators.put(Route.class, getComparatorForIdentityBeanType(Route.class));
     comparators.put(Stop.class, getComparatorForIdentityBeanType(Stop.class));
     comparators.put(Trip.class, getComparatorForIdentityBeanType(Trip.class));
     comparators.put(StopTime.class, new StopTimeComparator());
     comparators.put(ShapePoint.class, new ShapePointComparator());
     comparators.put(ServiceCalendar.class, new ServiceCalendarComparator());
-    comparators.put(ServiceCalendarDate.class,
-        new ServiceCalendarDateComparator());
+    comparators.put(ServiceCalendarDate.class, new ServiceCalendarDateComparator());
     comparators.put(Vehicle.class, getComparatorForIdentityBeanType(Vehicle.class));
     comparators.put(Icon.class, getComparatorForIdentityBeanType(Icon.class));
     return comparators;

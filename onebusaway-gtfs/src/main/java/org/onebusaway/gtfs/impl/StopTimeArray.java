@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2012 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.impl;
@@ -20,7 +18,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
 import org.onebusaway.gtfs.model.*;
 
 public class StopTimeArray extends AbstractList<StopTime> {
@@ -64,13 +61,13 @@ public class StopTimeArray extends AbstractList<StopTime> {
   private double[] meanOffsets = new double[0];
 
   private double[] safeOffsets = new double[0];
-  
+
   private double[] meanFactors = new double[0];
 
   private double[] safeFactors = new double[0];
 
   private String[] freeRunningFlags = new String[0];
-  
+
   public void trimToSize() {
     setLength(size);
   }
@@ -98,7 +95,7 @@ public class StopTimeArray extends AbstractList<StopTime> {
     dropOffTypes[index] = stopTime.getDropOffType();
     shapeDistTraveled[index] = stopTime.getShapeDistTraveled();
     pickupBookingRules[index] = stopTime.getPickupBookingRule();
-    dropOffBookingRules[index] = stopTime.getDropOffBookingRule();    
+    dropOffBookingRules[index] = stopTime.getDropOffBookingRule();
     safeOffsets[index] = stopTime.getSafeDurationOffset();
     safeFactors[index] = stopTime.getSafeDurationFactor();
     meanOffsets[index] = stopTime.getMeanDurationOffset();
@@ -149,8 +146,8 @@ public class StopTimeArray extends AbstractList<StopTime> {
     this.startServiceAreas = Arrays.copyOf(this.startServiceAreas, newLength);
     this.endServiceAreas = Arrays.copyOf(this.endServiceAreas, newLength);
     this.stops = Arrays.copyOf(this.stops, newLength);
-    this.locationGroups = Arrays.copyOf(this.locationGroups,newLength);
-    this.locations = Arrays.copyOf(this.locations,newLength);
+    this.locationGroups = Arrays.copyOf(this.locationGroups, newLength);
+    this.locations = Arrays.copyOf(this.locations, newLength);
     this.arrivalTimes = Arrays.copyOf(this.arrivalTimes, newLength);
     this.departureTimes = Arrays.copyOf(this.departureTimes, newLength);
     this.timepoints = Arrays.copyOf(this.timepoints, newLength);
@@ -442,6 +439,5 @@ public class StopTimeArray extends AbstractList<StopTime> {
     public void setSafeDurationOffset(double safeDurationOffset) {
       safeOffsets[index] = safeDurationOffset;
     }
-
   }
 }

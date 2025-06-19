@@ -1,37 +1,33 @@
 /**
  * Copyright (C) 2020 Kyyti Group Ltd
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.onebusaway.gtfs.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-
-import org.geojson.FeatureCollection;
-import org.geojson.Feature;
-import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.Location;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
+import org.geojson.Feature;
+import org.geojson.FeatureCollection;
+import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.Location;
 
 public class LocationsGeoJSONReader {
-  
-  private static final ObjectReader FEATURE_COLLECTION_OBJECT_READER = new ObjectMapper().readerFor(FeatureCollection.class);
+
+  private static final ObjectReader FEATURE_COLLECTION_OBJECT_READER =
+      new ObjectMapper().readerFor(FeatureCollection.class);
 
   private final Reader reader;
   private final String defaultAgencyId;

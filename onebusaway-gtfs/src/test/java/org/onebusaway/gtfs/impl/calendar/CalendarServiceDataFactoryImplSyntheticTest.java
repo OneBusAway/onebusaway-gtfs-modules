@@ -1,26 +1,23 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2012 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2012 Google, Inc.
  * Copyright (C) 2012 Codemass, Inc. <aaron@codemass.com>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.impl.calendar;
 
-import static  org.junit.jupiter.api.Assertions.assertEquals;
-import static  org.junit.jupiter.api.Assertions.assertNull;
-import static  org.junit.jupiter.api.Assertions.assertTrue;
-import static  org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -28,7 +25,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
-
 import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.DateSupport;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
@@ -62,10 +58,12 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
     ServiceCalendar c2 = calendar(serviceIdA2, dStart, dEnd, "1111111");
     ServiceCalendar c3 = calendar(serviceIdB1, dStart, dEnd, "0000011");
 
-    ServiceCalendarDate cd1 = calendarDate(serviceIdA2, new ServiceDate(2010,
-        2, 15), ServiceCalendarDate.EXCEPTION_TYPE_REMOVE);
-    ServiceCalendarDate cd2 = calendarDate(serviceIdA2, new ServiceDate(2010,
-        2, 26), ServiceCalendarDate.EXCEPTION_TYPE_ADD);
+    ServiceCalendarDate cd1 =
+        calendarDate(
+            serviceIdA2, new ServiceDate(2010, 2, 15), ServiceCalendarDate.EXCEPTION_TYPE_REMOVE);
+    ServiceCalendarDate cd2 =
+        calendarDate(
+            serviceIdA2, new ServiceDate(2010, 2, 26), ServiceCalendarDate.EXCEPTION_TYPE_ADD);
 
     Trip t1 = trip("A", "1", serviceIdA1);
     Trip t2 = trip("A", "2", serviceIdA1);
@@ -123,13 +121,11 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
     assertEquals(new ServiceDate(2010, 2, 21), serviceDates.get(3));
 
     // Service id does not exist
-    serviceDates = data.getServiceDatesForServiceId(new AgencyAndId("DNE",
-        "DNE"));
+    serviceDates = data.getServiceDatesForServiceId(new AgencyAndId("DNE", "DNE"));
     assertNull(serviceDates);
 
     // Service ids for dates
-    Set<AgencyAndId> serviceIdsForDate = data.getServiceIdsForDate(new ServiceDate(
-        2010, 2, 10));
+    Set<AgencyAndId> serviceIdsForDate = data.getServiceIdsForDate(new ServiceDate(2010, 2, 10));
     assertEquals(2, serviceIdsForDate.size());
     assertTrue(serviceIdsForDate.contains(serviceIdA1));
     assertTrue(serviceIdsForDate.contains(serviceIdA2));
@@ -143,45 +139,31 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
     assertEquals(0, serviceIdsForDate.size());
 
     // Localized service dates
-    List<Date> dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(
-        serviceIdA1, tzA));
+    List<Date> dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(serviceIdA1, tzA));
     assertEquals(11, dates.size());
-    assertEquals(DateSupport.date("2010-02-10 00:00 Pacific Standard Time"),
-        dates.get(0));
-    assertEquals(DateSupport.date("2010-02-24 00:00 Pacific Standard Time"),
-        dates.get(10));
+    assertEquals(DateSupport.date("2010-02-10 00:00 Pacific Standard Time"), dates.get(0));
+    assertEquals(DateSupport.date("2010-02-24 00:00 Pacific Standard Time"), dates.get(10));
 
-    dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(
-        serviceIdA1, tzB));
+    dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(serviceIdA1, tzB));
     assertNull(dates);
 
-    dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(
-        serviceIdA2, tzA));
+    dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(serviceIdA2, tzA));
     assertEquals(15, dates.size());
-    assertEquals(DateSupport.date("2010-02-10 00:00 Pacific Standard Time"),
-        dates.get(0));
-    assertEquals(DateSupport.date("2010-02-26 00:00 Pacific Standard Time"),
-        dates.get(14));
+    assertEquals(DateSupport.date("2010-02-10 00:00 Pacific Standard Time"), dates.get(0));
+    assertEquals(DateSupport.date("2010-02-26 00:00 Pacific Standard Time"), dates.get(14));
 
-    dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(
-        serviceIdA2, tzB));
+    dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(serviceIdA2, tzB));
     assertEquals(15, dates.size());
-    assertEquals(DateSupport.date("2010-02-10 00:00 Mountain Standard Time"),
-        dates.get(0));
-    assertEquals(DateSupport.date("2010-02-26 00:00 Mountain Standard Time"),
-        dates.get(14));
+    assertEquals(DateSupport.date("2010-02-10 00:00 Mountain Standard Time"), dates.get(0));
+    assertEquals(DateSupport.date("2010-02-26 00:00 Mountain Standard Time"), dates.get(14));
 
-    dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(
-        serviceIdB1, tzA));
+    dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(serviceIdB1, tzA));
     assertNull(dates);
 
-    dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(
-        serviceIdB1, tzB));
+    dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(serviceIdB1, tzB));
     assertEquals(4, dates.size());
-    assertEquals(DateSupport.date("2010-02-13 00:00 Mountain Standard Time"),
-        dates.get(0));
-    assertEquals(DateSupport.date("2010-02-21 00:00 Mountain Standard Time"),
-        dates.get(3));
+    assertEquals(DateSupport.date("2010-02-13 00:00 Mountain Standard Time"), dates.get(0));
+    assertEquals(DateSupport.date("2010-02-21 00:00 Mountain Standard Time"), dates.get(3));
   }
 
   @Test
@@ -217,12 +199,15 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
 
     AgencyAndId serviceId = new AgencyAndId("A", "2");
 
-    ServiceCalendarDate cd1 = calendarDate(serviceId, new ServiceDate(2012, 3,
-        10), ServiceCalendarDate.EXCEPTION_TYPE_ADD);
-    ServiceCalendarDate cd2 = calendarDate(serviceId, new ServiceDate(2012, 3,
-        11), ServiceCalendarDate.EXCEPTION_TYPE_ADD);
-    ServiceCalendarDate cd3 = calendarDate(serviceId, new ServiceDate(2012, 3,
-        12), ServiceCalendarDate.EXCEPTION_TYPE_ADD);
+    ServiceCalendarDate cd1 =
+        calendarDate(
+            serviceId, new ServiceDate(2012, 3, 10), ServiceCalendarDate.EXCEPTION_TYPE_ADD);
+    ServiceCalendarDate cd2 =
+        calendarDate(
+            serviceId, new ServiceDate(2012, 3, 11), ServiceCalendarDate.EXCEPTION_TYPE_ADD);
+    ServiceCalendarDate cd3 =
+        calendarDate(
+            serviceId, new ServiceDate(2012, 3, 12), ServiceCalendarDate.EXCEPTION_TYPE_ADD);
 
     GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();
     factory.setGtfsDao(dao);
@@ -232,8 +217,7 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
 
     CalendarServiceData data = factory.createData();
     List<ServiceDate> serviceDates = data.getServiceDatesForServiceId(serviceId);
-    assertEquals(serviceDates,
-        Arrays.asList(cd1.getDate(), cd2.getDate(), cd3.getDate()));
+    assertEquals(serviceDates, Arrays.asList(cd1.getDate(), cd2.getDate(), cd3.getDate()));
   }
 
   @Test
@@ -277,11 +261,10 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
     return agency;
   }
 
-  private ServiceCalendar calendar(AgencyAndId serviceId,
-      ServiceDate startDate, ServiceDate endDate, String days) {
+  private ServiceCalendar calendar(
+      AgencyAndId serviceId, ServiceDate startDate, ServiceDate endDate, String days) {
 
-    if (days.length() != 7)
-      throw new IllegalStateException("invalid days string: " + days);
+    if (days.length() != 7) throw new IllegalStateException("invalid days string: " + days);
 
     ServiceCalendar calendar = new ServiceCalendar();
 
@@ -300,8 +283,8 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
     return calendar;
   }
 
-  private ServiceCalendarDate calendarDate(AgencyAndId serviceId,
-      ServiceDate date, int exceptionType) {
+  private ServiceCalendarDate calendarDate(
+      AgencyAndId serviceId, ServiceDate date, int exceptionType) {
     ServiceCalendarDate calendarDate = new ServiceCalendarDate();
     calendarDate.setServiceId(serviceId);
     calendarDate.setDate(date);
@@ -317,8 +300,6 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
   }
 
   private void saveEntities(GtfsRelationalDaoImpl dao, Object... entities) {
-    for (Object entity : entities)
-      dao.saveEntity(entity);
+    for (Object entity : entities) dao.saveEntity(entity);
   }
-
 }

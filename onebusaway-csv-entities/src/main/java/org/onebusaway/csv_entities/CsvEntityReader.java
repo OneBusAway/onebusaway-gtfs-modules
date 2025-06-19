@@ -1,17 +1,14 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2011 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.csv_entities;
@@ -27,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipFile;
-
 import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.csv_entities.exceptions.MissingRequiredEntityException;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
@@ -36,8 +32,7 @@ import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
 
 public class CsvEntityReader {
 
-  public static final String KEY_CONTEXT = CsvEntityReader.class.getName()
-      + ".context";
+  public static final String KEY_CONTEXT = CsvEntityReader.class.getName() + ".context";
 
   private EntitySchemaFactory _entitySchemaFactory = new DefaultEntitySchemaFactory();
 
@@ -58,8 +53,7 @@ public class CsvEntityReader {
   private Map<String, String> _stringTable = new HashMap<String, String>();
 
   /**
-   * @return the {@link EntitySchemaFactory} that will be used for introspection
-   *         of bean classes
+   * @return the {@link EntitySchemaFactory} that will be used for introspection of bean classes
    */
   public EntitySchemaFactory getEntitySchemaFactory() {
     return _entitySchemaFactory;
@@ -78,10 +72,8 @@ public class CsvEntityReader {
   }
 
   public void setInputLocation(File path) throws IOException {
-    if (path.isDirectory())
-      _source = new FileCsvInputSource(path);
-    else
-      _source = new ZipFileCsvInputSource(new ZipFile(path));
+    if (path.isDirectory()) _source = new FileCsvInputSource(path);
+    else _source = new ZipFileCsvInputSource(new ZipFile(path));
   }
 
   public void setTokenizerStrategy(TokenizerStrategy tokenizerStrategy) {
@@ -108,11 +100,9 @@ public class CsvEntityReader {
     readEntities(entityClass, _source);
   }
 
-  public void readEntities(Class<?> entityClass, CsvInputSource source)
-      throws IOException {
+  public void readEntities(Class<?> entityClass, CsvInputSource source) throws IOException {
     InputStream is = openInputStreamForEntityClass(source, entityClass);
-    if (is != null)
-      readEntities(entityClass, is);
+    if (is != null) readEntities(entityClass, is);
   }
 
   public void readEntities(Class<?> entityClass, InputStream is)
@@ -125,15 +115,13 @@ public class CsvEntityReader {
 
     EntitySchema schema = _entitySchemaFactory.getSchema(entityClass);
 
-    IndividualCsvEntityReader entityLoader = createIndividualCsvEntityReader(
-        _context, schema, _handler);
+    IndividualCsvEntityReader entityLoader =
+        createIndividualCsvEntityReader(_context, schema, _handler);
     entityLoader.setTrimValues(_trimValues);
 
     BufferedReader lineReader = new BufferedReader(reader);
 
-    /**
-     * Skip the initial UTF BOM, if present
-     */
+    /** Skip the initial UTF BOM, if present */
     lineReader.mark(1);
     int c = lineReader.read();
 
@@ -146,20 +134,16 @@ public class CsvEntityReader {
 
     try {
       while ((line = lineReader.readLine()) != null) {
-        if (line.isEmpty())
-          continue;
+        if (line.isEmpty()) continue;
         // TODO: This is a hack of sorts to deal with a malformed data file...
-        if (line.length() == 1 && line.charAt(0) == 26)
-          continue;
+        if (line.length() == 1 && line.charAt(0) == 26) continue;
         List<String> values = _tokenizerStrategy.parse(line);
-        if (_internStrings)
-          internStrings(values);
+        if (_internStrings) internStrings(values);
         entityLoader.handleLine(values);
         lineNumber++;
       }
     } catch (Exception ex) {
-      throw new CsvEntityIOException(entityClass, schema.getFilename(),
-          lineNumber, ex);
+      throw new CsvEntityIOException(entityClass, schema.getFilename(), lineNumber, ex);
     } finally {
       try {
         lineReader.close();
@@ -175,26 +159,24 @@ public class CsvEntityReader {
   }
 
   /**
-   * Sometimes it may be necessary to inject an instantiated entity directly
-   * instead of loading it from a CSV source. This method allows you to add a
-   * new entity, with all handlers called for that entity as if it had just been
-   * read from a source.
-   * 
+   * Sometimes it may be necessary to inject an instantiated entity directly instead of loading it
+   * from a CSV source. This method allows you to add a new entity, with all handlers called for
+   * that entity as if it had just been read from a source.
+   *
    * @param entity the entity to be injected
    */
   public void injectEntity(Object entity) {
     _handler.handleEntity(entity);
   }
 
-  public InputStream openInputStreamForEntityClass(CsvInputSource source,
-      Class<?> entityClass) throws IOException {
+  public InputStream openInputStreamForEntityClass(CsvInputSource source, Class<?> entityClass)
+      throws IOException {
 
     EntitySchema schema = _entitySchemaFactory.getSchema(entityClass);
 
     String name = schema.getFilename();
     if (!_source.hasResource(name)) {
-      if (schema.isRequired())
-        throw new MissingRequiredEntityException(entityClass, name);
+      if (schema.isRequired()) throw new MissingRequiredEntityException(entityClass, name);
       return null;
     }
 
@@ -202,8 +184,7 @@ public class CsvEntityReader {
   }
 
   public void close() throws IOException {
-    if (_source != null)
-      _source.close();
+    if (_source != null) _source.close();
   }
 
   private void internStrings(List<String> values) {
@@ -221,8 +202,7 @@ public class CsvEntityReader {
   private class EntityHandlerImpl implements EntityHandler {
 
     public void handleEntity(Object entity) {
-      for (EntityHandler handler : _handlers)
-        handler.handleEntity(entity);
+      for (EntityHandler handler : _handlers) handler.handleEntity(entity);
     }
   }
 }

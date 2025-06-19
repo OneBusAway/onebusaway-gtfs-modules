@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.services;
@@ -29,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
@@ -123,7 +120,9 @@ public class MockGtfs {
   }
 
   public void putDefaultAgencies() {
-    putLines("agency.txt", "agency_id,agency_name,agency_url,agency_timezone",
+    putLines(
+        "agency.txt",
+        "agency_id,agency_name,agency_url,agency_timezone",
         "1,Metro,http://metro.gov/,America/Los_Angeles");
   }
 
@@ -139,9 +138,8 @@ public class MockGtfs {
 
   public void putDefaultRoutes() {
     putDefaultAgencies();
-    putLines("routes.txt",
-        "route_id,route_short_name,route_long_name,route_type",
-        "R10,10,The Ten,3");
+    putLines(
+        "routes.txt", "route_id,route_short_name,route_long_name,route_type", "R10,10,The Ten,3");
   }
 
   public void putStops(int numberOfRows, String... columns) {
@@ -166,9 +164,10 @@ public class MockGtfs {
 
   /**
    * specify stop_id and stop_name, have stop generated with fake lat/lon
+   *
    * @param rows
    */
-  public void putNamedStops(String...rows) {
+  public void putNamedStops(String... rows) {
     int numberOfRows = rows.length;
     List<String> stopIds = new ArrayList<>();
     List<String> stopNames = new ArrayList<>();
@@ -196,7 +195,9 @@ public class MockGtfs {
 
   public void putDefaultStops() {
     putDefaultAgencies();
-    putLines("stops.txt", "stop_id,stop_name,stop_lat,stop_lon",
+    putLines(
+        "stops.txt",
+        "stop_id,stop_name,stop_lat,stop_lon",
         "100,The Stop,47.654403,-122.305211",
         "200,The Other Stop,47.656303,-122.315436");
   }
@@ -213,9 +214,7 @@ public class MockGtfs {
     b.addColumnSpec("end_date", endDate.getAsString());
     b.addColumnSpec("start_date", startDate.getAsString());
 
-    String[] days = {
-        "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
-        "sunday"};
+    String[] days = {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
     for (String day : days) {
       b.addColumnSpec(day, "1");
     }
@@ -230,8 +229,7 @@ public class MockGtfs {
       }
       for (String maskRow : mask) {
         if (maskRow.length() != days.length) {
-          throw new IllegalArgumentException("invalid calendar.txt mask="
-              + maskRow);
+          throw new IllegalArgumentException("invalid calendar.txt mask=" + maskRow);
         }
         for (int i = 0; i < maskRow.length(); ++i) {
           String day = days[i];
@@ -280,11 +278,9 @@ public class MockGtfs {
     b.addColumnSpec("date", serviceDates);
     b.addColumnSpec("exception_type", exceptionTypes);
     putFile("calendar_dates.txt", b.build());
-
   }
 
-  public void putTrips(int numberOfRows, String routeIds, String serviceIds,
-      String... columns) {
+  public void putTrips(int numberOfRows, String routeIds, String serviceIds, String... columns) {
     TableBuilder b = new TableBuilder(numberOfRows);
     b.addColumnSpec("trip_id", "t$0");
     b.addColumnSpec("route_id", routeIds);
@@ -306,25 +302,26 @@ public class MockGtfs {
     List<String> departureTimeColumn = new ArrayList<String>();
     List<String> stopSequenceColumn = new ArrayList<String>();
 
-    String[] expandedTripIds = tripIds.isEmpty() ? new String[0]
-        : tripIds.split(",");
+    String[] expandedTripIds = tripIds.isEmpty() ? new String[0] : tripIds.split(",");
     List<List<String>> expandedStopIds = new ArrayList<List<String>>();
     if (!stopIds.isEmpty()) {
       for (String stopIdsEntry : stopIds.split("\\|")) {
         expandedStopIds.add(Arrays.asList(stopIdsEntry.split(",")));
       }
     }
-    if (expandedStopIds.size() != 1
-        && expandedStopIds.size() != expandedTripIds.length) {
-      throw new IllegalArgumentException("given " + expandedTripIds.length
-          + " trip_id values, expected either 1 or " + expandedTripIds.length
-          + " stop_id lists, but instead found " + expandedStopIds.size());
+    if (expandedStopIds.size() != 1 && expandedStopIds.size() != expandedTripIds.length) {
+      throw new IllegalArgumentException(
+          "given "
+              + expandedTripIds.length
+              + " trip_id values, expected either 1 or "
+              + expandedTripIds.length
+              + " stop_id lists, but instead found "
+              + expandedStopIds.size());
     }
     int startTime = 9 * 60 * 60;
     for (int i = 0; i < expandedTripIds.length; ++i) {
       String tripId = expandedTripIds[i];
-      List<String> specificStopIds = expandedStopIds.get(expandedStopIds.size() == 1
-          ? 0 : i);
+      List<String> specificStopIds = expandedStopIds.get(expandedStopIds.size() == 1 ? 0 : i);
       int t = startTime;
       for (int stopSequence = 0; stopSequence < specificStopIds.size(); stopSequence++) {
         String stopId = specificStopIds.get(stopSequence);
@@ -350,12 +347,14 @@ public class MockGtfs {
 
   /**
    * Accept shape_dist_traveled and timepoints for testing.
+   *
    * @param tripIds
    * @param stopIds
    * @param distances
    * @param timepoints
    */
-  public void putStopTimesWithDistances(String tripIds, String stopIds, String distances, String timepoints) {
+  public void putStopTimesWithDistances(
+      String tripIds, String stopIds, String distances, String timepoints) {
     List<String> tripIdColumn = new ArrayList<String>();
     List<String> stopIdColumn = new ArrayList<String>();
     List<String> arrivalTimeColumn = new ArrayList<String>();
@@ -364,13 +363,10 @@ public class MockGtfs {
     List<String> timepointColumn = new ArrayList<String>();
     List<String> shapeDistColumn = new ArrayList<String>();
 
-    String[] expandedTimepoints = timepoints == null || timepoints.isEmpty()
-            ? new String[0]
-            : timepoints.split(",");
+    String[] expandedTimepoints =
+        timepoints == null || timepoints.isEmpty() ? new String[0] : timepoints.split(",");
 
-
-    String[] expandedTripIds = tripIds.isEmpty() ? new String[0]
-            : tripIds.split(",");
+    String[] expandedTripIds = tripIds.isEmpty() ? new String[0] : tripIds.split(",");
     List<List<String>> expandedStopIds = new ArrayList<List<String>>();
     if (!stopIds.isEmpty()) {
       for (String stopIdsEntry : stopIds.split("\\|")) {
@@ -383,21 +379,22 @@ public class MockGtfs {
       throw new UnsupportedOperationException("Multiple trips not currently supported");
     }
 
-    if (expandedStopIds.size() != 1
-            && expandedStopIds.size() != expandedTripIds.length) {
-      throw new IllegalArgumentException("given " + expandedTripIds.length
-              + " trip_id values, expected either 1 or " + expandedTripIds.length
-              + " stop_id lists, but instead found " + expandedStopIds.size());
+    if (expandedStopIds.size() != 1 && expandedStopIds.size() != expandedTripIds.length) {
+      throw new IllegalArgumentException(
+          "given "
+              + expandedTripIds.length
+              + " trip_id values, expected either 1 or "
+              + expandedTripIds.length
+              + " stop_id lists, but instead found "
+              + expandedStopIds.size());
     }
 
-    String[] expandedShapeDistances = distances.isEmpty() ? new String[0]
-            : distances.split(",");
+    String[] expandedShapeDistances = distances.isEmpty() ? new String[0] : distances.split(",");
 
     int startTime = 9 * 60 * 60;
     for (int i = 0; i < expandedTripIds.length; ++i) {
       String tripId = expandedTripIds[i];
-      List<String> specificStopIds = expandedStopIds.get(expandedStopIds.size() == 1
-              ? 0 : i);
+      List<String> specificStopIds = expandedStopIds.get(expandedStopIds.size() == 1 ? 0 : i);
       int t = startTime;
       for (int stopSequence = 0; stopSequence < specificStopIds.size(); stopSequence++) {
         String stopId = specificStopIds.get(stopSequence);
@@ -434,13 +431,14 @@ public class MockGtfs {
   public void putDefaultStopTimes() {
     putDefaultTrips();
     putDefaultStops();
-    putLines("stop_times.txt",
+    putLines(
+        "stop_times.txt",
         "trip_id,stop_id,stop_sequence,arrival_time,departure_time",
-        "T10-0,100,0,08:00:00,08:00:00", "T10-0,200,1,09:00:00,09:00:00");
+        "T10-0,100,0,08:00:00,08:00:00",
+        "T10-0,200,1,09:00:00,09:00:00");
   }
 
   /**
-   * 
    * @param id
    * @return a full id with the default agency id ("a0") for the feed.
    */
@@ -470,7 +468,8 @@ public class MockGtfs {
 
   private static class TableBuilder {
 
-    private final LinkedHashMap<String, List<String>> _columnsAndValues = new LinkedHashMap<String, List<String>>();
+    private final LinkedHashMap<String, List<String>> _columnsAndValues =
+        new LinkedHashMap<String, List<String>>();
 
     private final int _numberOfRows;
 
@@ -480,8 +479,8 @@ public class MockGtfs {
 
     public void addColumnSpec(String columnName, List<String> values) {
       if (values.size() != 1 && values.size() != _numberOfRows) {
-        throw new IllegalArgumentException("expected 1 or " + _numberOfRows
-            + " values but found " + values.size());
+        throw new IllegalArgumentException(
+            "expected 1 or " + _numberOfRows + " values but found " + values.size());
       }
       _columnsAndValues.put(columnName, values);
     }
@@ -500,14 +499,12 @@ public class MockGtfs {
       }
     }
 
-    public String[] removeColumn(String name, String[] columns,
-        List<String> values) {
+    public String[] removeColumn(String name, String[] columns, List<String> values) {
       List<String> filtered = new ArrayList<String>();
       for (String columnSpec : columns) {
         int index = columnSpec.indexOf('=');
         if (index == -1) {
-          throw new IllegalArgumentException("invalid column spec="
-              + columnSpec);
+          throw new IllegalArgumentException("invalid column spec=" + columnSpec);
         }
         String columnName = columnSpec.substring(0, index);
         if (columnName.equals(name)) {
@@ -565,8 +562,14 @@ public class MockGtfs {
         tokens = expanded;
       }
       if (tokens.length != 1 && tokens.length != _numberOfRows) {
-        throw new IllegalStateException("expected either 1 or " + _numberOfRows
-            + " values but found " + tokens.length + " for \"" + values + "\"");
+        throw new IllegalStateException(
+            "expected either 1 or "
+                + _numberOfRows
+                + " values but found "
+                + tokens.length
+                + " for \""
+                + values
+                + "\"");
       }
       return Arrays.asList(tokens);
     }

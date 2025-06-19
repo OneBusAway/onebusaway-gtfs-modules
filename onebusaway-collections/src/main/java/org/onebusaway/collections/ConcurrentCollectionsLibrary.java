@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.collections;
@@ -53,12 +51,11 @@ public class ConcurrentCollectionsLibrary {
   }
 
   /****
-   * 
+   *
    ****/
 
   private static <KEY, VALUE, C extends Collection<VALUE>> void addToMapValueCollection(
-      ConcurrentMap<KEY, C> map, KEY key, VALUE value,
-      CollectionFactory<VALUE, C> factory) {
+      ConcurrentMap<KEY, C> map, KEY key, VALUE value, CollectionFactory<VALUE, C> factory) {
 
     while (true) {
 
@@ -67,48 +64,40 @@ public class ConcurrentCollectionsLibrary {
       if (values == null) {
         C newKeys = factory.create(value);
         values = map.putIfAbsent(key, newKeys);
-        if (values == null)
-          return;
+        if (values == null) return;
       }
 
       C origCopy = factory.copy(values);
 
-      if (origCopy.contains(value))
-        return;
+      if (origCopy.contains(value)) return;
 
       C extendedCopy = factory.copy(origCopy);
       extendedCopy.add(value);
 
-      if (map.replace(key, origCopy, extendedCopy))
-        return;
+      if (map.replace(key, origCopy, extendedCopy)) return;
     }
   }
 
   private static <KEY, VALUE, C extends Collection<VALUE>> void removeFromMapValueCollection(
-      ConcurrentMap<KEY, C> map, KEY key, VALUE value,
-      CollectionFactory<VALUE, C> factory) {
+      ConcurrentMap<KEY, C> map, KEY key, VALUE value, CollectionFactory<VALUE, C> factory) {
 
     while (true) {
 
       C values = map.get(key);
 
-      if (values == null)
-        return;
+      if (values == null) return;
 
       C origCopy = factory.copy(values);
 
-      if (!origCopy.contains(value))
-        return;
+      if (!origCopy.contains(value)) return;
 
       C reducedCopy = factory.copy(origCopy);
       reducedCopy.remove(value);
 
       if (reducedCopy.isEmpty()) {
-        if (map.remove(key, origCopy))
-          return;
+        if (map.remove(key, origCopy)) return;
       } else {
-        if (map.replace(key, origCopy, reducedCopy))
-          return;
+        if (map.replace(key, origCopy, reducedCopy)) return;
       }
     }
   }

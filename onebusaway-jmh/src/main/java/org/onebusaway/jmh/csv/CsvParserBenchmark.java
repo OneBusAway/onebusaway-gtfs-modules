@@ -3,7 +3,6 @@ package org.onebusaway.jmh.csv;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.io.IOUtils;
 import org.onebusaway.csv_entities.CSVLibrary;
 import org.onebusaway.csv_entities.CSVListener;
@@ -24,9 +23,9 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @BenchmarkMode(Mode.Throughput)
-@Warmup(time=3, timeUnit=TimeUnit.SECONDS, iterations=1)
-@Measurement(time=3, timeUnit=TimeUnit.SECONDS, iterations=1)
-@Timeout(timeUnit=TimeUnit.SECONDS, time=10)
+@Warmup(time = 3, timeUnit = TimeUnit.SECONDS, iterations = 1)
+@Measurement(time = 3, timeUnit = TimeUnit.SECONDS, iterations = 1)
+@Timeout(timeUnit = TimeUnit.SECONDS, time = 10)
 public class CsvParserBenchmark {
 
   @State(Scope.Thread)
@@ -35,7 +34,7 @@ public class CsvParserBenchmark {
 
     private byte[] stopTimes;
     private byte[] trips;
-    
+
     public ThreadState() {
       try {
         stopTimes = IOUtils.resourceToByteArray("/brown-county-flex/stop_times.txt");
@@ -45,16 +44,19 @@ public class CsvParserBenchmark {
       }
     }
   }
-  
+
   @Benchmark
   public int testParseStopTimes(ThreadState state) throws Exception {
     int count = 0;
-    for(int i = 0; i < 1; i++) {
-      state.csvLibrary.parse(new ByteArrayInputStream(state.stopTimes), (CSVListener) line -> {
-        if(line == null || line.isEmpty()) {  
-          throw new RuntimeException();
-        }
-      });
+    for (int i = 0; i < 1; i++) {
+      state.csvLibrary.parse(
+          new ByteArrayInputStream(state.stopTimes),
+          (CSVListener)
+              line -> {
+                if (line == null || line.isEmpty()) {
+                  throw new RuntimeException();
+                }
+              });
       count++;
     }
     return count;
@@ -63,12 +65,15 @@ public class CsvParserBenchmark {
   @Benchmark
   public int testParseTrips(ThreadState state) throws Exception {
     int count = 0;
-    for(int i = 0; i < 1; i++) {
-      state.csvLibrary.parse(new ByteArrayInputStream(state.trips), (CSVListener) line -> {
-        if(line == null || line.isEmpty()) {
-          throw new RuntimeException();
-        }
-      });
+    for (int i = 0; i < 1; i++) {
+      state.csvLibrary.parse(
+          new ByteArrayInputStream(state.trips),
+          (CSVListener)
+              line -> {
+                if (line == null || line.isEmpty()) {
+                  throw new RuntimeException();
+                }
+              });
       count++;
     }
     return count;

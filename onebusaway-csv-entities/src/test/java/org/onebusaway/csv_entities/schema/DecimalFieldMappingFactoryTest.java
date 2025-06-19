@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.csv_entities.schema;
@@ -20,7 +18,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
 import org.junit.Test;
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.CsvEntityContextImpl;
@@ -44,8 +41,7 @@ public class DecimalFieldMappingFactoryTest {
 
   @Test
   public void testWithFrLocale() {
-    DecimalFieldMappingFactory factory = new DecimalFieldMappingFactory("0.00",
-        Locale.FRANCE);
+    DecimalFieldMappingFactory factory = new DecimalFieldMappingFactory("0.00", Locale.FRANCE);
     FieldMapping mapping = createFieldMapping(factory);
 
     Dummy dummy = new Dummy();
@@ -60,8 +56,8 @@ public class DecimalFieldMappingFactoryTest {
 
   private FieldMapping createFieldMapping(DecimalFieldMappingFactory factory) {
     EntitySchemaFactory schemaFactory = new DefaultEntitySchemaFactory();
-    FieldMapping mapping = factory.createFieldMapping(schemaFactory,
-        Dummy.class, "value", "value", Double.TYPE, true);
+    FieldMapping mapping =
+        factory.createFieldMapping(schemaFactory, Dummy.class, "value", "value", Double.TYPE, true);
     return mapping;
   }
 
@@ -75,6 +71,5 @@ public class DecimalFieldMappingFactoryTest {
     public void setValue(double value) {
       this.value = value;
     }
-
   }
 }

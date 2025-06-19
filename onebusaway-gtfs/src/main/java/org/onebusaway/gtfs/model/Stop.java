@@ -1,17 +1,14 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2012 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2012 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.model;
@@ -22,14 +19,12 @@ import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFac
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.LatLonFieldMappingFactory;
 
-/**
- * Stops are not required when pickup/drop off is based on areas.
- */
+/** Stops are not required when pickup/drop off is based on areas. */
 @CsvFields(filename = "stops.txt", prefix = "stop_", required = false)
 public final class Stop extends IdentityBean<AgencyAndId> implements StopLocation {
 
   private static final long serialVersionUID = 1L;
-  
+
   private static final int MISSING_VALUE = -999;
 
   public static final int LOCATION_TYPE_STOP = 0;
@@ -60,19 +55,19 @@ public final class Stop extends IdentityBean<AgencyAndId> implements StopLocatio
   @CsvField(optional = true)
   private String desc;
 
-  @CsvField(name="zone_id", optional = true)
+  @CsvField(name = "zone_id", optional = true)
   private String zoneId;
 
   @CsvField(optional = true)
   private String url;
 
-  @CsvField(name="location_type", optional = true, defaultValue = "0")
+  @CsvField(name = "location_type", optional = true, defaultValue = "0")
   private int locationType = 0;
 
-  @CsvField(name="parent_station", optional = true)
+  @CsvField(name = "parent_station", optional = true)
   private String parentStation;
 
-  @CsvField(name="wheelchair_boarding", optional = true, defaultValue = "0")
+  @CsvField(name = "wheelchair_boarding", optional = true, defaultValue = "0")
   private int wheelchairBoarding = 0;
 
   @CsvField(optional = true)
@@ -80,14 +75,14 @@ public final class Stop extends IdentityBean<AgencyAndId> implements StopLocatio
 
   @CsvField(optional = true)
   private String timezone;
-  
-  @CsvField(name="vehicle_type", optional = true)
+
+  @CsvField(name = "vehicle_type", optional = true)
   private int vehicleType = MISSING_VALUE;
 
-  @CsvField(name="platform_code", optional = true)
+  @CsvField(name = "platform_code", optional = true)
   private String platformCode;
 
-  @CsvField(name="level_id", optional=true, mapping = EntityFieldMappingFactory.class)
+  @CsvField(name = "level_id", optional = true, mapping = EntityFieldMappingFactory.class)
   private Level level;
 
   // Custom extension for MTA
@@ -102,9 +97,7 @@ public final class Stop extends IdentityBean<AgencyAndId> implements StopLocatio
   @CsvField(optional = true, name = "tts_stop_name")
   private String ttsStopName;
 
-  public Stop() {
-
-  }
+  public Stop() {}
 
   public Stop(Stop obj) {
     this.id = obj.id;
@@ -252,7 +245,7 @@ public final class Stop extends IdentityBean<AgencyAndId> implements StopLocatio
   public void setTimezone(String timezone) {
     this.timezone = timezone;
   }
-  
+
   public boolean isVehicleTypeSet() {
     return vehicleType != MISSING_VALUE;
   }
@@ -264,7 +257,7 @@ public final class Stop extends IdentityBean<AgencyAndId> implements StopLocatio
   public void setVehicleType(int vehicleType) {
     this.vehicleType = vehicleType;
   }
-  
+
   public void clearVehicleType() {
     vehicleType = MISSING_VALUE;
   }
@@ -285,9 +278,13 @@ public final class Stop extends IdentityBean<AgencyAndId> implements StopLocatio
     this.level = level;
   }
 
-  public String getMtaStopId() { return mtaStopId; }
+  public String getMtaStopId() {
+    return mtaStopId;
+  }
 
-  public void setMtaStopId(String mtaStopId) { this.mtaStopId = mtaStopId; }
+  public void setMtaStopId(String mtaStopId) {
+    this.mtaStopId = mtaStopId;
+  }
 
   public int getRegionalFareCardAccepted() {
     return regionalFareCardAccepted;

@@ -1,34 +1,29 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 
- */
+/** */
 package org.onebusaway.csv_entities;
-
-import org.onebusaway.csv_entities.schema.BeanWrapper;
-import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
-import org.onebusaway.csv_entities.schema.EntitySchema;
-import org.onebusaway.csv_entities.schema.ExtensionEntitySchema;
-import org.onebusaway.csv_entities.schema.FieldMapping;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.onebusaway.csv_entities.schema.BeanWrapper;
+import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
+import org.onebusaway.csv_entities.schema.EntitySchema;
+import org.onebusaway.csv_entities.schema.ExtensionEntitySchema;
+import org.onebusaway.csv_entities.schema.FieldMapping;
 
 class IndividualCsvEntityWriter implements EntityHandler {
 
@@ -44,12 +39,11 @@ class IndividualCsvEntityWriter implements EntityHandler {
 
   private boolean _seenFirstRecord = false;
 
-  public IndividualCsvEntityWriter(CsvEntityContext context,
-      EntitySchema schema, PrintWriter writer) {
+  public IndividualCsvEntityWriter(
+      CsvEntityContext context, EntitySchema schema, PrintWriter writer) {
     _writer = writer;
     _schema = schema;
     _context = context;
-
   }
 
   public void setTokenizerStrategy(TokenizerStrategy tokenizerStrategy) {
@@ -61,8 +55,7 @@ class IndividualCsvEntityWriter implements EntityHandler {
     if (!_seenFirstRecord) {
 
       _fieldNames.clear();
-      for (FieldMapping field : _schema.getFields())
-        field.getCSVFieldNames(_fieldNames);
+      for (FieldMapping field : _schema.getFields()) field.getCSVFieldNames(_fieldNames);
 
       if (object instanceof HasExtensions) {
         for (ExtensionEntitySchema extension : _schema.getExtensions()) {
@@ -89,8 +82,7 @@ class IndividualCsvEntityWriter implements EntityHandler {
         if (extension != null) {
           BeanWrapper extensionWrapper = BeanWrapperFactory.wrap(extension);
           for (FieldMapping field : extensionSchema.getFields()) {
-            field.translateFromObjectToCSV(_context, extensionWrapper,
-                csvValues);
+            field.translateFromObjectToCSV(_context, extensionWrapper, csvValues);
           }
         }
       }
@@ -99,8 +91,7 @@ class IndividualCsvEntityWriter implements EntityHandler {
     List<String> values = new ArrayList<String>(csvValues.size());
     for (String fieldName : _fieldNames) {
       Object value = csvValues.get(fieldName);
-      if (value == null)
-        value = "";
+      if (value == null) value = "";
       values.add(value.toString());
     }
     String line = _tokenizerStrategy.format(values);
@@ -114,5 +105,4 @@ class IndividualCsvEntityWriter implements EntityHandler {
   public void close() {
     _writer.close();
   }
-
 }

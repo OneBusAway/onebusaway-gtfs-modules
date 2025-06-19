@@ -1,25 +1,22 @@
 /**
  * Copyright (C) 2024 Sound Transit
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.serialization.mappings;
 
-import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.CsvEntityContextImpl;
@@ -44,7 +41,8 @@ public class FareAmountFieldMappingFactoryTest {
     csvValues.put("amount", "47.12");
     csvValues.put("currency", "USD");
     FareProduct fp = new FareProduct();
-    _fieldMapping.translateFromCSVToObject(new CsvEntityContextImpl(), csvValues, BeanWrapperFactory.wrap(fp));
+    _fieldMapping.translateFromCSVToObject(
+        new CsvEntityContextImpl(), csvValues, BeanWrapperFactory.wrap(fp));
     assertEquals(47.12, fp.getAmount(), 0.001);
   }
 
@@ -54,7 +52,8 @@ public class FareAmountFieldMappingFactoryTest {
     csvValues.put("amount", "47");
     csvValues.put("currency", "USD");
     FareProduct fp = new FareProduct();
-    _fieldMapping.translateFromCSVToObject(new CsvEntityContextImpl(), csvValues, BeanWrapperFactory.wrap(fp));
+    _fieldMapping.translateFromCSVToObject(
+        new CsvEntityContextImpl(), csvValues, BeanWrapperFactory.wrap(fp));
     assertEquals(47, fp.getAmount(), 0.001);
   }
 
@@ -64,7 +63,8 @@ public class FareAmountFieldMappingFactoryTest {
     csvValues.put("amount", "47.00");
     csvValues.put("currency", "USD");
     FareProduct fp = new FareProduct();
-    _fieldMapping.translateFromCSVToObject(new CsvEntityContextImpl(), csvValues, BeanWrapperFactory.wrap(fp));
+    _fieldMapping.translateFromCSVToObject(
+        new CsvEntityContextImpl(), csvValues, BeanWrapperFactory.wrap(fp));
     assertEquals(47, fp.getAmount(), 0.001);
   }
 
@@ -74,7 +74,8 @@ public class FareAmountFieldMappingFactoryTest {
     csvValues.put("amount", "47");
     csvValues.put("currency", "JPY");
     FareProduct fp = new FareProduct();
-    _fieldMapping.translateFromCSVToObject(new CsvEntityContextImpl(), csvValues, BeanWrapperFactory.wrap(fp));
+    _fieldMapping.translateFromCSVToObject(
+        new CsvEntityContextImpl(), csvValues, BeanWrapperFactory.wrap(fp));
     assertEquals(47, fp.getAmount(), 0.001);
   }
 
@@ -85,7 +86,8 @@ public class FareAmountFieldMappingFactoryTest {
     fp.setCurrency("USD");
     Map<String, Object> csvValues = new HashMap<String, Object>();
 
-    _fieldMapping.translateFromObjectToCSV(new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
+    _fieldMapping.translateFromObjectToCSV(
+        new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
     assertEquals("4.70", csvValues.get("amount"));
   }
 
@@ -96,7 +98,8 @@ public class FareAmountFieldMappingFactoryTest {
     fp.setCurrency("USD");
     Map<String, Object> csvValues = new HashMap<String, Object>();
 
-    _fieldMapping.translateFromObjectToCSV(new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
+    _fieldMapping.translateFromObjectToCSV(
+        new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
     assertEquals("4.75", csvValues.get("amount"));
   }
 
@@ -107,7 +110,8 @@ public class FareAmountFieldMappingFactoryTest {
     fp.setCurrency("USD");
     Map<String, Object> csvValues = new HashMap<String, Object>();
 
-    _fieldMapping.translateFromObjectToCSV(new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
+    _fieldMapping.translateFromObjectToCSV(
+        new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
     assertEquals("4.12", csvValues.get("amount"));
   }
 
@@ -118,7 +122,8 @@ public class FareAmountFieldMappingFactoryTest {
     fp.setCurrency("EUR");
     Map<String, Object> csvValues = new HashMap<String, Object>();
 
-    _fieldMapping.translateFromObjectToCSV(new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
+    _fieldMapping.translateFromObjectToCSV(
+        new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
     assertEquals("0.70", csvValues.get("amount"));
   }
 
@@ -129,7 +134,8 @@ public class FareAmountFieldMappingFactoryTest {
     fp.setCurrency("USD");
     Map<String, Object> csvValues = new HashMap<String, Object>();
 
-    _fieldMapping.translateFromObjectToCSV(new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
+    _fieldMapping.translateFromObjectToCSV(
+        new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
     assertEquals("4.00", csvValues.get("amount"));
   }
 
@@ -140,18 +146,23 @@ public class FareAmountFieldMappingFactoryTest {
     fp.setCurrency("VND");
     Map<String, Object> csvValues = new HashMap<String, Object>();
 
-    _fieldMapping.translateFromObjectToCSV(new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
+    _fieldMapping.translateFromObjectToCSV(
+        new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
     assertEquals("4", csvValues.get("amount"));
 
     fp.setAmount(5.2f);
-    _fieldMapping.translateFromObjectToCSV(new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
-    assertEquals("5", csvValues.get("amount"), "Amount did not get rounded to nearest whole number for currency that doesn't use decimals");
+    _fieldMapping.translateFromObjectToCSV(
+        new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
+    assertEquals(
+        "5",
+        csvValues.get("amount"),
+        "Amount did not get rounded to nearest whole number for currency that doesn't use decimals");
   }
 
   private FieldMapping buildFieldMapping() {
     FareAmountFieldMappingFactory factory = new FareAmountFieldMappingFactory();
     DefaultEntitySchemaFactory schemaFactory = GtfsEntitySchemaFactory.createEntitySchemaFactory();
-    return factory.createFieldMapping(schemaFactory, FareProduct.class, "amount",
-        "amount", Float.TYPE, true);
+    return factory.createFieldMapping(
+        schemaFactory, FareProduct.class, "amount", "amount", Float.TYPE, true);
   }
 }

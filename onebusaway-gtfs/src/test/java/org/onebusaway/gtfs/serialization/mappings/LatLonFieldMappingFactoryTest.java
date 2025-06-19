@@ -1,26 +1,23 @@
 /**
  * Copyright (C) 2013 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.serialization.mappings;
 
-import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.CsvEntityContextImpl;
@@ -44,8 +41,8 @@ public class LatLonFieldMappingFactoryTest {
     Map<String, Object> csvValues = new HashMap<String, Object>();
     csvValues.put("stop_lat", "47.1234");
     Stop stop = new Stop();
-    _fieldMapping.translateFromCSVToObject(new CsvEntityContextImpl(),
-        csvValues, BeanWrapperFactory.wrap(stop));
+    _fieldMapping.translateFromCSVToObject(
+        new CsvEntityContextImpl(), csvValues, BeanWrapperFactory.wrap(stop));
     assertEquals(47.1234, stop.getLat(), 0.00001);
   }
 
@@ -55,8 +52,8 @@ public class LatLonFieldMappingFactoryTest {
     stop.setLat(47.5678);
     Map<String, Object> csvValues = new HashMap<String, Object>();
 
-    _fieldMapping.translateFromObjectToCSV(new CsvEntityContextImpl(),
-        BeanWrapperFactory.wrap(stop), csvValues);
+    _fieldMapping.translateFromObjectToCSV(
+        new CsvEntityContextImpl(), BeanWrapperFactory.wrap(stop), csvValues);
     assertEquals("47.567800", csvValues.get("stop_lat"));
   }
 
@@ -69,15 +66,15 @@ public class LatLonFieldMappingFactoryTest {
     stop.setLat(47.5678);
     Map<String, Object> csvValues = new HashMap<String, Object>();
 
-    _fieldMapping.translateFromObjectToCSV(new CsvEntityContextImpl(),
-        BeanWrapperFactory.wrap(stop), csvValues);
+    _fieldMapping.translateFromObjectToCSV(
+        new CsvEntityContextImpl(), BeanWrapperFactory.wrap(stop), csvValues);
     assertEquals("47.567800", csvValues.get("stop_lat"));
   }
 
   private FieldMapping buildFieldMapping() {
     LatLonFieldMappingFactory factory = new LatLonFieldMappingFactory();
     DefaultEntitySchemaFactory schemaFactory = GtfsEntitySchemaFactory.createEntitySchemaFactory();
-    return factory.createFieldMapping(schemaFactory, Stop.class, "stop_lat",
-        "lat", Double.TYPE, true);
+    return factory.createFieldMapping(
+        schemaFactory, Stop.class, "stop_lat", "lat", Double.TYPE, true);
   }
 }

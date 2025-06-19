@@ -1,18 +1,15 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2011 Google, Inc.
  * Copyright (C) 2011 Laurent Gregoire <laurent.gregoire@gmail.com>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.impl;
@@ -25,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.onebusaway.csv_entities.exceptions.EntityInstantiationException;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
@@ -33,15 +29,12 @@ import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 
 /**
- * A in-memory implementation of GtfsRelationalDaoImpl. It's super fast for most
- * methods, but only if you have enough memory to load your entire GTFS into
- * memory.
- * 
+ * A in-memory implementation of GtfsRelationalDaoImpl. It's super fast for most methods, but only
+ * if you have enough memory to load your entire GTFS into memory.
+ *
  * @author bdferris
- * 
  */
-public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
-    GtfsMutableRelationalDao {
+public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements GtfsMutableRelationalDao {
 
   private Map<AgencyAndId, List<String>> _tripAgencyIdsByServiceId = null;
 
@@ -129,8 +122,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
     }
 
     List<String> agencyIds = _tripAgencyIdsByServiceId.get(serviceId);
-    if (agencyIds == null)
-      agencyIds = new ArrayList<String>();
+    if (agencyIds == null) agencyIds = new ArrayList<String>();
     return agencyIds;
   }
 
@@ -147,8 +139,8 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
       _stopsByStation = new HashMap<Stop, List<Stop>>();
       for (Stop stop : getAllStops()) {
         if (stop.getLocationType() == 0 && stop.getParentStation() != null) {
-          Stop parentStation = getStopForId(new AgencyAndId(
-              stop.getId().getAgencyId(), stop.getParentStation()));
+          Stop parentStation =
+              getStopForId(new AgencyAndId(stop.getId().getAgencyId(), stop.getParentStation()));
           List<Stop> subStops = _stopsByStation.get(parentStation);
           if (subStops == null) {
             subStops = new ArrayList<Stop>(2);
@@ -186,8 +178,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
 
     if (_stopTimesByTrip == null) {
       _stopTimesByTrip = mapToValueList(getAllStopTimes(), "trip", Trip.class);
-      for (List<StopTime> stopTimes : _stopTimesByTrip.values())
-        Collections.sort(stopTimes);
+      for (List<StopTime> stopTimes : _stopTimesByTrip.values()) Collections.sort(stopTimes);
     }
 
     return list(_stopTimesByTrip.get(trip));
@@ -202,16 +193,14 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
 
   @Override
   public List<Trip> getTripsForRoute(Route route) {
-    if (_tripsByRoute == null)
-      _tripsByRoute = mapToValueList(getAllTrips(), "route", Route.class);
+    if (_tripsByRoute == null) _tripsByRoute = mapToValueList(getAllTrips(), "route", Route.class);
     return list(_tripsByRoute.get(route));
   }
 
   @Override
   public List<Trip> getTripsForShapeId(AgencyAndId shapeId) {
     if (_tripsByShapeId == null) {
-      _tripsByShapeId = mapToValueList(getAllTrips(), "shapeId",
-          AgencyAndId.class);
+      _tripsByShapeId = mapToValueList(getAllTrips(), "shapeId", AgencyAndId.class);
     }
     return list(_tripsByShapeId.get(shapeId));
   }
@@ -219,8 +208,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   @Override
   public List<Trip> getTripsForServiceId(AgencyAndId serviceId) {
     if (_tripsByServiceId == null) {
-      _tripsByServiceId = mapToValueList(getAllTrips(), "serviceId",
-          AgencyAndId.class);
+      _tripsByServiceId = mapToValueList(getAllTrips(), "serviceId", AgencyAndId.class);
     }
     return list(_tripsByServiceId.get(serviceId));
   }
@@ -232,8 +220,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
       _tripsByBlockId = new HashMap<AgencyAndId, List<Trip>>();
       for (Trip trip : getAllTrips()) {
         if (trip.getBlockId() != null) {
-          AgencyAndId bid = new AgencyAndId(trip.getId().getAgencyId(),
-              trip.getBlockId());
+          AgencyAndId bid = new AgencyAndId(trip.getId().getAgencyId(), trip.getBlockId());
           List<Trip> trips = _tripsByBlockId.get(bid);
           if (trips == null) {
             trips = new ArrayList<Trip>();
@@ -250,8 +237,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   @Override
   public List<Frequency> getFrequenciesForTrip(Trip trip) {
     if (_frequenciesByTrip == null)
-      _frequenciesByTrip = mapToValueList(getAllFrequencies(), "trip",
-          Trip.class);
+      _frequenciesByTrip = mapToValueList(getAllFrequencies(), "trip", Trip.class);
     return list(_frequenciesByTrip.get(trip));
   }
 
@@ -266,8 +252,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   }
 
   @Override
-  public List<ServiceCalendarDate> getCalendarDatesForServiceId(
-      AgencyAndId serviceId) {
+  public List<ServiceCalendarDate> getCalendarDatesForServiceId(AgencyAndId serviceId) {
     ensureCalendarDatesByServiceIdRelation();
     return list(_calendarDatesByServiceId.get(serviceId));
   }
@@ -288,8 +273,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   @Override
   public List<FareRule> getFareRulesForFareAttribute(FareAttribute fareAttribute) {
     if (_fareRulesByFareAttribute == null) {
-      _fareRulesByFareAttribute = mapToValueList(getAllFareRules(), "fare",
-          FareAttribute.class);
+      _fareRulesByFareAttribute = mapToValueList(getAllFareRules(), "fare", FareAttribute.class);
     }
     return list(_fareRulesByFareAttribute.get(fareAttribute));
   }
@@ -297,8 +281,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   @Override
   public List<FareRule> getFareRulesForRoute(Route route) {
     if (_fareRulesByRoute == null) {
-      _fareRulesByRoute = mapToValueList(getAllFareRules(), "route",
-              Route.class);
+      _fareRulesByRoute = mapToValueList(getAllFareRules(), "route", Route.class);
     }
     return list(_fareRulesByRoute.get(route));
   }
@@ -318,7 +301,8 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
     if (_fareRulesByZoneId == null) {
       _fareRulesByZoneId = new HashMap<>();
       for (FareRule rule : getAllFareRules()) {
-        Set<String> uniqueIds = getUniqueValues(rule.getOriginId(), rule.getContainsId(), rule.getDestinationId());
+        Set<String> uniqueIds =
+            getUniqueValues(rule.getOriginId(), rule.getContainsId(), rule.getDestinationId());
         for (String id : uniqueIds) {
           List<FareRule> fareRules = _fareRulesByZoneId.get(id);
           if (fareRules == null) {
@@ -350,51 +334,45 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
     return _ridershipByTrip.get(tripId);
   }
 
-
   /****
    * Private Methods
    ****/
 
   private void ensureCalendarDatesByServiceIdRelation() {
     if (_calendarDatesByServiceId == null) {
-      _calendarDatesByServiceId = mapToValueList(getAllCalendarDates(),
-          "serviceId", AgencyAndId.class);
+      _calendarDatesByServiceId =
+          mapToValueList(getAllCalendarDates(), "serviceId", AgencyAndId.class);
     }
   }
 
   private void ensureCalendarsByServiceIdRelation() {
     if (_calendarsByServiceId == null) {
-      _calendarsByServiceId = mapToValueList(getAllCalendars(), "serviceId",
-          AgencyAndId.class);
+      _calendarsByServiceId = mapToValueList(getAllCalendars(), "serviceId", AgencyAndId.class);
     }
   }
 
   private void ensureShapePointRelation() {
     if (_shapePointsByShapeId == null) {
-      _shapePointsByShapeId = mapToValueList(getAllShapePoints(), "shapeId",
-          AgencyAndId.class);
+      _shapePointsByShapeId = mapToValueList(getAllShapePoints(), "shapeId", AgencyAndId.class);
       for (List<ShapePoint> shapePoints : _shapePointsByShapeId.values())
         Collections.sort(shapePoints);
     }
   }
 
   private static <T> List<T> list(List<T> list) {
-    if (list == null)
-      list = new ArrayList<T>();
+    if (list == null) list = new ArrayList<T>();
     return Collections.unmodifiableList(list);
   }
 
   @SuppressWarnings("unchecked")
-  private static <K, V> Map<K, List<V>> mapToValueList(Iterable<V> values,
-      String property, Class<K> keyType) {
-    return mapToValueCollection(values, property, keyType,
-        new ArrayList<V>().getClass());
+  private static <K, V> Map<K, List<V>> mapToValueList(
+      Iterable<V> values, String property, Class<K> keyType) {
+    return mapToValueCollection(values, property, keyType, new ArrayList<V>().getClass());
   }
 
   @SuppressWarnings("unchecked")
   private static <K, V, C extends Collection<V>, CIMPL extends C> Map<K, C> mapToValueCollection(
-      Iterable<V> values, String property, Class<K> keyType,
-      Class<CIMPL> collectionType) {
+      Iterable<V> values, String property, Class<K> keyType, Class<CIMPL> collectionType) {
 
     Map<K, C> byKey = new HashMap<K, C>();
     SimplePropertyQuery query = new SimplePropertyQuery(property);
@@ -420,8 +398,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
   }
 
   private <K, V> Map<K, V> clearMap(Map<K, V> map) {
-    if (map != null)
-      map.clear();
+    if (map != null) map.clear();
     return null;
   }
 
@@ -441,5 +418,4 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements
       return value;
     }
   }
-
 }

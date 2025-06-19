@@ -1,27 +1,17 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.csv_entities.schema;
-
-import org.onebusaway.csv_entities.exceptions.NoCsvFieldsAnnotationException;
-import org.onebusaway.csv_entities.schema.annotations.CsvFields;
-import org.onebusaway.csv_entities.schema.beans.CsvEntityMappingBean;
-import org.onebusaway.csv_entities.schema.beans.CsvFieldMappingBean;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,6 +28,12 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import org.onebusaway.csv_entities.exceptions.NoCsvFieldsAnnotationException;
+import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.csv_entities.schema.beans.CsvEntityMappingBean;
+import org.onebusaway.csv_entities.schema.beans.CsvFieldMappingBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFactoryImpl {
 
@@ -112,8 +108,7 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
 
     CsvFields csvFields = entityClass.getAnnotation(CsvFields.class);
 
-    if (csvFields == null)
-      throw new NoCsvFieldsAnnotationException(entityClass);
+    if (csvFields == null) throw new NoCsvFieldsAnnotationException(entityClass);
 
     CsvEntityMappingBean bean = new CsvEntityMappingBean(entityClass);
     applyCsvFieldsAnnotationToBean(entityClass, bean);
@@ -121,8 +116,7 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
     for (Field field : entityClass.getDeclaredFields()) {
 
       // Skip static final fields
-      if ((field.getModifiers() & (Modifier.FINAL | Modifier.STATIC)) != 0)
-        continue;
+      if ((field.getModifiers() & (Modifier.FINAL | Modifier.STATIC)) != 0) continue;
 
       CsvFieldMappingBean fieldBean = new CsvFieldMappingBean(field);
       applyCsvFieldAnnotationToBean(field, fieldBean);
@@ -142,7 +136,7 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
 
         String pkg = packageToScan.replace('.', '/');
 
-        for (Enumeration<URL> en = cl.getResources(pkg); en.hasMoreElements();) {
+        for (Enumeration<URL> en = cl.getResources(pkg); en.hasMoreElements(); ) {
           URL url = en.nextElement();
 
           if (isJarURL(url)) {
@@ -151,7 +145,7 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
             File jarPath = getFile(jarURL);
             JarFile jar = new JarFile(jarPath);
 
-            for (Enumeration<JarEntry> en2 = jar.entries(); en2.hasMoreElements();) {
+            for (Enumeration<JarEntry> en2 = jar.entries(); en2.hasMoreElements(); ) {
               JarEntry entry = en2.nextElement();
 
               String name = entry.getName();
@@ -164,8 +158,7 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
             String path = URLDecoder.decode(url.getPath(), "UTF-8");
 
             String root = new File(path.replace(pkg, "")).getAbsolutePath();
-            if (!root.endsWith(File.separator))
-              root += File.separator;
+            if (!root.endsWith(File.separator)) root += File.separator;
 
             scanFile(root, new File(path));
           }
@@ -178,8 +171,7 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
     if (f.isDirectory()) {
       File[] files = f.listFiles();
       if (files != null) {
-        for (File fChild : files)
-          scanFile(root, fChild);
+        for (File fChild : files) scanFile(root, fChild);
       }
     } else if (f.getName().endsWith(".class")) {
       String cName = f.getAbsolutePath().replace(root, "").replace(".class", "").replace('/', '.');
@@ -189,19 +181,19 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
 
   /***************************************************************************
    * Classpath URL Wrangling Methods as pulled from
-   * 
+   *
    * org.springframework.util.ResourceUtils
-   * 
+   *
    * in the Spring Framework
-   * 
+   *
    * Copyright 2002-2008 the original author or authors.
-   * 
+   *
    * Licensed under the Apache License, Version 2.0 (the "License"); you may not
    * use this file except in compliance with the License. You may obtain a copy
    * of the License at
-   * 
+   *
    * http://www.apache.org/licenses/LICENSE-2.0
-   * 
+   *
    * Unless required by applicable law or agreed to in writing, software
    * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
    * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -210,28 +202,29 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
    **************************************************************************/
 
   /**
-   * Determine whether the given URL points to a resource in a jar file, that
-   * is, has protocol "jar", "zip", "wsjar" or "code-source".
-   * <p>
-   * "zip" and "wsjar" are used by BEA WebLogic Server and IBM WebSphere,
-   * respectively, but can be treated like jar files. The same applies to
-   * "code-source" URLs on Oracle OC4J, provided that the path contains a jar
-   * separator.
-   * 
+   * Determine whether the given URL points to a resource in a jar file, that is, has protocol
+   * "jar", "zip", "wsjar" or "code-source".
+   *
+   * <p>"zip" and "wsjar" are used by BEA WebLogic Server and IBM WebSphere, respectively, but can
+   * be treated like jar files. The same applies to "code-source" URLs on Oracle OC4J, provided that
+   * the path contains a jar separator.
+   *
    * @param url the URL to check
    * @return whether the URL has been identified as a JAR URL
    */
   private static boolean isJarURL(URL url) {
     String protocol = url.getProtocol();
-    return (URL_PROTOCOL_JAR.equals(protocol) || URL_PROTOCOL_ZIP.equals(protocol)
-        || URL_PROTOCOL_WSJAR.equals(protocol) || (URL_PROTOCOL_CODE_SOURCE.equals(protocol) && url.getPath().indexOf(
-        JAR_URL_SEPARATOR) != -1));
+    return (URL_PROTOCOL_JAR.equals(protocol)
+        || URL_PROTOCOL_ZIP.equals(protocol)
+        || URL_PROTOCOL_WSJAR.equals(protocol)
+        || (URL_PROTOCOL_CODE_SOURCE.equals(protocol)
+            && url.getPath().indexOf(JAR_URL_SEPARATOR) != -1));
   }
 
   /**
-   * Extract the URL for the actual jar file from the given URL (which may point
-   * to a resource in a jar file or to a jar file itself).
-   * 
+   * Extract the URL for the actual jar file from the given URL (which may point to a resource in a
+   * jar file or to a jar file itself).
+   *
    * @param jarUrl the original URL
    * @return the URL for the actual jar file
    * @throws MalformedURLException if no valid jar file URL could be extracted
@@ -260,8 +253,10 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
 
   private static File getFile(URL resourceUrl) throws FileNotFoundException {
     if (!URL_PROTOCOL_FILE.equals(resourceUrl.getProtocol())) {
-      throw new FileNotFoundException("url cannot be resolved to absolute file path "
-          + "because it does not reside in the file system: " + resourceUrl);
+      throw new FileNotFoundException(
+          "url cannot be resolved to absolute file path "
+              + "because it does not reside in the file system: "
+              + resourceUrl);
     }
     try {
       return new File(toURI(resourceUrl).getSchemeSpecificPart());
@@ -273,12 +268,11 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
   }
 
   /**
-   * Create a URI instance for the given URL, replacing spaces with "%20" quotes
-   * first.
-   * <p>
-   * Furthermore, this method works on JDK 1.4 as well, in contrast to the
-   * <code>URL.toURI()</code> method.
-   * 
+   * Create a URI instance for the given URL, replacing spaces with "%20" quotes first.
+   *
+   * <p>Furthermore, this method works on JDK 1.4 as well, in contrast to the <code>URL.toURI()
+   * </code> method.
+   *
    * @param url the URL to convert into a URI instance
    * @return the URI instance
    * @throws URISyntaxException if the URL wasn't a valid URI
@@ -289,9 +283,8 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
   }
 
   /**
-   * Create a URI instance for the given location String, replacing spaces with
-   * "%20" quotes first.
-   * 
+   * Create a URI instance for the given location String, replacing spaces with "%20" quotes first.
+   *
    * @param location the location String to convert into a URI instance
    * @return the URI instance
    * @throws URISyntaxException if the location wasn't a valid URI
@@ -299,5 +292,4 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
   private static URI toURI(String location) throws URISyntaxException {
     return new URI(location.replaceAll(" ", "%20"));
   }
-
 }

@@ -1,26 +1,23 @@
 /**
  * Copyright (C) 2011 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.impl;
 
-import static  org.junit.jupiter.api.Assertions.assertEquals;
-import static  org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.IOException;
 import java.io.StringReader;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.AfterEach;
@@ -59,18 +56,18 @@ public class GtfsMappingTest {
 
   @AfterEach
   public void teardown() {
-    if (_dao != null)
-      _dao.close();
-    if (_sessionFactory != null)
-      _sessionFactory.close();
+    if (_dao != null) _dao.close();
+    if (_sessionFactory != null) _sessionFactory.close();
   }
 
   @Test
   public void testAgency() throws CsvEntityIOException, IOException {
 
     StringBuilder b = new StringBuilder();
-    b.append("agency_id,agency_name,agency_url,agency_timezone,agency_fare_url,agency_lang,agency_phone,agency_email\n");
-    b.append("1,Agency,http://agency/,Amercia/Los_Angeles,http://agency/fare_url,en,800-555-BUS1,agency@email.com\n");
+    b.append(
+        "agency_id,agency_name,agency_url,agency_timezone,agency_fare_url,agency_lang,agency_phone,agency_email\n");
+    b.append(
+        "1,Agency,http://agency/,Amercia/Los_Angeles,http://agency/fare_url,en,800-555-BUS1,agency@email.com\n");
 
     _reader.readEntities(Agency.class, new StringReader(b.toString()));
 
@@ -111,7 +108,8 @@ public class GtfsMappingTest {
   @Test
   public void testFeedInfo() throws CsvEntityIOException, IOException {
     StringBuilder b = new StringBuilder();
-    b.append("feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version\n");
+    b.append(
+        "feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version\n");
     b.append("Test,http://test/,en,20110928,20120131,1.0\n");
 
     _reader.readEntities(FeedInfo.class, new StringReader(b.toString()));

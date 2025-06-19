@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.updates;
@@ -19,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import org.onebusaway.collections.FactoryMap;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.StopTime;
@@ -42,8 +39,8 @@ public class RemoveDuplicateTripsStrategy implements GtfsTransformStrategy {
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-    Map<Pattern, List<Trip>> tripsByPattern = new FactoryMap<Pattern, List<Trip>>(
-        new ArrayList<Trip>());
+    Map<Pattern, List<Trip>> tripsByPattern =
+        new FactoryMap<Pattern, List<Trip>>(new ArrayList<Trip>());
 
     for (Trip trip : dao.getAllTrips()) {
       Pattern pattern = getPatternForTrip(dao, trip);
@@ -54,14 +51,12 @@ public class RemoveDuplicateTripsStrategy implements GtfsTransformStrategy {
 
     for (List<Trip> trips : tripsByPattern.values()) {
 
-      if (trips.size() == 1)
-        continue;
+      if (trips.size() == 1) continue;
 
       for (int i = 1; i < trips.size(); i++) {
         Trip trip = trips.get(i);
         List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
-        for (StopTime stopTime : stopTimes)
-          dao.removeEntity(stopTime);
+        for (StopTime stopTime : stopTimes) dao.removeEntity(stopTime);
         dao.removeEntity(trip);
         duplicateTrips++;
       }
@@ -86,8 +81,8 @@ public class RemoveDuplicateTripsStrategy implements GtfsTransformStrategy {
       departureTimes[i] = stopTime.getDepartureTime();
     }
 
-    return new Pattern(trip.getRoute().getId(), trip.getServiceId(), stopIds,
-        arrivalTimes, departureTimes);
+    return new Pattern(
+        trip.getRoute().getId(), trip.getServiceId(), stopIds, arrivalTimes, departureTimes);
   }
 
   private static class Pattern {
@@ -98,8 +93,12 @@ public class RemoveDuplicateTripsStrategy implements GtfsTransformStrategy {
     private final int[] _arrivalTimes;
     private final int[] _departureTimes;
 
-    public Pattern(AgencyAndId routeId, AgencyAndId serviceId,
-        AgencyAndId[] stopIds, int[] arrivalTimes, int[] departureTimes) {
+    public Pattern(
+        AgencyAndId routeId,
+        AgencyAndId serviceId,
+        AgencyAndId[] stopIds,
+        int[] arrivalTimes,
+        int[] departureTimes) {
       _routeId = routeId;
       _serviceId = serviceId;
       _stopIds = stopIds;
@@ -114,37 +113,26 @@ public class RemoveDuplicateTripsStrategy implements GtfsTransformStrategy {
       result = prime * result + Arrays.hashCode(_arrivalTimes);
       result = prime * result + Arrays.hashCode(_departureTimes);
       result = prime * result + ((_routeId == null) ? 0 : _routeId.hashCode());
-      result = prime * result
-          + ((_serviceId == null) ? 0 : _serviceId.hashCode());
+      result = prime * result + ((_serviceId == null) ? 0 : _serviceId.hashCode());
       result = prime * result + Arrays.hashCode(_stopIds);
       return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
-        return true;
-      if (obj == null)
-        return false;
-      if (getClass() != obj.getClass())
-        return false;
+      if (this == obj) return true;
+      if (obj == null) return false;
+      if (getClass() != obj.getClass()) return false;
       Pattern other = (Pattern) obj;
-      if (!Arrays.equals(_arrivalTimes, other._arrivalTimes))
-        return false;
-      if (!Arrays.equals(_departureTimes, other._departureTimes))
-        return false;
+      if (!Arrays.equals(_arrivalTimes, other._arrivalTimes)) return false;
+      if (!Arrays.equals(_departureTimes, other._departureTimes)) return false;
       if (_routeId == null) {
-        if (other._routeId != null)
-          return false;
-      } else if (!_routeId.equals(other._routeId))
-        return false;
+        if (other._routeId != null) return false;
+      } else if (!_routeId.equals(other._routeId)) return false;
       if (_serviceId == null) {
-        if (other._serviceId != null)
-          return false;
-      } else if (!_serviceId.equals(other._serviceId))
-        return false;
-      if (!Arrays.equals(_stopIds, other._stopIds))
-        return false;
+        if (other._serviceId != null) return false;
+      } else if (!_serviceId.equals(other._serviceId)) return false;
+      if (!Arrays.equals(_stopIds, other._stopIds)) return false;
       return true;
     }
   }

@@ -1,25 +1,19 @@
 /**
  * Copyright (C) 2023 Cambridge Systematics, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_merge;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.onebusaway.gtfs.impl.FileSupport;
-import org.onebusaway.gtfs.impl.ZipHandler;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,12 +22,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.onebusaway.gtfs.impl.FileSupport;
+import org.onebusaway.gtfs.impl.ZipHandler;
 
-import static  org.junit.jupiter.api.Assertions.assertTrue;
-
-/**
- * Test appending metadata inputs as part of merge.
- */
+/** Test appending metadata inputs as part of merge. */
 public class MergeExpectedFilesTest {
 
   private GtfsMerger _merger;
@@ -52,12 +47,9 @@ public class MergeExpectedFilesTest {
 
   @Test
   public void testDirectoryMerge() throws Exception {
-    File path0 = new File(getClass().getResource(
-            "/org/onebusaway/gtfs_merge/testagency").toURI());
-    File path1 = new File(getClass().getResource(
-            "/org/onebusaway/gtfs_merge/testagency1").toURI());
-    File path2 = new File(getClass().getResource(
-            "/org/onebusaway/gtfs_merge/testagency2").toURI());
+    File path0 = new File(getClass().getResource("/org/onebusaway/gtfs_merge/testagency").toURI());
+    File path1 = new File(getClass().getResource("/org/onebusaway/gtfs_merge/testagency1").toURI());
+    File path2 = new File(getClass().getResource("/org/onebusaway/gtfs_merge/testagency2").toURI());
 
     List<File> paths = new ArrayList<File>();
     paths.add(path0);
@@ -80,12 +72,12 @@ public class MergeExpectedFilesTest {
 
   @Test
   public void testZipMerge() throws Exception {
-    File path0 = new File(getClass().getResource(
-            "/org/onebusaway/gtfs_merge/testagency.zip").toURI());
-    File path1 = new File(getClass().getResource(
-            "/org/onebusaway/gtfs_merge/testagency1.zip").toURI());
-    File path2 = new File(getClass().getResource(
-            "/org/onebusaway/gtfs_merge/testagency2.zip").toURI());
+    File path0 =
+        new File(getClass().getResource("/org/onebusaway/gtfs_merge/testagency.zip").toURI());
+    File path1 =
+        new File(getClass().getResource("/org/onebusaway/gtfs_merge/testagency1.zip").toURI());
+    File path2 =
+        new File(getClass().getResource("/org/onebusaway/gtfs_merge/testagency2.zip").toURI());
     List<File> paths = new ArrayList<File>();
     paths.add(path0);
     paths.add(path1);
@@ -98,13 +90,11 @@ public class MergeExpectedFilesTest {
     assertTrue(content.contains("testagency "));
     assertTrue(content.contains("testagency1"));
     assertTrue(content.contains("testagency2"));
-
   }
 
   private File createTempDirectory() throws IOException {
     File tmpDirectory = File.createTempFile("MergeExpectedFilesTest-", "-tmp");
-    if (tmpDirectory.exists())
-      _support.deleteFileRecursively(tmpDirectory);
+    if (tmpDirectory.exists()) _support.deleteFileRecursively(tmpDirectory);
     tmpDirectory.mkdirs();
     _support.markForDeletion(tmpDirectory);
     return tmpDirectory;
@@ -112,8 +102,7 @@ public class MergeExpectedFilesTest {
 
   private File createTempFile() throws IOException {
     File tmpZipFileDirectory = File.createTempFile("CarryForwardExpectedFilesTestZip-", "-tmp");
-    if (tmpZipFileDirectory.exists())
-      _support.deleteFileRecursively(tmpZipFileDirectory);
+    if (tmpZipFileDirectory.exists()) _support.deleteFileRecursively(tmpZipFileDirectory);
     tmpZipFileDirectory.mkdirs();
 
     File zipFile = new File(tmpZipFileDirectory.getAbsolutePath() + File.separator + "gtfs.zip");

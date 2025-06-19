@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.model;
@@ -21,8 +19,7 @@ import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFac
 import org.onebusaway.gtfs.serialization.mappings.LatLonFieldMappingFactory;
 
 @CsvFields(filename = "shapes.txt", required = false)
-public final class ShapePoint extends IdentityBean<Integer> implements
-    Comparable<ShapePoint> {
+public final class ShapePoint extends IdentityBean<Integer> implements Comparable<ShapePoint> {
 
   private static final long serialVersionUID = 1L;
 
@@ -49,9 +46,7 @@ public final class ShapePoint extends IdentityBean<Integer> implements
   @CsvField(ignore = true)
   private transient ShapePointProxy proxy;
 
-  public ShapePoint() {
-
-  }
+  public ShapePoint() {}
 
   public ShapePoint(ShapePoint shapePoint) {
     this.id = shapePoint.id;
@@ -115,9 +110,8 @@ public final class ShapePoint extends IdentityBean<Integer> implements
   }
 
   /**
-   * @return the distance traveled along the shape path. If no distance was
-   *         specified, the value is undefined. Check first with
-   *         {@link #isDistTraveledSet()}
+   * @return the distance traveled along the shape path. If no distance was specified, the value is
+   *     undefined. Check first with {@link #isDistTraveledSet()}
    */
   public double getDistTraveled() {
     if (proxy != null) {
@@ -173,9 +167,8 @@ public final class ShapePoint extends IdentityBean<Integer> implements
   }
 
   /**
-   * When set, all interactions with the shape point will be redirected through
-   * this proxy.
-   * 
+   * When set, all interactions with the shape point will be redirected through this proxy.
+   *
    * @param proxy
    */
   public void setProxy(ShapePointProxy proxy) {
@@ -188,8 +181,15 @@ public final class ShapePoint extends IdentityBean<Integer> implements
 
   @Override
   public String toString() {
-    return "<ShapePoint " + getShapeId() + " #" + getSequence() + " ("
-        + getLat() + "," + getLon() + ")>";
+    return "<ShapePoint "
+        + getShapeId()
+        + " #"
+        + getSequence()
+        + " ("
+        + getLat()
+        + ","
+        + getLon()
+        + ")>";
   }
 
   @Override

@@ -1,20 +1,23 @@
 /**
  * Copyright (C) 2023 Cambridge Systematics, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.impl;
 
+import static org.onebusaway.gtfs_transformer.csv.CSVUtil.readCsv;
+import static org.onebusaway.gtfs_transformer.csv.MTAStation.*;
+
+import java.io.File;
+import java.util.*;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.FeedInfo;
 import org.onebusaway.gtfs.model.Stop;
@@ -25,15 +28,7 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.util.*;
-
-import static org.onebusaway.gtfs_transformer.csv.CSVUtil.readCsv;
-import static org.onebusaway.gtfs_transformer.csv.MTAStation.*;
-
-/**
- * Based on a CSV of MTAStations set the associated stops accessible as specified.
- */
+/** Based on a CSV of MTAStations set the associated stops accessible as specified. */
 public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
 
   private static final Logger _log = LoggerFactory.getLogger(MTAStationAccessibilityStrategy.class);
@@ -41,7 +36,7 @@ public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
 
   @CsvField(ignore = true)
   private Set<Stop> accessibleStops = new HashSet<>();
-  
+
   @CsvField(ignore = true)
   private Map<String, Stop> idToStopMap = new HashMap<>();
 
@@ -57,8 +52,7 @@ public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
 
     // name the feed for logging/reference
     String feed = null;
-    if(feedInfos.size() > 0)
-      feed = feedInfos.iterator().next().getPublisherName();
+    if (feedInfos.size() > 0) feed = feedInfos.iterator().next().getPublisherName();
 
     // stops are unqualified, build up a map of them for lookups
     for (Stop stop : dao.getAllStops()) {
@@ -71,8 +65,7 @@ public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
     List<MTAStation> stations = getStations();
     for (MTAStation station : stations) {
       markStopAccessible(dao, station.getStopId(), "", station.getAda());
-      if (ADA_NOT_ACCESSIBLE == station.getAda()
-            || ADA_FULLY_ACCESSIBLE == station.getAda()) {
+      if (ADA_NOT_ACCESSIBLE == station.getAda() || ADA_FULLY_ACCESSIBLE == station.getAda()) {
         markStopAccessible(dao, station.getStopId(), "N", station.getAda());
         markStopAccessible(dao, station.getStopId(), "S", station.getAda());
       } else if (ADA_PARTIALLY_ACCESSIBLE == station.getAda()) {
@@ -94,11 +87,13 @@ public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
       // save the changes
       dao.updateEntity(accessibleStop);
     }
-
   }
 
-  private void markStopAccessible(GtfsMutableRelationalDao dao, String stopId, String compassDirection,
-                                  int accessibilityQualifier) {
+  private void markStopAccessible(
+      GtfsMutableRelationalDao dao,
+      String stopId,
+      String compassDirection,
+      int accessibilityQualifier) {
     int gtfsValue = convertMTAccessibilityToGTFS(accessibilityQualifier);
     String unqualifiedStopId = stopId + compassDirection;
     Stop stopForId = idToStopMap.get(unqualifiedStopId);
@@ -111,9 +106,8 @@ public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
   }
 
   /**
-   * MTA 0 -> GTFS 2
-   * MTA 1 -> GTFS 1
-   * MTA 2 -> GTFS 3 (experimental)
+   * MTA 0 -> GTFS 2 MTA 1 -> GTFS 1 MTA 2 -> GTFS 3 (experimental)
+   *
    * @param accessibilityQualifier
    * @return
    */
@@ -130,7 +124,6 @@ public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
     }
   }
 
-
   private List<MTAStation> getStations() {
     return readCsv(MTAStation.class, stationsCsv);
   }
@@ -139,8 +132,7 @@ public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
     this.stationsCsv = stationsCsv;
   }
 
-  private String getNamespace(){
+  private String getNamespace() {
     return System.getProperty("cloudwatch.namespace");
   }
-
 }

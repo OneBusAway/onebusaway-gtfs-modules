@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.model;
@@ -27,8 +25,7 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
 
   private static final int MISSING_VALUE = -999;
 
-  @Deprecated
-  public static final int MODE_LINK = 0;
+  @Deprecated public static final int MODE_LINK = 0;
 
   public static final int MODE_WALKWAY = 1;
 
@@ -47,7 +44,8 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   @CsvField(name = "pathway_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;
 
-  @Deprecated @CsvField(optional = true)
+  @Deprecated
+  @CsvField(optional = true)
   private int pathwayType = MISSING_VALUE;
 
   @CsvField(name = "from_stop_id", mapping = EntityFieldMappingFactory.class)
@@ -56,11 +54,9 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   @CsvField(name = "to_stop_id", mapping = EntityFieldMappingFactory.class)
   private Stop toStop;
 
-  @CsvField
-  private int pathwayMode;
+  @CsvField private int pathwayMode;
 
-  @CsvField
-  private int isBidirectional;
+  @CsvField private int isBidirectional;
 
   @CsvField(optional = true)
   private double length = MISSING_VALUE;
@@ -85,11 +81,13 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
 
   @CsvField(optional = true)
   private int isAccessible = MISSING_VALUE;
-  
-  @Deprecated @CsvField(optional = true)
+
+  @Deprecated
+  @CsvField(optional = true)
   private int wheelchairTraversalTime = MISSING_VALUE;
 
-  @Deprecated @CsvField(optional = true)
+  @Deprecated
+  @CsvField(optional = true)
   private String pathwayCode;
 
   @Override
@@ -139,7 +137,7 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   }
 
   public void clearTraversalTime() {
-     this.traversalTime = MISSING_VALUE;
+    this.traversalTime = MISSING_VALUE;
   }
 
   public int getIsBidirectional() {
@@ -151,11 +149,11 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   }
 
   public boolean isLengthSet() {
-      return length != MISSING_VALUE;
+    return length != MISSING_VALUE;
   }
 
   public double getLength() {
-      return length;
+    return length;
   }
 
   public void setLength(double length) {
@@ -163,7 +161,7 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   }
 
   public void clearLength() {
-      length = MISSING_VALUE;
+    length = MISSING_VALUE;
   }
 
   public boolean isStairCountSet() {
@@ -229,7 +227,7 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   public void clearIsAccessible() {
     isAccessible = MISSING_VALUE;
   }
-  
+
   public String getSignpostedAs() {
     return signpostedAs;
   }
@@ -300,6 +298,4 @@ public final class Pathway extends IdentityBean<AgencyAndId> {
   public void clearPathwayType() {
     this.pathwayType = MISSING_VALUE;
   }
-
-
 }

@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2019 Cambridge Systematics, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.impl;
@@ -28,6 +26,8 @@ G	1	A42S	A42N
 G	0	A42N	A42S
  */
 
+import java.io.File;
+import java.util.List;
 import org.onebusaway.gtfs.model.*;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
@@ -35,82 +35,88 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.util.List;
-
 public class UpdateWrongWayConcurrencies implements GtfsTransformStrategy {
 
-    private static final int ROUTE_ID = 0;
-    private static final int DIRECTION_ID = 1;
-    private static final int FROM_STOP_ID = 2;
-    private static final int TO_STOP_ID = 3;
+  private static final int ROUTE_ID = 0;
+  private static final int DIRECTION_ID = 1;
+  private static final int FROM_STOP_ID = 2;
+  private static final int TO_STOP_ID = 3;
 
-    private static Logger _log = LoggerFactory.getLogger(UpdateWrongWayConcurrencies.class);
+  private static Logger _log = LoggerFactory.getLogger(UpdateWrongWayConcurrencies.class);
 
-    public String getName() {
-        return this.getClass().getName();
+  public String getName() {
+    return this.getClass().getName();
+  }
+
+  @Override
+  public void run(TransformContext context, GtfsMutableRelationalDao dao) {
+
+    File concurrencyFile = new File((String) context.getParameter("concurrencyFile"));
+    if (!concurrencyFile.exists()) {
+      throw new IllegalStateException(
+          "Concurrency file does not exist: " + concurrencyFile.getName());
     }
 
-    @Override
-    public void run(TransformContext context, GtfsMutableRelationalDao dao) {
+    List<String> stopLines =
+        new InputLibrary().readList((String) context.getParameter("concurrencyFile"));
 
-        File concurrencyFile = new File((String)context.getParameter("concurrencyFile"));
-        if(!concurrencyFile.exists()) {
-            throw new IllegalStateException(
-                    "Concurrency file does not exist: " + concurrencyFile.getName());
+    String agency = dao.getAllStops().iterator().next().getId().getAgencyId();
+
+    for (String stopInfo : stopLines) {
+      int count = 0;
+      String[] stopArray = stopInfo.split(",");
+      if (stopArray == null || stopArray.length < 2) {
+        _log.info("bad line {}", stopInfo);
+        continue;
+      } else {
+        _log.info("stop line {}", stopInfo);
+      }
+      String routeId = stopArray[ROUTE_ID];
+      String directionId = stopArray[DIRECTION_ID];
+      String fromStopId = stopArray[FROM_STOP_ID];
+      String toStopId = stopArray[TO_STOP_ID];
+
+      // This line doesn't work so I have to iteratate over all the stops to get the one we want
+      // See MOTP-1232
+      Stop toStop = dao.getStopForId(new AgencyAndId(agency, toStopId));
+
+      for (Stop stop : dao.getAllStops()) {
+        if (stop.getId().getId().equals(toStopId)) {
+          toStop = stop;
+          break;
         }
+      }
 
-        List<String> stopLines = new InputLibrary().readList((String) context.getParameter("concurrencyFile"));
-
-        String agency = dao.getAllStops().iterator().next().getId().getAgencyId();
-
-        for (String stopInfo : stopLines) {
-            int count=0;
-            String[] stopArray = stopInfo.split(",");
-            if (stopArray == null || stopArray.length < 2) {
-                _log.info("bad line {}", stopInfo);
-                continue;
-            }
-            else {
-                _log.info("stop line {}", stopInfo);
-            }
-            String routeId = stopArray[ROUTE_ID];
-            String directionId = stopArray[DIRECTION_ID];
-            String fromStopId = stopArray[FROM_STOP_ID];
-            String toStopId = stopArray[TO_STOP_ID];
-
-            //This line doesn't work so I have to iteratate over all the stops to get the one we want
-            //See MOTP-1232
-            Stop toStop = dao.getStopForId(new AgencyAndId(agency, toStopId));
-
-            for (Stop stop : dao.getAllStops()) {
-                if (stop.getId().getId().equals(toStopId)) {
-                    toStop = stop;
-                    break;
-                }
-            }
-
-            if (routeId != null && directionId != null && fromStopId != null && toStopId != null && toStop != null) {
-                for (StopTime stopTime : dao.getAllStopTimes()) {
-                    if (stopTime.getTrip().getRoute().getShortName() != null) {
-                        if (stopTime.getTrip().getRoute().getShortName().equals(routeId)) {
-                            if (stopTime.getStop() != null) {
-                                if (stopTime.getStop().getId().getId() != null) {
-                                    if (stopTime.getStop().getId().getId().equals(fromStopId)) {
-                                        if (stopTime.getTrip().getDirectionId().equals(directionId)) {
-                                            if (count==0) { //log once for each line that updates an id
-                                                _log.info("Setting route: {} direction {} stop id: {} to: {}", stopTime.getTrip().getRoute().getId(), stopTime.getTrip().getDirectionId(), stopTime.getStop().getId().getId(), toStopId);
-                                                count++;
-                                            }
-                                            stopTime.setStop(toStop);
-                                        }
-                                    }
-                                }
-                            }
-                        }
+      if (routeId != null
+          && directionId != null
+          && fromStopId != null
+          && toStopId != null
+          && toStop != null) {
+        for (StopTime stopTime : dao.getAllStopTimes()) {
+          if (stopTime.getTrip().getRoute().getShortName() != null) {
+            if (stopTime.getTrip().getRoute().getShortName().equals(routeId)) {
+              if (stopTime.getStop() != null) {
+                if (stopTime.getStop().getId().getId() != null) {
+                  if (stopTime.getStop().getId().getId().equals(fromStopId)) {
+                    if (stopTime.getTrip().getDirectionId().equals(directionId)) {
+                      if (count == 0) { // log once for each line that updates an id
+                        _log.info(
+                            "Setting route: {} direction {} stop id: {} to: {}",
+                            stopTime.getTrip().getRoute().getId(),
+                            stopTime.getTrip().getDirectionId(),
+                            stopTime.getStop().getId().getId(),
+                            toStopId);
+                        count++;
+                      }
+                      stopTime.setStop(toStop);
                     }
+                  }
                 }
+              }
             }
+          }
         }
+      }
     }
+  }
 }

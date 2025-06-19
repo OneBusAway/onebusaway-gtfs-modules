@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.examples;
@@ -19,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.onebusaway.gtfs.model.AgencyAndId;
@@ -44,8 +41,7 @@ public class GtfsHibernateReaderExampleMain {
     }
 
     String resource = "classpath:org/onebusaway/gtfs/examples/hibernate-configuration-examples.xml";
-    if (args.length == 2)
-      resource = args[1];
+    if (args.length == 2) resource = args[1];
 
     HibernateGtfsFactory factory = createHibernateGtfsFactory(resource);
 
@@ -58,8 +54,7 @@ public class GtfsHibernateReaderExampleMain {
 
     Collection<Stop> stops = dao.getAllStops();
 
-    for (Stop stop : stops)
-      System.out.println(stop.getName());
+    for (Stop stop : stops) System.out.println(stop.getName());
 
     CalendarService calendarService = factory.getCalendarService();
     Set<AgencyAndId> serviceIds = calendarService.getServiceIds();
@@ -73,24 +68,19 @@ public class GtfsHibernateReaderExampleMain {
         to = max(to, date);
       }
 
-      System.out.println("serviceId=" + serviceId + " from=" + from + " to="
-          + to);
+      System.out.println("serviceId=" + serviceId + " from=" + from + " to=" + to);
     }
   }
 
   private static ServiceDate min(ServiceDate a, ServiceDate b) {
-    if (a == null)
-      return b;
-    if (b == null)
-      return a;
+    if (a == null) return b;
+    if (b == null) return a;
     return a.compareTo(b) <= 0 ? a : b;
   }
 
   private static ServiceDate max(ServiceDate a, ServiceDate b) {
-    if (a == null)
-      return b;
-    if (b == null)
-      return a;
+    if (a == null) return b;
+    if (b == null) return a;
     return a.compareTo(b) <= 0 ? b : a;
   }
 

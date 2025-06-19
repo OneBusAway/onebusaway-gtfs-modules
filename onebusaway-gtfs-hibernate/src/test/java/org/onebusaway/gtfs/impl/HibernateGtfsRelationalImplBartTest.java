@@ -1,28 +1,24 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2011 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.impl;
 
-import static  org.junit.jupiter.api.Assertions.assertEquals;
-import static  org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.AfterAll;
@@ -54,8 +50,7 @@ public class HibernateGtfsRelationalImplBartTest {
     _dao = new HibernateGtfsRelationalDaoImpl(_sessionFactory);
 
     GtfsReader reader = new GtfsReader();
-    reader.setInputLocation(new File(
-        "src/test/resources/org/onebusaway/gtfs/bart.zip"));
+    reader.setInputLocation(new File("src/test/resources/org/onebusaway/gtfs/bart.zip"));
     reader.setEntityStore(_dao);
     reader.setDefaultAgencyId(_agencyId);
     reader.run();
@@ -69,16 +64,15 @@ public class HibernateGtfsRelationalImplBartTest {
   @Test
   public void testCalendarForServiceId() {
 
-    ServiceCalendar calendar = _dao.getCalendarForServiceId(new AgencyAndId(
-        "BART", "WKDY"));
+    ServiceCalendar calendar = _dao.getCalendarForServiceId(new AgencyAndId("BART", "WKDY"));
     assertEquals(new ServiceDate(2007, 1, 1), calendar.getStartDate());
   }
 
   @Test
   public void testCalendarDateForServiceId() {
 
-    List<ServiceCalendarDate> calendarDates = _dao.getCalendarDatesForServiceId(new AgencyAndId(
-        "BART", "WKDY"));
+    List<ServiceCalendarDate> calendarDates =
+        _dao.getCalendarDatesForServiceId(new AgencyAndId("BART", "WKDY"));
     assertEquals(7, calendarDates.size());
   }
 
@@ -94,12 +88,12 @@ public class HibernateGtfsRelationalImplBartTest {
     assertEquals(trip, frequency.getTrip());
     assertEquals(1200, frequency.getHeadwaySecs());
   }
-  
+
   @Test
   public void testGet() {
     List<AgencyAndId> shapeIds = _dao.getAllShapeIds();
-    assertEquals(2,shapeIds.size());
-    assertTrue(shapeIds.contains(new AgencyAndId("BART","airbart-up.csv")));
+    assertEquals(2, shapeIds.size());
+    assertTrue(shapeIds.contains(new AgencyAndId("BART", "airbart-up.csv")));
     assertTrue(shapeIds.contains(new AgencyAndId("BART", "airbart-dn.csv")));
   }
 }

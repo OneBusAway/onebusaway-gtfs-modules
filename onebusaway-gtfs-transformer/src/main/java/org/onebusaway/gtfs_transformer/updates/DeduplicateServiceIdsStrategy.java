@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2013 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.updates;
@@ -21,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.onebusaway.collections.FactoryMap;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
@@ -37,8 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Finds GTFS service_ids that have the exact same set of active days and
- * consolidates each set of duplicated ids to a single service_id entry.
+ * Finds GTFS service_ids that have the exact same set of active days and consolidates each set of
+ * duplicated ids to a single service_id entry.
  */
 public class DeduplicateServiceIdsStrategy implements GtfsTransformStrategy {
 
@@ -52,8 +49,8 @@ public class DeduplicateServiceIdsStrategy implements GtfsTransformStrategy {
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
     CalendarService service = CalendarServiceDataFactoryImpl.createService(dao);
-    Map<Set<ServiceDate>, List<AgencyAndId>> serviceIdsByServiceDates = new FactoryMap<Set<ServiceDate>, List<AgencyAndId>>(
-        new ArrayList<AgencyAndId>());
+    Map<Set<ServiceDate>, List<AgencyAndId>> serviceIdsByServiceDates =
+        new FactoryMap<Set<ServiceDate>, List<AgencyAndId>>(new ArrayList<AgencyAndId>());
     for (AgencyAndId serviceId : dao.getAllServiceIds()) {
       Set<ServiceDate> serviceDates = service.getServiceDatesForServiceId(serviceId);
       serviceIdsByServiceDates.get(serviceDates).add(serviceId);

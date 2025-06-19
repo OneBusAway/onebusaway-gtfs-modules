@@ -1,20 +1,23 @@
 /**
  * Copyright (C) 2023 Cambridge Systematics, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.updates;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,15 +27,7 @@ import org.onebusaway.gtfs.impl.ZipHandler;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-
-import static  org.junit.jupiter.api.Assertions.assertTrue;
-
-/**
- * Ensure metadata files are still present in typical read/write cycle.
- */
+/** Ensure metadata files are still present in typical read/write cycle. */
 public class CarryForwardExpectedFilesTest {
 
   private GtfsRelationalDaoImpl _dao;
@@ -55,15 +50,14 @@ public class CarryForwardExpectedFilesTest {
   @Test
   public void testFile() throws Exception {
     GtfsReader reader = new GtfsReader();
-    File path = new File(getClass().getResource(
-            "/org/onebusaway/gtfs_transformer/testagency").toURI());
+    File path =
+        new File(getClass().getResource("/org/onebusaway/gtfs_transformer/testagency").toURI());
     reader.setInputLocation(path);
     reader.setEntityStore(_dao);
     reader.run();
 
     _tmpFileDirectory = File.createTempFile("CarryForwardExpectedFilesTest-", "-tmp");
-    if (_tmpFileDirectory.exists())
-      _support.deleteFileRecursively(_tmpFileDirectory);
+    if (_tmpFileDirectory.exists()) _support.deleteFileRecursively(_tmpFileDirectory);
     _tmpFileDirectory.mkdirs();
     _support.markForDeletion(_tmpFileDirectory);
 
@@ -82,15 +76,14 @@ public class CarryForwardExpectedFilesTest {
   @Test
   public void testZipFile() throws Exception {
     GtfsReader reader = new GtfsReader();
-    File inputZipFile = new File(getClass().getResource(
-            "/org/onebusaway/gtfs_transformer/testagency.zip").toURI());
+    File inputZipFile =
+        new File(getClass().getResource("/org/onebusaway/gtfs_transformer/testagency.zip").toURI());
     reader.setInputLocation(inputZipFile);
     reader.setEntityStore(_dao);
     reader.run();
 
     _tmpZipFileDirectory = File.createTempFile("CarryForwardExpectedFilesTestZip-", "-tmp");
-    if (_tmpZipFileDirectory.exists())
-      _support.deleteFileRecursively(_tmpZipFileDirectory);
+    if (_tmpZipFileDirectory.exists()) _support.deleteFileRecursively(_tmpZipFileDirectory);
     _tmpZipFileDirectory.mkdirs();
     _support.markForDeletion(_tmpZipFileDirectory);
 

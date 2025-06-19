@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2013 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.updates;
@@ -19,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.StopTime;
@@ -51,8 +48,7 @@ public class ShiftNegativeStopTimesUpdateStrategy implements GtfsTransformStrate
       }
       int dayShift = getDayShiftForNegativeStopTime(minTime);
       shiftStopTimes(stopTimes, dayShift * SECONDS_IN_DAY);
-      ShiftedServiceCalendar shifted = new ShiftedServiceCalendar(
-          trip.getServiceId(), -dayShift);
+      ShiftedServiceCalendar shifted = new ShiftedServiceCalendar(trip.getServiceId(), -dayShift);
       shiftedIds.add(shifted);
       trip.setServiceId(shifted.getShiftedServiceId());
     }
@@ -62,18 +58,18 @@ public class ShiftNegativeStopTimesUpdateStrategy implements GtfsTransformStrate
 
     for (ShiftedServiceCalendar shifted : shiftedIds) {
 
-      Set<ServiceDate> allServiceDates = calendarService.getServiceDatesForServiceId(shifted.getOriginalServiceId());
-      Set<ServiceDate> shiftedServiceDates = shiftServiceDates(allServiceDates,
-          shifted.getDayOffset());
+      Set<ServiceDate> allServiceDates =
+          calendarService.getServiceDatesForServiceId(shifted.getOriginalServiceId());
+      Set<ServiceDate> shiftedServiceDates =
+          shiftServiceDates(allServiceDates, shifted.getDayOffset());
       ServiceCalendarSummary summary = library.getSummaryForServiceDates(shiftedServiceDates);
       List<Object> newEntities = new ArrayList<Object>();
-      library.computeSimplifiedCalendar(shifted.getShiftedServiceId(), summary,
-          newEntities);
+      library.computeSimplifiedCalendar(shifted.getShiftedServiceId(), summary, newEntities);
       for (Object newEntity : newEntities) {
         dao.saveEntity(newEntity);
       }
     }
-    
+
     UpdateLibrary.clearDaoCache(dao);
   }
 
@@ -105,8 +101,7 @@ public class ShiftNegativeStopTimesUpdateStrategy implements GtfsTransformStrate
     }
   }
 
-  private Set<ServiceDate> shiftServiceDates(Set<ServiceDate> allServiceDates,
-      int dayOffset) {
+  private Set<ServiceDate> shiftServiceDates(Set<ServiceDate> allServiceDates, int dayOffset) {
     Set<ServiceDate> shifted = new HashSet<ServiceDate>();
     for (ServiceDate date : allServiceDates) {
       shifted.add(date.shift(dayOffset));
@@ -135,8 +130,8 @@ public class ShiftNegativeStopTimesUpdateStrategy implements GtfsTransformStrate
     }
 
     public AgencyAndId getShiftedServiceId() {
-      String shiftedId = originalServiceId.getId() + " "
-          + ((dayOffset < 0) ? "-" : "+") + Math.abs(dayOffset);
+      String shiftedId =
+          originalServiceId.getId() + " " + ((dayOffset < 0) ? "-" : "+") + Math.abs(dayOffset);
       return new AgencyAndId(originalServiceId.getAgencyId(), shiftedId);
     }
 
@@ -151,17 +146,12 @@ public class ShiftNegativeStopTimesUpdateStrategy implements GtfsTransformStrate
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
-        return true;
-      if (obj == null)
-        return false;
-      if (getClass() != obj.getClass())
-        return false;
+      if (this == obj) return true;
+      if (obj == null) return false;
+      if (getClass() != obj.getClass()) return false;
       ShiftedServiceCalendar other = (ShiftedServiceCalendar) obj;
-      if (dayOffset != other.dayOffset)
-        return false;
-      if (!originalServiceId.equals(other.originalServiceId))
-        return false;
+      if (dayOffset != other.dayOffset) return false;
+      if (!originalServiceId.equals(other.originalServiceId)) return false;
       return true;
     }
   }

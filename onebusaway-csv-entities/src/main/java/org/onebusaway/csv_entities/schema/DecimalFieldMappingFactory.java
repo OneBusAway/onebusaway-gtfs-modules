@@ -1,17 +1,14 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2011 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.csv_entities.schema;
@@ -27,7 +24,6 @@ import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Locale;
 import java.util.Map;
-
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.exceptions.CsvEntityException;
 import org.onebusaway.csv_entities.exceptions.IntrospectionException;
@@ -40,9 +36,7 @@ public class DecimalFieldMappingFactory implements FieldMappingFactory {
 
   private Currency _currency;
 
-  public DecimalFieldMappingFactory() {
-
-  }
+  public DecimalFieldMappingFactory() {}
 
   public DecimalFieldMappingFactory(String format) {
     _format = format;
@@ -58,14 +52,18 @@ public class DecimalFieldMappingFactory implements FieldMappingFactory {
   }
 
   @Override
-  public FieldMapping createFieldMapping(EntitySchemaFactory schemaFactory,
-      Class<?> entityType, String csvFieldName, String objFieldName,
-      Class<?> objFieldType, boolean required) {
+  public FieldMapping createFieldMapping(
+      EntitySchemaFactory schemaFactory,
+      Class<?> entityType,
+      String csvFieldName,
+      String objFieldName,
+      Class<?> objFieldType,
+      boolean required) {
 
     NumberFormat numberFormat = getFormat(entityType, objFieldName);
 
-    return new FieldMappingImpl(entityType, csvFieldName, objFieldName,
-        objFieldType, required, numberFormat);
+    return new FieldMappingImpl(
+        entityType, csvFieldName, objFieldName, objFieldType, required, numberFormat);
   }
 
   private NumberFormat getFormat(Class<?> entityType, String objFieldName) {
@@ -101,9 +99,12 @@ public class DecimalFieldMappingFactory implements FieldMappingFactory {
     NumberFormatAnnotation formatAnnotation = field.getAnnotation(NumberFormatAnnotation.class);
 
     if (formatAnnotation == null) {
-      throw new DateFieldMappingException(entityType,
-          "missing required @DateFormatAnnotation for field " + objFieldName
-              + " of type " + entityType);
+      throw new DateFieldMappingException(
+          entityType,
+          "missing required @DateFormatAnnotation for field "
+              + objFieldName
+              + " of type "
+              + entityType);
     }
     return formatAnnotation.value();
   }
@@ -116,8 +117,7 @@ public class DecimalFieldMappingFactory implements FieldMappingFactory {
       super(entityType, message);
     }
 
-    public DateFieldMappingException(Class<?> entityType, String message,
-        Throwable cause) {
+    public DateFieldMappingException(Class<?> entityType, String message, Throwable cause) {
       super(entityType, message, cause);
     }
   }
@@ -126,20 +126,23 @@ public class DecimalFieldMappingFactory implements FieldMappingFactory {
 
     private NumberFormat _numberFormat;
 
-    public FieldMappingImpl(Class<?> entityType, String csvFieldName,
-        String objFieldName, Class<?> objFieldType, boolean required,
+    public FieldMappingImpl(
+        Class<?> entityType,
+        String csvFieldName,
+        String objFieldName,
+        Class<?> objFieldType,
+        boolean required,
         NumberFormat numberFormat) {
       super(entityType, csvFieldName, objFieldName, objFieldType, required);
       _numberFormat = numberFormat;
     }
 
     @Override
-    public void translateFromObjectToCSV(CsvEntityContext context,
-        BeanWrapper object, Map<String, Object> csvValues)
+    public void translateFromObjectToCSV(
+        CsvEntityContext context, BeanWrapper object, Map<String, Object> csvValues)
         throws CsvEntityException {
 
-      if (isMissingAndOptional(object))
-        return;
+      if (isMissingAndOptional(object)) return;
 
       Number n = (Number) object.getPropertyValue(_objFieldName);
 

@@ -1,17 +1,14 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2011 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.csv_entities.schema;
@@ -19,7 +16,6 @@ package org.onebusaway.csv_entities.schema;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
-
 import org.onebusaway.csv_entities.exceptions.MethodInvocationException;
 import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
 
@@ -41,8 +37,8 @@ public abstract class AbstractFieldMapping implements SingleFieldMapping {
 
   protected Method _isSetMethod = null;
 
-  public AbstractFieldMapping(Class<?> entityType, String csvFieldName,
-      String objFieldName, boolean required) {
+  public AbstractFieldMapping(
+      Class<?> entityType, String csvFieldName, String objFieldName, boolean required) {
     _entityType = entityType;
     _csvFieldName = csvFieldName;
     _objFieldName = objFieldName;
@@ -96,8 +92,7 @@ public abstract class AbstractFieldMapping implements SingleFieldMapping {
 
     boolean missing = isMissing(csvValues);
 
-    if (_required && missing)
-      throw new MissingRequiredFieldException(_entityType, _csvFieldName);
+    if (_required && missing) throw new MissingRequiredFieldException(_entityType, _csvFieldName);
 
     return missing;
   }
@@ -106,8 +101,7 @@ public abstract class AbstractFieldMapping implements SingleFieldMapping {
   public boolean isMissingAndOptional(BeanWrapper object) {
     boolean missing = isMissing(object);
 
-    if (_required && missing)
-      throw new MissingRequiredFieldException(_entityType, _objFieldName);
+    if (_required && missing) throw new MissingRequiredFieldException(_entityType, _objFieldName);
 
     return missing;
   }
@@ -127,7 +121,7 @@ public abstract class AbstractFieldMapping implements SingleFieldMapping {
 
   protected static boolean isMissing(Map<String, Object> csvValues, String csvFieldName) {
     Object object = csvValues.get(csvFieldName);
-    if(object == null) {
+    if (object == null) {
       return true;
     }
     return object.toString().length() == 0;
@@ -161,5 +155,4 @@ public abstract class AbstractFieldMapping implements SingleFieldMapping {
   protected boolean isOptional() {
     return !_required;
   }
-
 }

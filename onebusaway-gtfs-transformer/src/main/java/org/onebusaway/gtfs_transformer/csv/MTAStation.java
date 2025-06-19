@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2023 Cambridge Systematics, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.csv;
@@ -20,7 +18,7 @@ import org.onebusaway.csv_entities.schema.annotations.CsvField;
 /**
  * Metadata about an MTA Station.
  *
- * See https://new.mta.info/developers/display-elevators-NYCT
+ * <p>See https://new.mta.info/developers/display-elevators-NYCT
  */
 public class MTAStation {
 
@@ -34,6 +32,7 @@ public class MTAStation {
   public static final int GTFS_WHEELCHAIR_EXPERIMENTAL_PARTIALLY_ACCESSIBLE = 3;
 
   private static final int MISSING_VALUE = -999;
+
   @CsvField(name = "Station ID")
   private int id;
 
@@ -76,9 +75,8 @@ public class MTAStation {
   /**
    * Look at the ADA column.
    *
-   * 0 means it’s not accessible,
-   * 1 means it is fully accessible, and
-   * 2 means it is partially accessible. Partially accessible stations are usually accessible in one direction.
+   * <p>0 means it’s not accessible, 1 means it is fully accessible, and 2 means it is partially
+   * accessible. Partially accessible stations are usually accessible in one direction.
    */
   @CsvField(name = "ADA")
   private int ada;
@@ -86,17 +84,11 @@ public class MTAStation {
   @CsvField(name = "ADA Direction Notes", optional = true)
   private String adaDirectionNotes;
 
-  /**
-   * If ADA_PARTIALLY_ACCESSIBLE and this is 1, this
-   * station is accessible
-   */
+  /** If ADA_PARTIALLY_ACCESSIBLE and this is 1, this station is accessible */
   @CsvField(name = "ADA NB", optional = true)
   private int adaNorthBound = MISSING_VALUE;
 
-  /**
-   * If ADA_PARTIALLY_ACCESSIBLE and this is 1, this
-   * station is accessible
-   */
+  /** If ADA_PARTIALLY_ACCESSIBLE and this is 1, this station is accessible */
   @CsvField(name = "ADA SB", optional = true)
   private int adaSouthBound = MISSING_VALUE;
 

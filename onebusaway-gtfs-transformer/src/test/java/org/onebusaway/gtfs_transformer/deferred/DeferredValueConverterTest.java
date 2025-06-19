@@ -1,21 +1,19 @@
 /**
  * Copyright (C) 2015 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.deferred;
 
-import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,15 +30,13 @@ import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 
-/**
- * Unit-test for {@link DeferredValueConverterTest}.
- */
+/** Unit-test for {@link DeferredValueConverterTest}. */
 public class DeferredValueConverterTest {
-  
+
   private GtfsReader _reader = new GtfsReader();
   private EntitySchemaCache _schemaCache = new EntitySchemaCache();
   private GtfsMutableRelationalDao _dao = new GtfsRelationalDaoImpl();
-  
+
   private DeferredValueConverter _converter;
 
   @BeforeEach
@@ -113,9 +109,8 @@ public class DeferredValueConverterTest {
     Object value = convert(trip, "route", "10");
     assertEquals(route, value);
   }
-  
+
   private Object convert(Object bean, String property, Object value) {
-    return _converter.convertValue(BeanWrapperFactory.wrap(bean), property,
-        value);
+    return _converter.convertValue(BeanWrapperFactory.wrap(bean), property, value);
   }
 }

@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.model.calendar;
@@ -25,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
-
 import org.onebusaway.gtfs.model.AgencyAndId;
 
 public class CalendarServiceData implements Serializable {
@@ -34,16 +31,18 @@ public class CalendarServiceData implements Serializable {
 
   private Map<String, TimeZone> _timeZonesByAgencyId = new HashMap<String, TimeZone>();
 
-  private Map<AgencyAndId, List<ServiceDate>> _serviceDatesByServiceId = new HashMap<AgencyAndId, List<ServiceDate>>();
+  private Map<AgencyAndId, List<ServiceDate>> _serviceDatesByServiceId =
+      new HashMap<AgencyAndId, List<ServiceDate>>();
 
-  private Map<LocalizedServiceId, List<Date>> _datesByLocalizedServiceId = new HashMap<LocalizedServiceId, List<Date>>();
+  private Map<LocalizedServiceId, List<Date>> _datesByLocalizedServiceId =
+      new HashMap<LocalizedServiceId, List<Date>>();
 
-  private Map<ServiceDate, Set<AgencyAndId>> _serviceIdsByDate = new HashMap<ServiceDate, Set<AgencyAndId>>();
+  private Map<ServiceDate, Set<AgencyAndId>> _serviceIdsByDate =
+      new HashMap<ServiceDate, Set<AgencyAndId>>();
 
   /**
    * @param agencyId
-   * @return the time zone for the specified agencyId, or null if the agency was
-   *         not found
+   * @return the time zone for the specified agencyId, or null if the agency was not found
    */
   public TimeZone getTimeZoneForAgencyId(String agencyId) {
     return _timeZonesByAgencyId.get(agencyId);
@@ -67,13 +66,11 @@ public class CalendarServiceData implements Serializable {
 
   public Set<AgencyAndId> getServiceIdsForDate(ServiceDate date) {
     Set<AgencyAndId> serviceIds = _serviceIdsByDate.get(date);
-    if (serviceIds == null)
-      serviceIds = new HashSet<AgencyAndId>();
+    if (serviceIds == null) serviceIds = new HashSet<AgencyAndId>();
     return serviceIds;
   }
 
-  public void putServiceDatesForServiceId(AgencyAndId serviceId,
-      List<ServiceDate> serviceDates) {
+  public void putServiceDatesForServiceId(AgencyAndId serviceId, List<ServiceDate> serviceDates) {
     serviceDates = new ArrayList<ServiceDate>(serviceDates);
     Collections.sort(serviceDates);
     serviceDates = Collections.unmodifiableList(serviceDates);
@@ -92,8 +89,7 @@ public class CalendarServiceData implements Serializable {
     return _datesByLocalizedServiceId.get(serviceId);
   }
 
-  public void putDatesForLocalizedServiceId(LocalizedServiceId serviceId,
-      List<Date> dates) {
+  public void putDatesForLocalizedServiceId(LocalizedServiceId serviceId, List<Date> dates) {
     dates = Collections.unmodifiableList(new ArrayList<Date>(dates));
     _datesByLocalizedServiceId.put(serviceId, dates);
   }

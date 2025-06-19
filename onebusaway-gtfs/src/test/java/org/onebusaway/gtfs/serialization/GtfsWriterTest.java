@@ -1,25 +1,22 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.serialization;
 
-import static  org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,8 +32,7 @@ public class GtfsWriterTest {
   @BeforeEach
   public void setup() throws IOException {
     _tmpDirectory = File.createTempFile("GtfsWriterTest-", "-tmp");
-    if (_tmpDirectory.exists())
-      _support.deleteFileRecursively(_tmpDirectory);
+    if (_tmpDirectory.exists()) _support.deleteFileRecursively(_tmpDirectory);
     _tmpDirectory.mkdirs();
     _support.markForDeletion(_tmpDirectory);
   }
@@ -85,14 +81,12 @@ public class GtfsWriterTest {
 
   public static void deleteFileRecursively(File file) {
 
-    if (!file.exists())
-      return;
+    if (!file.exists()) return;
 
     if (file.isDirectory()) {
       File[] files = file.listFiles();
       if (files != null) {
-        for (File child : files)
-          deleteFileRecursively(child);
+        for (File child : files) deleteFileRecursively(child);
       }
     }
 

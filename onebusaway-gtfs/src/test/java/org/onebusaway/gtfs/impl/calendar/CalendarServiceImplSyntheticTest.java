@@ -1,29 +1,26 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.impl.calendar;
 
-import static  org.junit.jupiter.api.Assertions.assertEquals;
-import static  org.junit.jupiter.api.Assertions.assertFalse;
-import static  org.junit.jupiter.api.Assertions.assertNull;
-import static  org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.onebusaway.gtfs.DateSupport.date;
 import static org.onebusaway.gtfs.DateSupport.hourToSec;
 
 import java.util.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.model.AgencyAndId;
@@ -35,6 +32,7 @@ public class CalendarServiceImplSyntheticTest {
     // avoid timezone conversions
     TimeZone.setDefault(TimeZone.getTimeZone("America/Los_Angeles"));
   }
+
   private TimeZone tz = TimeZone.getTimeZone("America/Los_Angeles");
 
   private ServiceDate d1 = new ServiceDate(2010, 02, 01);
@@ -79,8 +77,7 @@ public class CalendarServiceImplSyntheticTest {
   @Test
   public void testGetLocalizedServiceIdForAgency() {
 
-    assertEquals(lsid1,
-        service.getLocalizedServiceIdForAgencyAndServiceId("A", sid1));
+    assertEquals(lsid1, service.getLocalizedServiceIdForAgencyAndServiceId("A", sid1));
 
     assertNull(service.getLocalizedServiceIdForAgencyAndServiceId("B", sid1));
   }
@@ -103,14 +100,13 @@ public class CalendarServiceImplSyntheticTest {
     assertTrue(serviceDates.contains(d1));
     assertTrue(serviceDates.contains(d2));
 
-    serviceDates = service.getServiceDatesForServiceId(new AgencyAndId("dne",
-        "dne"));
+    serviceDates = service.getServiceDatesForServiceId(new AgencyAndId("dne", "dne"));
     assertEquals(0, serviceDates.size());
   }
 
   @Test
   public void test() {
-    
+
     Date date1 = d1.getAsDate(tz);
     Date date2 = d2.getAsDate(tz);
     Date date3 = d3.getAsDate(tz);
@@ -142,8 +138,8 @@ public class CalendarServiceImplSyntheticTest {
 
     Date from = date("2010-02-01 07:00 Pacific Standard Time");
     Date to = date("2010-02-01 08:00 Pacific Standard Time");
-    Map<LocalizedServiceId, List<Date>> result = service.getServiceDatesWithinRange(
-        intervals, from, to);
+    Map<LocalizedServiceId, List<Date>> result =
+        service.getServiceDatesWithinRange(intervals, from, to);
     assertEquals(2, result.size());
 
     List<Date> dates = result.get(lsid1);
@@ -159,8 +155,8 @@ public class CalendarServiceImplSyntheticTest {
 
     Date from = date("2010-02-03 05:00 Pacific Standard Time");
     Date to = date("2010-02-03 05:30 Pacific Standard Time");
-    Map<LocalizedServiceId, List<Date>> result = service.getServiceDatesWithinRange(
-        intervals, from, to);
+    Map<LocalizedServiceId, List<Date>> result =
+        service.getServiceDatesWithinRange(intervals, from, to);
     assertEquals(1, result.size());
 
     List<Date> dates = result.get(lsid2);
@@ -174,8 +170,8 @@ public class CalendarServiceImplSyntheticTest {
 
     Date from = date("2010-02-02 03:30 Pacific Standard Time");
     Date to = date("2010-02-02 03:45 Pacific Standard Time");
-    Map<LocalizedServiceId, List<Date>> result = service.getServiceDateArrivalsWithinRange(
-        intervals, from, to);
+    Map<LocalizedServiceId, List<Date>> result =
+        service.getServiceDateArrivalsWithinRange(intervals, from, to);
     assertEquals(0, result.size());
   }
 
@@ -184,8 +180,8 @@ public class CalendarServiceImplSyntheticTest {
 
     Date from = date("2010-02-02 04:30 Pacific Standard Time");
     Date to = date("2010-02-02 04:45 Pacific Standard Time");
-    Map<LocalizedServiceId, List<Date>> result = service.getServiceDateArrivalsWithinRange(
-        intervals, from, to);
+    Map<LocalizedServiceId, List<Date>> result =
+        service.getServiceDateArrivalsWithinRange(intervals, from, to);
     assertEquals(1, result.size());
 
     List<Date> dates = result.get(lsid2);
@@ -198,8 +194,8 @@ public class CalendarServiceImplSyntheticTest {
 
     Date from = date("2010-02-02 04:30 Pacific Standard Time");
     Date to = date("2010-02-02 04:45 Pacific Standard Time");
-    Map<LocalizedServiceId, List<Date>> result = service.getServiceDateDeparturesWithinRange(
-        intervals, from, to);
+    Map<LocalizedServiceId, List<Date>> result =
+        service.getServiceDateDeparturesWithinRange(intervals, from, to);
     assertEquals(0, result.size());
   }
 
@@ -208,8 +204,8 @@ public class CalendarServiceImplSyntheticTest {
 
     Date from = date("2010-02-02 00:30 Pacific Standard Time");
     Date to = date("2010-02-02 00:45 Pacific Standard Time");
-    Map<LocalizedServiceId, List<Date>> result = service.getServiceDateArrivalsWithinRange(
-        intervals, from, to);
+    Map<LocalizedServiceId, List<Date>> result =
+        service.getServiceDateArrivalsWithinRange(intervals, from, to);
     assertEquals(1, result.size());
 
     List<Date> dates = result.get(lsid1);
@@ -229,8 +225,8 @@ public class CalendarServiceImplSyntheticTest {
 
     Date from = date("2010-02-02 00:30 Pacific Standard Time");
     Date to = date("2010-02-02 01:45 Pacific Standard Time");
-    Map<LocalizedServiceId, List<Date>> result = service.getServiceDateArrivalsWithinRange(
-        intervals, from, to);
+    Map<LocalizedServiceId, List<Date>> result =
+        service.getServiceDateArrivalsWithinRange(intervals, from, to);
     assertEquals(1, result.size());
 
     List<Date> dates = result.get(lsid1);
@@ -258,8 +254,9 @@ public class CalendarServiceImplSyntheticTest {
     Date from = date("2010-02-01 07:00 Pacific Standard Time");
     Date to = date("2010-02-01 08:00 Pacific Standard Time");
 
-    List<Date> dates = service.getServiceDatesWithinRange(lsid1,
-        intervals.getIntervalForServiceId(lsid1), from, to);
+    List<Date> dates =
+        service.getServiceDatesWithinRange(
+            lsid1, intervals.getIntervalForServiceId(lsid1), from, to);
     assertEquals(1, dates.size());
     assertEquals(d1.getAsDate(tz), dates.get(0));
   }
@@ -270,8 +267,9 @@ public class CalendarServiceImplSyntheticTest {
     Date from = date("2010-02-01 07:00 Pacific Standard Time");
     Date to = date("2010-02-01 08:00 Pacific Standard Time");
 
-    List<Date> dates = service.getServiceDateArrivalsWithinRange(lsid1,
-        intervals.getIntervalForServiceId(lsid1), from, to);
+    List<Date> dates =
+        service.getServiceDateArrivalsWithinRange(
+            lsid1, intervals.getIntervalForServiceId(lsid1), from, to);
     assertEquals(1, dates.size());
     assertEquals(d1.getAsDate(tz), dates.get(0));
   }
@@ -282,8 +280,9 @@ public class CalendarServiceImplSyntheticTest {
     Date from = date("2010-02-01 07:00 Pacific Standard Time");
     Date to = date("2010-02-01 08:00 Pacific Standard Time");
 
-    List<Date> dates = service.getServiceDateDeparturesWithinRange(lsid1,
-        intervals.getIntervalForServiceId(lsid1), from, to);
+    List<Date> dates =
+        service.getServiceDateDeparturesWithinRange(
+            lsid1, intervals.getIntervalForServiceId(lsid1), from, to);
     assertEquals(1, dates.size());
     assertEquals(d1.getAsDate(tz), dates.get(0));
   }
@@ -291,8 +290,9 @@ public class CalendarServiceImplSyntheticTest {
   @Test
   public void testGetNextDepartureServiceDates01() {
 
-    Map<LocalizedServiceId, List<Date>> next = service.getNextDepartureServiceDates(
-        intervals, date("2010-02-01 06:30 Pacific Standard Time").getTime());
+    Map<LocalizedServiceId, List<Date>> next =
+        service.getNextDepartureServiceDates(
+            intervals, date("2010-02-01 06:30 Pacific Standard Time").getTime());
     assertEquals(3, next.size());
 
     List<Date> dates = next.get(lsid1);
@@ -311,8 +311,9 @@ public class CalendarServiceImplSyntheticTest {
   @Test
   public void testGetNextDepartureServiceDates02() {
 
-    Map<LocalizedServiceId, List<Date>> next = service.getNextDepartureServiceDates(
-        intervals, date("2010-02-01 10:00 Pacific Standard Time").getTime());
+    Map<LocalizedServiceId, List<Date>> next =
+        service.getNextDepartureServiceDates(
+            intervals, date("2010-02-01 10:00 Pacific Standard Time").getTime());
     assertEquals(3, next.size());
 
     List<Date> dates = next.get(lsid1);
@@ -331,8 +332,9 @@ public class CalendarServiceImplSyntheticTest {
   @Test
   public void testGetNextDepartureServiceDates03() {
 
-    Map<LocalizedServiceId, List<Date>> next = service.getNextDepartureServiceDates(
-        intervals, date("2010-02-03 06:30 Pacific Standard Time").getTime());
+    Map<LocalizedServiceId, List<Date>> next =
+        service.getNextDepartureServiceDates(
+            intervals, date("2010-02-03 06:30 Pacific Standard Time").getTime());
     assertEquals(2, next.size());
 
     List<Date> dates = next.get(lsid2);
@@ -347,8 +349,9 @@ public class CalendarServiceImplSyntheticTest {
   @Test
   public void testGetNextDepartureServiceDates04() {
 
-    Map<LocalizedServiceId, List<Date>> next = service.getNextDepartureServiceDates(
-        intervals, date("2010-02-04 03:30 Pacific Standard Time").getTime());
+    Map<LocalizedServiceId, List<Date>> next =
+        service.getNextDepartureServiceDates(
+            intervals, date("2010-02-04 03:30 Pacific Standard Time").getTime());
     assertEquals(1, next.size());
 
     List<Date> dates = next.get(lsid2);
@@ -359,17 +362,20 @@ public class CalendarServiceImplSyntheticTest {
   @Test
   public void testGetNextDepartureServiceDates05() {
 
-    Map<LocalizedServiceId, List<Date>> next = service.getNextDepartureServiceDates(
-        intervals, date("2010-02-04 07:30 Pacific Standard Time").getTime());
+    Map<LocalizedServiceId, List<Date>> next =
+        service.getNextDepartureServiceDates(
+            intervals, date("2010-02-04 07:30 Pacific Standard Time").getTime());
     assertEquals(0, next.size());
   }
 
   @Test
   public void testGetNextDepartureServiceDates06() {
 
-    List<Date> dates = service.getNextDepartureServiceDates(lsid2,
-        intervals.getIntervalForServiceId(lsid2),
-        date("2010-02-04 03:30 Pacific Standard Time").getTime());
+    List<Date> dates =
+        service.getNextDepartureServiceDates(
+            lsid2,
+            intervals.getIntervalForServiceId(lsid2),
+            date("2010-02-04 03:30 Pacific Standard Time").getTime());
 
     assertEquals(1, dates.size());
     assertTrue(dates.contains(d3.getAsDate(tz)));
@@ -378,16 +384,18 @@ public class CalendarServiceImplSyntheticTest {
   @Test
   public void testGetPreviousArrivalServiceDates01() {
 
-    Map<LocalizedServiceId, List<Date>> next = service.getPreviousArrivalServiceDates(
-        intervals, date("2010-02-01 05:30 Pacific Standard Time").getTime());
+    Map<LocalizedServiceId, List<Date>> next =
+        service.getPreviousArrivalServiceDates(
+            intervals, date("2010-02-01 05:30 Pacific Standard Time").getTime());
     assertEquals(0, next.size());
   }
 
   @Test
   public void testGetPreviousArrivalServiceDates02() {
 
-    Map<LocalizedServiceId, List<Date>> next = service.getPreviousArrivalServiceDates(
-        intervals, date("2010-02-01 06:30 Pacific Standard Time").getTime());
+    Map<LocalizedServiceId, List<Date>> next =
+        service.getPreviousArrivalServiceDates(
+            intervals, date("2010-02-01 06:30 Pacific Standard Time").getTime());
     assertEquals(1, next.size());
 
     List<Date> dates = next.get(lsid1);
@@ -398,8 +406,9 @@ public class CalendarServiceImplSyntheticTest {
   @Test
   public void testGetPreviousArrivalServiceDates03() {
 
-    Map<LocalizedServiceId, List<Date>> next = service.getPreviousArrivalServiceDates(
-        intervals, date("2010-02-01 07:30 Pacific Standard Time").getTime());
+    Map<LocalizedServiceId, List<Date>> next =
+        service.getPreviousArrivalServiceDates(
+            intervals, date("2010-02-01 07:30 Pacific Standard Time").getTime());
     assertEquals(2, next.size());
 
     List<Date> dates = next.get(lsid1);
@@ -414,8 +423,9 @@ public class CalendarServiceImplSyntheticTest {
   @Test
   public void testGetPreviousArrivalServiceDates04() {
 
-    Map<LocalizedServiceId, List<Date>> next = service.getPreviousArrivalServiceDates(
-        intervals, date("2010-02-02 07:30 Pacific Standard Time").getTime());
+    Map<LocalizedServiceId, List<Date>> next =
+        service.getPreviousArrivalServiceDates(
+            intervals, date("2010-02-02 07:30 Pacific Standard Time").getTime());
     assertEquals(3, next.size());
 
     List<Date> dates = next.get(lsid1);
@@ -434,9 +444,11 @@ public class CalendarServiceImplSyntheticTest {
   @Test
   public void testGetPreviousArrivalServiceDates05() {
 
-    List<Date> dates = service.getPreviousArrivalServiceDates(lsid1,
-        intervals.getIntervalForServiceId(lsid1),
-        date("2010-02-01 06:30 Pacific Standard Time").getTime());
+    List<Date> dates =
+        service.getPreviousArrivalServiceDates(
+            lsid1,
+            intervals.getIntervalForServiceId(lsid1),
+            date("2010-02-01 06:30 Pacific Standard Time").getTime());
 
     assertEquals(1, dates.size());
     assertTrue(dates.contains(d1.getAsDate(tz)));
@@ -455,41 +467,56 @@ public class CalendarServiceImplSyntheticTest {
     // active service 6:00 -> 7:00
     // 6:00 + 1 service interval
     ServiceInterval sixOclockScheudledService = new ServiceInterval(hourToSec(6), hourToSec(7));
-    AgencyServiceInterval sixOclock1HourQuery = new AgencyServiceInterval(baseTime + hourToSec(6)*1000, oneHourOverride);
-    boolean active = service.isLocalizedServiceIdActiveInRange(lsid1, sixOclockScheudledService, sixOclock1HourQuery);
+    AgencyServiceInterval sixOclock1HourQuery =
+        new AgencyServiceInterval(baseTime + hourToSec(6) * 1000, oneHourOverride);
+    boolean active =
+        service.isLocalizedServiceIdActiveInRange(
+            lsid1, sixOclockScheudledService, sixOclock1HourQuery);
     assertTrue(active); // this should be an exact match
 
     // active service 6:00 -> 7:00
     // 5 + 1 service interval
-    AgencyServiceInterval fiveOclock1HourQuery = new AgencyServiceInterval(baseTime + hourToSec(5)*1000, oneHourOverride);
-    active = service.isLocalizedServiceIdActiveInRange(lsid1, sixOclockScheudledService, fiveOclock1HourQuery);
+    AgencyServiceInterval fiveOclock1HourQuery =
+        new AgencyServiceInterval(baseTime + hourToSec(5) * 1000, oneHourOverride);
+    active =
+        service.isLocalizedServiceIdActiveInRange(
+            lsid1, sixOclockScheudledService, fiveOclock1HourQuery);
     assertTrue(active);
 
     // active service 6:00 -> 7:00
     // 7 + 1 service interval
-    AgencyServiceInterval sevenOclock1HourQuery = new AgencyServiceInterval(baseTime + hourToSec(7)*1000, oneHourOverride);
-    active = service.isLocalizedServiceIdActiveInRange(lsid1, sixOclockScheudledService, sevenOclock1HourQuery);
+    AgencyServiceInterval sevenOclock1HourQuery =
+        new AgencyServiceInterval(baseTime + hourToSec(7) * 1000, oneHourOverride);
+    active =
+        service.isLocalizedServiceIdActiveInRange(
+            lsid1, sixOclockScheudledService, sevenOclock1HourQuery);
     assertTrue(active);
 
     // active service 6:00 -> 7:00
     // 5 + 2 service interval
-    AgencyServiceInterval fiveOclock2HourQuery = new AgencyServiceInterval(baseTime + hourToSec(5)*1000, twoHourOverride);
-    active = service.isLocalizedServiceIdActiveInRange(lsid1, sixOclockScheudledService, fiveOclock2HourQuery);
+    AgencyServiceInterval fiveOclock2HourQuery =
+        new AgencyServiceInterval(baseTime + hourToSec(5) * 1000, twoHourOverride);
+    active =
+        service.isLocalizedServiceIdActiveInRange(
+            lsid1, sixOclockScheudledService, fiveOclock2HourQuery);
     assertTrue(active);
 
     // active service 6:00 -> 25:00
     // 12 + 1
-    AgencyServiceInterval lunchInterval1HourOverride = new AgencyServiceInterval(baseTime + hourToSec(12)*1000, oneHourOverride);
+    AgencyServiceInterval lunchInterval1HourOverride =
+        new AgencyServiceInterval(baseTime + hourToSec(12) * 1000, oneHourOverride);
     ServiceInterval exactMatchInterval = new ServiceInterval(hourToSec(6), hourToSec(25));
-    active = service.isLocalizedServiceIdActiveInRange(lsid1, exactMatchInterval, lunchInterval1HourOverride);
+    active =
+        service.isLocalizedServiceIdActiveInRange(
+            lsid1, exactMatchInterval, lunchInterval1HourOverride);
     assertTrue(active);
 
     // point in time
     AgencyServiceInterval stopCheck = new AgencyServiceInterval(baseTime + 43200, oneHourOverride);
-    ServiceInterval stopInterval = new ServiceInterval(43230,43230);
-    active = service.isLocalizedServiceIdActiveInRange(lsid1, stopInterval, lunchInterval1HourOverride);
+    ServiceInterval stopInterval = new ServiceInterval(43230, 43230);
+    active =
+        service.isLocalizedServiceIdActiveInRange(lsid1, stopInterval, lunchInterval1HourOverride);
     assertTrue(active);
-
   }
 
   @Test
@@ -498,12 +525,16 @@ public class CalendarServiceImplSyntheticTest {
     AgencyServiceInterval defaultInterval = new AgencyServiceInterval(baseTime);
     // active service 6:00 -> 7:00
     ServiceInterval sixOclockScheudledService = new ServiceInterval(hourToSec(6), hourToSec(7));
-    boolean active = service.isLocalizedServiceIdActiveInRange(lsid1, sixOclockScheudledService, defaultInterval);
+    boolean active =
+        service.isLocalizedServiceIdActiveInRange(
+            lsid1, sixOclockScheudledService, defaultInterval);
     assertTrue(active);
 
     long yesterday = d1.getAsDate().getTime() - hourToSec(24) * 1000;
     AgencyServiceInterval tomorrowInterval = new AgencyServiceInterval(yesterday);
-    active = service.isLocalizedServiceIdActiveInRange(lsid1, sixOclockScheudledService, tomorrowInterval);
+    active =
+        service.isLocalizedServiceIdActiveInRange(
+            lsid1, sixOclockScheudledService, tomorrowInterval);
     assertFalse(active);
   }
 
@@ -511,8 +542,8 @@ public class CalendarServiceImplSyntheticTest {
    * Private Methods
    ****/
 
-  private void putServiceDatesForServiceId(CalendarServiceData data,
-      LocalizedServiceId lsid, List<ServiceDate> serviceDates) {
+  private void putServiceDatesForServiceId(
+      CalendarServiceData data, LocalizedServiceId lsid, List<ServiceDate> serviceDates) {
     data.putServiceDatesForServiceId(lsid.getId(), serviceDates);
     List<Date> dates = new ArrayList<Date>();
     for (ServiceDate serviceDate : serviceDates)

@@ -1,29 +1,26 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.updates;
 
-import static  org.junit.jupiter.api.Assertions.assertEquals;
-import static  org.junit.jupiter.api.Assertions.assertFalse;
-import static  org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
@@ -48,8 +45,8 @@ public class EntityRetentionGraphTest {
     _graph = new EntityRetentionGraph(_dao);
 
     GtfsReader reader = new GtfsReader();
-    File path = new File(getClass().getResource(
-        "/org/onebusaway/gtfs_transformer/testagency").toURI());
+    File path =
+        new File(getClass().getResource("/org/onebusaway/gtfs_transformer/testagency").toURI());
     reader.setInputLocation(path);
     reader.setEntityStore(dao);
     reader.run();
@@ -176,21 +173,18 @@ public class EntityRetentionGraphTest {
   @Test
   public void testRetainFareRuleUp() throws IOException {
     MockGtfs gtfs = MockGtfs.create();
-    gtfs.putMinimal();;
+    gtfs.putMinimal();
+    ;
     gtfs.putRoutes(2);
-    gtfs.putStops(2,"zone_id=z$0");
+    gtfs.putStops(2, "zone_id=z$0");
     gtfs.putCalendars(1);
-    gtfs.putTrips(2,"r$0", "sid0");
+    gtfs.putTrips(2, "r$0", "sid0");
     gtfs.putLines(
-            "fare_attributes.txt",
-            "fare_id,agency_id,price,currency_type,payment_method,transfers",
-            "f0,a0,1,USD,0,0",
-            "f1,a1,2,USD,0,0");
-    gtfs.putLines(
-            "fare_rules.txt",
-            "fare_id,route_id,origin_id",
-            "f0,r0,z0",
-            "f1,r1,z1");
+        "fare_attributes.txt",
+        "fare_id,agency_id,price,currency_type,payment_method,transfers",
+        "f0,a0,1,USD,0,0",
+        "f1,a1,2,USD,0,0");
+    gtfs.putLines("fare_rules.txt", "fare_id,route_id,origin_id", "f0,r0,z0", "f1,r1,z1");
 
     _dao = gtfs.read();
     _graph = new EntityRetentionGraph(_dao);
@@ -218,21 +212,18 @@ public class EntityRetentionGraphTest {
   @Test
   public void testRetainFareRuleDown() throws IOException {
     MockGtfs gtfs = MockGtfs.create();
-    gtfs.putMinimal();;
+    gtfs.putMinimal();
+    ;
     gtfs.putRoutes(2);
-    gtfs.putStops(2,"zone_id=z$0");
+    gtfs.putStops(2, "zone_id=z$0");
     gtfs.putCalendars(1);
-    gtfs.putTrips(2,"r$0", "sid0");
+    gtfs.putTrips(2, "r$0", "sid0");
     gtfs.putLines(
-            "fare_attributes.txt",
-            "fare_id,agency_id,price,currency_type,payment_method,transfers",
-            "f0,a0,1,USD,0,0",
-            "f1,a1,2,USD,0,0");
-    gtfs.putLines(
-            "fare_rules.txt",
-            "fare_id,route_id,origin_id",
-            "f0,r0,z0",
-            "f1,r1,z1");
+        "fare_attributes.txt",
+        "fare_id,agency_id,price,currency_type,payment_method,transfers",
+        "f0,a0,1,USD,0,0",
+        "f1,a1,2,USD,0,0");
+    gtfs.putLines("fare_rules.txt", "fare_id,route_id,origin_id", "f0,r0,z0", "f1,r1,z1");
 
     _dao = gtfs.read();
     _graph = new EntityRetentionGraph(_dao);
@@ -260,19 +251,20 @@ public class EntityRetentionGraphTest {
   @Test
   public void testConditionallyRetainFareRule() throws IOException {
     MockGtfs gtfs = MockGtfs.create();
-    gtfs.putMinimal();;
+    gtfs.putMinimal();
+    ;
     gtfs.putRoutes(1);
-    gtfs.putStops(2,"zone_id=z$0");
+    gtfs.putStops(2, "zone_id=z$0");
     gtfs.putLines(
-            "fare_attributes.txt",
-            "fare_id,agency_id,price,currency_type,payment_method,transfers",
-            "f0,a0,1,USD,0,0");
+        "fare_attributes.txt",
+        "fare_id,agency_id,price,currency_type,payment_method,transfers",
+        "f0,a0,1,USD,0,0");
     gtfs.putLines(
-            "fare_rules.txt",
-            "fare_id,route_id,origin_id,destination_id",
-            "f0,r0,",
-            "f0,r0,z0",
-            "f0,r0,z0,z1");
+        "fare_rules.txt",
+        "fare_id,route_id,origin_id,destination_id",
+        "f0,r0,",
+        "f0,r0,z0",
+        "f0,r0,z0,z1");
 
     _dao = gtfs.read();
     _graph = new EntityRetentionGraph(_dao);
@@ -298,7 +290,6 @@ public class EntityRetentionGraphTest {
     assertTrue(_graph.isRetained(_dao.getFareRuleForId(2)));
     assertTrue(_graph.isRetained(_dao.getFareRuleForId(3)));
   }
-
 
   private AgencyAndId aid(String id) {
     return new AgencyAndId("agency", id);

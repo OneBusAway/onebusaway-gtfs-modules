@@ -1,29 +1,26 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2011 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.serialization;
 
-import static  org.junit.jupiter.api.Assertions.assertEquals;
-import static  org.junit.jupiter.api.Assertions.assertFalse;
-import static  org.junit.jupiter.api.Assertions.assertNotNull;
-import static  org.junit.jupiter.api.Assertions.assertNotSame;
-import static  org.junit.jupiter.api.Assertions.assertNull;
-import static  org.junit.jupiter.api.Assertions.assertSame;
-import static  org.junit.jupiter.api.Assertions.assertTrue;
-import static  org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +30,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.csv_entities.exceptions.InvalidValueEntityException;
@@ -52,16 +48,15 @@ public class GtfsReaderTest extends BaseGtfsTest {
   @Test
   public void testAllFields() throws IOException {
     MockGtfs gtfs = MockGtfs.create();
-    gtfs.putLines("block.txt", 
+    gtfs.putLines(
+        "block.txt",
         "block_seq_num,block_var_num,block_route_num,block_run_num",
         "4237385,1,599,1");
     gtfs.putLines(
         "agency.txt",
         "agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_email",
         "1,Agency,http://agency.gov/,America/Los_Angeles,en,555-1234,http://agency.gov/fares,agency@email.com");
-    gtfs.putLines("levels.txt",
-            "level_id,level_index,level_name",
-            "L1,-1.3,Level One");
+    gtfs.putLines("levels.txt", "level_id,level_index,level_name", "L1,-1.3,Level One");
     gtfs.putLines(
         "stops.txt",
         "stop_id,stop_name,stop_lat,stop_lon,stop_desc,stop_code,stop_direction,location_type,parent_station,"
@@ -86,20 +81,21 @@ public class GtfsReaderTest extends BaseGtfsTest {
         "calendar.txt",
         "service_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday",
         "WEEK,20120105,20120215,1,1,1,1,1,1,1");
-    gtfs.putLines("calendar_dates.txt", "service_id,date,exception_type",
-        "WEEK,20120304,2");
+    gtfs.putLines("calendar_dates.txt", "service_id,date,exception_type", "WEEK,20120304,2");
     gtfs.putLines(
         "fare_attributes.txt",
         "fare_id,price,currency_type,payment_method,transfers,transfer_duration,journey_duration",
         "FA1,2.0,USD,1,2,60,61");
-    gtfs.putLines("fare_rules.txt",
+    gtfs.putLines(
+        "fare_rules.txt",
         "fare_id,route_id,origin_id,destination_id,contains_id",
         "FA1,R1,Z1,Z2,Z3");
     gtfs.putLines(
         "shapes.txt",
         "shape_id,shape_pt_sequence,shape_pt_lat,shape_pt_lon,shape_dist_traveled",
         "SHP1,2,47.0,-122.0,123.4");
-    gtfs.putLines("frequencies.txt",
+    gtfs.putLines(
+        "frequencies.txt",
         "trip_id,start_time,end_time,headway_secs,exact_times,label_only",
         "T1,09:01:30,10:20:02,300,1,1");
     gtfs.putLines(
@@ -112,14 +108,14 @@ public class GtfsReaderTest extends BaseGtfsTest {
         "Test,http://agency.gov/,en,20120110,20120217,2.0,agency@email.com,http://agency.gov/");
     gtfs.putLines(
         "pathways.txt",
-            "pathway_id,pathway_mode,is_bidirectional,from_stop_id,to_stop_id,traversal_time",
-            "P1,1,1,S1,S1,60");
+        "pathway_id,pathway_mode,is_bidirectional,from_stop_id,to_stop_id,traversal_time",
+        "P1,1,1,S1,S1,60");
     gtfs.putLines(
-            "ridership.txt",
-            "total_boardings,total_alightings,ridership_start_date,ridership_end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday,agency_id,route_id,trip_id,stop_id,average_load",
-            "0,0,20180101,20180601,1,1,1,1,1,0,0,1,1,34741338,538,15.2",
-            "0,0,20180101,20180601,1,1,1,1,1,0,0,1,1,34741338,558,14.4",
-            "0,0,20180101,20180601,1,1,1,1,1,0,0,1,1,34741339,2010,1.3");
+        "ridership.txt",
+        "total_boardings,total_alightings,ridership_start_date,ridership_end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday,agency_id,route_id,trip_id,stop_id,average_load",
+        "0,0,20180101,20180601,1,1,1,1,1,0,0,1,1,34741338,538,15.2",
+        "0,0,20180101,20180601,1,1,1,1,1,0,0,1,1,34741338,558,14.4",
+        "0,0,20180101,20180601,1,1,1,1,1,0,0,1,1,34741339,2010,1.3");
 
     GtfsRelationalDao dao = processFeed(gtfs.getPath(), "1", false);
 
@@ -140,7 +136,6 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals(new ServiceDate(2018, 01, 01), ridership.getStartDate());
     assertEquals(new ServiceDate(2018, 06, 01), ridership.getEndDate());
     assertEquals(1.3, ridership.getAverageLoad(), 0.001);
-
 
     Agency agency = dao.getAgencyForId("1");
     assertEquals("1", agency.getId());
@@ -163,7 +158,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals(new AgencyAndId("1", "L1"), level.getId());
     assertEquals(-1.3, level.getIndex(), 0.0);
     assertEquals("Level One", level.getName());
-    
+
     Stop stop = dao.getStopForId(new AgencyAndId("1", "S1"));
     assertEquals(new AgencyAndId("1", "S1"), stop.getId());
     assertEquals("Stop", stop.getName());
@@ -181,8 +176,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals(2, stop.getVehicleType());
     assertEquals("9 3/4", stop.getPlatformCode());
     assertEquals(level, stop.getLevel());
-    assertEquals("southwest one hundred twenty fifth & longhorn",stop.getTtsStopName());
-
+    assertEquals("southwest one hundred twenty fifth & longhorn", stop.getTtsStopName());
 
     Route route = dao.getRouteForId(new AgencyAndId("1", "R1"));
     assertEquals(new AgencyAndId("1", "R1"), route.getId());
@@ -224,8 +218,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals("10X", stopTime.getRouteShortName());
     assertEquals(1, stopTime.getTimepoint());
 
-    ServiceCalendar calendar = dao.getCalendarForServiceId(new AgencyAndId("1",
-        "WEEK"));
+    ServiceCalendar calendar = dao.getCalendarForServiceId(new AgencyAndId("1", "WEEK"));
     assertEquals(new AgencyAndId("1", "WEEK"), calendar.getServiceId());
     assertEquals(new ServiceDate(2012, 01, 05), calendar.getStartDate());
     assertEquals(new ServiceDate(2012, 02, 15), calendar.getEndDate());
@@ -237,15 +230,14 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals(1, calendar.getSaturday());
     assertEquals(1, calendar.getSunday());
 
-    List<ServiceCalendarDate> calendarDates = dao.getCalendarDatesForServiceId(new AgencyAndId(
-        "1", "WEEK"));
+    List<ServiceCalendarDate> calendarDates =
+        dao.getCalendarDatesForServiceId(new AgencyAndId("1", "WEEK"));
     ServiceCalendarDate calendarDate = calendarDates.get(0);
     assertEquals(new AgencyAndId("1", "WEEK"), calendarDate.getServiceId());
     assertEquals(new ServiceDate(2012, 03, 04), calendarDate.getDate());
     assertEquals(2, calendarDate.getExceptionType());
 
-    FareAttribute fareAttribute = dao.getFareAttributeForId(new AgencyAndId(
-        "1", "FA1"));
+    FareAttribute fareAttribute = dao.getFareAttributeForId(new AgencyAndId("1", "FA1"));
     assertEquals(new AgencyAndId("1", "FA1"), fareAttribute.getId());
     assertEquals(2.0, fareAttribute.getPrice(), 1.0);
     assertEquals("USD", fareAttribute.getCurrencyType());
@@ -262,8 +254,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals("Z2", fareRule.getDestinationId());
     assertEquals("Z3", fareRule.getContainsId());
 
-    List<ShapePoint> shapePoints = dao.getShapePointsForShapeId(new AgencyAndId(
-        "1", "SHP1"));
+    List<ShapePoint> shapePoints = dao.getShapePointsForShapeId(new AgencyAndId("1", "SHP1"));
     ShapePoint shapePoint = shapePoints.get(0);
     assertEquals(new AgencyAndId("1", "SHP1"), shapePoint.getShapeId());
     assertEquals(2, shapePoint.getSequence());
@@ -297,8 +288,8 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals(new ServiceDate(2012, 1, 10), feedInfo.getStartDate());
     assertEquals(new ServiceDate(2012, 2, 17), feedInfo.getEndDate());
     assertEquals("2.0", feedInfo.getVersion());
-    assertEquals("agency@email.com",feedInfo.getContactEmail());
-    assertEquals("http://agency.gov/",feedInfo.getContactUrl());
+    assertEquals("agency@email.com", feedInfo.getContactEmail());
+    assertEquals("http://agency.gov/", feedInfo.getContactUrl());
 
     Pathway pathway = dao.getAllPathways().iterator().next();
     assertEquals(new AgencyAndId("1", "P1"), pathway.getId());
@@ -306,7 +297,6 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals(stop, pathway.getFromStop());
     assertEquals(stop, pathway.getToStop());
     assertEquals(60, pathway.getTraversalTime());
-
 
     riderships = dao.getRidershipForTrip(new AgencyAndId("1", "34741338"));
     assertNotNull(riderships);
@@ -318,37 +308,37 @@ public class GtfsReaderTest extends BaseGtfsTest {
   public void testReadFilesWithoutStops() throws IOException {
     MockGtfs gtfs = MockGtfs.create();
     gtfs.putLines(
-            "agency.txt",
-            "agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_email",
-            "1,Agency,http://agency.gov/,America/Los_Angeles,en,555-1234,http://agency.gov/fares,agency@email.com");
+        "agency.txt",
+        "agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_email",
+        "1,Agency,http://agency.gov/,America/Los_Angeles,en,555-1234,http://agency.gov/fares,agency@email.com");
     gtfs.putLines(
-            "routes.txt",
-            "agency_id,route_id,route_short_name,route_long_name,route_type,route_desc,route_color,route_text_color,"
-                    + "route_bikes_allowed,bikes_allowed,route_url,route_sort_order",
-            "1,R1,10,The Ten,3,route desc,FF0000,0000FF,1,2,http://agency.gov/route,100");
+        "routes.txt",
+        "agency_id,route_id,route_short_name,route_long_name,route_type,route_desc,route_color,route_text_color,"
+            + "route_bikes_allowed,bikes_allowed,route_url,route_sort_order",
+        "1,R1,10,The Ten,3,route desc,FF0000,0000FF,1,2,http://agency.gov/route,100");
     gtfs.putLines(
-            "trips.txt",
-            "route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,block_id,shape_id,route_short_name,"
-                    + "trip_bikes_allowed,bikes_allowed,wheelchair_accessible,peak_offpeak,cars_allowed",
-            "R1,WEEK,T1,head-sign,short-name,1,B1,SHP1,10X,1,2,1,3,1");
+        "trips.txt",
+        "route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,block_id,shape_id,route_short_name,"
+            + "trip_bikes_allowed,bikes_allowed,wheelchair_accessible,peak_offpeak,cars_allowed",
+        "R1,WEEK,T1,head-sign,short-name,1,B1,SHP1,10X,1,2,1,3,1");
     gtfs.putLines(
-            "stop_times.txt",
-            "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_type,drop_off_type,"
-                    + "shape_dist_traveled,route_short_name,timepoint,start_pickup_drop_off_window,end_pickup_drop_off_window,pickup_booking_rule_id,drop_off_booking_rule_id",
-            "T1,09:01:30,10:20:02,S1,2,head-sign,1,2,23.1,10X,1,0:00:00,24:00:00,br_id,br_id");
+        "stop_times.txt",
+        "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_type,drop_off_type,"
+            + "shape_dist_traveled,route_short_name,timepoint,start_pickup_drop_off_window,end_pickup_drop_off_window,pickup_booking_rule_id,drop_off_booking_rule_id",
+        "T1,09:01:30,10:20:02,S1,2,head-sign,1,2,23.1,10X,1,0:00:00,24:00:00,br_id,br_id");
     gtfs.putLines(
-            "calendar.txt",
-            "service_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday",
-            "WEEK,20120105,20120215,1,1,1,1,1,1,1");
-    gtfs.putLines("calendar_dates.txt", "service_id,date,exception_type",
-            "WEEK,20120304,2");
+        "calendar.txt",
+        "service_id,start_date,end_date,monday,tuesday,wednesday,thursday,friday,saturday,sunday",
+        "WEEK,20120105,20120215,1,1,1,1,1,1,1");
+    gtfs.putLines("calendar_dates.txt", "service_id,date,exception_type", "WEEK,20120304,2");
     gtfs.putLines(
-            "feed_info.txt",
-            "feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version,feed_contact_email,feed_contact_url",
-            "Test,http://agency.gov/,en,20120110,20120217,2.0,agency@email.com,http://agency.gov/");
-    gtfs.putLines("booking_rules.txt",
-            "booking_rule_id,booking_type,booking_url,prior_notice_last_day,phone_number,info_url",
-            "br_id,2,http://agency-br-url.com,1,1234567890,http://agency-info-url.com");
+        "feed_info.txt",
+        "feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version,feed_contact_email,feed_contact_url",
+        "Test,http://agency.gov/,en,20120110,20120217,2.0,agency@email.com,http://agency.gov/");
+    gtfs.putLines(
+        "booking_rules.txt",
+        "booking_rule_id,booking_type,booking_url,prior_notice_last_day,phone_number,info_url",
+        "br_id,2,http://agency-br-url.com,1,1234567890,http://agency-info-url.com");
 
     processFeed(gtfs.getPath(), "1", false);
   }
@@ -357,8 +347,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
   public void testIslandTransit() throws IOException {
 
     String agencyId = "26";
-    GtfsDao entityStore = processFeed(GtfsTestData.getIslandGtfs(), agencyId,
-        false);
+    GtfsDao entityStore = processFeed(GtfsTestData.getIslandGtfs(), agencyId, false);
 
     Collection<Agency> agencies = entityStore.getAllAgencies();
     assertEquals(1, agencies.size());
@@ -420,10 +409,8 @@ public class GtfsReaderTest extends BaseGtfsTest {
     Collection<Transfer> transfers = entityStore.getAllTransfers();
     assertEquals(1, transfers.size());
     Transfer transfer = transfers.iterator().next();
-    assertEquals(new AgencyAndId(agencyId, "878"),
-        transfer.getFromStop().getId());
-    assertEquals(new AgencyAndId(agencyId, "1167"),
-        transfer.getToStop().getId());
+    assertEquals(new AgencyAndId(agencyId, "878"), transfer.getFromStop().getId());
+    assertEquals(new AgencyAndId(agencyId, "1167"), transfer.getToStop().getId());
     assertEquals(1, transfer.getTransferType());
     assertFalse(transfer.isMinTransferTimeSet());
   }
@@ -461,8 +448,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertNull(routeBullet.getColor());
     assertEquals("ff0000", routeBullet.getTextColor());
 
-    Route routeLocal = entityStore.getRouteForId(new AgencyAndId(agencyId,
-        "ct_local"));
+    Route routeLocal = entityStore.getRouteForId(new AgencyAndId(agencyId, "ct_local"));
 
     Collection<Stop> stops = entityStore.getAllStops();
     assertEquals(31, stops.size());
@@ -509,12 +495,12 @@ public class GtfsReaderTest extends BaseGtfsTest {
 
     StopTime stopTimeA = stopTimes.iterator().next();
     assertEquals(
-        entityStore.getTripForId(new AgencyAndId(agencyId, "10101272009")),
-        stopTimeA.getTrip());
+        entityStore.getTripForId(new AgencyAndId(agencyId, "10101272009")), stopTimeA.getTrip());
     assertEquals(21120, stopTimeA.getArrivalTime());
     assertEquals(21120, stopTimeA.getDepartureTime());
-    assertEquals(entityStore.getStopForId(new AgencyAndId(agencyId,
-        "22nd Street Caltrain")), stopTimeA.getStop());
+    assertEquals(
+        entityStore.getStopForId(new AgencyAndId(agencyId, "22nd Street Caltrain")),
+        stopTimeA.getStop());
     assertEquals(21, stopTimeA.getStopSequence());
     assertNull(stopTimeA.getStopHeadsign());
     assertEquals(0, stopTimeA.getPickupType());
@@ -537,8 +523,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
 
     ServiceCalendar calendarA = entityStore.getCalendarForId(new Integer(1));
     assertEquals(new Integer(1), calendarA.getId());
-    assertEquals(new AgencyAndId(agencyId, "SN01272009"),
-        calendarA.getServiceId());
+    assertEquals(new AgencyAndId(agencyId, "SN01272009"), calendarA.getServiceId());
     assertEquals(new ServiceDate(2009, 3, 2), calendarA.getStartDate());
     assertEquals(new ServiceDate(2019, 3, 2), calendarA.getEndDate());
     assertEquals(0, calendarA.getMonday());
@@ -572,8 +557,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     Collection<FareRule> fareRules = entityStore.getAllFareRules();
     assertEquals(36, fareRules.size());
 
-    List<FareRule> fareRuleMatches = GtfsTestData.grep(fareRules, "fare",
-        fareAttribute);
+    List<FareRule> fareRuleMatches = GtfsTestData.grep(fareRules, "fare", fareAttribute);
     assertEquals(6, fareRuleMatches.size());
 
     fareRuleMatches = GtfsTestData.grep(fareRuleMatches, "originId", "1");
@@ -599,8 +583,8 @@ public class GtfsReaderTest extends BaseGtfsTest {
     Collection<Frequency> frequencies = entityStore.getAllFrequencies();
     assertEquals(6, frequencies.size());
 
-    List<Frequency> frequenciesForTrip = GtfsTestData.grep(frequencies,
-        "trip.id", new AgencyAndId("AirBART", "M-FSAT1DN"));
+    List<Frequency> frequenciesForTrip =
+        GtfsTestData.grep(frequencies, "trip.id", new AgencyAndId("AirBART", "M-FSAT1DN"));
     assertEquals(1, frequenciesForTrip.size());
     Frequency frequencyForTrip = frequenciesForTrip.get(0);
     assertEquals(18000, frequencyForTrip.getStartTime());
@@ -622,7 +606,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
 
     entityStore = processFeed(resourcePath, agencyId, true);
     Collection<Trip> trips = entityStore.getAllTrips();
-    for (Iterator<Trip> iter = trips.iterator(); iter.hasNext();) {
+    for (Iterator<Trip> iter = trips.iterator(); iter.hasNext(); ) {
       Trip t = iter.next();
       iter.remove();
       String s1 = t.getTripHeadsign();
@@ -645,8 +629,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     for (FareAttribute f : fareAttributes) {
       String s1 = f.getCurrencyType();
       for (FareAttribute g : fareAttributes) {
-        if (f == g)
-          continue;
+        if (f == g) continue;
         String s2 = g.getCurrencyType();
         assertEquals(s1, s2);
         assertNotSame(s1, s2);
@@ -658,8 +641,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
   public void testTestAgency() throws IOException {
 
     String agencyId = "agency";
-    GtfsRelationalDao dao = processFeed(GtfsTestData.getTestAgencyGtfs(),
-        agencyId, false);
+    GtfsRelationalDao dao = processFeed(GtfsTestData.getTestAgencyGtfs(), agencyId, false);
 
     Agency agency = dao.getAgencyForId(agencyId);
     assertEquals(agencyId, agency.getId());
@@ -736,8 +718,8 @@ public class GtfsReaderTest extends BaseGtfsTest {
 
     MockGtfs mockGtfs = MockGtfs.create();
     mockGtfs.putDefaultStopTimes();
-    mockGtfs.putFile("routes.txt", new File(
-        "src/test/resources/org/onebusaway/gtfs/utf8-routes.txt"));
+    mockGtfs.putFile(
+        "routes.txt", new File("src/test/resources/org/onebusaway/gtfs/utf8-routes.txt"));
 
     String agencyId = "1";
     GtfsDao dao = processFeed(mockGtfs.getPath(), agencyId, false);
@@ -754,8 +736,8 @@ public class GtfsReaderTest extends BaseGtfsTest {
 
     MockGtfs mockGtfs = MockGtfs.create();
     mockGtfs.putDefaultStopTimes();
-    mockGtfs.putFile("agency.txt", new File(
-        "src/test/resources/org/onebusaway/gtfs/bom-agency.txt"));
+    mockGtfs.putFile(
+        "agency.txt", new File("src/test/resources/org/onebusaway/gtfs/bom-agency.txt"));
 
     GtfsDao dao = processFeed(mockGtfs.getPath(), "1", false);
 
@@ -769,8 +751,10 @@ public class GtfsReaderTest extends BaseGtfsTest {
     GtfsReader reader = new GtfsReader();
 
     StringBuilder b = new StringBuilder();
-    b.append("agency_id,agency_name,agency_url,agency_timezone,agency_fare_url,agency_lang,agency_phone,agency_email\n");
-    b.append("1,Agency,http://agency/,Amercia/Los_Angeles,http://agency/fare_url,en,800-555-BUS1,agency@email.com\n");
+    b.append(
+        "agency_id,agency_name,agency_url,agency_timezone,agency_fare_url,agency_lang,agency_phone,agency_email\n");
+    b.append(
+        "1,Agency,http://agency/,Amercia/Los_Angeles,http://agency/fare_url,en,800-555-BUS1,agency@email.com\n");
 
     reader.readEntities(Agency.class, new StringReader(b.toString()));
 
@@ -801,8 +785,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
 
     reader.readEntities(Frequency.class, new StringReader(b.toString()));
 
-    Frequency frequency = reader.getEntityStore().getEntityForId(
-        Frequency.class, 1);
+    Frequency frequency = reader.getEntityStore().getEntityForId(Frequency.class, 1);
     assertEquals(30600, frequency.getStartTime());
     assertEquals(35100, frequency.getEndTime());
     assertEquals(1, frequency.getExactTimes());
@@ -816,13 +799,13 @@ public class GtfsReaderTest extends BaseGtfsTest {
     GtfsReader reader = new GtfsReader();
 
     StringBuilder b = new StringBuilder();
-    b.append("feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version\n");
+    b.append(
+        "feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version\n");
     b.append("Test,http://test/,en,20110928,20120131,1.0\n");
 
     reader.readEntities(FeedInfo.class, new StringReader(b.toString()));
 
-    FeedInfo feedInfo = reader.getEntityStore().getEntityForId(FeedInfo.class,
-        "1");
+    FeedInfo feedInfo = reader.getEntityStore().getEntityForId(FeedInfo.class, "1");
     assertEquals("Test", feedInfo.getPublisherName());
     assertEquals("http://test/", feedInfo.getPublisherUrl());
     assertEquals("en", feedInfo.getLang());
@@ -830,9 +813,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals(new ServiceDate(2012, 1, 31), feedInfo.getEndDate());
     assertEquals("1.0", feedInfo.getVersion());
 
-    /**
-     * Test with a missing "field_publisher_url" field
-     */
+    /** Test with a missing "field_publisher_url" field */
     b = new StringBuilder();
     b.append("feed_publisher_name\n");
     b.append("Test\n");
@@ -846,9 +827,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
       assertEquals("feed_publisher_url", ex2.getFieldName());
     }
 
-    /**
-     * Test with a missing "field_lang" field
-     */
+    /** Test with a missing "field_lang" field */
     b = new StringBuilder();
     b.append("feed_publisher_name,feed_publisher_url\n");
     b.append("Test,http://test/\n");
@@ -862,9 +841,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
       assertEquals("feed_lang", ex2.getFieldName());
     }
 
-    /**
-     * Test with a malformed "feed_start_date" field
-     */
+    /** Test with a malformed "feed_start_date" field */
     b = new StringBuilder();
     b.append("feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date\n");
     b.append("Test,http://test/,en,2011XX01\n");
@@ -879,9 +856,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
       assertEquals("2011XX01", ex2.getFieldValue());
     }
 
-    /**
-     * Test with a malformed "feed_end_date" field
-     */
+    /** Test with a malformed "feed_end_date" field */
     b = new StringBuilder();
     b.append("feed_publisher_name,feed_publisher_url,feed_lang,feed_end_date\n");
     b.append("Test,http://test/,en,2011XX01\n");
@@ -956,16 +931,14 @@ public class GtfsReaderTest extends BaseGtfsTest {
     b.append("agency_id,route_id,route_short_name,route_long_name,route_type\n");
     b.append("1,R-10,10,\"Ten, Ten\",3\n");
     reader.readEntities(Route.class, new StringReader(b.toString()));
-    Route route = reader.getEntityStore().getEntityForId(Route.class,
-        new AgencyAndId("1", "R-10"));
+    Route route = reader.getEntityStore().getEntityForId(Route.class, new AgencyAndId("1", "R-10"));
     assertEquals("Ten, Ten", route.getLongName());
   }
 
-  private ShapePoint getShapePoint(Iterable<ShapePoint> shapePoints,
-      AgencyAndId shapeId, int sequence) {
+  private ShapePoint getShapePoint(
+      Iterable<ShapePoint> shapePoints, AgencyAndId shapeId, int sequence) {
     for (ShapePoint shapePoint : shapePoints) {
-      if (shapePoint.getShapeId().equals(shapeId)
-          && shapePoint.getSequence() == sequence)
+      if (shapePoint.getShapeId().equals(shapeId) && shapePoint.getSequence() == sequence)
         return shapePoint;
     }
     return null;

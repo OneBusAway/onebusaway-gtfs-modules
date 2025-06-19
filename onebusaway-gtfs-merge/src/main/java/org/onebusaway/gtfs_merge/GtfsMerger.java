@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2012 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_merge;
@@ -28,7 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
@@ -42,8 +39,7 @@ public class GtfsMerger {
 
   private static final String _alphaPrefix = "abcdefghijklmnopqrstuvwxyz";
 
-  private static final NumberFormat _numberPrefixFormat = new DecimalFormat(
-      "00");
+  private static final NumberFormat _numberPrefixFormat = new DecimalFormat("00");
 
   private EntityMergeStrategy _agencyStrategy = new AgencyMergeStrategy();
 
@@ -79,8 +75,7 @@ public class GtfsMerger {
     _stopStrategy = stopsStrategy;
   }
 
-  public void setServiceCalendarStrategy(
-      EntityMergeStrategy serviceCalendarStrategy) {
+  public void setServiceCalendarStrategy(EntityMergeStrategy serviceCalendarStrategy) {
     _serviceCalendarStrategy = serviceCalendarStrategy;
   }
 
@@ -116,12 +111,15 @@ public class GtfsMerger {
     _areaStrategy = areaStrategy;
   }
 
-  public void setFeedInfoStrategy(EntityMergeStrategy feedInfoStrategy) { _feedInfoStrategy = feedInfoStrategy; }
+  public void setFeedInfoStrategy(EntityMergeStrategy feedInfoStrategy) {
+    _feedInfoStrategy = feedInfoStrategy;
+  }
 
-  public void setMetadataStrategy(EntityMergeStrategy metadataStrategy) { _metadataStrategy = metadataStrategy; }
+  public void setMetadataStrategy(EntityMergeStrategy metadataStrategy) {
+    _metadataStrategy = metadataStrategy;
+  }
 
-  public EntityMergeStrategy getEntityMergeStrategyForEntityType(
-      Class<?> entityType) {
+  public EntityMergeStrategy getEntityMergeStrategyForEntityType(Class<?> entityType) {
     List<EntityMergeStrategy> strategies = new ArrayList<EntityMergeStrategy>();
     buildStrategies(strategies);
     for (EntityMergeStrategy strategy : strategies) {
@@ -144,24 +142,22 @@ public class GtfsMerger {
     buildStrategies(strategies);
 
     /**
-     * For each entity merge strategy, we keep track of a mapping from raw GTFS
-     * ids to entities, if the particular entity type has an identifier. This
-     * will be used to detect id conflicts between subsequent runs of each merge
-     * strategy on different feeds. We can't use the AgencyAndId ids in the DAO
-     * because it might be possible for two entities with the same id but
-     * different agency prefixes to sneak in. Since we ultimately serialize the
-     * data to a GTFS feed with no agency prefixes, we need to track the raw id.
+     * For each entity merge strategy, we keep track of a mapping from raw GTFS ids to entities, if
+     * the particular entity type has an identifier. This will be used to detect id conflicts
+     * between subsequent runs of each merge strategy on different feeds. We can't use the
+     * AgencyAndId ids in the DAO because it might be possible for two entities with the same id but
+     * different agency prefixes to sneak in. Since we ultimately serialize the data to a GTFS feed
+     * with no agency prefixes, we need to track the raw id.
      */
-    Map<EntityMergeStrategy, Map<String, Object>> rawEntityIdMapsByMergeStrategy = new HashMap<EntityMergeStrategy, Map<String, Object>>();
+    Map<EntityMergeStrategy, Map<String, Object>> rawEntityIdMapsByMergeStrategy =
+        new HashMap<EntityMergeStrategy, Map<String, Object>>();
     for (EntityMergeStrategy strategy : strategies) {
-      rawEntityIdMapsByMergeStrategy.put(strategy,
-          new HashMap<String, Object>());
+      rawEntityIdMapsByMergeStrategy.put(strategy, new HashMap<String, Object>());
     }
 
     /**
-     * We iterate over the input feeds in reverse order, such that entities from
-     * the newest feeds are added first and older entities are potentially
-     * dropped.
+     * We iterate over the input feeds in reverse order, such that entities from the newest feeds
+     * are added first and older entities are potentially dropped.
      */
     long newestFile = Long.MIN_VALUE;
     for (int index = inputPaths.size() - 1; index >= 0; --index) {
@@ -170,7 +166,10 @@ public class GtfsMerger {
 
       FileTime fileTime = null;
       if (inputPath.isFile()) {
-        fileTime = ((FileTime) Files.readAttributes(inputPath.toPath(), "lastModifiedTime").get("lastModifiedTime"));
+        fileTime =
+            ((FileTime)
+                Files.readAttributes(inputPath.toPath(), "lastModifiedTime")
+                    .get("lastModifiedTime"));
         if (fileTime != null && fileTime.toMillis() > newestFile) {
           newestFile = fileTime.toMillis();
         }
@@ -187,8 +186,9 @@ public class GtfsMerger {
 
       for (EntityMergeStrategy strategy : strategies) {
         _log.info("strategy=" + strategy.getClass());
-        GtfsMergeContext context = new GtfsMergeContext(dao, mergedDao, prefix,
-            rawEntityIdMapsByMergeStrategy.get(strategy));
+        GtfsMergeContext context =
+            new GtfsMergeContext(
+                dao, mergedDao, prefix, rawEntityIdMapsByMergeStrategy.get(strategy));
         strategy.merge(context);
       }
     }
@@ -200,9 +200,7 @@ public class GtfsMerger {
     writer.run(mergedDao);
     if (outputPath.isFile()) {
       _log.info("setting merged file lastModified to " + new Date(newestFile));
-      Files.setAttribute(outputPath.toPath(),
-              "lastModifiedTime",
-              FileTime.fromMillis(newestFile));
+      Files.setAttribute(outputPath.toPath(), "lastModifiedTime", FileTime.fromMillis(newestFile));
     } else {
       _log.info("outputPath not a file, skipping setting lastModified");
     }
@@ -230,5 +228,4 @@ public class GtfsMerger {
     strategies.add(_feedInfoStrategy);
     strategies.add(_metadataStrategy);
   }
-
 }

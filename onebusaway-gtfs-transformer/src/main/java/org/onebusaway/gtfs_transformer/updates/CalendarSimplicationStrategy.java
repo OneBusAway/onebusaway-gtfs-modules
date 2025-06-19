@@ -1,16 +1,14 @@
 /**
- * Copyright (C) 2011 Google, Inc. 
+ * Copyright (C) 2011 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.updates;
@@ -24,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.onebusaway.collections.FactoryMap;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
@@ -62,8 +59,7 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
   @CsvField(optional = true)
   private boolean undoGoogleTransitDataFeedMergeTool = false;
 
-  public void setMinNumberOfWeeksForCalendarEntry(
-      int minNumberOfWeeksForCalendarEntry) {
+  public void setMinNumberOfWeeksForCalendarEntry(int minNumberOfWeeksForCalendarEntry) {
     _library.setMinNumberOfWeeksForCalendarEntry(minNumberOfWeeksForCalendarEntry);
   }
 
@@ -71,8 +67,7 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
     _library.setDayOfTheWeekInclusionRatio(dayOfTheWeekInclusionRatio);
   }
 
-  public void setUndoGoogleTransitDataFeedMergeTool(
-      boolean undoGoogleTransitDataFeedMergeTool) {
+  public void setUndoGoogleTransitDataFeedMergeTool(boolean undoGoogleTransitDataFeedMergeTool) {
     this.undoGoogleTransitDataFeedMergeTool = undoGoogleTransitDataFeedMergeTool;
   }
 
@@ -94,19 +89,20 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
 
     RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
 
-    Map<Set<AgencyAndId>, AgencyAndId> serviceIdsToUpdatedServiceId = new HashMap<Set<AgencyAndId>, AgencyAndId>();
+    Map<Set<AgencyAndId>, AgencyAndId> serviceIdsToUpdatedServiceId =
+        new HashMap<Set<AgencyAndId>, AgencyAndId>();
 
     Map<AgencyAndId, List<AgencyAndId>> mergeToolIdMapping = computeMergeToolIdMapping(dao);
 
     for (Route route : dao.getAllRoutes()) {
-      Map<TripKey, List<Trip>> tripsByKey = TripKey.groupTripsForRouteByKey(
-          dao, route);
-      Map<Set<AgencyAndId>, List<TripKey>> tripKeysByServiceIds = _library.groupTripKeysByServiceIds(tripsByKey);
+      Map<TripKey, List<Trip>> tripsByKey = TripKey.groupTripsForRouteByKey(dao, route);
+      Map<Set<AgencyAndId>, List<TripKey>> tripKeysByServiceIds =
+          _library.groupTripKeysByServiceIds(tripsByKey);
 
       for (Set<AgencyAndId> serviceIds : tripKeysByServiceIds.keySet()) {
 
-        AgencyAndId updatedServiceId = createUpdatedServiceId(
-            serviceIdsToUpdatedServiceId, serviceIds);
+        AgencyAndId updatedServiceId =
+            createUpdatedServiceId(serviceIdsToUpdatedServiceId, serviceIds);
 
         for (TripKey tripKey : tripKeysByServiceIds.get(serviceIds)) {
           List<Trip> tripsForKey = tripsByKey.get(tripKey);
@@ -118,8 +114,8 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
           }
 
           if (undoGoogleTransitDataFeedMergeTool) {
-            AgencyAndId updatedTripId = computeUpdatedTripIdForMergedTripsIfApplicable(
-                mergeToolIdMapping, tripsForKey);
+            AgencyAndId updatedTripId =
+                computeUpdatedTripIdForMergedTripsIfApplicable(mergeToolIdMapping, tripsForKey);
             if (updatedTripId != null) {
               tripToKeep.setId(updatedTripId);
             }
@@ -131,8 +127,8 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
     CalendarService calendarService = CalendarServiceDataFactoryImpl.createService(dao);
     List<Object> newEntities = new ArrayList<Object>();
     for (Map.Entry<Set<AgencyAndId>, AgencyAndId> entry : serviceIdsToUpdatedServiceId.entrySet()) {
-      Set<ServiceDate> allServiceDates = getServiceDatesForServiceIds(
-          calendarService, entry.getKey());
+      Set<ServiceDate> allServiceDates =
+          getServiceDatesForServiceIds(calendarService, entry.getKey());
       ServiceCalendarSummary summary = _library.getSummaryForServiceDates(allServiceDates);
       _library.computeSimplifiedCalendar(entry.getValue(), summary, newEntities);
     }
@@ -146,18 +142,15 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
     AgencyAndId updatedServiceId = serviceIdsToUpdatedServiceId.get(serviceIds);
     if (updatedServiceId == null) {
 
-      if (serviceIds.isEmpty())
-        throw new IllegalStateException();
+      if (serviceIds.isEmpty()) throw new IllegalStateException();
       List<AgencyAndId> toSort = new ArrayList<AgencyAndId>(serviceIds);
       Collections.sort(toSort);
       StringBuilder b = new StringBuilder();
       String agencyId = null;
       for (int i = 0; i < toSort.size(); i++) {
         AgencyAndId serviceId = toSort.get(i);
-        if (i == 0)
-          agencyId = serviceId.getAgencyId();
-        else
-          b.append("-");
+        if (i == 0) agencyId = serviceId.getAgencyId();
+        else b.append("-");
         b.append(serviceId.getId());
       }
       updatedServiceId = new AgencyAndId(agencyId, b.toString());
@@ -166,16 +159,14 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
     return updatedServiceId;
   }
 
-  private Map<AgencyAndId, List<AgencyAndId>> computeMergeToolIdMapping(
-      GtfsDao dao) {
+  private Map<AgencyAndId, List<AgencyAndId>> computeMergeToolIdMapping(GtfsDao dao) {
 
-    if (!undoGoogleTransitDataFeedMergeTool)
-      return Collections.emptyMap();
+    if (!undoGoogleTransitDataFeedMergeTool) return Collections.emptyMap();
 
-    Map<AgencyAndId, List<AgencyAndId>> mergedIdMapping = new FactoryMap<AgencyAndId, List<AgencyAndId>>(
-        new ArrayList<AgencyAndId>());
-    Map<AgencyAndId, List<AgencyAndId>> unmergedIdMapping = new FactoryMap<AgencyAndId, List<AgencyAndId>>(
-        new ArrayList<AgencyAndId>());
+    Map<AgencyAndId, List<AgencyAndId>> mergedIdMapping =
+        new FactoryMap<AgencyAndId, List<AgencyAndId>>(new ArrayList<AgencyAndId>());
+    Map<AgencyAndId, List<AgencyAndId>> unmergedIdMapping =
+        new FactoryMap<AgencyAndId, List<AgencyAndId>>(new ArrayList<AgencyAndId>());
 
     for (Trip trip : dao.getAllTrips()) {
       AgencyAndId tripId = trip.getId();
@@ -186,13 +177,11 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
         mergedIdMapping.get(unmergedTripId).add(tripId);
       }
     }
-    Set<AgencyAndId> intersection = new HashSet<AgencyAndId>(
-        mergedIdMapping.keySet());
+    Set<AgencyAndId> intersection = new HashSet<AgencyAndId>(mergedIdMapping.keySet());
     intersection.retainAll(unmergedIdMapping.keySet());
     if (!intersection.isEmpty()) {
       throw new IllegalStateException(
-          "some ids appeared both in the merged and unmerged case: "
-              + intersection);
+          "some ids appeared both in the merged and unmerged case: " + intersection);
     }
 
     mergedIdMapping.putAll(unmergedIdMapping);
@@ -214,8 +203,7 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
     }
 
     List<AgencyAndId> originalIds = mergeToolIdMapping.get(unmergedTripId);
-    if (originalIds == null || originalIds.size() != trips.size())
-      return null;
+    if (originalIds == null || originalIds.size() != trips.size()) return null;
 
     return unmergedTripId;
   }
@@ -239,8 +227,7 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
     return allServiceDates;
   }
 
-  private void saveUpdatedCalendarEntities(GtfsMutableRelationalDao dao,
-      List<Object> newEntities) {
+  private void saveUpdatedCalendarEntities(GtfsMutableRelationalDao dao, List<Object> newEntities) {
     dao.clearAllEntitiesForType(ServiceCalendar.class);
     dao.clearAllEntitiesForType(ServiceCalendarDate.class);
     for (Object entity : newEntities) {

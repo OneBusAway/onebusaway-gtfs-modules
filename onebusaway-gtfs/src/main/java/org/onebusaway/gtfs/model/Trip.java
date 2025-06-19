@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.model;
@@ -54,9 +52,7 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true, defaultValue = "0")
   private int wheelchairAccessible = 0;
 
-  /**
-   * 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes NOT allowed
-   */
+  /** 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes NOT allowed */
   @CsvField(optional = true, defaultValue = "0")
   private int bikesAllowed = 0;
 
@@ -76,16 +72,12 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   @CsvField(optional = true)
   private Double safeDurationOffset;
 
-  /**
-   * 0 = unknown / unspecified, 1 = cars allowed, 2 = cars NOT allowed
-   */
-  @Experimental(proposedBy="https://github.com/google/transit/issues/466")
+  /** 0 = unknown / unspecified, 1 = cars allowed, 2 = cars NOT allowed */
+  @Experimental(proposedBy = "https://github.com/google/transit/issues/466")
   @CsvField(optional = true, defaultValue = "0")
   private int carsAllowed = 0;
 
-  public Trip() {
-
-  }
+  public Trip() {}
 
   public Trip(Trip obj) {
     this.id = obj.id;
@@ -217,8 +209,7 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   }
 
   /**
-   * @param bikesAllowed 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes
-   *          NOT allowed
+   * @param bikesAllowed 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes NOT allowed
    */
   public void setBikesAllowed(int bikesAllowed) {
     this.bikesAllowed = bikesAllowed;
@@ -232,8 +223,7 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   }
 
   /**
-   * @param carsAllowed 0 = unknown / unspecified, 1 = cars allowed, 2 = cars
-   *          NOT allowed
+   * @param carsAllowed 0 = unknown / unspecified, 1 = cars allowed, 2 = cars NOT allowed
    */
   public void setCarsAllowed(int carsAllowed) {
     this.carsAllowed = carsAllowed;
@@ -242,5 +232,4 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   public String toString() {
     return "<Trip " + getId() + ">";
   }
-
 }

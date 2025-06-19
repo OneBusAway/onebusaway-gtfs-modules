@@ -1,17 +1,14 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2012 Google, Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2012 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.csv_entities;
@@ -59,18 +56,18 @@ class CSVLibraryTest {
 
   @Test
   void testParseQuotesWithEscapedDoubleQuoteAndUnexpectedTrailingChars() {
-    assertThrows(Exception.class,
+    assertThrows(
+        Exception.class,
         () -> _csv.parse("1997,Ford,E350,\"Super \"\"luxurious\"\" truck\" is expensive"),
-        "Expected exception"
-        );
+        "Expected exception");
   }
 
   @Test
   void testParseQuotesWithUnexpectedTrailingChars() {
-    assertThrows(Exception.class,
+    assertThrows(
+        Exception.class,
         () -> _csv.parse("1997,Ford,E350,\"Super truck\" is expensive"),
-        "Expected exception"
-        );
+        "Expected exception");
   }
 
   @Test
@@ -168,10 +165,7 @@ class CSVLibraryTest {
 
   @Test
   void testParseOpenQuotedLastColumnFails() {
-    assertThrows(Exception.class,
-        () -> _csv.parse("\"open"),
-        "Expected exception"
-        );
+    assertThrows(Exception.class, () -> _csv.parse("\"open"), "Expected exception");
   }
 
   @Test
@@ -224,7 +218,8 @@ class CSVLibraryTest {
 
   @Test
   void testParseQuotedColumnWithBackToBackEscapedDoubleQuoteFollowedByAnotherColumn() {
-    List<String> tokens = _csv.parse("1997,Ford,E350,\"Super \"\"luxurious\"\" truck\",\"luxurious\"");
+    List<String> tokens =
+        _csv.parse("1997,Ford,E350,\"Super \"\"luxurious\"\" truck\",\"luxurious\"");
     assertEquals(5, tokens.size());
     assertEquals("1997", tokens.get(0));
     assertEquals("Ford", tokens.get(1));
@@ -235,10 +230,9 @@ class CSVLibraryTest {
 
   @Test
   void testParseOpenQuoteWithEscapes() {
-    assertThrows(Exception.class,
+    assertThrows(
+        Exception.class,
         () -> _csv.parse("1997,Ford,E350,\"Super \"\"luxurious\"\" truck"),
-        "Expected exception"
-        );
+        "Expected exception");
   }
-
 }

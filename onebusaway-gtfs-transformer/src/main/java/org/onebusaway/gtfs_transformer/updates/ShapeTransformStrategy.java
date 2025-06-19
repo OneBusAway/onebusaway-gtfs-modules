@@ -1,36 +1,31 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.updates;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ShapeTransformStrategy implements GtfsTransformStrategy {
-// there is something wrong with the configuration of the strategy
-// these changes clearly should not be necessary
-// (unless onebusaway-csv changes forced this?)
-// TODO FIXME
+  // there is something wrong with the configuration of the strategy
+  // these changes clearly should not be necessary
+  // (unless onebusaway-csv changes forced this?)
+  // TODO FIXME
   private String shapeId;
 
   private String shape;
@@ -84,21 +79,18 @@ public class ShapeTransformStrategy implements GtfsTransformStrategy {
     int fromIndex = 0;
     int toIndex = shapePoints.size() - 1;
 
-    if (matchStart)
-      fromIndex = closest(shapePoints, from, 0);
-    if (matchEnd)
-      toIndex = closest(shapePoints, to, fromIndex);
+    if (matchStart) fromIndex = closest(shapePoints, from, 0);
+    if (matchEnd) toIndex = closest(shapePoints, to, fromIndex);
 
     if (toIndex < fromIndex) {
       // this cannot be a logger as it is BeanWrapped
-      System.err.println("segment match is out of order: fromIndex=" + fromIndex
-          + " toIndex=" + toIndex);
+      System.err.println(
+          "segment match is out of order: fromIndex=" + fromIndex + " toIndex=" + toIndex);
       return;
     }
 
     List<ShapePoint> subList = shapePoints.subList(fromIndex, toIndex + 1);
-    for (ShapePoint point : subList)
-      dao.removeEntity(point);
+    for (ShapePoint point : subList) dao.removeEntity(point);
     subList.clear();
     subList.addAll(segment);
 
@@ -109,8 +101,7 @@ public class ShapeTransformStrategy implements GtfsTransformStrategy {
       point.setShapeId(ashapeId);
     }
 
-    for (ShapePoint point : segment)
-      dao.saveEntity(point);
+    for (ShapePoint point : segment) dao.saveEntity(point);
 
     UpdateLibrary.clearDaoCache(dao);
   }
@@ -173,8 +164,7 @@ public class ShapeTransformStrategy implements GtfsTransformStrategy {
 
   private int[] decodeNumberWithIndex(String value, int index) {
 
-    if (value.length() == 0)
-      throw new IllegalArgumentException("string is empty");
+    if (value.length() == 0) throw new IllegalArgumentException("string is empty");
 
     int num = 0;
     int v = 0;

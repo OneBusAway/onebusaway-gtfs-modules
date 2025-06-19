@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.collections;
@@ -22,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.junit.Test;
 import org.onebusaway.collections.tuple.Pair;
 import org.onebusaway.collections.tuple.Tuples;
@@ -33,8 +30,8 @@ public class MappingLibraryTest {
   @Test
   public void testMap() {
 
-    List<Pair<String>> asList = Arrays.asList(Tuples.pair("a", "b"),
-        Tuples.pair("c", "d"), Tuples.pair("e", "f"));
+    List<Pair<String>> asList =
+        Arrays.asList(Tuples.pair("a", "b"), Tuples.pair("c", "d"), Tuples.pair("e", "f"));
 
     List<String> values = MappingLibrary.map(asList, "first");
     assertEquals(3, values.size());
@@ -48,7 +45,7 @@ public class MappingLibraryTest {
     assertEquals("d", values.get(1));
     assertEquals("f", values.get(2));
   }
-  
+
   @SuppressWarnings("unchecked")
   @Test
   public void testMapToValue() {
@@ -58,8 +55,7 @@ public class MappingLibraryTest {
     Pair<String> p3 = Tuples.pair("a", "2");
     List<Pair<String>> asList = Arrays.asList(p1, p2, p3);
 
-    Map<String, Pair<String>> values = MappingLibrary.mapToValue(asList,
-        "first");
+    Map<String, Pair<String>> values = MappingLibrary.mapToValue(asList, "first");
     assertEquals(2, values.size());
     assertEquals(p3, values.get("a"));
     assertEquals(p2, values.get("b"));
@@ -81,8 +77,7 @@ public class MappingLibraryTest {
 
     List<Pair<String>> asList = Arrays.asList(p1, p2, p3, p4);
 
-    Map<String, List<Pair<String>>> values = MappingLibrary.mapToValueList(
-        asList, "first");
+    Map<String, List<Pair<String>>> values = MappingLibrary.mapToValueList(asList, "first");
     assertEquals(2, values.size());
     assertEquals(Arrays.asList(p1, p3), values.get("a"));
     assertEquals(Arrays.asList(p2, p4), values.get("b"));
@@ -103,8 +98,7 @@ public class MappingLibraryTest {
     Pair<String> p4 = Tuples.pair("b", "1");
     List<Pair<String>> asList = Arrays.asList(p1, p2, p3, p4);
 
-    Map<String, Set<Pair<String>>> values = MappingLibrary.mapToValueSet(
-        asList, "first");
+    Map<String, Set<Pair<String>>> values = MappingLibrary.mapToValueSet(asList, "first");
     assertEquals(2, values.size());
     assertEquals(set(p1, p3), values.get("a"));
     assertEquals(set(p2), values.get("b"));
@@ -117,9 +111,7 @@ public class MappingLibraryTest {
 
   private <T> Set<T> set(T... objects) {
     Set<T> set = new HashSet<T>();
-    for (T object : objects)
-      set.add(object);
+    for (T object : objects) set.add(object);
     return set;
   }
-
 }

@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2021 Cambridge Systematics, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs.model;
@@ -19,11 +17,8 @@ import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
-import org.onebusaway.gtfs.serialization.mappings.StopLocationFieldMappingFactory;
 
-/**
- * GTFS Extension representing vehicle configuration data.
- */
+/** GTFS Extension representing vehicle configuration data. */
 @CsvFields(filename = "vehicles.txt", required = false)
 public final class Vehicle extends IdentityBean<AgencyAndId> {
   private static final long serialVersionUID = 2L;
@@ -55,7 +50,11 @@ public final class Vehicle extends IdentityBean<AgencyAndId> {
   @CsvField(name = "wheelchair_access", optional = true)
   private String wheelchairAccess;
 
-  @CsvField(name = "icon_id", optional = true, mapping = EntityFieldMappingFactory.class, order = -1)
+  @CsvField(
+      name = "icon_id",
+      optional = true,
+      mapping = EntityFieldMappingFactory.class,
+      order = -1)
   private Icon icon;
 
   @Override
@@ -68,29 +67,69 @@ public final class Vehicle extends IdentityBean<AgencyAndId> {
     this.id = id;
   }
 
-  public String getDescription() { return description; }
-  public void setDescription(String description) { this.description = description; }
+  public String getDescription() {
+    return description;
+  }
 
-  public int getSeatedCapacity() { return seatedCapacity; }
-  public void setSeatedCapacity(int seatedCapacity) { this.seatedCapacity = seatedCapacity; }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-  public int getStandingCapacity() { return standingCapacity; }
-  public void setStandingCapacity(int standingCapacity) { this.standingCapacity = standingCapacity;}
+  public int getSeatedCapacity() {
+    return seatedCapacity;
+  }
 
-  public int getDoorCount() { return doorCount; }
-  public void setDoorCount(int doorCount) { this.doorCount = doorCount; }
+  public void setSeatedCapacity(int seatedCapacity) {
+    this.seatedCapacity = seatedCapacity;
+  }
 
-  public String getDoorWidth() { return doorWidth; }
-  public void setDoorWidth(String doorWidth) { this.doorWidth = doorWidth; }
+  public int getStandingCapacity() {
+    return standingCapacity;
+  }
 
-  public int getLowFloor() { return lowFloor; }
-  public void setLowFloor(int lowFloor) { this.lowFloor = lowFloor; }
+  public void setStandingCapacity(int standingCapacity) {
+    this.standingCapacity = standingCapacity;
+  }
 
-  public int getBikeCapacity() { return bikeCapacity; }
-  public void setBikeCapacity(int bikeCapacity) { this.bikeCapacity = bikeCapacity;}
+  public int getDoorCount() {
+    return doorCount;
+  }
 
-  public String getWheelchairAccess() { return wheelchairAccess; }
-  public void setWheelchairAccess(String wheelchairAccess) { this.wheelchairAccess = wheelchairAccess; }
+  public void setDoorCount(int doorCount) {
+    this.doorCount = doorCount;
+  }
+
+  public String getDoorWidth() {
+    return doorWidth;
+  }
+
+  public void setDoorWidth(String doorWidth) {
+    this.doorWidth = doorWidth;
+  }
+
+  public int getLowFloor() {
+    return lowFloor;
+  }
+
+  public void setLowFloor(int lowFloor) {
+    this.lowFloor = lowFloor;
+  }
+
+  public int getBikeCapacity() {
+    return bikeCapacity;
+  }
+
+  public void setBikeCapacity(int bikeCapacity) {
+    this.bikeCapacity = bikeCapacity;
+  }
+
+  public String getWheelchairAccess() {
+    return wheelchairAccess;
+  }
+
+  public void setWheelchairAccess(String wheelchairAccess) {
+    this.wheelchairAccess = wheelchairAccess;
+  }
 
   public Icon getIcon() {
     return icon;

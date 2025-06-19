@@ -1,17 +1,14 @@
 /**
- * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * Copyright (C) 2011 Google Inc.
+ * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org> Copyright (C) 2011 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer;
@@ -26,7 +23,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.impl.GenericMutableDaoWrapper;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
@@ -45,11 +41,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GtfsTransformer {
-  
+
   private static Logger _log = LoggerFactory.getLogger(GtfsTransformer.class);
 
   /*****************************************************************************
-   * 
+   *
    ****************************************************************************/
 
   private List<File> _gtfsInputDirectories;
@@ -60,14 +56,15 @@ public class GtfsTransformer {
 
   private List<GtfsTransformStrategy> _transformStrategies = new ArrayList<GtfsTransformStrategy>();
 
-  private List<GtfsEntityTransformStrategy> _entityTransformStrategies = new ArrayList<GtfsEntityTransformStrategy>();
+  private List<GtfsEntityTransformStrategy> _entityTransformStrategies =
+      new ArrayList<GtfsEntityTransformStrategy>();
 
   private TransformContext _context = new TransformContext();
 
   private GtfsReader _reader = new GtfsReader();
 
   private GtfsReader _referenceReader = new GtfsReader();
-  
+
   private GtfsWriter _writer = new GtfsWriter();
 
   private RouteWriter _routeWriter = new RouteWriter();
@@ -88,11 +85,11 @@ public class GtfsTransformer {
     setGtfsInputDirectories(Arrays.asList(gtfsInputDirectory));
   }
 
-  public void setWriteZoneRouteMapping(boolean writeZoneRouteMapping){
+  public void setWriteZoneRouteMapping(boolean writeZoneRouteMapping) {
     _writeZoneRouteMapping = writeZoneRouteMapping;
   }
 
-  public void setRouteMappingOutputName(String routeMappingOutputName){
+  public void setRouteMappingOutputName(String routeMappingOutputName) {
     _routeMappingOutputName = routeMappingOutputName;
   }
 
@@ -117,8 +114,7 @@ public class GtfsTransformer {
   }
 
   public GtfsTransformStrategy getLastTransform() {
-    if (_transformStrategies.isEmpty())
-      return null;
+    if (_transformStrategies.isEmpty()) return null;
     return _transformStrategies.get(_transformStrategies.size() - 1);
   }
 
@@ -141,7 +137,7 @@ public class GtfsTransformer {
   public GtfsReader getReferenceReader() {
     return _referenceReader;
   }
-  
+
   public GtfsWriter getWriter() {
     return _writer;
   }
@@ -156,12 +152,12 @@ public class GtfsTransformer {
 
   public void run() throws Exception {
 
-    if (_outputDirectory != null && !_outputDirectory.exists()
-        && !_outputDirectory.getName().endsWith(".zip"))
-      _outputDirectory.mkdirs();
+    if (_outputDirectory != null
+        && !_outputDirectory.exists()
+        && !_outputDirectory.getName().endsWith(".zip")) _outputDirectory.mkdirs();
 
     // copy over parameters
-    for (String key: _parameters.keySet()) {
+    for (String key : _parameters.keySet()) {
       _context.putParameter(key, _parameters.get(key));
     }
 
@@ -175,10 +171,9 @@ public class GtfsTransformer {
     _context.setDefaultAgencyId(_reader.getDefaultAgencyId());
     _context.setReader(_reader);
 
-
     updateGtfs();
     writeGtfs();
-    if(_writeZoneRouteMapping) {
+    if (_writeZoneRouteMapping) {
       writeRoutes();
     }
   }
@@ -194,9 +189,7 @@ public class GtfsTransformer {
   private void readGtfs() throws IOException {
 
     GenericMutableDao dao = _dao;
-    if (!_entityTransformStrategies.isEmpty())
-      dao = new DaoInterceptor(_dao);
-
+    if (!_entityTransformStrategies.isEmpty()) dao = new DaoInterceptor(_dao);
 
     DefaultEntitySchemaFactory schemaFactory = new DefaultEntitySchemaFactory();
     schemaFactory.addFactory(GtfsEntitySchemaFactory.createEntitySchemaFactory());
@@ -207,13 +200,14 @@ public class GtfsTransformer {
 
     _reader.setEntityStore(dao);
 
-    if (_agencyId != null)
-      _reader.setDefaultAgencyId(_agencyId);
+    if (_agencyId != null) _reader.setDefaultAgencyId(_agencyId);
 
     for (File path : _gtfsInputDirectories) {
       _log.info("reading gtfs from " + path);
       if (path.isFile()) {
-        FileTime fileTime = ((FileTime)Files.readAttributes(path.toPath(), "lastModifiedTime").get("lastModifiedTime"));
+        FileTime fileTime =
+            ((FileTime)
+                Files.readAttributes(path.toPath(), "lastModifiedTime").get("lastModifiedTime"));
         if (fileTime != null) {
           _log.info("found lastModifiedTime of " + new Date(fileTime.toMillis()));
           _reader.setLastModifiedTime(fileTime.toMillis());
@@ -229,14 +223,12 @@ public class GtfsTransformer {
     GenericMutableDao dao = new GtfsRelationalDaoImpl();
     _referenceReader.setEntityStore(dao);
 
-    if (_agencyId != null)
-      _referenceReader.setDefaultAgencyId(_agencyId);
+    if (_agencyId != null) _referenceReader.setDefaultAgencyId(_agencyId);
 
     _referenceReader.setInputLocation(_gtfsReferenceDirectory);
     _referenceReader.run();
     _context.setReferenceReader(_referenceReader);
   }
-
 
   private void updateGtfs() {
     for (GtfsTransformStrategy strategy : _transformStrategies) {
@@ -246,7 +238,7 @@ public class GtfsTransformer {
       } catch (AbstractMethodError ame) {
         _log.info("(AbstractMethodError) strategy " + strategy + " does not support getName");
       }
-      _log.info("Running strategy {} ....", strategyName );
+      _log.info("Running strategy {} ....", strategyName);
       try {
         strategy.run(_context, _dao);
       } catch (Throwable t) {
@@ -278,7 +270,7 @@ public class GtfsTransformer {
     }
   }
 
-  private void writeRoutes() throws IOException{
+  private void writeRoutes() throws IOException {
     if (_outputDirectory == null) {
       return;
     }
@@ -298,8 +290,7 @@ public class GtfsTransformer {
 
       for (GtfsEntityTransformStrategy strategy : _entityTransformStrategies) {
         entity = strategy.transformEntity(_context, _dao, entity);
-        if (entity == null)
-          return;
+        if (entity == null) return;
       }
 
       super.saveEntity(entity);

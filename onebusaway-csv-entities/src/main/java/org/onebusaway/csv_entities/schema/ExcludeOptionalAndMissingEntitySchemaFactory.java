@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2012 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.csv_entities.schema;
@@ -19,12 +17,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import org.onebusaway.csv_entities.HasExtensions;
 import org.onebusaway.csv_entities.exceptions.MissingRequiredEntityException;
 
-public class ExcludeOptionalAndMissingEntitySchemaFactory implements
-    EntitySchemaFactory {
+public class ExcludeOptionalAndMissingEntitySchemaFactory implements EntitySchemaFactory {
 
   private final EntitySchemaFactory _source;
 
@@ -41,7 +37,7 @@ public class ExcludeOptionalAndMissingEntitySchemaFactory implements
     }
     schema = new EntitySchema(schema);
     List<FieldMapping> fields = schema.getFields();
-    for (Iterator<FieldMapping> it = fields.iterator(); it.hasNext();) {
+    for (Iterator<FieldMapping> it = fields.iterator(); it.hasNext(); ) {
       FieldMapping field = it.next();
       if (!field.isAlwaysIncludeInOutput() && allValuesAreMissingAndOptional(field, entities)) {
         it.remove();
@@ -49,9 +45,11 @@ public class ExcludeOptionalAndMissingEntitySchemaFactory implements
     }
     for (ExtensionEntitySchema extensionSchema : schema.getExtensions()) {
       fields = extensionSchema.getFields();
-      for (Iterator<FieldMapping> it = fields.iterator(); it.hasNext();) {
+      for (Iterator<FieldMapping> it = fields.iterator(); it.hasNext(); ) {
         FieldMapping field = it.next();
-        if (!field.isAlwaysIncludeInOutput() && allExtensionValuesAreMissingAndOptional(field, extensionSchema.getEntityClass(), entities)) {
+        if (!field.isAlwaysIncludeInOutput()
+            && allExtensionValuesAreMissingAndOptional(
+                field, extensionSchema.getEntityClass(), entities)) {
           it.remove();
         }
       }
@@ -76,17 +74,15 @@ public class ExcludeOptionalAndMissingEntitySchemaFactory implements
    * Private Methods
    ****/
 
-  private boolean allValuesAreMissingAndOptional(FieldMapping field,
-      Iterable<Object> entities) {
+  private boolean allValuesAreMissingAndOptional(FieldMapping field, Iterable<Object> entities) {
     for (Object entity : entities) {
       if (fieldIsNotMissingOrOptional(field, entity)) return false;
     }
     return true;
   }
 
-  private boolean allExtensionValuesAreMissingAndOptional(FieldMapping field,
-                                                          Class<?> extensionType,
-                                                          Iterable<Object> entities) {
+  private boolean allExtensionValuesAreMissingAndOptional(
+      FieldMapping field, Class<?> extensionType, Iterable<Object> entities) {
     for (Object entity : entities) {
       if (entity instanceof HasExtensions) {
         Object extension = ((HasExtensions) entity).getExtension(extensionType);

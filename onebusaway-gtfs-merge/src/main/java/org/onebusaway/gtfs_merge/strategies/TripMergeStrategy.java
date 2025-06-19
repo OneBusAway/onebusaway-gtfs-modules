@@ -1,23 +1,20 @@
 /**
  * Copyright (C) 2012 Google, Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_merge.strategies;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.onebusaway.gtfs.model.Frequency;
 import org.onebusaway.gtfs.model.IdentityBean;
 import org.onebusaway.gtfs.model.StopTime;
@@ -29,13 +26,12 @@ import org.onebusaway.gtfs_merge.strategies.scoring.TripScheduleOverlapDuplicate
 import org.onebusaway.gtfs_merge.strategies.scoring.TripStopsInCommonDuplicateScoringStrategy;
 
 /**
- * Entity merge strategy for handling {@link Trip} entities. This strategy also
- * handles merging the {@link StopTime} entities associated with each trip.
- * 
+ * Entity merge strategy for handling {@link Trip} entities. This strategy also handles merging the
+ * {@link StopTime} entities associated with each trip.
+ *
  * @author bdferris
  */
-public class TripMergeStrategy extends
-    AbstractIdentifiableSingleEntityMergeStrategy<Trip> {
+public class TripMergeStrategy extends AbstractIdentifiableSingleEntityMergeStrategy<Trip> {
 
   public TripMergeStrategy() {
     super(Trip.class);
@@ -45,10 +41,7 @@ public class TripMergeStrategy extends
     _duplicateScoringStrategy.addStrategy(new TripScheduleOverlapDuplicateScoringStrategy());
   }
 
-  /**
-   * Recall that we handle {@link StopTime} entities in addition to {@link Trip}
-   * entities.
-   */
+  /** Recall that we handle {@link StopTime} entities in addition to {@link Trip} entities. */
   @Override
   public void getEntityTypes(Collection<Class<?>> entityTypes) {
     super.getEntityTypes(entityTypes);
@@ -56,18 +49,17 @@ public class TripMergeStrategy extends
   }
 
   /**
-   * Even if we have detected that two trips are duplicates, they might have
-   * slight differences that prevent them from being represented as one merged
-   * trip. For example, if a trip in a subsequent feed adds, removes, or
-   * modifies a stop time, we might avoid merging the two trips such that the
+   * Even if we have detected that two trips are duplicates, they might have slight differences that
+   * prevent them from being represented as one merged trip. For example, if a trip in a subsequent
+   * feed adds, removes, or modifies a stop time, we might avoid merging the two trips such that the
    * schedule is correct in the merged feed.
-   * 
-   * TODO: Think about how this should be applied in relation to the service
-   * calendars of the two trips.
+   *
+   * <p>TODO: Think about how this should be applied in relation to the service calendars of the two
+   * trips.
    */
   @Override
-  protected boolean rejectDuplicateOverDifferences(GtfsMergeContext context,
-      Trip sourceEntity, Trip targetDuplicate) {
+  protected boolean rejectDuplicateOverDifferences(
+      GtfsMergeContext context, Trip sourceEntity, Trip targetDuplicate) {
     GtfsRelationalDao source = context.getSource();
     GtfsRelationalDao target = context.getTarget();
     List<StopTime> sourceStopTimes = source.getStopTimesForTrip(sourceEntity);
@@ -90,8 +82,7 @@ public class TripMergeStrategy extends
   }
 
   @Override
-  protected void replaceDuplicateEntry(GtfsMergeContext context, Trip oldTrip,
-      Trip newTrip) {
+  protected void replaceDuplicateEntry(GtfsMergeContext context, Trip oldTrip, Trip newTrip) {
     GtfsRelationalDao source = context.getSource();
     for (StopTime stopTime : source.getStopTimesForTrip(oldTrip)) {
       stopTime.setTrip(newTrip);
@@ -107,12 +98,12 @@ public class TripMergeStrategy extends
     GtfsMutableRelationalDao target = context.getTarget();
 
     Trip trip = (Trip) entity;
-    
+
     // save them out; when the trip is renamed stop time refs will be lost
     List<StopTime> stopTimes = source.getStopTimesForTrip(trip);
-    
+
     super.save(context, entity);
-    
+
     for (StopTime stopTime : stopTimes) {
       stopTime.setId(0);
       stopTime.setTrip(trip);

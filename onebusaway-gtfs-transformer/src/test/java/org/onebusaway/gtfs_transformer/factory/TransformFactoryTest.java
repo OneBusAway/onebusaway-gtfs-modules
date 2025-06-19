@@ -1,27 +1,24 @@
 /**
  * Copyright (C) 2012 Google Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer.factory;
 
-import static  org.junit.jupiter.api.Assertions.assertEquals;
-import static  org.junit.jupiter.api.Assertions.assertFalse;
-import static  org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
@@ -46,7 +43,8 @@ public class TransformFactoryTest {
 
   @Test
   public void test() throws IOException, TransformSpecificationException {
-    _factory.addModificationsFromString("{'op':'remove', 'match':{'class':'Route', 'shortName':'10'}}");
+    _factory.addModificationsFromString(
+        "{'op':'remove', 'match':{'class':'Route', 'shortName':'10'}}");
     GtfsTransformStrategy transform = _transformer.getLastTransform();
     assertEquals(EntitiesTransformStrategy.class, transform.getClass());
     EntitiesTransformStrategy strategy = (EntitiesTransformStrategy) transform;
@@ -63,9 +61,9 @@ public class TransformFactoryTest {
   }
 
   @Test
-  public void testFileMatch() throws IOException,
-      TransformSpecificationException {
-    _factory.addModificationsFromString("{'op':'remove', 'match':{'file':'routes.txt', 'shortName':'10'}}");
+  public void testFileMatch() throws IOException, TransformSpecificationException {
+    _factory.addModificationsFromString(
+        "{'op':'remove', 'match':{'file':'routes.txt', 'shortName':'10'}}");
     GtfsTransformStrategy transform = _transformer.getLastTransform();
     assertEquals(EntitiesTransformStrategy.class, transform.getClass());
     EntitiesTransformStrategy strategy = (EntitiesTransformStrategy) transform;
@@ -74,51 +72,51 @@ public class TransformFactoryTest {
   }
 
   @Test
-  public void testPathInUpdate() throws IOException,
-      TransformSpecificationException {
-    _factory.addModificationsFromString("{'op':'update', "
-        + "'match':{'file':'trips.txt'}, "
-        + "'update':{'trip_headsign': 'path(route.longName)'}}");
+  public void testPathInUpdate() throws IOException, TransformSpecificationException {
+    _factory.addModificationsFromString(
+        "{'op':'update', "
+            + "'match':{'file':'trips.txt'}, "
+            + "'update':{'trip_headsign': 'path(route.longName)'}}");
     GtfsTransformStrategy transform = _transformer.getLastTransform();
     TransformContext context = new TransformContext();
     GtfsMutableRelationalDao dao = new GtfsRelationalDaoImpl();
-    
+
     Route route = new Route();
     route.setLongName("long cat");
     Trip trip = new Trip();
     trip.setId(new AgencyAndId("1", "1"));
     trip.setRoute(route);
     dao.saveEntity(trip);
-    
+
     transform.run(context, dao);
-    
+
     assertEquals("long cat", trip.getTripHeadsign());
   }
-  
+
   @Test
-  public void testReplaceValueInUpdate() throws IOException,
-      TransformSpecificationException {
-    _factory.addModificationsFromString("{'op':'update', "
-        + "'match':{'file':'trips.txt'}, "
-        + "'update':{'trip_headsign': 's/Downtown/Uptown/'}}");
+  public void testReplaceValueInUpdate() throws IOException, TransformSpecificationException {
+    _factory.addModificationsFromString(
+        "{'op':'update', "
+            + "'match':{'file':'trips.txt'}, "
+            + "'update':{'trip_headsign': 's/Downtown/Uptown/'}}");
     GtfsTransformStrategy transform = _transformer.getLastTransform();
     TransformContext context = new TransformContext();
     GtfsMutableRelationalDao dao = new GtfsRelationalDaoImpl();
-    
+
     Trip trip = new Trip();
     trip.setId(new AgencyAndId("1", "1"));
     trip.setTripHeadsign("Downtown Express");
     dao.saveEntity(trip);
-    
+
     transform.run(context, dao);
-    
+
     assertEquals("Uptown Express", trip.getTripHeadsign());
   }
 
   @Test
-  public void testReplaceIdInUpdate() throws IOException,
-          TransformSpecificationException {
-    _factory.addModificationsFromString("{'op':'update', "
+  public void testReplaceIdInUpdate() throws IOException, TransformSpecificationException {
+    _factory.addModificationsFromString(
+        "{'op':'update', "
             + "'match':{'file':'trips.txt'}, "
             + "'update':{'trip_id': 's/^1_([0-9]*).*/$1/'}}");
 
@@ -137,9 +135,9 @@ public class TransformFactoryTest {
   }
 
   @Test
-  public void testReplaceIdInUpdateComplex() throws IOException,
-          TransformSpecificationException {
-    _factory.addModificationsFromString("{'op':'update', "
+  public void testReplaceIdInUpdateComplex() throws IOException, TransformSpecificationException {
+    _factory.addModificationsFromString(
+        "{'op':'update', "
             + "'match':{'file':'trips.txt'}, "
             + "'update':{'trip_id': 's/^([^_]*)_([0-9]*).*/$2/'}}");
 
@@ -157,11 +155,10 @@ public class TransformFactoryTest {
     assertEquals("1234", trip.getId().getId());
   }
 
-
   @Test
-  public void testReplaceValueInUpdateRegex() throws IOException,
-          TransformSpecificationException {
-    _factory.addModificationsFromString("{'op':'update', "
+  public void testReplaceValueInUpdateRegex() throws IOException, TransformSpecificationException {
+    _factory.addModificationsFromString(
+        "{'op':'update', "
             + "'match':{'file':'trips.txt', 'trip_short_name': 'm/X41/'}, "
             + "'update':{'trip_headsign': 'Uptown Express'}}");
     GtfsTransformStrategy transform = _transformer.getLastTransform();
@@ -180,27 +177,26 @@ public class TransformFactoryTest {
     assertEquals("Uptown Express", trip.getTripHeadsign());
   }
 
-
   @Test
-  public void testCalendarSimplification() throws IOException,
-      TransformSpecificationException {
+  public void testCalendarSimplification() throws IOException, TransformSpecificationException {
     _factory.addModificationsFromString("{'op':'calendar_simplification'}");
     GtfsTransformStrategy transform = _transformer.getLastTransform();
     assertEquals(CalendarSimplicationStrategy.class, transform.getClass());
     CalendarSimplicationStrategy simplification = (CalendarSimplicationStrategy) transform;
     assertFalse(simplification.isUndoGoogleTransitDataFeedMergeTool());
 
-    _factory.addModificationsFromString("{'op':'calendar_simplification', 'min_number_of_weeks_for_calendar_entry':10}");
+    _factory.addModificationsFromString(
+        "{'op':'calendar_simplification', 'min_number_of_weeks_for_calendar_entry':10}");
     simplification = (CalendarSimplicationStrategy) _transformer.getLastTransform();
-    assertEquals(10,
-        simplification.getLibrary().getMinNumberOfWeeksForCalendarEntry());
+    assertEquals(10, simplification.getLibrary().getMinNumberOfWeeksForCalendarEntry());
 
-    _factory.addModificationsFromString("{'op':'calendar_simplification', 'day_of_the_week_inclusion_ratio':0.1}");
+    _factory.addModificationsFromString(
+        "{'op':'calendar_simplification', 'day_of_the_week_inclusion_ratio':0.1}");
     simplification = (CalendarSimplicationStrategy) _transformer.getLastTransform();
-    assertEquals(0.1,
-        simplification.getLibrary().getDayOfTheWeekInclusionRatio(), 0.0);
+    assertEquals(0.1, simplification.getLibrary().getDayOfTheWeekInclusionRatio(), 0.0);
 
-    _factory.addModificationsFromString("{'op':'calendar_simplification', 'undo_google_transit_data_feed_merge_tool':true}");
+    _factory.addModificationsFromString(
+        "{'op':'calendar_simplification', 'undo_google_transit_data_feed_merge_tool':true}");
     simplification = (CalendarSimplicationStrategy) _transformer.getLastTransform();
     assertTrue(simplification.isUndoGoogleTransitDataFeedMergeTool());
   }

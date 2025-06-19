@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.gtfs_transformer;
@@ -24,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.commons.cli.AlreadySelectedException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -44,7 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GtfsTransformerMain {
-  
+
   private static final Logger LOG = LoggerFactory.getLogger(GtfsTransformerMain.class);
 
   /****
@@ -159,18 +156,14 @@ public class GtfsTransformerMain {
     options.addOption(ARG_CONCURRENCY_FILE, true, "file to remap wrong way concurrencies");
     options.addOption(ARG_OMNY_ROUTES_FILE, true, "file to add OMNY enabled routes to GTFS");
     options.addOption(ARG_OMNY_STOPS_FILE, true, "file to add OMNY enabled stops to GTFS");
-    options.addOption(ARG_VERIFY_ROUTES_FILE, true, "file to check route names vs route ids in GTFS");
+    options.addOption(
+        ARG_VERIFY_ROUTES_FILE, true, "file to check route names vs route ids in GTFS");
 
-    options.addOption(ARG_LOCAL_VS_EXPRESS, false,
-        "add additional local vs express fields");
-    options.addOption(ARG_CHECK_STOP_TIMES, false,
-        "check stop times are in order");
-    options.addOption(ARG_REMOVE_REPEATED_STOP_TIMES, false,
-        "remove repeated stop times");
-    options.addOption(ARG_REMOVE_DUPLICATE_TRIPS, false,
-        "remove duplicate trips");
-    options.addOption(ARG_OVERWRITE_DUPLICATES, false,
-        "overwrite duplicate elements");
+    options.addOption(ARG_LOCAL_VS_EXPRESS, false, "add additional local vs express fields");
+    options.addOption(ARG_CHECK_STOP_TIMES, false, "check stop times are in order");
+    options.addOption(ARG_REMOVE_REPEATED_STOP_TIMES, false, "remove repeated stop times");
+    options.addOption(ARG_REMOVE_DUPLICATE_TRIPS, false, "remove duplicate trips");
+    options.addOption(ARG_OVERWRITE_DUPLICATES, false, "overwrite duplicate elements");
   }
 
   private void printHelp() throws IOException {
@@ -186,8 +179,7 @@ public class GtfsTransformerMain {
     reader.close();
   }
 
-  protected void runApplication(CommandLine cli, String[] originalArgs)
-      throws Exception {
+  protected void runApplication(CommandLine cli, String[] originalArgs) throws Exception {
 
     var args = Arrays.stream(cli.getArgs()).toList();
 
@@ -195,7 +187,7 @@ public class GtfsTransformerMain {
       printHelp();
       System.exit(-1);
     }
-	
+
     List<File> inputPaths = args.stream().limit(args.size() - 1).map(File::new).toList();
     LOG.info("input paths: {}", inputPaths);
 
@@ -205,7 +197,7 @@ public class GtfsTransformerMain {
     var outputPath = new File(args.get(args.size() - 1));
     transformer.setOutputDirectory(outputPath);
     LOG.info("output path: {}", outputPath);
-    
+
     Option[] options = getOptionsInCommandLineOrder(cli, originalArgs);
 
     for (Option option : options) {
@@ -215,24 +207,19 @@ public class GtfsTransformerMain {
       if (name.equals(ARG_REMOVE_REPEATED_STOP_TIMES))
         configureRemoveRepeatedStopTimes(transformer);
 
-      if (name.equals(INTERPOLATE_REPEATED_STOP_TIMES))
-        configureInterpolateStopTimes(transformer);
+      if (name.equals(INTERPOLATE_REPEATED_STOP_TIMES)) configureInterpolateStopTimes(transformer);
 
-      if (name.equals(ARG_REMOVE_DUPLICATE_TRIPS))
-        configureRemoveDuplicateTrips(transformer);
+      if (name.equals(ARG_REMOVE_DUPLICATE_TRIPS)) configureRemoveDuplicateTrips(transformer);
 
-      if (name.equals(ARG_CHECK_STOP_TIMES))
-        configureEnsureStopTimesInOrder(transformer);
+      if (name.equals(ARG_CHECK_STOP_TIMES)) configureEnsureStopTimesInOrder(transformer);
 
       if (name.equals(ARG_AGENCY_ID))
         configureAgencyId(transformer, cli.getOptionValue(ARG_AGENCY_ID));
 
       if (name.equals(ARG_MODIFICATIONS) || name.equals(ARG_TRANSFORM))
-        GtfsTransformerLibrary.configureTransformation(transformer,
-            option.getValue());
+        GtfsTransformerLibrary.configureTransformation(transformer, option.getValue());
 
-      if (name.equals(ARG_REFERENCE))
-        configureAdditionalGTFS(transformer, option.getValue());
+      if (name.equals(ARG_REFERENCE)) configureAdditionalGTFS(transformer, option.getValue());
 
       if (name.equals(ARG_STOP_MAPPING)) {
         configureStopMapping(transformer, option.getValue());
@@ -266,8 +253,7 @@ public class GtfsTransformerMain {
         configureVerifyRoutesFile(transformer, option.getValue());
       }
 
-      if (name.equals(ARG_LOCAL_VS_EXPRESS))
-        configureLocalVsExpressUpdates(transformer);
+      if (name.equals(ARG_LOCAL_VS_EXPRESS)) configureLocalVsExpressUpdates(transformer);
 
       if (name.equals(ARG_OVERWRITE_DUPLICATES)) {
         transformer.getReader().setOverwriteDuplicates(true);
@@ -277,8 +263,7 @@ public class GtfsTransformerMain {
     transformer.run();
   }
 
-  private Option[] getOptionsInCommandLineOrder(CommandLine cli,
-      String[] originalArgs) {
+  private Option[] getOptionsInCommandLineOrder(CommandLine cli, String[] originalArgs) {
 
     Option[] options = cli.getOptions();
     List<Ordered<Option>> orderedOptions = new ArrayList<Ordered<Option>>();
@@ -301,8 +286,7 @@ public class GtfsTransformerMain {
     Collections.sort(orderedOptions);
     options = new Option[options.length];
 
-    for (int i = 0; i < options.length; i++)
-      options[i] = orderedOptions.get(i).getObject();
+    for (int i = 0; i < options.length; i++) options[i] = orderedOptions.get(i).getObject();
 
     return options;
   }
@@ -320,8 +304,7 @@ public class GtfsTransformerMain {
   }
 
   private void configureAgencyId(GtfsTransformer updater, String agencyId) {
-    if (agencyId != null)
-      updater.setAgencyId(agencyId);
+    if (agencyId != null) updater.setAgencyId(agencyId);
   }
 
   private void configureEnsureStopTimesInOrder(GtfsTransformer updater) {
@@ -332,7 +315,7 @@ public class GtfsTransformerMain {
     updater.addTransform(new LocalVsExpressUpdateStrategy());
   }
 
-  private void configureAdditionalGTFS(GtfsTransformer updater,  String path) {
+  private void configureAdditionalGTFS(GtfsTransformer updater, String path) {
     updater.setGtfsReferenceDirectory(new File(path));
   }
 
@@ -349,10 +332,11 @@ public class GtfsTransformerMain {
   }
 
   private void configureControlFile(GtfsTransformer updater, String file) {
-    updater.addParameter("controlFile", file); }
+    updater.addParameter("controlFile", file);
+  }
 
   private void configureConcurrencyFile(GtfsTransformer updater, String file) {
-      updater.addParameter("concurrencyFile", file);
+    updater.addParameter("concurrencyFile", file);
   }
 
   private void configureOmnyRoutesFile(GtfsTransformer updater, String file) {
@@ -369,8 +353,7 @@ public class GtfsTransformerMain {
 
   private boolean needsHelp(String[] args) {
     for (String arg : args) {
-      if (arg.equals("-h") || arg.equals("--help") || arg.equals("-help"))
-        return true;
+      if (arg.equals("-h") || arg.equals("--help") || arg.equals("-help")) return true;
     }
     return false;
   }

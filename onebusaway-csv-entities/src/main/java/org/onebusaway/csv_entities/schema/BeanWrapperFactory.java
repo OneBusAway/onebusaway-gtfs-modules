@@ -1,16 +1,14 @@
 /**
  * Copyright (C) 2011 Brian Ferris <bdferris@onebusaway.org>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.onebusaway.csv_entities.schema;
@@ -20,14 +18,14 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.onebusaway.csv_entities.exceptions.IntrospectionException;
 import org.onebusaway.csv_entities.exceptions.MethodInvocationException;
 import org.onebusaway.csv_entities.exceptions.NoSuchPropertyException;
 
 public class BeanWrapperFactory {
 
-  private static Map<Class<?>, BeanClassWrapperImpl> _classWrappers = new HashMap<Class<?>, BeanClassWrapperImpl>();
+  private static Map<Class<?>, BeanClassWrapperImpl> _classWrappers =
+      new HashMap<Class<?>, BeanClassWrapperImpl>();
 
   public static BeanWrapper wrap(Object object) {
     Class<? extends Object> c = object.getClass();
@@ -62,15 +60,13 @@ public class BeanWrapperFactory {
 
     public Class<?> getPropertyType(Object object, String propertyName) {
       Method method = _readMethods.get(propertyName);
-      if (method == null)
-        throw new NoSuchPropertyException(object.getClass(), propertyName);
+      if (method == null) throw new NoSuchPropertyException(object.getClass(), propertyName);
       return method.getReturnType();
     }
 
     public Object getPropertyValue(Object object, String propertyName) {
       Method method = _readMethods.get(propertyName);
-      if (method == null)
-        throw new NoSuchPropertyException(object.getClass(), propertyName);
+      if (method == null) throw new NoSuchPropertyException(object.getClass(), propertyName);
       try {
         return method.invoke(object);
       } catch (Exception ex) {
@@ -78,11 +74,9 @@ public class BeanWrapperFactory {
       }
     }
 
-    public void setPropertyValue(Object object, String propertyName,
-        Object value) {
+    public void setPropertyValue(Object object, String propertyName, Object value) {
       Method method = _writeMethods.get(propertyName);
-      if (method == null)
-        throw new NoSuchPropertyException(object.getClass(), propertyName);
+      if (method == null) throw new NoSuchPropertyException(object.getClass(), propertyName);
       try {
         method.invoke(object, value);
       } catch (Exception ex) {
@@ -97,8 +91,7 @@ public class BeanWrapperFactory {
 
     private Object _wrappedInstance;
 
-    public BeanWrapperImpl(BeanClassWrapperImpl classWrapper,
-        Object wrappedInstance) {
+    public BeanWrapperImpl(BeanClassWrapperImpl classWrapper, Object wrappedInstance) {
       _classWrapper = classWrapper;
       _wrappedInstance = wrappedInstance;
     }
@@ -119,6 +112,5 @@ public class BeanWrapperFactory {
     public void setPropertyValue(String propertyName, Object value) {
       _classWrapper.setPropertyValue(_wrappedInstance, propertyName, value);
     }
-
   }
 }

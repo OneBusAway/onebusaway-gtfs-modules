@@ -15,7 +15,7 @@ package org.onebusaway.gtfs.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
-import org.onebusaway.gtfs.annotations.Experimental;
+import org.onebusaway.csv_entities.schema.annotations.Experimental;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.TripAgencyIdFieldMappingFactory;

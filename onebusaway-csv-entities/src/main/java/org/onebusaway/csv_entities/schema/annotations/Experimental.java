@@ -11,7 +11,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs.annotations;
+package org.onebusaway.csv_entities.schema.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -19,11 +19,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/** This annotation indicates that a field is experimental. */
+/** This annotation indicates that a field is experimental and not part of an released spec (yet). */
 @Retention(value = RetentionPolicy.SOURCE)
 @Target(value = ElementType.FIELD)
 @Documented
 public @interface Experimental {
-  /** This indicates what issue this field was proposed in. Ideally this should be a URL. */
+  /** This indicates what document this field was proposed in. Ideally this should be a URL. */
   String proposedBy();
 }

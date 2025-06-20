@@ -20,12 +20,12 @@ import org.onebusaway.csv_entities.schema.FieldMapping;
 
 class StopTimeFieldMappingFactoryTest {
 
-  private static Stream<Arguments> csvMappingProvider() {
-    return Stream.of(Arguments.of("1234:23:32", new Integer(1234 * 60 * 60 + 23 * 60 + 32)));
+  private static Stream<Arguments> parsingCases() {
+    return Stream.of(Arguments.of("1234:23:32", 1234 * 60 * 60 + 23 * 60 + 32));
   }
 
   @ParameterizedTest
-  @MethodSource("csvMappingProvider")
+  @MethodSource("parsingCases")
   void testCsvMapping(String timeStr, Integer expectedSeconds) {
     StopTimeFieldMappingFactory factory = new StopTimeFieldMappingFactory();
     DefaultEntitySchemaFactory schemaFactory = new DefaultEntitySchemaFactory();

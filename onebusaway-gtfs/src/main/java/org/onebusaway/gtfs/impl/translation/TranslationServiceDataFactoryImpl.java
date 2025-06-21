@@ -54,12 +54,7 @@ public class TranslationServiceDataFactoryImpl implements TranslationServiceData
   private static final String FACILITY_PROPERTY_DEFINITION_TABLE_NAME =
       "facilities_properties_definitions";
 
-  private static final String WRONG_WAY_TABLE_NAME = "wrong_way_concurrencies";
-
   private static final String DIRECTION_ENTRY_TABLE_NAME = "direction_entry";
-
-  private static final String ALTERNATE_STOP_NAME_EXCEPTION_TABLE_NAME =
-      "alternate_stop_name_exception";
 
   private GtfsRelationalDao _dao;
 
@@ -111,37 +106,21 @@ public class TranslationServiceDataFactoryImpl implements TranslationServiceData
   }
 
   private Class<?> getEntityTypeForTableName(String name) {
-    switch (name) {
-      case AGENCY_TABLE_NAME:
-        return Agency.class;
-      case AREA_TABLE_NAME:
-        return Area.class;
-      case STOP_TABLE_NAME:
-        return Stop.class;
-      case ROUTE_TABLE_NAME:
-        return Route.class;
-      case TRIP_TABLE_NAME:
-        return Trip.class;
-      case STOP_TIME_TABLE_NAME:
-        return StopTime.class;
-      case FEED_INFO_TABLE_NAME:
-        return FeedInfo.class;
-      case VEHICLE_TABLE_NAME:
-        return Vehicle.class;
-      case FACILITY_TABLE_NAME:
-        return Facility.class;
-      case FACILITY_PROPERTY_TABLE_NAME:
-        return FacilityProperty.class;
-      case FACILITY_PROPERTY_DEFINITION_TABLE_NAME:
-        return FacilityPropertyDefinition.class;
-      case WRONG_WAY_TABLE_NAME:
-        return WrongWayConcurrency.class;
-      case DIRECTION_ENTRY_TABLE_NAME:
-        return DirectionEntry.class;
-      case ALTERNATE_STOP_NAME_EXCEPTION_TABLE_NAME:
-        return AlternateStopNameException.class;
-    }
-    return null;
+    return switch (name) {
+      case AGENCY_TABLE_NAME -> Agency.class;
+      case AREA_TABLE_NAME -> Area.class;
+      case STOP_TABLE_NAME -> Stop.class;
+      case ROUTE_TABLE_NAME -> Route.class;
+      case TRIP_TABLE_NAME -> Trip.class;
+      case STOP_TIME_TABLE_NAME -> StopTime.class;
+      case FEED_INFO_TABLE_NAME -> FeedInfo.class;
+      case VEHICLE_TABLE_NAME -> Vehicle.class;
+      case FACILITY_TABLE_NAME -> Facility.class;
+      case FACILITY_PROPERTY_TABLE_NAME -> FacilityProperty.class;
+      case FACILITY_PROPERTY_DEFINITION_TABLE_NAME -> FacilityPropertyDefinition.class;
+      case DIRECTION_ENTRY_TABLE_NAME -> DirectionEntry.class;
+      default -> null;
+    };
   }
 
   private String getPropertyNameByClassAndCsvName(Class<?> type, String csvName) {

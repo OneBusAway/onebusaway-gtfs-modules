@@ -42,7 +42,6 @@ public class AddOmnyBusData implements GtfsTransformStrategy {
     }
 
     for (Route route : dao.getAllRoutes()) {
-      route.setRegionalFareCardAccepted(1);
       route_count++;
     }
 

@@ -33,7 +33,7 @@
     <onebusaway.cloud.version>0.0.13</onebusaway.cloud.version>
     <junit.version>5.13.1</junit.version>
     <jmh.version>1.37</jmh.version>
-    <maven-assembly-plugin.version>2.6</maven-assembly-plugin.version>
+    <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
   </properties>
 
   <scm>

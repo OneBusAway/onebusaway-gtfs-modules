@@ -73,7 +73,6 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   private Double safeDurationOffset;
 
   /** 0 = unknown / unspecified, 1 = cars allowed, 2 = cars NOT allowed */
-  @Experimental(proposedBy = "https://github.com/google/transit/issues/466")
   @CsvField(optional = true, defaultValue = "0")
   private int carsAllowed = 0;
 

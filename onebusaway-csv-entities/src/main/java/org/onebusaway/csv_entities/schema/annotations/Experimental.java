@@ -19,7 +19,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/** This annotation indicates that a field is experimental and not part of an released spec (yet). */
+/** This annotation indicates that a field is experimental and not part of a released spec (yet). */
 @Retention(value = RetentionPolicy.SOURCE)
 @Target(value = ElementType.FIELD)
 @Documented

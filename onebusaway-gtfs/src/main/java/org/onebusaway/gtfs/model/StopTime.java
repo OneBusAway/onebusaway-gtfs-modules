@@ -74,9 +74,6 @@ public final class StopTime extends IdentityBean<Integer>
   private int stopSequence;
 
   @CsvField(optional = true)
-  private Integer toStopSequence;
-
-  @CsvField(optional = true)
   private String stopHeadsign;
 
   @CsvField(optional = true)
@@ -156,7 +153,6 @@ public final class StopTime extends IdentityBean<Integer>
     this.locationGroup = st.locationGroup;
     this.stopHeadsign = st.stopHeadsign;
     this.stopSequence = st.stopSequence;
-    this.toStopSequence = st.toStopSequence;
     this.timepoint = st.timepoint;
     this.trip = st.trip;
     this.pickupBookingRule = st.pickupBookingRule;
@@ -210,14 +206,6 @@ public final class StopTime extends IdentityBean<Integer>
       return;
     }
     this.stopSequence = stopSequence;
-  }
-
-  public Integer getToStopSequence() {
-    return toStopSequence;
-  }
-
-  public void setToStopSequence(Integer toStopSequence) {
-    this.toStopSequence = toStopSequence;
   }
 
   @Override

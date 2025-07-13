@@ -66,8 +66,6 @@ public class StopTimeArray extends AbstractList<StopTime> {
 
   private double[] safeFactors = new double[0];
 
-  private String[] freeRunningFlags = new String[0];
-
   public void trimToSize() {
     setLength(size);
   }
@@ -163,7 +161,6 @@ public class StopTimeArray extends AbstractList<StopTime> {
     this.safeFactors = Arrays.copyOf(this.safeFactors, newLength);
     this.meanOffsets = Arrays.copyOf(this.meanOffsets, newLength);
     this.meanFactors = Arrays.copyOf(this.meanFactors, newLength);
-    this.freeRunningFlags = Arrays.copyOf(this.freeRunningFlags, newLength);
   }
 
   private class StopTimeIterator implements Iterator<StopTime> {

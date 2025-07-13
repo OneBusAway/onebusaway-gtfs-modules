@@ -29,33 +29,33 @@ public interface GtfsDao extends GenericDao {
    * Agency Methods
    ****/
 
-  public Collection<Agency> getAllAgencies();
+  Collection<Agency> getAllAgencies();
 
-  public Agency getAgencyForId(String id);
+  Agency getAgencyForId(String id);
 
   /****
    * {@link ServiceCalendar} Methods
    ****/
 
-  public Collection<ServiceCalendar> getAllCalendars();
+  Collection<ServiceCalendar> getAllCalendars();
 
-  public ServiceCalendar getCalendarForId(int id);
+  ServiceCalendar getCalendarForId(int id);
 
   /****
    * {@link ServiceCalendarDate} Methods
    ****/
 
-  public Collection<ServiceCalendarDate> getAllCalendarDates();
+  Collection<ServiceCalendarDate> getAllCalendarDates();
 
-  public ServiceCalendarDate getCalendarDateForId(int id);
+  ServiceCalendarDate getCalendarDateForId(int id);
 
   /****
    * {@link FareAttribute} Methods
    ****/
 
-  public Collection<FareAttribute> getAllFareAttributes();
+  Collection<FareAttribute> getAllFareAttributes();
 
-  public FareAttribute getFareAttributeForId(AgencyAndId id);
+  FareAttribute getFareAttributeForId(AgencyAndId id);
 
   /****
    * {@link FareLegRule } Methods
@@ -84,101 +84,101 @@ public interface GtfsDao extends GenericDao {
    * {@link FareRule} Methods
    ***/
 
-  public Collection<FareRule> getAllFareRules();
+  Collection<FareRule> getAllFareRules();
 
-  public FareRule getFareRuleForId(int id);
+  FareRule getFareRuleForId(int id);
 
   /****
    * {@link FareTransferRule} Methods
    ***/
 
-  public Collection<FareTransferRule> getAllFareTransferRules();
+  Collection<FareTransferRule> getAllFareTransferRules();
 
   /****
    * {@link FeedInfo} Methods
    ****/
 
-  public Collection<FeedInfo> getAllFeedInfos();
+  Collection<FeedInfo> getAllFeedInfos();
 
-  public FeedInfo getFeedInfoForId(String id);
+  FeedInfo getFeedInfoForId(String id);
 
   /****
    * {@link Frequency} Methods
    ****/
 
-  public Collection<Frequency> getAllFrequencies();
+  Collection<Frequency> getAllFrequencies();
 
-  public Frequency getFrequencyForId(int id);
+  Frequency getFrequencyForId(int id);
 
   /****
    * {@link Pathway} Methods
    ****/
 
-  public Collection<Pathway> getAllPathways();
+  Collection<Pathway> getAllPathways();
 
-  public Pathway getPathwayForId(AgencyAndId id);
+  Pathway getPathwayForId(AgencyAndId id);
 
-  public Collection<Level> getAllLevels();
+  Collection<Level> getAllLevels();
 
-  public Level getLevelForId(AgencyAndId id);
+  Level getLevelForId(AgencyAndId id);
 
   /****
    * {@link Route} Methods
    ****/
 
-  public Collection<Route> getAllRoutes();
+  Collection<Route> getAllRoutes();
 
-  public Collection<RouteStop> getAllRouteStops();
+  Collection<RouteStop> getAllRouteStops();
 
-  public Collection<RouteShape> getAllRouteShapes();
+  Collection<RouteShape> getAllRouteShapes();
 
-  public Route getRouteForId(AgencyAndId id);
+  Route getRouteForId(AgencyAndId id);
 
   /****
    * {@link ShapePoint} Methods
    ****/
 
-  public Collection<ShapePoint> getAllShapePoints();
+  Collection<ShapePoint> getAllShapePoints();
 
-  public ShapePoint getShapePointForId(int id);
+  ShapePoint getShapePointForId(int id);
 
   /****
    * {@link Stop} Methods
    ****/
 
-  public Collection<Stop> getAllStops();
+  Collection<Stop> getAllStops();
 
-  public Stop getStopForId(AgencyAndId id);
+  Stop getStopForId(AgencyAndId id);
 
   /****
    * {@link StopTime} Methods
    ****/
 
-  public Collection<StopTime> getAllStopTimes();
+  Collection<StopTime> getAllStopTimes();
 
-  public StopTime getStopTimeForId(int id);
+  StopTime getStopTimeForId(int id);
 
   /****
    * {@link Transfer} Methods
    ****/
 
-  public Collection<Transfer> getAllTransfers();
+  Collection<Transfer> getAllTransfers();
 
-  public Transfer getTransferForId(int id);
+  Transfer getTransferForId(int id);
 
   /****
    * {@link Trip} Methods
    ****/
 
-  public Collection<Trip> getAllTrips();
+  Collection<Trip> getAllTrips();
 
-  public Trip getTripForId(AgencyAndId id);
+  Trip getTripForId(AgencyAndId id);
 
-  public Collection<Block> getAllBlocks();
+  Collection<Block> getAllBlocks();
 
-  public Block getBlockForId(int id);
+  Block getBlockForId(int id);
 
-  public Collection<Ridership> getAllRiderships();
+  Collection<Ridership> getAllRiderships();
 
   /****
    * {@link Vehicle} Methods
@@ -194,34 +194,34 @@ public interface GtfsDao extends GenericDao {
    * {@link Area} Methods
    ****/
 
-  public Collection<Area> getAllAreas();
+  Collection<Area> getAllAreas();
 
   @Deprecated
-  public Collection<LocationGroupElement> getAllLocationGroupElements();
+  Collection<LocationGroupElement> getAllLocationGroupElements();
 
-  public Collection<LocationGroup> getAllLocationGroups();
+  Collection<LocationGroup> getAllLocationGroups();
 
-  public Collection<StopAreaElement> getAllStopAreaElements();
+  Collection<StopAreaElement> getAllStopAreaElements();
 
-  public Collection<Location> getAllLocations();
+  Collection<Location> getAllLocations();
 
-  public Collection<BookingRule> getAllBookingRules();
+  Collection<BookingRule> getAllBookingRules();
 
   /****
    * {@link Translation} Methods
    ****/
 
-  public Collection<Translation> getAllTranslations();
+  Collection<Translation> getAllTranslations();
 
   /****
    * {@link Network} Methods
    ****/
 
-  public Collection<Network> getAllNetworks();
+  Collection<Network> getAllNetworks();
 
-  public Collection<DirectionEntry> getAllDirectionEntries();
+  Collection<DirectionEntry> getAllDirectionEntries();
 
-  public Collection<WrongWayConcurrency> getAllWrongWayConcurrencies();
+  Collection<WrongWayConcurrency> getAllWrongWayConcurrencies();
 
   default boolean hasFaresV1() {
     return Stream.of(getAllFareAttributes(), getAllFareRules())

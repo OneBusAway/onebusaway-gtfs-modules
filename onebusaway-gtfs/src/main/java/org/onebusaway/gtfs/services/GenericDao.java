@@ -22,7 +22,7 @@ public interface GenericDao {
    * Generic Methods
    ****/
 
-  public <T> Collection<T> getAllEntitiesForType(Class<T> type);
+  <T> Collection<T> getAllEntitiesForType(Class<T> type);
 
-  public <T> T getEntityForId(Class<T> type, Serializable id);
+  <T> T getEntityForId(Class<T> type, Serializable id);
 }

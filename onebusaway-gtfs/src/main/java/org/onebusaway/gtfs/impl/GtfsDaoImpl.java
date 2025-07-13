@@ -23,9 +23,9 @@ import org.onebusaway.gtfs.services.GtfsMutableDao;
 public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   public static final String[] OPTIONAL_FILE_NAMES = {"modifications.txt"};
-  private StopTimeArray stopTimes = new StopTimeArray();
+  private final StopTimeArray stopTimes = new StopTimeArray();
 
-  private ShapePointArray shapePoints = new ShapePointArray();
+  private final ShapePointArray shapePoints = new ShapePointArray();
 
   private boolean packStopTimes = false;
 
@@ -33,14 +33,12 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   private List<String> _optionalMetadataFilenames = null;
 
-  private Map<String, String> metadataByFilename = new HashMap<>();
+  private final Map<String, String> metadataByFilename = new HashMap<>();
 
   public GtfsDaoImpl() {
     _optionalMetadataFilenames = new ArrayList<>();
     if (OPTIONAL_FILE_NAMES != null) {
-      for (String optionalFileName : OPTIONAL_FILE_NAMES) {
-        _optionalMetadataFilenames.add(optionalFileName);
-      }
+      Collections.addAll(_optionalMetadataFilenames, OPTIONAL_FILE_NAMES);
     }
   }
 

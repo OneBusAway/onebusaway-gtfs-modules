@@ -19,31 +19,31 @@ package org.onebusaway.gtfs.model;
  */
 public interface ShapePointProxy {
 
-  public Integer getId();
+  Integer getId();
 
-  public void setId(Integer id);
+  void setId(Integer id);
 
-  public AgencyAndId getShapeId();
+  AgencyAndId getShapeId();
 
-  public void setShapeId(AgencyAndId shapeId);
+  void setShapeId(AgencyAndId shapeId);
 
-  public int getSequence();
+  int getSequence();
 
-  public void setSequence(int sequence);
+  void setSequence(int sequence);
 
-  public boolean isDistTraveledSet();
+  boolean isDistTraveledSet();
 
-  public double getDistTraveled();
+  double getDistTraveled();
 
-  public void setDistTraveled(double distTraveled);
+  void setDistTraveled(double distTraveled);
 
-  public void clearDistTraveled();
+  void clearDistTraveled();
 
-  public double getLat();
+  double getLat();
 
-  public void setLat(double lat);
+  void setLat(double lat);
 
-  public double getLon();
+  double getLon();
 
-  public void setLon(double lon);
+  void setLon(double lon);
 }

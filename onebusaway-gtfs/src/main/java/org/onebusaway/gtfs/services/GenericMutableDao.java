@@ -18,19 +18,19 @@ import org.onebusaway.gtfs.model.IdentityBean;
 
 public interface GenericMutableDao extends GenericDao {
 
-  public void open();
+  void open();
 
-  public void saveEntity(Object entity);
+  void saveEntity(Object entity);
 
-  public void updateEntity(Object entity);
+  void updateEntity(Object entity);
 
-  public void saveOrUpdateEntity(Object entity);
+  void saveOrUpdateEntity(Object entity);
 
-  public <K extends Serializable, T extends IdentityBean<K>> void removeEntity(T entity);
+  <K extends Serializable, T extends IdentityBean<K>> void removeEntity(T entity);
 
-  public <T> void clearAllEntitiesForType(Class<T> type);
+  <T> void clearAllEntitiesForType(Class<T> type);
 
-  public void flush();
+  void flush();
 
-  public void close();
+  void close();
 }

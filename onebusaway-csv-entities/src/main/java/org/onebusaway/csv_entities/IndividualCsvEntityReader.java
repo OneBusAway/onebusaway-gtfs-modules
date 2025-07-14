@@ -76,9 +76,9 @@ public class IndividualCsvEntityReader implements CSVListener {
     _trimValues = trimValues;
   }
 
-  public void handleLine(List<String> line) throws Exception {
+  public void handleLine(List<String> line) {
 
-    if (line.size() == 0) return;
+    if (line.isEmpty()) return;
 
     if (_trimValues) {
       for (int i = 0; i < line.size(); i++) line.set(i, line.get(i).trim());

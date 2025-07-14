@@ -110,7 +110,7 @@ public class CSVLibrary {
     r.close();
   }
 
-  public final List<String> parse(String line) {
+  public static List<String> parse(String line) {
     return DelimitedTextParser.parse(line);
   }
 }

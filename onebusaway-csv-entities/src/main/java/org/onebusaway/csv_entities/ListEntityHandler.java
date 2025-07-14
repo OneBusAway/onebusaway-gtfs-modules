@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ListEntityHandler<T> implements EntityHandler, Iterable<T> {
 
-  private List<T> _values = new ArrayList<T>();
+  private final List<T> _values = new ArrayList<T>();
 
   public List<T> getValues() {
     return _values;

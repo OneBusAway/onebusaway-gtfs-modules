@@ -15,7 +15,7 @@ package org.onebusaway.csv_entities.schema;
 
 public interface BeanWrapper {
 
-  public Class<?> getPropertyType(String propertyName);
+  Class<?> getPropertyType(String propertyName);
 
   /**
    * Get the current value of the specified property.
@@ -40,5 +40,5 @@ public interface BeanWrapper {
    */
   void setPropertyValue(String propertyName, Object value);
 
-  public <T> T getWrappedInstance(Class<T> type);
+  <T> T getWrappedInstance(Class<T> type);
 }

@@ -19,10 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.ZipFile;
 import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.csv_entities.exceptions.MissingRequiredEntityException;
@@ -32,25 +31,21 @@ import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
 
 public class CsvEntityReader {
 
-  public static final String KEY_CONTEXT = CsvEntityReader.class.getName() + ".context";
-
   private EntitySchemaFactory _entitySchemaFactory = new DefaultEntitySchemaFactory();
 
-  private EntityHandlerImpl _handler = new EntityHandlerImpl();
+  private final EntityHandlerImpl _handler = new EntityHandlerImpl();
 
-  private CsvEntityContextImpl _context = new CsvEntityContextImpl();
+  private final CsvEntityContextImpl _context = new CsvEntityContextImpl();
 
   private CsvInputSource _source;
 
   private TokenizerStrategy _tokenizerStrategy = new CsvTokenizerStrategy();
 
-  private List<EntityHandler> _handlers = new ArrayList<EntityHandler>();
+  private List<EntityHandler> _handlers = new ArrayList<>();
 
   private boolean _trimValues = false;
 
   private boolean _internStrings = false;
-
-  private Map<String, String> _stringTable = new HashMap<String, String>();
 
   /**
    * @return the {@link EntitySchemaFactory} that will be used for introspection of bean classes
@@ -107,7 +102,7 @@ public class CsvEntityReader {
 
   public void readEntities(Class<?> entityClass, InputStream is)
       throws IOException, CsvEntityIOException {
-    readEntities(entityClass, new InputStreamReader(is, "UTF-8"));
+    readEntities(entityClass, new InputStreamReader(is, StandardCharsets.UTF_8));
   }
 
   public void readEntities(Class<?> entityClass, Reader reader)
@@ -138,7 +133,9 @@ public class CsvEntityReader {
         // TODO: This is a hack of sorts to deal with a malformed data file...
         if (line.length() == 1 && line.charAt(0) == 26) continue;
         List<String> values = _tokenizerStrategy.parse(line);
-        if (_internStrings) internStrings(values);
+        if (_internStrings) {
+          values.replaceAll(String::intern);
+        }
         entityLoader.handleLine(values);
         lineNumber++;
       }
@@ -185,18 +182,6 @@ public class CsvEntityReader {
 
   public void close() throws IOException {
     if (_source != null) _source.close();
-  }
-
-  private void internStrings(List<String> values) {
-    for (int i = 0; i < values.size(); i++) {
-      String value = values.get(i);
-      String existing = _stringTable.get(value);
-      if (existing != null) {
-        values.set(i, existing);
-      } else {
-        _stringTable.put(value, value);
-      }
-    }
   }
 
   private class EntityHandlerImpl implements EntityHandler {

@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class CsvEntityContextImpl implements CsvEntityContext {
 
-  private Map<Object, Object> _params = new HashMap<Object, Object>();
+  private final Map<Object, Object> _params = new HashMap<Object, Object>();
 
   public Object get(Object key) {
     return _params.get(key);

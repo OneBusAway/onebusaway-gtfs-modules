@@ -17,19 +17,9 @@ import java.util.List;
 
 public class CsvTokenizerStrategy implements TokenizerStrategy {
 
-  private CSVLibrary _csv = new CSVLibrary();
-
-  public CSVLibrary getCsvParser() {
-    return _csv;
-  }
-
-  public void setCsvParser(CSVLibrary csv) {
-    _csv = csv;
-  }
-
   @Override
   public List<String> parse(String line) {
-    return _csv.parse(line);
+    return CSVLibrary.parse(line);
   }
 
   @Override

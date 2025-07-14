@@ -76,9 +76,6 @@ public final class StopTime extends IdentityBean<Integer>
   @CsvField(optional = true)
   private String stopHeadsign;
 
-  @CsvField(optional = true)
-  private String routeShortName;
-
   @CsvField(optional = true, defaultValue = "0")
   private int pickupType;
 
@@ -146,7 +143,6 @@ public final class StopTime extends IdentityBean<Integer>
     this.endPickupDropOffWindow = st.endPickupDropOffWindow;
     this.continuousPickup = st.continuousPickup;
     this.continuousDropOff = st.continuousDropOff;
-    this.routeShortName = st.routeShortName;
     this.shapeDistTraveled = st.shapeDistTraveled;
     this.stop = st.stop;
     this.location = st.location;
@@ -402,21 +398,6 @@ public final class StopTime extends IdentityBean<Integer>
       return;
     }
     this.stopHeadsign = headSign;
-  }
-
-  public String getRouteShortName() {
-    if (proxy != null) {
-      return proxy.getRouteShortName();
-    }
-    return routeShortName;
-  }
-
-  public void setRouteShortName(String routeShortName) {
-    if (proxy != null) {
-      proxy.setRouteShortName(routeShortName);
-      return;
-    }
-    this.routeShortName = routeShortName;
   }
 
   public int getPickupType() {

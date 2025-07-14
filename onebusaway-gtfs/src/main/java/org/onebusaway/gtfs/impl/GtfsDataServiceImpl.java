@@ -550,10 +550,6 @@ public class GtfsDataServiceImpl implements GtfsDataService {
     return getEntityForId(FacilityPropertyDefinition.class, id);
   }
 
-  public DirectionNameException getDirectionNameExceptionForId(AgencyAndId id) {
-    return getEntityForId(DirectionNameException.class, id);
-  }
-
   public Collection<Facility> getAllFacilities() {
     return getAllEntitiesForType(Facility.class);
   }
@@ -564,10 +560,6 @@ public class GtfsDataServiceImpl implements GtfsDataService {
 
   public Collection<FacilityPropertyDefinition> getAllFacilityPropertyDefinitions() {
     return getAllEntitiesForType(FacilityPropertyDefinition.class);
-  }
-
-  public Collection<DirectionNameException> getAllDirectionNameExceptions() {
-    return getAllEntitiesForType(DirectionNameException.class);
   }
 
   public Collection<DirectionEntry> getAllDirectionEntries() {

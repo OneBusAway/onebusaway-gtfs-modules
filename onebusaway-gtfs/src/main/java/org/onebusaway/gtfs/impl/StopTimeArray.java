@@ -32,10 +32,6 @@ public class StopTimeArray extends AbstractList<StopTime> {
 
   private StopLocation[] locationGroups = new StopLocation[0];
 
-  private Area[] startServiceAreas = new Area[0];
-
-  private Area[] endServiceAreas = new Area[0];
-
   private int[] arrivalTimes = new int[0];
 
   private int[] departureTimes = new int[0];
@@ -138,8 +134,6 @@ public class StopTimeArray extends AbstractList<StopTime> {
 
   private void setLength(int newLength) {
     this.trips = Arrays.copyOf(this.trips, newLength);
-    this.startServiceAreas = Arrays.copyOf(this.startServiceAreas, newLength);
-    this.endServiceAreas = Arrays.copyOf(this.endServiceAreas, newLength);
     this.stops = Arrays.copyOf(this.stops, newLength);
     this.locationGroups = Arrays.copyOf(this.locationGroups, newLength);
     this.locations = Arrays.copyOf(this.locations, newLength);

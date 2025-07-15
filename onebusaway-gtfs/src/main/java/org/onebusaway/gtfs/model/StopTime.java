@@ -74,13 +74,7 @@ public final class StopTime extends IdentityBean<Integer>
   private int stopSequence;
 
   @CsvField(optional = true)
-  private Integer toStopSequence;
-
-  @CsvField(optional = true)
   private String stopHeadsign;
-
-  @CsvField(optional = true)
-  private String routeShortName;
 
   @CsvField(optional = true, defaultValue = "0")
   private int pickupType;
@@ -149,14 +143,12 @@ public final class StopTime extends IdentityBean<Integer>
     this.endPickupDropOffWindow = st.endPickupDropOffWindow;
     this.continuousPickup = st.continuousPickup;
     this.continuousDropOff = st.continuousDropOff;
-    this.routeShortName = st.routeShortName;
     this.shapeDistTraveled = st.shapeDistTraveled;
     this.stop = st.stop;
     this.location = st.location;
     this.locationGroup = st.locationGroup;
     this.stopHeadsign = st.stopHeadsign;
     this.stopSequence = st.stopSequence;
-    this.toStopSequence = st.toStopSequence;
     this.timepoint = st.timepoint;
     this.trip = st.trip;
     this.pickupBookingRule = st.pickupBookingRule;
@@ -210,14 +202,6 @@ public final class StopTime extends IdentityBean<Integer>
       return;
     }
     this.stopSequence = stopSequence;
-  }
-
-  public Integer getToStopSequence() {
-    return toStopSequence;
-  }
-
-  public void setToStopSequence(Integer toStopSequence) {
-    this.toStopSequence = toStopSequence;
   }
 
   @Override
@@ -414,21 +398,6 @@ public final class StopTime extends IdentityBean<Integer>
       return;
     }
     this.stopHeadsign = headSign;
-  }
-
-  public String getRouteShortName() {
-    if (proxy != null) {
-      return proxy.getRouteShortName();
-    }
-    return routeShortName;
-  }
-
-  public void setRouteShortName(String routeShortName) {
-    if (proxy != null) {
-      proxy.setRouteShortName(routeShortName);
-      return;
-    }
-    this.routeShortName = routeShortName;
   }
 
   public int getPickupType() {

@@ -215,7 +215,6 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals(1, stopTime.getPickupType());
     assertEquals(2, stopTime.getDropOffType());
     assertEquals(23.1, stopTime.getShapeDistTraveled(), 0.0);
-    assertEquals("10X", stopTime.getRouteShortName());
     assertEquals(1, stopTime.getTimepoint());
 
     ServiceCalendar calendar = dao.getCalendarForServiceId(new AgencyAndId("1", "WEEK"));
@@ -680,7 +679,6 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals(20 * 60, stopTimeA.getDepartureTime());
     assertEquals(0, stopTimeA.getDropOffType());
     assertEquals(0, stopTimeA.getPickupType());
-    assertNull(stopTimeA.getRouteShortName());
     assertEquals(0, stopTimeA.getShapeDistTraveled(), 0.0);
     assertEquals(new AgencyAndId(agencyId, "A"), stopTimeA.getStop().getId());
     assertNull(stopTimeA.getStopHeadsign());
@@ -692,7 +690,6 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertFalse(stopTimeB.isDepartureTimeSet());
     assertEquals(2, stopTimeB.getDropOffType());
     assertEquals(3, stopTimeB.getPickupType());
-    assertNull(stopTimeB.getRouteShortName());
     assertFalse(stopTimeB.isShapeDistTraveledSet());
     assertEquals(new AgencyAndId(agencyId, "B"), stopTimeB.getStop().getId());
     assertNull(stopTimeB.getStopHeadsign());

@@ -172,11 +172,6 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
-  public Collection<WrongWayConcurrency> getAllWrongWayConcurrencies() {
-    return _ops.find("FROM WrongWayConcurrency");
-  }
-
-  @Override
   public Agency getAgencyForId(String id) {
     return (Agency) _ops.get(Agency.class, id);
   }

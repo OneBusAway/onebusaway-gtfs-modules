@@ -58,20 +58,12 @@ public final class Route extends IdentityBean<AgencyAndId> {
   @CsvField(name = "network_id", optional = true)
   private String networkId;
 
-  @CsvField(name = "eligibility_restricted", optional = true, defaultValue = "-999")
-  private int eligibilityRestricted = MISSING_VALUE;
-
   /** 0 = unknown / unspecified, 1 = bikes allowed, 2 = bikes NOT allowed */
   @CsvField(name = "bikes_allowed", optional = true, defaultValue = "0")
   private int bikesAllowed = 0;
 
   @CsvField(optional = true)
   private int sortOrder = MISSING_VALUE;
-
-  // Custom extension representing (bus) route accepts regional fare card.
-  // That is it has a vending machine on board.
-  @CsvField(optional = true, name = "regional_fare_card", defaultValue = "0")
-  private int regionalFareCardAccepted;
 
   public Route() {}
 
@@ -87,8 +79,6 @@ public final class Route extends IdentityBean<AgencyAndId> {
     this.textColor = r.textColor;
     this.bikesAllowed = r.bikesAllowed;
     this.sortOrder = r.sortOrder;
-    this.eligibilityRestricted = r.eligibilityRestricted;
-    this.regionalFareCardAccepted = r.regionalFareCardAccepted;
   }
 
   public AgencyAndId getId() {
@@ -189,32 +179,12 @@ public final class Route extends IdentityBean<AgencyAndId> {
     this.sortOrder = sortOrder;
   }
 
-  public boolean hasEligibilityRestricted() {
-    return eligibilityRestricted != MISSING_VALUE;
-  }
-
-  public int getEligibilityRestricted() {
-    return eligibilityRestricted;
-  }
-
-  public void setEligibilityRestricted(int eligibilityRestricted) {
-    this.eligibilityRestricted = eligibilityRestricted;
-  }
-
   public String getNetworkId() {
     return networkId;
   }
 
   public void setNetworkId(String networkId) {
     this.networkId = networkId;
-  }
-
-  public int getRegionalFareCardAccepted() {
-    return regionalFareCardAccepted;
-  }
-
-  public void setRegionalFareCardAccepted(int regionalFareCardAccepted) {
-    this.regionalFareCardAccepted = regionalFareCardAccepted;
   }
 
   @Override

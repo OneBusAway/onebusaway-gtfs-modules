@@ -46,8 +46,6 @@ public class StopTimeArray extends AbstractList<StopTime> {
 
   private String[] stopHeadsigns = new String[0];
 
-  private String[] routeShortNames = new String[0];
-
   private int[] pickupTypes = new int[0];
 
   private int[] dropOffTypes = new int[0];
@@ -65,8 +63,6 @@ public class StopTimeArray extends AbstractList<StopTime> {
   private double[] meanFactors = new double[0];
 
   private double[] safeFactors = new double[0];
-
-  private String[] freeRunningFlags = new String[0];
 
   public void trimToSize() {
     setLength(size);
@@ -90,7 +86,6 @@ public class StopTimeArray extends AbstractList<StopTime> {
     timepoints[index] = stopTime.getTimepoint();
     stopSequences[index] = stopTime.getStopSequence();
     stopHeadsigns[index] = stopTime.getStopHeadsign();
-    routeShortNames[index] = stopTime.getRouteShortName();
     pickupTypes[index] = stopTime.getPickupType();
     dropOffTypes[index] = stopTime.getDropOffType();
     shapeDistTraveled[index] = stopTime.getShapeDistTraveled();
@@ -153,7 +148,6 @@ public class StopTimeArray extends AbstractList<StopTime> {
     this.timepoints = Arrays.copyOf(this.timepoints, newLength);
     this.stopSequences = Arrays.copyOf(this.stopSequences, newLength);
     this.stopHeadsigns = Arrays.copyOf(this.stopHeadsigns, newLength);
-    this.routeShortNames = Arrays.copyOf(this.routeShortNames, newLength);
     this.pickupTypes = Arrays.copyOf(this.pickupTypes, newLength);
     this.dropOffTypes = Arrays.copyOf(this.dropOffTypes, newLength);
     this.shapeDistTraveled = Arrays.copyOf(this.shapeDistTraveled, newLength);
@@ -163,7 +157,6 @@ public class StopTimeArray extends AbstractList<StopTime> {
     this.safeFactors = Arrays.copyOf(this.safeFactors, newLength);
     this.meanOffsets = Arrays.copyOf(this.meanOffsets, newLength);
     this.meanFactors = Arrays.copyOf(this.meanFactors, newLength);
-    this.freeRunningFlags = Arrays.copyOf(this.freeRunningFlags, newLength);
   }
 
   private class StopTimeIterator implements Iterator<StopTime> {
@@ -328,16 +321,6 @@ public class StopTimeArray extends AbstractList<StopTime> {
     @Override
     public void setStopHeadsign(String headSign) {
       stopHeadsigns[index] = headSign;
-    }
-
-    @Override
-    public String getRouteShortName() {
-      return routeShortNames[index];
-    }
-
-    @Override
-    public void setRouteShortName(String routeShortName) {
-      routeShortNames[index] = routeShortName;
     }
 
     @Override

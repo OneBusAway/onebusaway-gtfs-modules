@@ -71,10 +71,6 @@ public interface StopTimeProxy {
 
   void setStopHeadsign(String headSign);
 
-  String getRouteShortName();
-
-  void setRouteShortName(String routeShortName);
-
   int getPickupType();
 
   void setPickupType(int pickupType);

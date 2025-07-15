@@ -20,13 +20,13 @@ import java.io.InputStream;
 
 public class FileCsvInputSource implements CsvInputSource {
 
-  private File _sourceDirectory;
+  private final File _sourceDirectory;
 
   public FileCsvInputSource(File sourceDirectory) {
     _sourceDirectory = sourceDirectory;
   }
 
-  public boolean hasResource(String name) throws IOException {
+  public boolean hasResource(String name) {
     File file = new File(_sourceDirectory, name);
     return file.exists();
   }

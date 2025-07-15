@@ -30,13 +30,13 @@ import org.slf4j.LoggerFactory;
 
 public class IndividualCsvEntityReader implements CSVListener {
 
-  private static Logger _log = LoggerFactory.getLogger(IndividualCsvEntityReader.class);
+  private static final Logger LOG = LoggerFactory.getLogger(IndividualCsvEntityReader.class);
 
-  private EntityHandler _handler;
+  private final EntityHandler _handler;
 
-  private CsvEntityContext _context;
+  private final CsvEntityContext _context;
 
-  private EntitySchema _schema;
+  private final EntitySchema _schema;
 
   private boolean _initialized = false;
 
@@ -76,7 +76,7 @@ public class IndividualCsvEntityReader implements CSVListener {
     _trimValues = trimValues;
   }
 
-  public void handleLine(List<String> line) throws Exception {
+  public void handleLine(List<String> line) {
 
     if (line.size() == 0) return;
 
@@ -101,7 +101,7 @@ public class IndividualCsvEntityReader implements CSVListener {
   private void readEntity(List<String> line) {
 
     if (line.size() != _fields.size()) {
-      _log.warn(
+      LOG.warn(
           "expected and actual number of csv fields differ: type="
               + _schema.getEntityClass().getName()
               + " line # "

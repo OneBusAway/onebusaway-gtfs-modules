@@ -221,8 +221,6 @@ public interface GtfsDao extends GenericDao {
 
   Collection<DirectionEntry> getAllDirectionEntries();
 
-  Collection<WrongWayConcurrency> getAllWrongWayConcurrencies();
-
   default boolean hasFaresV1() {
     return Stream.of(getAllFareAttributes(), getAllFareRules())
         .flatMap(Collection::stream)

@@ -27,7 +27,7 @@ public class LegacyParseShapePrintMemory {
       System.out.println("Read file");
       while (reader != null) {
         System.out.println("Sleeping.. " + reader);
-        Thread.sleep(10000);
+        Thread.sleep(100000);
       }
 
     } catch (Exception e) {

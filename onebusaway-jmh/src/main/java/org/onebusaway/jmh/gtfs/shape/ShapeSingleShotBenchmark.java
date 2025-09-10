@@ -41,49 +41,39 @@ public class ShapeSingleShotBenchmark {
   }
 
   @Benchmark
-  public GtfsRelationalDao testParse(ThreadState state) throws Exception {
+  public Object testParse(ThreadState state) throws Exception {
     return processFeed(new File(directory), "abcd", false, state.reader, ShapePoint.class);
   }
 
   @Benchmark
-  public GtfsRelationalDao testParseStringInterning(ThreadState state) throws Exception {
+  public Object testParseStringInterning(ThreadState state) throws Exception {
     return processFeed(new File(directory), "abcd", true, state.reader, ShapePoint.class);
   }
 
   @Benchmark
-  public GtfsRelationalDao testParseLegacy(ThreadState state) throws Exception {
+  public Object testParseLegacy(ThreadState state) throws Exception {
     return processFeed(new File(directory), "abcd", false, state.reader, LegacyShapePoint.class);
   }
 
   @Benchmark
-  public GtfsRelationalDao testParseLegacyStringInterning(ThreadState state) throws Exception {
+  public Object testParseLegacyStringInterning(ThreadState state) throws Exception {
     return processFeed(new File(directory), "abcd", true, state.reader, LegacyShapePoint.class);
   }
 
-  public static GtfsRelationalDao processFeed(
+  public static GtfsReader processFeed(
       File resourcePath, String agencyId, boolean internStrings, GtfsReader reader, Class<?> cls)
       throws Exception {
-
-    GtfsRelationalDaoImpl entityStore = new GtfsRelationalDaoImpl();
-    entityStore.setGenerateIds(true);
 
     reader.setDefaultAgencyId(agencyId);
     reader.setInternStrings(internStrings);
 
     reader.setInputLocation(resourcePath);
 
-    try {
-      CsvInputSource inputSource = reader.getInputSource();
-      entityStore.open();
+    CsvInputSource inputSource = reader.getInputSource();
 
-      reader.readEntities(cls, inputSource);
+    reader.readEntities(cls, inputSource);
 
-      entityStore.close();
-
-      return entityStore;
-    } finally {
-      entityStore.clearAllCaches();
-    }
+    return reader;
   }
 
   public static void main(String[] args) throws RunnerException {

@@ -3,10 +3,10 @@ package org.onebusaway.jmh.gtfs.shape;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 import org.onebusaway.csv_entities.CsvInputSource;
-import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
+import org.onebusaway.gtfs.impl.GtfsDaoImpl;
 import org.onebusaway.gtfs.model.ShapePoint;
 import org.onebusaway.gtfs.serialization.GtfsReader;
-import org.onebusaway.gtfs.services.GtfsRelationalDao;
+import org.onebusaway.gtfs.services.GenericMutableDao;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -37,30 +37,42 @@ public class ShapeSingleShotBenchmark {
 
     public ThreadState() {
       reader.setOverwriteDuplicates(true);
+
+      GtfsDaoImpl entityStore = (GtfsDaoImpl) reader.getEntityStore();
+      //entityStore.setPackShapePoints(true);
+      //entityStore.setPackStopTimes(true);
     }
   }
 
   @Benchmark
   public Object testParse(ThreadState state) throws Exception {
-    return processFeed(new File(directory), "abcd", false, state.reader, ShapePoint.class);
+    return processWithGtfsReader(new File(directory), "abcd", false, state.reader, ShapePoint.class);
   }
 
   @Benchmark
   public Object testParseStringInterning(ThreadState state) throws Exception {
-    return processFeed(new File(directory), "abcd", true, state.reader, ShapePoint.class);
+    return processWithGtfsReader(new File(directory), "abcd", true, state.reader, ShapePoint.class);
   }
 
   @Benchmark
   public Object testParseLegacy(ThreadState state) throws Exception {
-    return processFeed(new File(directory), "abcd", false, state.reader, LegacyShapePoint.class);
+    return processWithGtfsReader(new File(directory), "abcd", false, state.reader, LegacyShapePoint.class);
   }
 
   @Benchmark
   public Object testParseLegacyStringInterning(ThreadState state) throws Exception {
-    return processFeed(new File(directory), "abcd", true, state.reader, LegacyShapePoint.class);
+    return processWithGtfsReader(new File(directory), "abcd", true, state.reader, LegacyShapePoint.class);
   }
 
-  public static GtfsReader processFeed(
+  public static GtfsReader processWithEntityStore(
+          File resourcePath, String agencyId, boolean internStrings, GenericMutableDao entityStore, Class<?> cls)
+          throws Exception {
+    GtfsReader reader = new GtfsReader();
+    reader.setEntityStore(entityStore);
+    return processWithGtfsReader(resourcePath, agencyId, internStrings, reader, cls);
+  }
+
+    public static GtfsReader processWithGtfsReader(
       File resourcePath, String agencyId, boolean internStrings, GtfsReader reader, Class<?> cls)
       throws Exception {
 
@@ -71,7 +83,13 @@ public class ShapeSingleShotBenchmark {
 
     CsvInputSource inputSource = reader.getInputSource();
 
-    reader.readEntities(cls, inputSource);
+    if(cls != null) {
+      reader.readEntities(cls, inputSource);
+    } else {
+      reader.run(inputSource);
+    }
+
+    inputSource.close();
 
     return reader;
   }

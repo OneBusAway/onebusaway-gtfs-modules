@@ -30,8 +30,8 @@ public final class ShapePoint extends IdentityBean<Integer> implements Comparabl
   @CsvField(ignore = true)
   private int id;
 
-  //@CsvField(mapping = InternAgencyIdFieldMappingFactory.class)
-  @CsvField(mapping = DefaultAgencyIdFieldMappingFactory.class)
+  @CsvField(mapping = InternAgencyIdFieldMappingFactory.class)
+  //@CsvField(mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId shapeId;
 
   @CsvField(name = "shape_pt_sequence")

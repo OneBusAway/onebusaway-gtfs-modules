@@ -32,32 +32,32 @@ public class AbstractParseShapePrintMemory {
     }
 
     public static GtfsRelationalDaoImpl run(boolean internStrings, Class<?> cls) throws Exception {
-    GtfsRelationalDaoImpl entityStore = new GtfsRelationalDaoImpl();
-    try {
-        entityStore.setPackShapePoints(true);
-        entityStore.setPackStopTimes(true);
+        GtfsRelationalDaoImpl entityStore = new GtfsRelationalDaoImpl();
+        try {
+            entityStore.setPackShapePoints(true);
+            entityStore.setPackStopTimes(true);
 
-        System.out.println("Read file " + cls.getSimpleName());
+            System.out.println("Read file " + cls.getSimpleName());
 
-        GtfsReader reader = ShapeSingleShotBenchmark.processWithEntityStore(
-              new File("./onebusaway-jmh/src/main/resources/entur"),
-              "abcd",
-              internStrings,
-              entityStore,
-              cls);
+            GtfsReader reader = ShapeSingleShotBenchmark.processWithEntityStore(
+                  new File("./onebusaway-jmh/src/main/resources/entur"),
+                  "abcd",
+                  internStrings,
+                  entityStore,
+                  cls);
 
-        System.out.println("Read file.");
-        System.out.println("Memory after parsing:");
+            System.out.println("Read file.");
+            System.out.println("Memory after parsing:");
 
-        System.gc();
-        MemoryPrinter.printMemoryUsage();
+            System.gc();
+            MemoryPrinter.printMemoryUsage();
 
-        entityStore.flush();
-        reader.close();
-        return entityStore;
-    } finally {
-      entityStore.close();
-    }
+            entityStore.flush();
+            reader.close();
+            return entityStore;
+        } finally {
+          entityStore.close();
+        }
   }
 
   public static void printTable(boolean intern, boolean agencyIntern) {

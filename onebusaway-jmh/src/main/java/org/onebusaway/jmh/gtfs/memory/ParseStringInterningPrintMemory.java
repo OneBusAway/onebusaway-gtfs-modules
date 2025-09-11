@@ -8,14 +8,7 @@ import org.onebusaway.jmh.util.MemoryPrinter;
 public class ParseStringInterningPrintMemory extends AbstractParsePrintMemory {
 
   public static void main(String[] args) throws Exception {
-    GtfsRelationalDaoImpl store = run(true);
-
-    System.out.println(ParseStringInterningPrintMemory.class.getName());
-    System.out.println("After cleaning up:");
-
-    System.gc();
-    MemoryPrinter.printMemoryUsage();
-
+    GtfsRelationalDaoImpl store = runPrint(true);
     System.out.println("Got " + store.getAllShapeIds().size());
   }
 }

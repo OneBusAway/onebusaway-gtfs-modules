@@ -11,16 +11,18 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.onebusaway.gtfs.model;
+package org.onebusaway.jmh.gtfs.shape;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
-import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
-import org.onebusaway.gtfs.serialization.mappings.InternAgencyIdFieldMappingFactory;
+import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.IdentityBean;
+import org.onebusaway.gtfs.model.ShapePointProxy;
 import org.onebusaway.gtfs.serialization.mappings.LatLonFieldMappingFactory;
 
 @CsvFields(filename = "shapes.txt", required = false)
-public final class ShapePoint extends IdentityBean<Integer> implements Comparable<ShapePoint> {
+public final class LegacyShapePoint extends IdentityBean<Integer>
+    implements Comparable<LegacyShapePoint> {
 
   private static final long serialVersionUID = 1L;
 
@@ -29,8 +31,7 @@ public final class ShapePoint extends IdentityBean<Integer> implements Comparabl
   @CsvField(ignore = true)
   private int id;
 
-  @CsvField(mapping = InternAgencyIdFieldMappingFactory.class)
-  //@CsvField(mapping = DefaultAgencyIdFieldMappingFactory.class)
+  @CsvField(mapping = LegacyDefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId shapeId;
 
   @CsvField(name = "shape_pt_sequence")
@@ -48,9 +49,9 @@ public final class ShapePoint extends IdentityBean<Integer> implements Comparabl
   @CsvField(ignore = true)
   private transient ShapePointProxy proxy;
 
-  public ShapePoint() {}
+  public LegacyShapePoint() {}
 
-  public ShapePoint(ShapePoint shapePoint) {
+  public LegacyShapePoint(LegacyShapePoint shapePoint) {
     this.id = shapePoint.id;
     this.shapeId = shapePoint.shapeId;
     this.sequence = shapePoint.sequence;
@@ -195,7 +196,7 @@ public final class ShapePoint extends IdentityBean<Integer> implements Comparabl
   }
 
   @Override
-  public int compareTo(ShapePoint o) {
+  public int compareTo(LegacyShapePoint o) {
     return this.getSequence() - o.getSequence();
   }
 }

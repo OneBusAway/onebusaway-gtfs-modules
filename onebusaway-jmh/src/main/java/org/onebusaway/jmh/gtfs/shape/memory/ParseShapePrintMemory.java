@@ -1,37 +1,19 @@
 package org.onebusaway.jmh.gtfs.shape.memory;
 
-import java.io.File;
+import org.onebusaway.csv_entities.schema.annotations.CsvField;
+import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.ShapePoint;
-import org.onebusaway.gtfs.serialization.GtfsReader;
-import org.onebusaway.jmh.gtfs.shape.ShapeSingleShotBenchmark;
+import org.onebusaway.gtfs.serialization.mappings.InternAgencyIdFieldMappingFactory;
+import org.onebusaway.jmh.gtfs.memory.ParsePrintMemory;
 import org.onebusaway.jmh.util.MemoryPrinter;
-import org.openjdk.jmh.runner.RunnerException;
 
-public class ParseShapePrintMemory {
+/** BEFORE RUNNING: MANUALLY SET THE NEW/OLD TRIP AND SHAPEPOINT MAPPER(S) */
+public class ParseShapePrintMemory extends AbstractParseShapePrintMemory {
 
-  public static void main(String[] args) throws RunnerException {
-    GtfsReader reader = new GtfsReader();
+  public static void main(String[] args) throws Exception {
+    System.out.println(ParseShapePrintMemory.class.getName());
+    GtfsRelationalDaoImpl store = runPrint(false, ShapePoint.class);
 
-    try {
-      System.out.println("Read file..");
-      ShapeSingleShotBenchmark.processFeed(
-          new File("./onebusaway-jmh/src/main/resources/entur"),
-          "abcd",
-          false,
-          reader,
-          ShapePoint.class);
-      System.gc();
-
-      MemoryPrinter.printMemoryUsage();
-
-      System.out.println("Read file");
-      while (reader != null) {
-        System.out.println("Sleeping.. " + reader);
-        Thread.sleep(100000);
-      }
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    System.out.println("Got " + store.getAllShapeIds().size());
   }
 }

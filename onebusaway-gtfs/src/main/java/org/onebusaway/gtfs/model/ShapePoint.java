@@ -15,6 +15,7 @@ package org.onebusaway.gtfs.model;
 
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
+import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.InternAgencyIdFieldMappingFactory;
 import org.onebusaway.gtfs.serialization.mappings.LatLonFieldMappingFactory;
 
@@ -28,7 +29,8 @@ public final class ShapePoint extends IdentityBean<Integer> implements Comparabl
   @CsvField(ignore = true)
   private int id;
 
-  @CsvField(mapping = InternAgencyIdFieldMappingFactory.class)
+  //@CsvField(mapping = InternAgencyIdFieldMappingFactory.class)
+  @CsvField(mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId shapeId;
 
   @CsvField(name = "shape_pt_sequence")

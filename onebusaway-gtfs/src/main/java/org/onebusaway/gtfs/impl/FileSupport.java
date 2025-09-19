@@ -19,7 +19,7 @@ import java.util.List;
 
 public class FileSupport {
 
-  private List<File> toDelete = new ArrayList<>();
+  private final List<File> toDelete = new ArrayList<>();
 
   public FileSupport() {}
 

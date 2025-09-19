@@ -128,10 +128,6 @@ public interface GtfsDao extends GenericDao {
 
   Collection<Route> getAllRoutes();
 
-  Collection<RouteStop> getAllRouteStops();
-
-  Collection<RouteShape> getAllRouteShapes();
-
   Route getRouteForId(AgencyAndId id);
 
   /****

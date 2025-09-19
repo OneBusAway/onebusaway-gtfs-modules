@@ -223,16 +223,6 @@ public class GtfsDataServiceImpl implements GtfsDataService {
   }
 
   @Override
-  public Collection<RouteStop> getAllRouteStops() {
-    return _dao.getAllRouteStops();
-  }
-
-  @Override
-  public Collection<RouteShape> getAllRouteShapes() {
-    return _dao.getAllRouteShapes();
-  }
-
-  @Override
   public Route getRouteForId(AgencyAndId id) {
     return _dao.getRouteForId(id);
   }

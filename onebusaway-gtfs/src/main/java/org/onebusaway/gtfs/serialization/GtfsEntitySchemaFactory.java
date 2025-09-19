@@ -38,6 +38,7 @@ public class GtfsEntitySchemaFactory {
     entityClasses.add(BookingRule.class);
     entityClasses.add(ShapePoint.class);
     entityClasses.add(Route.class);
+    entityClasses.add(RouteNetworkAssignment.class);
     entityClasses.add(Level.class);
     entityClasses.add(Stop.class);
     entityClasses.add(StopAreaElement.class);

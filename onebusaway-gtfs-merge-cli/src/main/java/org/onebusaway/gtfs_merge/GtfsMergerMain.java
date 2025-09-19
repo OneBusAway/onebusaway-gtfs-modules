@@ -105,8 +105,8 @@ public class GtfsMergerMain {
     } catch (ParseException ex) {
       System.err.println(ex.getMessage());
       printHelp();
-    } catch (Exception ex) {
-      ex.printStackTrace();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 

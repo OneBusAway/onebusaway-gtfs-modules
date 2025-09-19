@@ -1,4 +1,4 @@
-#!/bin/bash +ex
+#!/bin/bash -ex
 
 mvn clean package --no-transfer-progress -DskipTests -Dmaven.source.skip=true -Dmaven.javadoc.skip=true
 

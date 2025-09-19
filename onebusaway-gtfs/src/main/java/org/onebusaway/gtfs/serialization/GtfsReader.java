@@ -65,8 +65,6 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Area.class);
     _entityClasses.add(BookingRule.class);
     _entityClasses.add(Route.class);
-    _entityClasses.add(RouteStop.class);
-    _entityClasses.add(RouteShape.class);
     _entityClasses.add(Level.class);
     _entityClasses.add(Stop.class);
     _entityClasses.add(Location.class);

@@ -161,7 +161,7 @@
         <version>0.8.0</version>
         <extensions>true</extensions>
         <configuration>
-          <publishingServerId>central</publishingServerId>
+          <publishingServerId>oba</publishingServerId>
           <autoPublish>true</autoPublish>
           <excludeArtifacts>
             <artifact>onebusaway-jmh</artifact>

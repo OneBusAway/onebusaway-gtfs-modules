@@ -107,16 +107,6 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
-  public List<RouteStop> getAllRouteStops() {
-    return _ops.find("FROM RouteStop routeStop");
-  }
-
-  @Override
-  public List<RouteShape> getAllRouteShapes() {
-    return _ops.find("FROM RouteShape routeShape");
-  }
-
-  @Override
   public List<Stop> getAllStops() {
     return _ops.find("FROM Stop");
   }
@@ -348,11 +338,6 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
-  public List<String> getOptionalMetadataFilenames() {
-    return new ArrayList<>();
-  }
-
-  @Override
   public boolean hasMetadata(String filename) {
     return false;
   }
@@ -361,9 +346,6 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   public String getMetadata(String filename) {
     return null;
   }
-
-  @Override
-  public void addMetadata(String filename, String content) {}
 
   /****
    * {@link GtfsRelationalDao} Interface

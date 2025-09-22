@@ -22,7 +22,6 @@ import org.onebusaway.gtfs.services.GtfsMutableDao;
 
 public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
-  public static final String[] OPTIONAL_FILE_NAMES = {"modifications.txt"};
   private final StopTimeArray stopTimes = new StopTimeArray();
 
   private final ShapePointArray shapePoints = new ShapePointArray();
@@ -31,16 +30,7 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   private boolean packShapePoints = false;
 
-  private List<String> _optionalMetadataFilenames = null;
-
   private final Map<String, String> metadataByFilename = new HashMap<>();
-
-  public GtfsDaoImpl() {
-    _optionalMetadataFilenames = new ArrayList<>();
-    if (OPTIONAL_FILE_NAMES != null) {
-      Collections.addAll(_optionalMetadataFilenames, OPTIONAL_FILE_NAMES);
-    }
-  }
 
   public boolean isPackStopTimes() {
     return packStopTimes;
@@ -101,14 +91,6 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   public Collection<Route> getAllRoutes() {
     return getAllEntitiesForType(Route.class);
-  }
-
-  public Collection<RouteStop> getAllRouteStops() {
-    return getAllEntitiesForType(RouteStop.class);
-  }
-
-  public Collection<RouteShape> getAllRouteShapes() {
-    return getAllEntitiesForType(RouteShape.class);
   }
 
   public Collection<ShapePoint> getAllShapePoints() {
@@ -393,11 +375,6 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
   }
 
   @Override
-  public List<String> getOptionalMetadataFilenames() {
-    return _optionalMetadataFilenames;
-  }
-
-  @Override
   public boolean hasMetadata(String filename) {
     return metadataByFilename.containsKey(filename);
   }
@@ -405,12 +382,6 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
   @Override
   public String getMetadata(String filename) {
     return metadataByFilename.get(filename);
-  }
-
-  @Override
-  public void addMetadata(String filename, String content) {
-    metadataByFilename.put(filename, content);
-    if (!_optionalMetadataFilenames.contains(filename)) _optionalMetadataFilenames.add(filename);
   }
 
   /****

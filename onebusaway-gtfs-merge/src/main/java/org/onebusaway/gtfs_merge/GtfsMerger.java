@@ -65,8 +65,6 @@ public class GtfsMerger {
 
   private EntityMergeStrategy _feedInfoStrategy = new FeedInfoMergeStrategy();
 
-  private EntityMergeStrategy _metadataStrategy = new MetadataMergeStrategy();
-
   public void setAgencyStrategy(EntityMergeStrategy agencyStrategy) {
     _agencyStrategy = agencyStrategy;
   }
@@ -113,10 +111,6 @@ public class GtfsMerger {
 
   public void setFeedInfoStrategy(EntityMergeStrategy feedInfoStrategy) {
     _feedInfoStrategy = feedInfoStrategy;
-  }
-
-  public void setMetadataStrategy(EntityMergeStrategy metadataStrategy) {
-    _metadataStrategy = metadataStrategy;
   }
 
   public EntityMergeStrategy getEntityMergeStrategyForEntityType(Class<?> entityType) {
@@ -226,6 +220,5 @@ public class GtfsMerger {
     strategies.add(_fareAttributeStrategy);
     strategies.add(_fareRuleStrategy);
     strategies.add(_feedInfoStrategy);
-    strategies.add(_metadataStrategy);
   }
 }

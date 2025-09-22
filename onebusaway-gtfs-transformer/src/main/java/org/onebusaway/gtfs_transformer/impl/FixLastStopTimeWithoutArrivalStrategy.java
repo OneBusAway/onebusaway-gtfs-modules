@@ -36,7 +36,7 @@ public class FixLastStopTimeWithoutArrivalStrategy implements GtfsTransformStrat
     for (Trip trip : dao.getAllTrips()) {
       List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
       if (stopTimes != null && stopTimes.size() > 1) {
-        StopTime lastStopTime = stopTimes.get(stopTimes.size() - 1);
+        StopTime lastStopTime = stopTimes.getLast();
         if (!lastStopTime.isArrivalTimeSet()) {
           _log.warn(
               "Missing arrival time for trip id {} and stop id {} and stop sequence {}",

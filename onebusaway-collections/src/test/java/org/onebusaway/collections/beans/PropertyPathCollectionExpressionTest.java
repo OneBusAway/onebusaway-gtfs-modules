@@ -51,7 +51,7 @@ public class PropertyPathCollectionExpressionTest {
       List<PropertyInvocationResult> results = new ArrayList<PropertyInvocationResult>();
       expression.invokeReturningFullResult(a, results);
       assertEquals(1, results.size());
-      PropertyInvocationResult result = results.get(0);
+      PropertyInvocationResult result = results.getFirst();
       assertSame(a, result.parent);
       assertEquals("values", result.propertyName);
       assertSame(b, result.value);
@@ -63,7 +63,7 @@ public class PropertyPathCollectionExpressionTest {
       List<PropertyInvocationResult> results = new ArrayList<PropertyInvocationResult>();
       expression.invokeReturningFullResult(a, results);
       assertEquals(1, results.size());
-      PropertyInvocationResult result = results.get(0);
+      PropertyInvocationResult result = results.getFirst();
       assertSame(b, result.parent);
       assertEquals("value", result.propertyName);
       assertSame("b", result.value);

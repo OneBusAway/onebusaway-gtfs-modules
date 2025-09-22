@@ -66,7 +66,7 @@ public class DeduplicateStopsStrategy implements GtfsTransformStrategy {
       List<Stop> stops = entry.getValue();
 
       // Remove the stop with the old id
-      Stop stop = stops.get(0);
+      Stop stop = stops.getFirst();
       dao.removeEntity(stop);
 
       // Add the stop with new id

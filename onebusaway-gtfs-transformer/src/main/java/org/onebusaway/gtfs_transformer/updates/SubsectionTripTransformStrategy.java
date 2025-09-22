@@ -163,8 +163,8 @@ public class SubsectionTripTransformStrategy implements GtfsTransformStrategy {
       return;
     }
 
-    StopLocation firstStop = stopTimes.get(0).getStop();
-    StopLocation lastStop = stopTimes.get(stopTimes.size() - 1).getStop();
+    StopLocation firstStop = stopTimes.getFirst().getStop();
+    StopLocation lastStop = stopTimes.getLast().getStop();
     String id = shapeId.getId() + "-" + firstStop.getId().getId() + "-" + lastStop.getId().getId();
     AgencyAndId newShapeId = new AgencyAndId("1", id);
     trip.setShapeId(newShapeId);

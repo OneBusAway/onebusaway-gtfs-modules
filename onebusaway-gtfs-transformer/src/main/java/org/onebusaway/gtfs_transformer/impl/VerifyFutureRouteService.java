@@ -235,7 +235,7 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
         routeIds = list;
         return;
       }
-      routeIds.add(list.get(0));
+      routeIds.add(list.getFirst());
     }
 
     public Collection<String> returnRouteIds() {

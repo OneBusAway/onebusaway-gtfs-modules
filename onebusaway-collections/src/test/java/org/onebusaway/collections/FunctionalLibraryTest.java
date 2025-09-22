@@ -34,11 +34,11 @@ public class FunctionalLibraryTest {
 
     List<Dummy> result = FunctionalLibrary.filter(all, "name", "a");
     assertEquals(1, result.size());
-    assertSame(a, result.get(0));
+    assertSame(a, result.getFirst());
 
     result = FunctionalLibrary.filter(all, "name", "b");
     assertEquals(2, result.size());
-    assertSame(b, result.get(0));
+    assertSame(b, result.getFirst());
     assertSame(b2, result.get(1));
 
     result = FunctionalLibrary.filter(all, "name", "f");

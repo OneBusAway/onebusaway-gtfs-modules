@@ -112,16 +112,12 @@ public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
    * @return
    */
   public int convertMTAccessibilityToGTFS(int accessibilityQualifier) {
-    switch (accessibilityQualifier) {
-      case ADA_NOT_ACCESSIBLE:
-        return GTFS_WHEELCHAIR_NOT_ACCESSIBLE;
-      case ADA_FULLY_ACCESSIBLE:
-        return GTFS_WHEELCHAIR_ACCESSIBLE;
-      case ADA_PARTIALLY_ACCESSIBLE:
-        return GTFS_WHEELCHAIR_EXPERIMENTAL_PARTIALLY_ACCESSIBLE;
-      default:
-        return GTFS_WHEELCHAIR_UNKNOWN;
-    }
+    return switch (accessibilityQualifier) {
+      case ADA_NOT_ACCESSIBLE -> GTFS_WHEELCHAIR_NOT_ACCESSIBLE;
+      case ADA_FULLY_ACCESSIBLE -> GTFS_WHEELCHAIR_ACCESSIBLE;
+      case ADA_PARTIALLY_ACCESSIBLE -> GTFS_WHEELCHAIR_EXPERIMENTAL_PARTIALLY_ACCESSIBLE;
+      default -> GTFS_WHEELCHAIR_UNKNOWN;
+    };
   }
 
   private List<MTAStation> getStations() {

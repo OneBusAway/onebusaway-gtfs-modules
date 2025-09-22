@@ -35,6 +35,6 @@ public final class FunctionalLibrary {
   public static <T> T filterFirst(
       Iterable<T> elements, String propertyPathExpression, Object value) {
     List<T> matches = filter(elements, propertyPathExpression, value);
-    return matches.isEmpty() ? null : matches.get(0);
+    return matches.isEmpty() ? null : matches.getFirst();
   }
 }

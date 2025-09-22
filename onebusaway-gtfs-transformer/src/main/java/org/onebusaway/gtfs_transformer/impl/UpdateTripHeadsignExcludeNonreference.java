@@ -53,10 +53,10 @@ public class UpdateTripHeadsignExcludeNonreference implements GtfsTransformStrat
     for (Trip trip : dao.getAllTrips()) {
       List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
       if (stopTimes != null && stopTimes.size() > 0) {
-        StopLocation lastStop = stopTimes.get(stopTimes.size() - 1).getStop();
+        StopLocation lastStop = stopTimes.getLast().getStop();
         Stop referenceStop = reference.getStopForId(lastStop.getId());
         if (trip.getTripHeadsign() == null || referenceStop != null) {
-          String tripHeadSign = stopTimes.get(stopTimes.size() - 1).getStop().getName();
+          String tripHeadSign = stopTimes.getLast().getStop().getName();
           if (tripHeadSign != null) {
             trip.setTripHeadsign(tripHeadSign);
             update++;

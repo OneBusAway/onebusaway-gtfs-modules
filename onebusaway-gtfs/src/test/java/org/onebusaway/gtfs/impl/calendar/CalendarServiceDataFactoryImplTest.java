@@ -60,10 +60,10 @@ public class CalendarServiceDataFactoryImplTest {
     List<ServiceDate> serviceDates = data.getServiceDatesForServiceId(serviceId);
     assertEquals(239, serviceDates.size());
 
-    assertEquals(new ServiceDate(2008, 10, 27), serviceDates.get(0));
+    assertEquals(new ServiceDate(2008, 10, 27), serviceDates.getFirst());
     assertEquals(new ServiceDate(2008, 10, 28), serviceDates.get(1));
     assertEquals(new ServiceDate(2009, 9, 24), serviceDates.get(serviceDates.size() - 2));
-    assertEquals(new ServiceDate(2009, 9, 25), serviceDates.get(serviceDates.size() - 1));
+    assertEquals(new ServiceDate(2009, 9, 25), serviceDates.getLast());
 
     serviceIds = data.getServiceIdsForDate(new ServiceDate(2008, 01, 02));
     assertEquals(1, serviceIds.size());
@@ -84,11 +84,11 @@ public class CalendarServiceDataFactoryImplTest {
     List<Date> dates =
         data.getDatesForLocalizedServiceId(
             new LocalizedServiceId(new AgencyAndId("26", "23"), tzExpected));
-    assertEquals(DateSupport.date("2008-10-27 00:00 Pacific Daylight Time"), dates.get(0));
+    assertEquals(DateSupport.date("2008-10-27 00:00 Pacific Daylight Time"), dates.getFirst());
     assertEquals(DateSupport.date("2008-10-28 00:00 Pacific Daylight Time"), dates.get(1));
     assertEquals(
         DateSupport.date("2009-09-24 00:00 Pacific Daylight Time"), dates.get(dates.size() - 2));
     assertEquals(
-        DateSupport.date("2009-09-25 00:00 Pacific Daylight Time"), dates.get(dates.size() - 1));
+        DateSupport.date("2009-09-25 00:00 Pacific Daylight Time"), dates.getLast());
   }
 }

@@ -33,7 +33,7 @@ class CSVLibraryTest {
   void testParseLetters() {
     List<String> tokens = _csv.parse("a,b,c");
     assertEquals(3, tokens.size());
-    assertEquals("a", tokens.get(0));
+    assertEquals("a", tokens.getFirst());
     assertEquals("b", tokens.get(1));
     assertEquals("c", tokens.get(2));
   }
@@ -42,7 +42,7 @@ class CSVLibraryTest {
   void testParseQuotedLettersWithComma() {
     List<String> tokens = _csv.parse("a,\"b b\",\"c,c\"");
     assertEquals(3, tokens.size());
-    assertEquals("a", tokens.get(0));
+    assertEquals("a", tokens.getFirst());
     assertEquals("b b", tokens.get(1));
     assertEquals("c,c", tokens.get(2));
   }
@@ -51,7 +51,7 @@ class CSVLibraryTest {
   void testParseQuotedLettersWithEscapedDoubleQuote() {
     List<String> tokens = _csv.parse("b\"b");
     assertEquals(1, tokens.size());
-    assertEquals("b\"b", tokens.get(0));
+    assertEquals("b\"b", tokens.getFirst());
   }
 
   @Test
@@ -75,40 +75,40 @@ class CSVLibraryTest {
 
     List<String> tokens = _csv.parse("1997,Ford,E350");
     assertEquals(3, tokens.size());
-    assertEquals("1997", tokens.get(0));
+    assertEquals("1997", tokens.getFirst());
     assertEquals("Ford", tokens.get(1));
     assertEquals("E350", tokens.get(2));
 
     tokens = _csv.parse("1997,   Ford   , E350");
     assertEquals(3, tokens.size());
-    assertEquals("1997", tokens.get(0));
+    assertEquals("1997", tokens.getFirst());
     assertEquals("   Ford   ", tokens.get(1));
     assertEquals(" E350", tokens.get(2));
 
     tokens = _csv.parse("1997,Ford,E350,\"Super, luxurious truck\"");
     assertEquals(4, tokens.size());
-    assertEquals("1997", tokens.get(0));
+    assertEquals("1997", tokens.getFirst());
     assertEquals("Ford", tokens.get(1));
     assertEquals("E350", tokens.get(2));
     assertEquals("Super, luxurious truck", tokens.get(3));
 
     tokens = _csv.parse("1997,Ford,E350,\"Super \"\"luxurious\"\" truck\"");
     assertEquals(4, tokens.size());
-    assertEquals("1997", tokens.get(0));
+    assertEquals("1997", tokens.getFirst());
     assertEquals("Ford", tokens.get(1));
     assertEquals("E350", tokens.get(2));
     assertEquals("Super \"luxurious\" truck", tokens.get(3));
 
     tokens = _csv.parse("1997,Ford,E350,\"  Super luxurious truck    \"");
     assertEquals(4, tokens.size());
-    assertEquals("1997", tokens.get(0));
+    assertEquals("1997", tokens.getFirst());
     assertEquals("Ford", tokens.get(1));
     assertEquals("E350", tokens.get(2));
     assertEquals("  Super luxurious truck    ", tokens.get(3));
 
     tokens = _csv.parse("\"1997\",\"Ford\",\"E350\"");
     assertEquals(3, tokens.size());
-    assertEquals("1997", tokens.get(0));
+    assertEquals("1997", tokens.getFirst());
     assertEquals("Ford", tokens.get(1));
     assertEquals("E350", tokens.get(2));
   }
@@ -116,17 +116,17 @@ class CSVLibraryTest {
   @Test
   void testParseWhitespace() {
     List<String> tokens = _csv.parse(" \"g\" ");
-    assertEquals(" \"g\" ", tokens.get(0));
+    assertEquals(" \"g\" ", tokens.getFirst());
 
     tokens = _csv.parse(" \" h \" ");
-    assertEquals(" \" h \" ", tokens.get(0));
+    assertEquals(" \" h \" ", tokens.getFirst());
 
     tokens = _csv.parse(" \" \"\" i \"\" \" ");
-    assertEquals(" \" \"\" i \"\" \" ", tokens.get(0));
+    assertEquals(" \" \"\" i \"\" \" ", tokens.getFirst());
 
     tokens = _csv.parse(" \"a,b\",c");
     assertEquals(3, tokens.size());
-    assertEquals(" \"a", tokens.get(0));
+    assertEquals(" \"a", tokens.getFirst());
     assertEquals("b\"", tokens.get(1));
     assertEquals("c", tokens.get(2));
   }
@@ -135,21 +135,21 @@ class CSVLibraryTest {
   void testParseEmptyString() {
     List<String> tokens = _csv.parse("");
     assertEquals(1, tokens.size());
-    assertEquals("", tokens.get(0));
+    assertEquals("", tokens.getFirst());
   }
 
   @Test
   void testParseEmptyWhitespaceString() {
     List<String> tokens = _csv.parse("  ");
     assertEquals(1, tokens.size());
-    assertEquals("  ", tokens.get(0));
+    assertEquals("  ", tokens.getFirst());
   }
 
   @Test
   void testParseEmptyColumsString() {
     List<String> tokens = _csv.parse(",,");
     assertEquals(3, tokens.size());
-    assertEquals("", tokens.get(0));
+    assertEquals("", tokens.getFirst());
     assertEquals("", tokens.get(1));
     assertEquals("", tokens.get(2));
   }
@@ -158,7 +158,7 @@ class CSVLibraryTest {
   void testParseEmptyColumsWhitespaceString() {
     List<String> tokens = _csv.parse("  ,  ,  ");
     assertEquals(3, tokens.size());
-    assertEquals("  ", tokens.get(0));
+    assertEquals("  ", tokens.getFirst());
     assertEquals("  ", tokens.get(1));
     assertEquals("  ", tokens.get(2));
   }
@@ -172,7 +172,7 @@ class CSVLibraryTest {
   void testParseQuotedColumnFollowedByEmptyLastColumn() {
     List<String> tokens = _csv.parse("\"column\",");
     assertEquals(2, tokens.size());
-    assertEquals("column", tokens.get(0));
+    assertEquals("column", tokens.getFirst());
     assertEquals("", tokens.get(1));
   }
 
@@ -180,7 +180,7 @@ class CSVLibraryTest {
   void testParseColumnFollowedByEmptyLastColumn() {
     List<String> tokens = _csv.parse("column,");
     assertEquals(2, tokens.size());
-    assertEquals("column", tokens.get(0));
+    assertEquals("column", tokens.getFirst());
     assertEquals("", tokens.get(1));
   }
 
@@ -188,7 +188,7 @@ class CSVLibraryTest {
   void testParseQuotedColumnWithEscapedDoubleQuoteFollowedByEmptyLastColumn() {
     List<String> tokens = _csv.parse("1997,Ford,E350,\"Super \"\"luxurious\"\" truck\",");
     assertEquals(5, tokens.size());
-    assertEquals("1997", tokens.get(0));
+    assertEquals("1997", tokens.getFirst());
     assertEquals("Ford", tokens.get(1));
     assertEquals("E350", tokens.get(2));
     assertEquals("Super \"luxurious\" truck", tokens.get(3));
@@ -199,7 +199,7 @@ class CSVLibraryTest {
   void testParseQuotedColumnWithBackToBackEscapedDoubleQuoteFollowedByEmptyLastColumn() {
     List<String> tokens = _csv.parse("1997,Ford,E350,\"start\"\"middle\"\"\"\"end\",");
     assertEquals(5, tokens.size());
-    assertEquals("1997", tokens.get(0));
+    assertEquals("1997", tokens.getFirst());
     assertEquals("Ford", tokens.get(1));
     assertEquals("E350", tokens.get(2));
     assertEquals("start\"middle\"\"end", tokens.get(3));
@@ -210,7 +210,7 @@ class CSVLibraryTest {
   void testParseQuotedColumnWithBackToBackEscapedDoubleQuoteLastColumn() {
     List<String> tokens = _csv.parse("1997,Ford,E350,\"start\"\"middle\"\"\"\"\"");
     assertEquals(4, tokens.size());
-    assertEquals("1997", tokens.get(0));
+    assertEquals("1997", tokens.getFirst());
     assertEquals("Ford", tokens.get(1));
     assertEquals("E350", tokens.get(2));
     assertEquals("start\"middle\"\"", tokens.get(3));
@@ -221,7 +221,7 @@ class CSVLibraryTest {
     List<String> tokens =
         _csv.parse("1997,Ford,E350,\"Super \"\"luxurious\"\" truck\",\"luxurious\"");
     assertEquals(5, tokens.size());
-    assertEquals("1997", tokens.get(0));
+    assertEquals("1997", tokens.getFirst());
     assertEquals("Ford", tokens.get(1));
     assertEquals("E350", tokens.get(2));
     assertEquals("Super \"luxurious\" truck", tokens.get(3));

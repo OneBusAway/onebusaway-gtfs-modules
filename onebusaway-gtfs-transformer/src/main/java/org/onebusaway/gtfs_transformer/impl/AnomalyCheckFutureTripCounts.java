@@ -288,7 +288,7 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
 
     @Override
     public void handleLine(List<String> list) throws Exception {
-      inputSet.add(dateFormatter.parse(list.get(0)));
+      inputSet.add(dateFormatter.parse(list.getFirst()));
     }
 
     Collection<Date> returnContents() {
@@ -301,7 +301,7 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
 
     @Override
     public void handleLine(List<String> list) {
-      inputMap.put(list.get(0), Double.parseDouble(list.get(1)));
+      inputMap.put(list.getFirst(), Double.parseDouble(list.get(1)));
     }
 
     Map<String, Double> returnContents() {

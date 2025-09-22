@@ -58,7 +58,7 @@ public class CalendarSimplicationLibraryTest {
 
     List<ServiceCalendar> calendars = getEntities(newEntities, ServiceCalendar.class);
     assertEquals(1, calendars.size());
-    ServiceCalendar calendar = calendars.get(0);
+    ServiceCalendar calendar = calendars.getFirst();
     assertEquals(updatedId, calendar.getServiceId());
     assertEquals(new ServiceDate(2012, 03, 05), calendar.getStartDate());
     assertEquals(new ServiceDate(2012, 03, 30), calendar.getEndDate());
@@ -72,7 +72,7 @@ public class CalendarSimplicationLibraryTest {
 
     List<ServiceCalendarDate> calendarDates = getEntities(newEntities, ServiceCalendarDate.class);
     assertEquals(1, calendarDates.size());
-    ServiceCalendarDate date = calendarDates.get(0);
+    ServiceCalendarDate date = calendarDates.getFirst();
     assertEquals(updatedId, date.getServiceId());
     assertEquals(new ServiceDate(2012, 03, 22), date.getDate());
     assertEquals(ServiceCalendarDate.EXCEPTION_TYPE_REMOVE, date.getExceptionType());

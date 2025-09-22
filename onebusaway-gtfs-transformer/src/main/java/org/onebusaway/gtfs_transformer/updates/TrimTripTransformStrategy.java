@@ -164,8 +164,8 @@ public class TrimTripTransformStrategy implements GtfsTransformStrategy {
       return;
     }
 
-    StopLocation firstStop = stopTimes.get(0).getStop();
-    StopLocation lastStop = stopTimes.get(stopTimes.size() - 1).getStop();
+    StopLocation firstStop = stopTimes.getFirst().getStop();
+    StopLocation lastStop = stopTimes.getLast().getStop();
     String id = shapeId.getId() + "-" + firstStop.getId().getId() + "-" + lastStop.getId().getId();
     AgencyAndId newShapeId = new AgencyAndId(shapeId.getAgencyId(), id);
     trip.setShapeId(newShapeId);

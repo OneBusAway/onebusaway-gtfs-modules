@@ -50,7 +50,7 @@ public class UpdateTripHeadsignRailRoadConvention implements GtfsTransformStrate
             (trip.getTripHeadsign() != null) ? trip.getTripHeadsign() : "trip route short name";
 
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(stopTimes.get(0).getDepartureTime() * 1000);
+        calendar.setTimeInMillis(stopTimes.getFirst().getDepartureTime() * 1000);
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         SimpleDateFormat sdf = new SimpleDateFormat("h:mm a");

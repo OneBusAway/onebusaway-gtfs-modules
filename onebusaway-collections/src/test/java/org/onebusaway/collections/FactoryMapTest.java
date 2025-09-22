@@ -41,11 +41,11 @@ public class FactoryMapTest {
 
     list = m.get("b");
     assertEquals(1, list.size());
-    assertEquals("1", list.get(0));
+    assertEquals("1", list.getFirst());
 
     list = m.get("a");
     assertEquals(2, list.size());
-    assertEquals("1", list.get(0));
+    assertEquals("1", list.getFirst());
     assertEquals("2", list.get(1));
 
     m.remove("b");

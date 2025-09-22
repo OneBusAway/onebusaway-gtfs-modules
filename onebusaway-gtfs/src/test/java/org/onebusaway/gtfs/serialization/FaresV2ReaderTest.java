@@ -186,7 +186,7 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
 
     List<Route> routes = new ArrayList<>(dao.getAllRoutes());
     assertEquals(1, routes.size());
-    assertEquals("core", routes.get(0).getNetworkId());
+    assertEquals("core", routes.getFirst().getNetworkId());
 
     assertFalse(dao.hasFaresV1());
     assertTrue(dao.hasFaresV2());
@@ -199,14 +199,14 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
     var areaElements = List.copyOf(dao.getAllStopAreaElements());
     assertEquals(12, areaElements.size());
 
-    var first = areaElements.get(0);
+    var first = areaElements.getFirst();
     assertEquals("1_4210813", first.getArea().getId().toString());
     var stop = first.getStop();
     assertEquals("4210806", stop.getId().getId());
     assertEquals("Bridgeport Way & San Francisco Ave SW (Northbound)", stop.getName());
     assertSame(Stop.class, stop.getClass());
 
-    var area = areaElements.get(0);
+    var area = areaElements.getFirst();
 
     assertSame(Stop.class, area.getStop().getClass());
 
@@ -254,7 +254,7 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
 
     assertEquals(7, assignments.size());
 
-    var first = assignments.get(0);
+    var first = assignments.getFirst();
 
     assertEquals("1116", first.getRoute().getId().getId());
     assertEquals("188", first.getNetworkId());

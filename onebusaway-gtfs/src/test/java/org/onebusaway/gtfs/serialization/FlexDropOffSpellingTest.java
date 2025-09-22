@@ -53,7 +53,7 @@ public class FlexDropOffSpellingTest {
 
     assertEquals(1, dao.getAllStopTimes().size());
 
-    StopTime stopTime = new ArrayList<>(dao.getAllStopTimes()).get(0);
+    StopTime stopTime = new ArrayList<>(dao.getAllStopTimes()).getFirst();
 
     assertEquals("1_T10-0", stopTime.getTrip().getId().toString());
     assertEquals(LocalTime.parse("10:00").toSecondOfDay(), stopTime.getStartPickupDropOffWindow());

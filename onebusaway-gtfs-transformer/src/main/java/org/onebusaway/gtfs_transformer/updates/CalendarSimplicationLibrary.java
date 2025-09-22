@@ -79,8 +79,8 @@ public class CalendarSimplicationLibrary {
       return;
     }
 
-    ServiceDate fromDate = serviceDatesInOrder.get(0);
-    ServiceDate toDate = serviceDatesInOrder.get(serviceDatesInOrder.size() - 1);
+    ServiceDate fromDate = serviceDatesInOrder.getFirst();
+    ServiceDate toDate = serviceDatesInOrder.getLast();
 
     boolean useDateRange = summary.maxDayOfWeekCount >= _minNumberOfWeeksForCalendarEntry;
 

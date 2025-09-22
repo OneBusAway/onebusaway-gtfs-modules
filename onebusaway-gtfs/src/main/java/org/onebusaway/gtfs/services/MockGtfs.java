@@ -544,7 +544,7 @@ public class MockGtfs {
           if (addComma) {
             b.append(",");
           }
-          String value = values.size() > 1 ? values.get(i) : values.get(0);
+          String value = values.size() > 1 ? values.get(i) : values.getFirst();
           b.append(value);
           addComma = true;
         }

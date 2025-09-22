@@ -64,7 +64,7 @@ public class DeduplicateRoutesStrategy implements GtfsTransformStrategy {
       if (routes.size() == 1) continue;
 
       // Remove the route with the old id
-      Route route = routes.get(0);
+      Route route = routes.getFirst();
       dao.removeEntity(route);
 
       // Add the route with the new id

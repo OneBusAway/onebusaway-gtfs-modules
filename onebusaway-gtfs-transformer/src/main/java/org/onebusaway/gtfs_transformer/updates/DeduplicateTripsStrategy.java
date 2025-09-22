@@ -79,7 +79,7 @@ public class DeduplicateTripsStrategy implements GtfsTransformStrategy {
 
       Collections.sort(trips, _tripComparator);
 
-      Trip tripA = trips.get(0);
+      Trip tripA = trips.getFirst();
       Trip tripB = trips.get(1);
 
       List<StopTime> stopTimesA = dao.getStopTimesForTrip(tripA);

@@ -132,7 +132,7 @@ public class GtfsReader extends CsvEntityReader {
 
   public String getDefaultAgencyId() {
     if (_defaultAgencyId != null) return _defaultAgencyId;
-    if (_agencies.size() > 0) return _agencies.get(0).getId();
+    if (_agencies.size() > 0) return _agencies.getFirst().getId();
     throw new NoDefaultAgencyIdException();
   }
 

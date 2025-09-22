@@ -65,11 +65,11 @@ public class InterpolateStopTimesFromTimePointsStrategyTest {
     List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
     assertEquals(7, stopTimes.size());
 
-    assertEquals(1, stopTimes.get(0).getTimepoint());
-    assertTrue(stopTimes.get(0).isArrivalTimeSet());
-    assertTrue(stopTimes.get(0).isShapeDistTraveledSet());
-    assertEquals(0, stopTimes.get(0).getShapeDistTraveled(), 0.001);
-    assertEquals(time(9, 0), stopTimes.get(0).getArrivalTime());
+    assertEquals(1, stopTimes.getFirst().getTimepoint());
+    assertTrue(stopTimes.getFirst().isArrivalTimeSet());
+    assertTrue(stopTimes.getFirst().isShapeDistTraveledSet());
+    assertEquals(0, stopTimes.getFirst().getShapeDistTraveled(), 0.001);
+    assertEquals(time(9, 0), stopTimes.getFirst().getArrivalTime());
 
     assertEquals(0, stopTimes.get(1).getTimepoint());
     assertTrue(stopTimes.get(1).isArrivalTimeSet());
@@ -118,11 +118,11 @@ public class InterpolateStopTimesFromTimePointsStrategyTest {
     List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
     assertEquals(6, stopTimes.size());
 
-    assertEquals(0, stopTimes.get(0).getTimepoint());
-    assertTrue(stopTimes.get(0).isArrivalTimeSet());
-    assertTrue(stopTimes.get(0).isShapeDistTraveledSet());
-    assertEquals(0, stopTimes.get(0).getShapeDistTraveled(), 0.001);
-    assertEquals(time(9, 5), stopTimes.get(0).getArrivalTime());
+    assertEquals(0, stopTimes.getFirst().getTimepoint());
+    assertTrue(stopTimes.getFirst().isArrivalTimeSet());
+    assertTrue(stopTimes.getFirst().isShapeDistTraveledSet());
+    assertEquals(0, stopTimes.getFirst().getShapeDistTraveled(), 0.001);
+    assertEquals(time(9, 5), stopTimes.getFirst().getArrivalTime());
 
     assertEquals(1, stopTimes.get(1).getTimepoint());
     assertTrue(stopTimes.get(1).isArrivalTimeSet());

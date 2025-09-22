@@ -62,7 +62,7 @@ public class DeduplicateServiceIdsStrategy implements GtfsTransformStrategy {
       if (serviceIds.size() == 1) {
         continue;
       }
-      AgencyAndId target = serviceIds.get(0);
+      AgencyAndId target = serviceIds.getFirst();
       for (int i = 1; i < serviceIds.size(); ++i) {
         AgencyAndId source = serviceIds.get(i);
         serviceIdMapping.put(source, target);

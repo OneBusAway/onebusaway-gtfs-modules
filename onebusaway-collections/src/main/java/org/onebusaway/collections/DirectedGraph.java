@@ -112,7 +112,7 @@ public class DirectedGraph<T> {
 
       if (tieBreaker != null) Collections.sort(noInbound, tieBreaker);
 
-      T node = noInbound.get(0);
+      T node = noInbound.getFirst();
       order.add(node);
       g.removeNode(node);
     }

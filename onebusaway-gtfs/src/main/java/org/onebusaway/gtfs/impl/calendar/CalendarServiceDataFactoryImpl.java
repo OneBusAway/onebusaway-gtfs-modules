@@ -197,31 +197,16 @@ public class CalendarServiceDataFactoryImpl implements CalendarServiceDataFactor
       if (date.after(endDate)) break;
 
       int day = c.get(java.util.Calendar.DAY_OF_WEEK);
-      boolean active = false;
-
-      switch (day) {
-        case java.util.Calendar.MONDAY:
-          active = calendar.getMonday() == 1;
-          break;
-        case java.util.Calendar.TUESDAY:
-          active = calendar.getTuesday() == 1;
-          break;
-        case java.util.Calendar.WEDNESDAY:
-          active = calendar.getWednesday() == 1;
-          break;
-        case java.util.Calendar.THURSDAY:
-          active = calendar.getThursday() == 1;
-          break;
-        case java.util.Calendar.FRIDAY:
-          active = calendar.getFriday() == 1;
-          break;
-        case java.util.Calendar.SATURDAY:
-          active = calendar.getSaturday() == 1;
-          break;
-        case java.util.Calendar.SUNDAY:
-          active = calendar.getSunday() == 1;
-          break;
-      }
+      boolean active = switch (day) {
+        case java.util.Calendar.MONDAY -> calendar.getMonday() == 1;
+        case java.util.Calendar.TUESDAY -> calendar.getTuesday() == 1;
+        case java.util.Calendar.WEDNESDAY -> calendar.getWednesday() == 1;
+        case java.util.Calendar.THURSDAY -> calendar.getThursday() == 1;
+        case java.util.Calendar.FRIDAY -> calendar.getFriday() == 1;
+        case java.util.Calendar.SATURDAY -> calendar.getSaturday() == 1;
+        case java.util.Calendar.SUNDAY -> calendar.getSunday() == 1;
+        default -> false;
+      };
 
       if (active) {
         addServiceDate(activeDates, new ServiceDate(c), timeZone);

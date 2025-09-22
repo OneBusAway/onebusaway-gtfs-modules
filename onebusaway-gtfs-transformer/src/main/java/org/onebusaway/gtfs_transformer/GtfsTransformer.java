@@ -115,7 +115,7 @@ public class GtfsTransformer {
 
   public GtfsTransformStrategy getLastTransform() {
     if (_transformStrategies.isEmpty()) return null;
-    return _transformStrategies.get(_transformStrategies.size() - 1);
+    return _transformStrategies.getLast();
   }
 
   public void addEntityTransform(GtfsEntityTransformStrategy entityTransform) {

@@ -127,7 +127,7 @@ public class HibernateGtfsRelationalDaoImplCaltrainTest {
 
     assertEquals(1, onDate.size());
 
-    ServiceCalendarDate cd = onDate.get(0);
+    ServiceCalendarDate cd = onDate.getFirst();
     assertEquals(2, cd.getExceptionType());
   }
 
@@ -148,7 +148,7 @@ public class HibernateGtfsRelationalDaoImplCaltrainTest {
             });
 
     assertEquals(1, weekdays.size());
-    ServiceCalendar weekday = weekdays.get(0);
+    ServiceCalendar weekday = weekdays.getFirst();
 
     assertEquals(new ServiceDate(2009, 1, 1), weekday.getStartDate());
     assertEquals(new ServiceDate(2009, 3, 1), weekday.getEndDate());

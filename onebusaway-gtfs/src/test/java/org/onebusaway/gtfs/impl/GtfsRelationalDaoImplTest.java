@@ -44,7 +44,7 @@ public class GtfsRelationalDaoImplTest {
     List<String> tripAgencyIds =
         dao.getTripAgencyIdsReferencingServiceId(new AgencyAndId("BART", "WKDY"));
     assertEquals(1, tripAgencyIds.size());
-    assertEquals("BART", tripAgencyIds.get(0));
+    assertEquals("BART", tripAgencyIds.getFirst());
 
     Agency agency = dao.getAgencyForId("BART");
     List<Route> routes = dao.getRoutesForAgency(agency);
@@ -81,7 +81,7 @@ public class GtfsRelationalDaoImplTest {
     List<Frequency> frequencies = dao.getFrequenciesForTrip(trip);
     assertEquals(1, frequencies.size());
 
-    Frequency frequency = frequencies.get(0);
+    Frequency frequency = frequencies.getFirst();
     assertEquals(5 * 60 * 60, frequency.getStartTime());
     assertEquals(6 * 60 * 60, frequency.getEndTime());
     assertEquals(trip, frequency.getTrip());

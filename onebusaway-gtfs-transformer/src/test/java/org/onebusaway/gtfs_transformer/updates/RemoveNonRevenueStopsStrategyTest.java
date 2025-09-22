@@ -62,7 +62,7 @@ public class RemoveNonRevenueStopsStrategyTest {
     assertEquals(2, stopTimes.size());
 
     assertEquals(0, stopTimes.get(1).getPickupType());
-    assertEquals(0, stopTimes.get(0).getPickupType());
+    assertEquals(0, stopTimes.getFirst().getPickupType());
   }
 
   @Test
@@ -95,6 +95,6 @@ public class RemoveNonRevenueStopsStrategyTest {
 
     assertEquals(1, stopTimes.get(3).getPickupType());
     assertEquals(0, stopTimes.get(2).getPickupType());
-    assertEquals(1, stopTimes.get(0).getPickupType());
+    assertEquals(1, stopTimes.getFirst().getPickupType());
   }
 }

@@ -26,8 +26,6 @@ public class TranslationServiceData implements Serializable {
 
   // Map: list of translations by entity type and language
   private Map<TypeAndLanguage, List<PropertyTranslation>> _translationMap = new HashMap<>();
-  ;
-
   private String _feedLanguage;
 
   public List<PropertyTranslation> getTranslationsByTypeAndLanguage(

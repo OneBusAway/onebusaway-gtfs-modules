@@ -106,7 +106,7 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
 
         for (TripKey tripKey : tripKeysByServiceIds.get(serviceIds)) {
           List<Trip> tripsForKey = tripsByKey.get(tripKey);
-          Trip tripToKeep = tripsForKey.get(0);
+          Trip tripToKeep = tripsForKey.getFirst();
           tripToKeep.setServiceId(updatedServiceId);
           for (int i = 1; i < tripsForKey.size(); i++) {
             Trip trip = tripsForKey.get(i);

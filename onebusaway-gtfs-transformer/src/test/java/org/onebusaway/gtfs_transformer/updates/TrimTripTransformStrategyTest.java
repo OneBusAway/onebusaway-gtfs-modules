@@ -69,7 +69,7 @@ public class TrimTripTransformStrategyTest {
     assertEquals(new AgencyAndId("a0", "t0-s1-s4"), trip.getId());
     List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
     assertEquals(2, stopTimes.size());
-    assertEquals("s2", stopTimes.get(0).getStop().getId().getId());
+    assertEquals("s2", stopTimes.getFirst().getStop().getId().getId());
     assertEquals("s3", stopTimes.get(1).getStop().getId().getId());
   }
 
@@ -101,7 +101,7 @@ public class TrimTripTransformStrategyTest {
       Trip trip = dao.getTripForId(new AgencyAndId("a0", "t1-s4"));
       List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
       assertEquals(4, stopTimes.size());
-      assertEquals("s0", stopTimes.get(0).getStop().getId().getId());
+      assertEquals("s0", stopTimes.getFirst().getStop().getId().getId());
       assertEquals("s3", stopTimes.get(3).getStop().getId().getId());
     }
   }
@@ -143,7 +143,7 @@ public class TrimTripTransformStrategyTest {
     assertEquals(new AgencyAndId("a0", "shape0-s1-s3"), trip.getShapeId());
     List<ShapePoint> shapePoints = dao.getShapePointsForShapeId(trip.getShapeId());
     assertEquals(3, shapePoints.size());
-    assertEquals(47.670300, shapePoints.get(0).getLat(), 1e-6);
+    assertEquals(47.670300, shapePoints.getFirst().getLat(), 1e-6);
     assertEquals(47.673985, shapePoints.get(2).getLat(), 1e-6);
   }
 }

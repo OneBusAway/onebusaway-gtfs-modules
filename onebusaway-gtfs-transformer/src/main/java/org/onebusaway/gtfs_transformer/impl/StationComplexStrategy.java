@@ -95,7 +95,7 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
       Map<String, List<Stop>> grouped =
           complex.stream().collect(Collectors.groupingBy(Stop::getName));
       for (List<Stop> group : grouped.values()) {
-        String parent = group.get(0).getParentStation();
+        String parent = group.getFirst().getParentStation();
         for (Stop stop : group) {
           stop.setParentStation(parent);
           dao.updateEntity(stop);

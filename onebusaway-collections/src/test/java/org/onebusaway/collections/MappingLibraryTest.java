@@ -35,13 +35,13 @@ public class MappingLibraryTest {
 
     List<String> values = MappingLibrary.map(asList, "first");
     assertEquals(3, values.size());
-    assertEquals("a", values.get(0));
+    assertEquals("a", values.getFirst());
     assertEquals("c", values.get(1));
     assertEquals("e", values.get(2));
 
     values = MappingLibrary.map(asList, "second");
     assertEquals(3, values.size());
-    assertEquals("b", values.get(0));
+    assertEquals("b", values.getFirst());
     assertEquals("d", values.get(1));
     assertEquals("f", values.get(2));
   }

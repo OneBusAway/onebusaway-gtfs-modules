@@ -174,7 +174,6 @@ public class EntityRetentionGraphTest {
   public void testRetainFareRuleUp() throws IOException {
     MockGtfs gtfs = MockGtfs.create();
     gtfs.putMinimal();
-    ;
     gtfs.putRoutes(2);
     gtfs.putStops(2, "zone_id=z$0");
     gtfs.putCalendars(1);
@@ -213,7 +212,6 @@ public class EntityRetentionGraphTest {
   public void testRetainFareRuleDown() throws IOException {
     MockGtfs gtfs = MockGtfs.create();
     gtfs.putMinimal();
-    ;
     gtfs.putRoutes(2);
     gtfs.putStops(2, "zone_id=z$0");
     gtfs.putCalendars(1);
@@ -252,7 +250,6 @@ public class EntityRetentionGraphTest {
   public void testConditionallyRetainFareRule() throws IOException {
     MockGtfs gtfs = MockGtfs.create();
     gtfs.putMinimal();
-    ;
     gtfs.putRoutes(1);
     gtfs.putStops(2, "zone_id=z$0");
     gtfs.putLines(

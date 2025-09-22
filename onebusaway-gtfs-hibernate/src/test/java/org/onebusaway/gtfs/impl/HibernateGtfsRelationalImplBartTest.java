@@ -82,7 +82,7 @@ public class HibernateGtfsRelationalImplBartTest {
     List<Frequency> frequencies = _dao.getFrequenciesForTrip(trip);
     assertEquals(1, frequencies.size());
 
-    Frequency frequency = frequencies.get(0);
+    Frequency frequency = frequencies.getFirst();
     assertEquals(5 * 60 * 60, frequency.getStartTime());
     assertEquals(6 * 60 * 60, frequency.getEndTime());
     assertEquals(trip, frequency.getTrip());

@@ -1,0 +1,4 @@
+rider_category_id,rider_category_name,min_age,max_age,eligibility_url,is_default_fare_category
+ADULT,Adult,,,,1
+HONORED_CITIZEN,Honored Citizen,,,https://trimet.org/fares/honoredcitizen.htm,0
+YOUTH,Youth,7,17,https://trimet.org/fares/youth.htm,0

@@ -47,11 +47,9 @@ public class GtfsReader extends CsvEntityReader {
 
   private String _defaultAgencyId;
 
-  private Map<String, String> _agencyIdMapping = new HashMap<String, String>();
+  private final Map<String, String> _agencyIdMapping = new HashMap<String, String>();
 
   private boolean _overwriteDuplicates = false;
-
-  private File _inputLocation = null;
 
   public GtfsReader() {
 
@@ -62,6 +60,7 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Area.class);
     _entityClasses.add(BookingRule.class);
     _entityClasses.add(Route.class);
+    _entityClasses.add(RouteNetworkAssignment.class);
     _entityClasses.add(Level.class);
     _entityClasses.add(Stop.class);
     _entityClasses.add(Location.class);
@@ -109,7 +108,6 @@ public class GtfsReader extends CsvEntityReader {
 
   public void setInputLocation(File path) throws IOException {
     super.setInputLocation(path);
-    _inputLocation = path;
   }
 
   public void setLastModifiedTime(Long lastModifiedTime) {
@@ -237,8 +235,7 @@ public class GtfsReader extends CsvEntityReader {
 
     public void handleEntity(Object entity) {
 
-      if (entity instanceof Agency) {
-        Agency agency = (Agency) entity;
+      if (entity instanceof final Agency agency) {
         if (agency.getId() == null) {
           if (_defaultAgencyId == null) agency.setId(agency.getName());
           else agency.setId(_defaultAgencyId);

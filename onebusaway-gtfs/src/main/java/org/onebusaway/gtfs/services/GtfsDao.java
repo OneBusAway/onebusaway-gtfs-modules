@@ -127,6 +127,8 @@ public interface GtfsDao extends GenericDao {
 
   Collection<Route> getAllRoutes();
 
+  Collection<RouteNetworkAssignment> getAllRouteNetworkAssignments();
+
   Route getRouteForId(AgencyAndId id);
 
   /****

@@ -1,0 +1,8 @@
+agency_id,route_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color,route_sort_order,min_headway_minutes,eligibility_restricted,continuous_pickup,continuous_drop_off,tts_route_short_name,tts_route_long_name
+86,416,,Sandy Local & Gresham Express,,3,,d2232a,ffffff,0,60,0,1,1,,
+86,76878,,Clackamas Town Center,,3,,a968a2,000000,1,180,0,1,1,,
+86,415,,Sandy & Estacada,,3,,2b1dbf,ffffff,2,,0,1,1,,
+86,5484,,SAM Shopper Shuttle,,3,https://www.ci.sandy.or.us/transit/page/sam-shopper-shuttle-route,f36e21,000000,3,60,0,1,1,,
+86,77124,,SAM rides,,3,,00688e,ffffff,4,,0,1,1,,
+188,1116,,Mt. Hood Express,,3,https://www.mthoodexpress.com/,008ca7,000000,7,120,0,1,1,,
+188,1115,,Villages Shuttle,,3,,13a549,000000,8,,0,1,1,,

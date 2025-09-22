@@ -27,9 +27,12 @@ import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs.services.HibernateOperation;
 import org.onebusaway.gtfs.services.HibernateOperations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao {
 
+  private static final Logger log = LoggerFactory.getLogger(HibernateGtfsRelationalDaoImpl.class);
   protected HibernateOperations _ops;
 
   public HibernateGtfsRelationalDaoImpl() {}
@@ -104,6 +107,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   @Override
   public List<Route> getAllRoutes() {
     return _ops.find("FROM Route route");
+  }
+
+  @Override
+  public Collection<RouteNetworkAssignment> getAllRouteNetworkAssignments() {
+    return _ops.find("FROM RouteNetworkAssignment");
   }
 
   @Override

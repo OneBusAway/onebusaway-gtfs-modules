@@ -245,4 +245,18 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
                 .get()
             == 1);
   }
+
+  @Test
+  public void routeNetworkAssignments() throws CsvEntityIOException, IOException {
+    var dao = processFeed(GtfsTestData.sandyFlexFaresV2(), AGENCY_ID, false);
+
+    var assignments = List.copyOf(dao.getAllRouteNetworkAssignments());
+
+    assertEquals(7, assignments.size());
+
+    var first = assignments.get(0);
+
+    assertEquals("1116", first.getRoute().getId().getId());
+    assertEquals("188", first.getNetworkId());
+  }
 }

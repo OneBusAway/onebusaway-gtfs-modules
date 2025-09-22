@@ -1,0 +1,21 @@
+service_id,date,holiday_name,exception_type
+c_70870_b_83797_d_64,20250901,Labor Day,1
+c_70870_b_83797_d_64,20250704,Independence Day,1
+c_70870_b_83797_d_31,20251127,Thanksgiving Day,2
+c_70870_b_83797_d_31,20250901,Labor Day,2
+c_70870_b_83797_d_31,20250704,Independence Day,2
+c_70682_b_83345_d_31,20251127,Thanksgiving Day,2
+c_70682_b_83345_d_31,20250901,Labor Day,2
+c_70682_b_83345_d_31,20250704,Independence Day,2
+c_69989_b_81709_d_127,20251127,Thanksgiving Day,2
+c_69989_b_81709_d_127,20250901,Labor Day,2
+c_69989_b_81709_d_127,20250704,Independence Day,2
+c_17794_b_83799_d_127,20251127,Thanksgiving Day,2
+c_17794_b_83799_d_127,20250901,Labor Day,2
+c_17794_b_83799_d_127,20250704,Independence Day,2
+c_157_b_84629_d_63,20251127,Thanksgiving Day,2
+c_157_b_84629_d_63,20250901,Labor Day,2
+c_157_b_84629_d_63,20250704,Independence Day,2
+c_157_b_84629_d_127,20251127,Thanksgiving Day,2
+c_157_b_84629_d_127,20250901,Labor Day,2
+c_157_b_84629_d_127,20250704,Independence Day,2

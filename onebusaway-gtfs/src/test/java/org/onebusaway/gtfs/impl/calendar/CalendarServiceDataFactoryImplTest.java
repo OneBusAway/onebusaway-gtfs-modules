@@ -88,7 +88,6 @@ public class CalendarServiceDataFactoryImplTest {
     assertEquals(DateSupport.date("2008-10-28 00:00 Pacific Daylight Time"), dates.get(1));
     assertEquals(
         DateSupport.date("2009-09-24 00:00 Pacific Daylight Time"), dates.get(dates.size() - 2));
-    assertEquals(
-        DateSupport.date("2009-09-25 00:00 Pacific Daylight Time"), dates.getLast());
+    assertEquals(DateSupport.date("2009-09-25 00:00 Pacific Daylight Time"), dates.getLast());
   }
 }

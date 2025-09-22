@@ -164,8 +164,8 @@ public class InterpolationLibrary {
 
     return switch (inRangeStrategy) {
       case PREVIOUS_VALUE -> values[index - 1];
-      default -> interpolatePair(
-            keys[index - 1], values[index - 1], keys[index], values[index], target);
+      default ->
+          interpolatePair(keys[index - 1], values[index - 1], keys[index], values[index], target);
     };
   }
 

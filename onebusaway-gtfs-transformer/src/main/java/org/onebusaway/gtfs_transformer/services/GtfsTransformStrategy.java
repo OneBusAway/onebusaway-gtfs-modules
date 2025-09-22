@@ -23,5 +23,6 @@ public interface GtfsTransformStrategy {
   public void run(TransformContext context, GtfsMutableRelationalDao dao);
 
   public default void updateReadSchema(DefaultEntitySchemaFactory factory) {}
+
   public default void updateWriteSchema(DefaultEntitySchemaFactory factory) {}
 }

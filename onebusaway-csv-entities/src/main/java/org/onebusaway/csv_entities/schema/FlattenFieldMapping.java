@@ -62,7 +62,7 @@ class FlattenFieldMapping extends AbstractFieldMapping {
 
   private Object getInstance(Class<?> type) {
     try {
-      return type.newInstance();
+      return type.getDeclaredConstructor().newInstance();
     } catch (Exception ex) {
       throw new EntityInstantiationException(type, ex);
     }

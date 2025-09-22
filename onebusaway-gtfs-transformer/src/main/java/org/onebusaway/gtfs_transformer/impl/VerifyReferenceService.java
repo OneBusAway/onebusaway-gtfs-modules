@@ -226,7 +226,7 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
         routeIds = list;
         return;
       }
-      routeIds.add(list.get(0));
+      routeIds.add(list.getFirst());
     }
 
     private Collection<String> returnRouteIds() {

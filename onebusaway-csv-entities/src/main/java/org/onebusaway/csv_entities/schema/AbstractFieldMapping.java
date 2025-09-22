@@ -132,8 +132,7 @@ public abstract class AbstractFieldMapping implements SingleFieldMapping {
       Object instance = object.getWrappedInstance(Object.class);
       try {
         Object r = _isSetMethod.invoke(instance);
-        if (r != null && r instanceof Boolean) {
-          Boolean b = (Boolean) r;
+        if (r != null && r instanceof Boolean b) {
           return !b.booleanValue();
         }
       } catch (Exception ex) {

@@ -68,7 +68,7 @@ public class DefaultPropertyMethodResolver implements PropertyMethodResolver {
     try {
       if (targetType.isInterface()) {
         List<Method> methods = getCachedInterfaceMethods(targetType, propertyName, methodName);
-        if (methods.size() == 1) method = methods.get(0);
+        if (methods.size() == 1) method = methods.getFirst();
         else {
           throw new IllegalStateException(
               "Ambiguous implementation set for interface: "

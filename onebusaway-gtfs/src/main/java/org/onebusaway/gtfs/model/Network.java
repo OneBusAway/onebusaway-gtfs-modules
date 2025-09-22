@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.model;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
@@ -20,7 +21,7 @@ import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFac
 @CsvFields(filename = "networks.txt", required = false)
 public final class Network extends IdentityBean<AgencyAndId> {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   @CsvField(name = "network_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;

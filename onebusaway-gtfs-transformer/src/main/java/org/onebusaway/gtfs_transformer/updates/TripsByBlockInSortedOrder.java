@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import org.onebusaway.collections.tuple.T2;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.StopTime;
@@ -46,7 +47,7 @@ public class TripsByBlockInSortedOrder {
       String blockId = trip.getBlockId();
 
       // Generate a random block id if none is present so we get no collisions
-      if (blockId == null) blockId = trip.getId() + "-" + Math.random();
+      if (blockId == null) blockId = trip.getId() + "-" + ThreadLocalRandom.current().nextDouble();
 
       List<Trip> trips = tripsByBlockId.get(blockId);
       if (trips == null) {
@@ -103,7 +104,7 @@ public class TripsByBlockInSortedOrder {
       String blockId = trip.getBlockId();
 
       // Generate a random block id if none is present so we get no collisions
-      if (blockId == null) blockId = trip.getId() + "-" + Math.random();
+      if (blockId == null) blockId = trip.getId() + "-" + ThreadLocalRandom.current().nextDouble();
       T2 key = new T2Impl(trip.getServiceId(), blockId);
 
       List<Trip> trips = tripsByBlockAndServiceId.get(key);

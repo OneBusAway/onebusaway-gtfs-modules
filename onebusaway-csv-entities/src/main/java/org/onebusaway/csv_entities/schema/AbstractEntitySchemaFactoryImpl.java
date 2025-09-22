@@ -154,7 +154,7 @@ public abstract class AbstractEntitySchemaFactoryImpl
       Class<? extends FieldMappingFactory> mapping = csvField.mapping();
       if (!mapping.equals(FieldMappingFactory.class)) {
         try {
-          FieldMappingFactory factory = mapping.newInstance();
+          FieldMappingFactory factory = mapping.getDeclaredConstructor().newInstance();
           fieldBean.setMapping(factory);
         } catch (Exception ex) {
           throw new EntityInstantiationException(mapping, ex);
@@ -374,8 +374,7 @@ public abstract class AbstractEntitySchemaFactoryImpl
       mapping = m;
     }
 
-    if (mapping instanceof AbstractFieldMapping) {
-      AbstractFieldMapping fm = (AbstractFieldMapping) mapping;
+    if (mapping instanceof AbstractFieldMapping fm) {
       if (fieldMappingBean.isOrderSet()) fm.setOrder(fieldMappingBean.getOrder());
       if (fieldMappingBean.isAlwaysIncludeInOutputSet()) {
         fm.setAlwaysIncludeInOutput(fieldMappingBean.isAlwaysIncludeInOutput());

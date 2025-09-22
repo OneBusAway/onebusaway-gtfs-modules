@@ -101,7 +101,7 @@ public class RemoveRepeatedStopTimesStrategyTest {
         // block SM-62
         List<StopTime> stopTimesForTrip =
             ((GtfsMutableRelationalDao) dao).getStopTimesForTrip(trip);
-        StopTime lastStopTrip1 = stopTimesForTrip.get(stopTimesForTrip.size() - 1);
+        StopTime lastStopTrip1 = stopTimesForTrip.getLast();
         assertEquals(
             "4128", lastStopTrip1.getStop().getId().getId()); // if this is 18938 we failed!
         case1 = true;
@@ -109,7 +109,7 @@ public class RemoveRepeatedStopTimesStrategyTest {
         // block SM-62
         List<StopTime> stopTimesForTrip =
             ((GtfsMutableRelationalDao) dao).getStopTimesForTrip(trip);
-        StopTime firstStopTrip2 = stopTimesForTrip.get(0);
+        StopTime firstStopTrip2 = stopTimesForTrip.getFirst();
         assertEquals("18938", firstStopTrip2.getStop().getId().getId());
         assertEquals(
             23400,

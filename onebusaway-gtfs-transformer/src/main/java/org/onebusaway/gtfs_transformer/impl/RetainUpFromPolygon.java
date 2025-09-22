@@ -80,7 +80,7 @@ public class RetainUpFromPolygon implements GtfsTransformStrategy {
       return wktReader.read(polygonWKT);
     } catch (ParseException e) {
       throw new IllegalArgumentException(
-          String.format("Error parsing WKT string: %s", e.getMessage()), e);
+          "Error parsing WKT string: %s".formatted(e.getMessage()), e);
     }
   }
 

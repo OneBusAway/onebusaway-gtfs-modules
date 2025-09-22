@@ -50,7 +50,7 @@ public class TransformFactoryTest {
     EntitiesTransformStrategy strategy = (EntitiesTransformStrategy) transform;
     List<MatchAndTransform> transforms = strategy.getModifications();
     assertEquals(1, transforms.size());
-    MatchAndTransform pair = transforms.get(0);
+    MatchAndTransform pair = transforms.getFirst();
     EntityMatch match = pair.getMatch();
     Route route = new Route();
     assertFalse(match.isApplicableToObject(route));

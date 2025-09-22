@@ -38,7 +38,7 @@ public final class StopAreaElement extends IdentityBean<AgencyAndId> {
   public AgencyAndId getId() {
     return new AgencyAndId(
         getArea().getId().getAgencyId(),
-        String.format("%s_%s", area.getId().getId(), stop.getId().getId()));
+        "%s_%s".formatted(area.getId().getId(), stop.getId().getId()));
   }
 
   @Override

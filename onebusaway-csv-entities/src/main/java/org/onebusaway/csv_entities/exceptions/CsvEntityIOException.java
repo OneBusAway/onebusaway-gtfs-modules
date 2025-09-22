@@ -13,6 +13,8 @@
  */
 package org.onebusaway.csv_entities.exceptions;
 
+import java.io.Serial;
+
 /**
  * Indicates an error was thrown when reading / writing CSV. This exception provides information
  * about line number and path information about where the error occurred.
@@ -21,7 +23,7 @@ package org.onebusaway.csv_entities.exceptions;
  */
 public class CsvEntityIOException extends CsvEntityException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private String _path;
 

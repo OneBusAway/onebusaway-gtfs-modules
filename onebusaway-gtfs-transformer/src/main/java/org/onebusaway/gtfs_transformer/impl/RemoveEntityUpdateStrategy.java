@@ -35,28 +35,28 @@ public class RemoveEntityUpdateStrategy implements EntityTransformStrategy {
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao, Object obj) {
 
-    if (obj instanceof Agency) {
-      _library.removeAgency(dao, (Agency) obj);
-    } else if (obj instanceof Route) {
-      _library.removeRoute(dao, (Route) obj);
-    } else if (obj instanceof Stop) {
-      _library.removeStop(dao, (Stop) obj);
-    } else if (obj instanceof Trip) {
-      _library.removeTrip(dao, (Trip) obj);
-    } else if (obj instanceof StopTime) {
-      _library.removeStopTime(dao, (StopTime) obj);
-    } else if (obj instanceof Frequency) {
-      _library.removeFrequency(dao, (Frequency) obj);
-    } else if (obj instanceof ServiceCalendar) {
-      _library.removeServiceCalendar(dao, (ServiceCalendar) obj);
-    } else if (obj instanceof ServiceCalendarDate) {
-      _library.removeServiceCalendarDate(dao, (ServiceCalendarDate) obj);
-    } else if (obj instanceof ServiceIdKey) {
-      _library.removeCalendar(dao, ((ServiceIdKey) obj).getId());
-    } else if (obj instanceof Transfer) {
-      _library.removeTransfer(dao, (Transfer) obj);
-    } else if (obj instanceof FeedInfo) {
-      _library.removeFeedInfo(dao, (FeedInfo) obj);
+    if (obj instanceof Agency agency) {
+      _library.removeAgency(dao, agency);
+    } else if (obj instanceof Route route) {
+      _library.removeRoute(dao, route);
+    } else if (obj instanceof Stop stop) {
+      _library.removeStop(dao, stop);
+    } else if (obj instanceof Trip trip) {
+      _library.removeTrip(dao, trip);
+    } else if (obj instanceof StopTime time) {
+      _library.removeStopTime(dao, time);
+    } else if (obj instanceof Frequency frequency) {
+      _library.removeFrequency(dao, frequency);
+    } else if (obj instanceof ServiceCalendar calendar) {
+      _library.removeServiceCalendar(dao, calendar);
+    } else if (obj instanceof ServiceCalendarDate date) {
+      _library.removeServiceCalendarDate(dao, date);
+    } else if (obj instanceof ServiceIdKey key) {
+      _library.removeCalendar(dao, key.getId());
+    } else if (obj instanceof Transfer transfer) {
+      _library.removeTransfer(dao, transfer);
+    } else if (obj instanceof FeedInfo info) {
+      _library.removeFeedInfo(dao, info);
     } else {
       throw new NoSuchMethodError("attempt to remove entity of type " + obj.getClass());
     }

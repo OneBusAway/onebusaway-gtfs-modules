@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.serialization.mappings;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.exceptions.CsvEntityException;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Route;
@@ -26,7 +27,7 @@ import org.onebusaway.gtfs.model.Route;
  */
 public class RouteNameException extends CsvEntityException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   public RouteNameException(AgencyAndId routeId) {
     super(Route.class, "either shortName or longName must be set for route=" + routeId);

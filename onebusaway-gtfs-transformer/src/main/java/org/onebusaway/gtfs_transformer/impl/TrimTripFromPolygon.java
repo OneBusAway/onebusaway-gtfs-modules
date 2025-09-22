@@ -80,8 +80,8 @@ public class TrimTripFromPolygon implements GtfsTransformStrategy {
     // initialize a new TrimOperation object to define parameters
     TrimOperation operation = new TrimOperation();
 
-    StopTime firstStopTime = stopTimes.get(0);
-    StopTime lastStopTime = stopTimes.get(stopTimes.size() - 1);
+    StopTime firstStopTime = stopTimes.getFirst();
+    StopTime lastStopTime = stopTimes.getLast();
 
     // set 'ToStopId' of the trim operation if the first StopTime is not the first stopTime in the
     // trip
@@ -121,7 +121,7 @@ public class TrimTripFromPolygon implements GtfsTransformStrategy {
       return wktReader.read(polygonWKT);
     } catch (ParseException e) {
       throw new IllegalArgumentException(
-          String.format("Error parsing WKT string: %s", e.getMessage()), e);
+          "Error parsing WKT string: %s".formatted(e.getMessage()), e);
     }
   }
 

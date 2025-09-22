@@ -13,6 +13,8 @@
  */
 package org.onebusaway.csv_entities.exceptions;
 
+import java.io.Serial;
+
 /**
  * Indicates an error when attempting to instantiate an instance of the specified entity type
  *
@@ -20,7 +22,7 @@ package org.onebusaway.csv_entities.exceptions;
  */
 public class EntityInstantiationException extends CsvEntityException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   public EntityInstantiationException(Class<?> entityType, Throwable cause) {
     super(entityType, "error instantiating entity of type=" + entityType.getName(), cause);

@@ -117,23 +117,20 @@ public class EntityRetentionGraph {
     Set<Object> retained = retainUp ? _retainedUp : _retainedDown;
     if (!retained.add(object)) return;
 
-    if (object instanceof Agency) retainAgency((Agency) object, retainUp);
-    else if (object instanceof Route) retainRoute((Route) object, retainUp);
-    else if (object instanceof Trip) retainTrip((Trip) object, retainUp);
-    else if (object instanceof StopTime) retainStopTime((StopTime) object, retainUp);
-    else if (object instanceof Stop) retainStop((Stop) object, retainUp);
-    else if (object instanceof ServiceCalendar)
-      retainServiceCalendar((ServiceCalendar) object, retainUp);
-    else if (object instanceof ServiceCalendarDate)
-      retainServiceCalendarDate((ServiceCalendarDate) object, retainUp);
-    else if (object instanceof ServiceIdKey)
-      retainServiceId(((ServiceIdKey) object).getId(), retainUp);
-    else if (object instanceof ShapeIdKey) retainShapeId(((ShapeIdKey) object).getId(), retainUp);
-    else if (object instanceof BlockIdKey) retainBlockId(((BlockIdKey) object).getId(), retainUp);
-    else if (object instanceof Frequency) retainFrequency((Frequency) object, retainUp);
-    else if (object instanceof ZoneIdKey) retainZoneId((ZoneIdKey) object, retainUp);
-    else if (object instanceof FareRule) retainFareRule((FareRule) object, retainUp);
-    else if (object instanceof FareAttribute) retainFareAttribute((FareAttribute) object, retainUp);
+    if (object instanceof Agency agency) retainAgency(agency, retainUp);
+    else if (object instanceof Route route) retainRoute(route, retainUp);
+    else if (object instanceof Trip trip) retainTrip(trip, retainUp);
+    else if (object instanceof StopTime time) retainStopTime(time, retainUp);
+    else if (object instanceof Stop stop) retainStop(stop, retainUp);
+    else if (object instanceof ServiceCalendar calendar) retainServiceCalendar(calendar, retainUp);
+    else if (object instanceof ServiceCalendarDate date) retainServiceCalendarDate(date, retainUp);
+    else if (object instanceof ServiceIdKey key3) retainServiceId(key3.getId(), retainUp);
+    else if (object instanceof ShapeIdKey key2) retainShapeId(key2.getId(), retainUp);
+    else if (object instanceof BlockIdKey key1) retainBlockId(key1.getId(), retainUp);
+    else if (object instanceof Frequency frequency) retainFrequency(frequency, retainUp);
+    else if (object instanceof ZoneIdKey key) retainZoneId(key, retainUp);
+    else if (object instanceof FareRule rule) retainFareRule(rule, retainUp);
+    else if (object instanceof FareAttribute attribute) retainFareAttribute(attribute, retainUp);
 
     if (retainUp) retainDown(object);
   }

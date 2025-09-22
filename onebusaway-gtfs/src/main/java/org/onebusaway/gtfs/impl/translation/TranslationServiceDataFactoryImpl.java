@@ -127,8 +127,7 @@ public class TranslationServiceDataFactoryImpl implements TranslationServiceData
     DefaultEntitySchemaFactory factory = GtfsEntitySchemaFactory.createEntitySchemaFactory();
     EntitySchema schema = factory.getSchema(type);
     for (FieldMapping field : schema.getFields()) {
-      if (field instanceof SingleFieldMapping) {
-        SingleFieldMapping mapping = (SingleFieldMapping) field;
+      if (field instanceof SingleFieldMapping mapping) {
         if (csvName.equals(mapping.getCsvFieldName())) {
           return mapping.getObjFieldName();
         }

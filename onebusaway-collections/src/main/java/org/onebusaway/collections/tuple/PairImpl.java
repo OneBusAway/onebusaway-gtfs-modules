@@ -13,6 +13,7 @@
  */
 package org.onebusaway.collections.tuple;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.NoSuchElementException;
 
@@ -26,7 +27,7 @@ import java.util.NoSuchElementException;
  */
 final class PairImpl<T> implements Pair<T>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private final T _first;
 

@@ -179,7 +179,7 @@ public class StopMatrixFareModificationStrategy implements GtfsTransformStrategy
         stopIds = list;
         return;
       }
-      String orig = list.get(0);
+      String orig = list.getFirst();
       for (int i = 1; i < list.size(); i++) {
         String dest = stopIds.get(i);
         if (!orig.equals(dest)) {

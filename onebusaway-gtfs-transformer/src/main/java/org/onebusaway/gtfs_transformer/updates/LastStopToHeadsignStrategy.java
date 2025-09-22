@@ -36,7 +36,7 @@ public class LastStopToHeadsignStrategy implements GtfsTransformStrategy {
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
     for (Trip trip : dao.getAllTrips()) {
       List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
-      StopLocation lastStop = stopTimes.get(stopTimes.size() - 1).getStop();
+      StopLocation lastStop = stopTimes.getLast().getStop();
 
       trip.setTripHeadsign(lastStop.getName());
     }

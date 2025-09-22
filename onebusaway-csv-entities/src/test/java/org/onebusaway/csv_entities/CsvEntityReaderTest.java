@@ -65,7 +65,7 @@ public class CsvEntityReaderTest {
     reader.readEntities(AnnotatedTestBean.class, source);
 
     List<AnnotatedTestBean> values = handler.getValues();
-    AnnotatedTestBean a = values.get(0);
+    AnnotatedTestBean a = values.getFirst();
     AnnotatedTestBean b = values.get(1);
     assertSame(a.getValue(), b.getValue());
   }

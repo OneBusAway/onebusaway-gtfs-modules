@@ -30,7 +30,7 @@ public class AbstractEntitySchemaFactoryImplTest {
     EntitySchema schema = factory.getSchema(CapitalizedCamelCaseBean.class);
     List<FieldMapping> fields = schema.getFields();
     assertEquals(1, fields.size());
-    SingleFieldMapping fieldMapping = (SingleFieldMapping) fields.get(0);
+    SingleFieldMapping fieldMapping = (SingleFieldMapping) fields.getFirst();
     assertEquals("FirstName", fieldMapping.getCsvFieldName());
     assertEquals("firstName", fieldMapping.getObjFieldName());
   }
@@ -43,10 +43,10 @@ public class AbstractEntitySchemaFactoryImplTest {
     EntitySchema schema = factory.getSchema(BaseBean.class);
     List<ExtensionEntitySchema> extensions = schema.getExtensions();
     assertEquals(1, extensions.size());
-    ExtensionEntitySchema extensionSchema = extensions.get(0);
+    ExtensionEntitySchema extensionSchema = extensions.getFirst();
     List<FieldMapping> fields = extensionSchema.getFields();
     assertEquals(1, fields.size());
-    SingleFieldMapping field = (SingleFieldMapping) fields.get(0);
+    SingleFieldMapping field = (SingleFieldMapping) fields.getFirst();
     assertEquals("value", field.getCsvFieldName());
   }
 

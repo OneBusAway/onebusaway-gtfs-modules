@@ -181,7 +181,7 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
         if (equal) {
           // get the first stop time for the trip
           Trip GTFStrip = dao.getTripForId(daoTrip.getKey());
-          StopTime firstStopTime = dao.getStopTimesForTrip(GTFStrip).get(0);
+          StopTime firstStopTime = dao.getStopTimesForTrip(GTFStrip).getFirst();
           DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
           String GTFStime =

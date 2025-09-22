@@ -454,7 +454,7 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
       case 0:
         return null;
       case 1:
-        return calendars.get(0);
+        return calendars.getFirst();
     }
 
     throw new MultipleCalendarsForServiceIdException(serviceId);

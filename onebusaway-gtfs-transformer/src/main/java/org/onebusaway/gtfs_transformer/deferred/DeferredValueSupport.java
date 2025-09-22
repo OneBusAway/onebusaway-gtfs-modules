@@ -77,12 +77,11 @@ public class DeferredValueSupport {
           _schemaCache.getFieldMappingForObjectFieldName(targetEntityType, targetPropertyName);
     }
     if (mapping != null) {
-      if (mapping instanceof ConverterFactory) {
-        ConverterFactory factory = (ConverterFactory) mapping;
+      if (mapping instanceof ConverterFactory factory) {
         return factory.create(_reader.getContext());
       }
-      if (mapping instanceof Converter) {
-        return (Converter) mapping;
+      if (mapping instanceof Converter converter) {
+        return converter;
       }
     }
     return ConvertUtils.lookup(targetValueType);

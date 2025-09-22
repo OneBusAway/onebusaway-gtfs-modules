@@ -27,7 +27,7 @@ import org.onebusaway.gtfs.services.GenericMutableDao;
 public class GtfsTestData {
 
   private static String gtfsPath(String name) {
-    return String.format("org/onebusaway/gtfs/%s", name);
+    return "org/onebusaway/gtfs/%s".formatted(name);
   }
 
   public static final String CALTRAIN_GTFS = gtfsPath("caltrain_20090308_1937.zip");

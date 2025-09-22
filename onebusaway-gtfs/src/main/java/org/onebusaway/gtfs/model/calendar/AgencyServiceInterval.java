@@ -115,6 +115,6 @@ public class AgencyServiceInterval implements Serializable {
 
   @Override
   public int hashCode() {
-    return new Long(_referenceTime).hashCode();
+    return Long.valueOf(_referenceTime).hashCode();
   }
 }

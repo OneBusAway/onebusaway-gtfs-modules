@@ -13,6 +13,7 @@
  */
 package org.onebusaway.csv_entities.exceptions;
 
+import java.io.Serial;
 import java.lang.reflect.Method;
 
 /**
@@ -23,7 +24,7 @@ import java.lang.reflect.Method;
  */
 public class MethodInvocationException extends CsvEntityException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   public MethodInvocationException(Class<?> entityType, Method method, Exception ex) {
     super(

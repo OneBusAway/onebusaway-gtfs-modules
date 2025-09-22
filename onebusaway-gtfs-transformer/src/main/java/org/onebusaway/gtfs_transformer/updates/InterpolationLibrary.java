@@ -62,7 +62,7 @@ public class InterpolationLibrary {
      * An exception will be thrown when attempting to interpolate a key that is outside the key
      * range of the key-value map
      */
-    EXCEPTION;
+    EXCEPTION
   }
 
   public enum EInRangeStrategy {
@@ -78,7 +78,7 @@ public class InterpolationLibrary {
      * Returns the value in the key-value map closest to the target value, where the index for the
      * returned value is less than the index of the target value.
      */
-    PREVIOUS_VALUE;
+    PREVIOUS_VALUE
   }
 
   /**
@@ -162,13 +162,11 @@ public class InterpolationLibrary {
       inRangeStrategy = EInRangeStrategy.INTERPOLATE;
     }
 
-    switch (inRangeStrategy) {
-      case PREVIOUS_VALUE:
-        return values[index - 1];
-      default:
-        return interpolatePair(
-            keys[index - 1], values[index - 1], keys[index], values[index], target);
-    }
+    return switch (inRangeStrategy) {
+      case PREVIOUS_VALUE -> values[index - 1];
+      default ->
+          interpolatePair(keys[index - 1], values[index - 1], keys[index], values[index], target);
+    };
   }
 
   /**
@@ -297,7 +295,7 @@ public class InterpolationLibrary {
         Number prevKey, Number prevValue, Number nextKey, Number nextValue, double ratio) {
 
       double result = interpolatePair(prevValue.doubleValue(), nextValue.doubleValue(), ratio);
-      return new Double(result);
+      return Double.valueOf(result);
     }
   }
 }

@@ -160,7 +160,7 @@ public class MappingLibrary {
       if (valuesForKey == null) {
 
         try {
-          valuesForKey = collectionType.newInstance();
+          valuesForKey = collectionType.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
           throw new IllegalStateException(
               "error instantiating collection type: " + collectionType, ex);

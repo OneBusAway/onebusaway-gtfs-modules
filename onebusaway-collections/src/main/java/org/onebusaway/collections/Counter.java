@@ -13,6 +13,7 @@
  */
 package org.onebusaway.collections;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +25,7 @@ import java.util.Set;
 
 public class Counter<T> implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private Map<T, Integer> _counts = new HashMap<T, Integer>();
 

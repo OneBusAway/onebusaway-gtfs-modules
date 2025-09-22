@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.model.calendar;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -35,7 +36,7 @@ import org.onebusaway.gtfs.model.StopTime;
  */
 public class ServiceDate implements Serializable, Comparable<ServiceDate> {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private static final Pattern _pattern = Pattern.compile("^(\\d{4})(\\d{2})(\\d{2})$");
 

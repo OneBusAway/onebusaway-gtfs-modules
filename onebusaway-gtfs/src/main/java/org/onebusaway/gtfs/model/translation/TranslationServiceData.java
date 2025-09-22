@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.model.translation;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,12 +22,10 @@ import java.util.Map;
 
 public class TranslationServiceData implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   // Map: list of translations by entity type and language
   private Map<TypeAndLanguage, List<PropertyTranslation>> _translationMap = new HashMap<>();
-  ;
-
   private String _feedLanguage;
 
   public List<PropertyTranslation> getTranslationsByTypeAndLanguage(

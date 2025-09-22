@@ -13,12 +13,13 @@
  */
 package org.onebusaway.collections.adapter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Iterator;
 
 public class IterableAdapter<FROM, TO> implements Iterable<TO>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private Iterable<FROM> _source;
 

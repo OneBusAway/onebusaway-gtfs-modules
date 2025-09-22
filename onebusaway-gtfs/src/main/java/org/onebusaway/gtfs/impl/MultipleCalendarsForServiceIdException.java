@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.impl;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.exceptions.CsvEntityException;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.ServiceCalendar;
@@ -26,7 +27,7 @@ import org.onebusaway.gtfs.model.ServiceCalendar;
  */
 public class MultipleCalendarsForServiceIdException extends CsvEntityException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   public MultipleCalendarsForServiceIdException(AgencyAndId serviceId) {
     super(ServiceCalendar.class, "multiple calendars found for serviceId=" + serviceId);

@@ -38,7 +38,7 @@ public class UpdateTripHeadsignIfNull implements GtfsTransformStrategy {
       if (trip.getTripHeadsign() == null) {
         List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
         if (stopTimes != null && stopTimes.size() > 0) {
-          String tripHeadSign = stopTimes.get(stopTimes.size() - 1).getStop().getName();
+          String tripHeadSign = stopTimes.getLast().getStop().getName();
           if (tripHeadSign != null) {
             trip.setTripHeadsign(tripHeadSign);
           }

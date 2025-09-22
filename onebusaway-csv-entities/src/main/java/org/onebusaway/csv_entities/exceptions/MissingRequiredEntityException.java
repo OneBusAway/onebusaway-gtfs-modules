@@ -13,6 +13,7 @@
  */
 package org.onebusaway.csv_entities.exceptions;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.schema.EntitySchema;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.csv_entities.schema.beans.CsvEntityMappingBean;
@@ -28,7 +29,7 @@ import org.onebusaway.csv_entities.schema.beans.CsvEntityMappingBean;
  */
 public class MissingRequiredEntityException extends CsvEntityException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private String _fileName;
 

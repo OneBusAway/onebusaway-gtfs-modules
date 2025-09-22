@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.serialization;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.exceptions.CsvEntityException;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
@@ -35,7 +36,7 @@ import org.onebusaway.gtfs.model.Trip;
  */
 public class NoDefaultAgencyIdException extends CsvEntityException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   public NoDefaultAgencyIdException() {
     super(Agency.class, "no default agency id was found for the gtfs feed");

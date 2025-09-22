@@ -54,8 +54,7 @@ public class FareProductFieldMappingFactory implements FieldMappingFactory {
 
   static String fareProductPrimaryKey(
       String fareProductId, String riderCategoryId, String fareMediumId) {
-    return String.format(
-        "id=%s|category=%s|medium=%s", fareProductId, riderCategoryId, fareMediumId);
+    return "id=%s|category=%s|medium=%s".formatted(fareProductId, riderCategoryId, fareMediumId);
   }
 
   private static class FareProductFieldMapping extends AbstractFieldMapping {

@@ -95,7 +95,7 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
       Map<String, List<Stop>> grouped =
           complex.stream().collect(Collectors.groupingBy(Stop::getName));
       for (List<Stop> group : grouped.values()) {
-        String parent = group.get(0).getParentStation();
+        String parent = group.getFirst().getParentStation();
         for (Stop stop : group) {
           stop.setParentStation(parent);
           dao.updateEntity(stop);
@@ -114,8 +114,8 @@ public class StationComplexStrategy implements GtfsTransformStrategy {
           if (s != null && s.getParentStation() != null && t != null) {
             if (!s.equals(t)) {
               String id =
-                  String.format(
-                      "complex-%s-%s-%s", pathwayType.name(), s.getId().getId(), t.getId().getId());
+                  "complex-%s-%s-%s"
+                      .formatted(pathwayType.name(), s.getId().getId(), t.getId().getId());
               util.createPathway(
                   s, t, pathwayType.ordinal(), genericPathwayTraversalTime, id, null);
             }

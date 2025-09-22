@@ -13,6 +13,7 @@
  */
 package org.onebusaway.collections.tuple;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -25,7 +26,7 @@ import java.io.Serializable;
  */
 final class T2Impl<S1, S2> implements T2<S1, S2>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private final S1 _first;
 

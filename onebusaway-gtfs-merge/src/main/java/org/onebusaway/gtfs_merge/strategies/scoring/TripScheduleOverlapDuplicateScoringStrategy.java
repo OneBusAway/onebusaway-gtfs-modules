@@ -37,9 +37,9 @@ public class TripScheduleOverlapDuplicateScoringStrategy implements DuplicateSco
       return null;
     }
 
-    StopTime first = stopTimes.get(0);
+    StopTime first = stopTimes.getFirst();
 
-    StopTime last = stopTimes.get(stopTimes.size() - 1);
+    StopTime last = stopTimes.getLast();
     if (!first.isDepartureTimeSet() || !last.isArrivalTimeSet()) {
       throw new IllegalStateException(
           "expected departure time for first stop and arrival time for last stop to be set for trip with id "

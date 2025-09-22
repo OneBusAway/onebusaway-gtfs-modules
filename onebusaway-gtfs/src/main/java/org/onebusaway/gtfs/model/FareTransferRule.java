@@ -114,9 +114,8 @@ public final class FareTransferRule extends IdentityBean<String> {
 
   @Override
   public String getId() {
-    return String.format(
-        "%s_%s_%s_%s_%s",
-        fromLegGroupId, toLegGroupId, fareProductId, transferCount, durationLimit);
+    return "%s_%s_%s_%s_%s"
+        .formatted(fromLegGroupId, toLegGroupId, fareProductId, transferCount, durationLimit);
   }
 
   @Override

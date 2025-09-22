@@ -63,7 +63,7 @@ public class ShiftNegativeStopTimesUpdateStrategyTest {
     List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
     assertEquals(3, stopTimes.size());
     {
-      StopTime stopTime = stopTimes.get(0);
+      StopTime stopTime = stopTimes.getFirst();
       assertEquals(
           stopTime.getArrivalTime(), StopTimeFieldMappingFactory.getStringAsSeconds("23:00:00"));
       assertEquals(

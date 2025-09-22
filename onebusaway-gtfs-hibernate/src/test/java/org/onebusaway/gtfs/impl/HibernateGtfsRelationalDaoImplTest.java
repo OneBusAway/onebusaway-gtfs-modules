@@ -85,7 +85,7 @@ public class HibernateGtfsRelationalDaoImplTest {
     Set<String> ids = new HashSet<String>();
     ids.add("A1");
     ids.add("A2");
-    assertTrue(ids.contains(stops.get(0).getId().getId()));
+    assertTrue(ids.contains(stops.getFirst().getId().getId()));
     assertTrue(ids.contains(stops.get(1).getId().getId()));
   }
 }

@@ -56,7 +56,7 @@ public class TranslationServiceImplTest {
         "headsign French", ts.getTranslatedEntity("fr", Trip.class, trip3).getTripHeadsign());
     Trip trip4 = dao.getTripForId(aid("4.3"));
     List<StopTime> stopTimes = dao.getStopTimesForTrip(trip4);
-    StopTime st1 = stopTimes.get(0);
+    StopTime st1 = stopTimes.getFirst();
     StopTime st2 = stopTimes.get(1);
     assertEquals(
         "to G Spanish", ts.getTranslatedEntity("es", StopTime.class, st1).getStopHeadsign());

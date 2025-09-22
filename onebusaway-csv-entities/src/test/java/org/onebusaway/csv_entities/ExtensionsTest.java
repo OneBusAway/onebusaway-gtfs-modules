@@ -51,7 +51,7 @@ public class ExtensionsTest {
     assertEquals(2, beans.size());
 
     {
-      BaseBean bean = beans.get(0);
+      BaseBean bean = beans.getFirst();
       assertEquals("Cats", bean.getName());
       ExtensionBean extension = bean.getExtension(ExtensionBean.class);
       assertTrue(extension != null);

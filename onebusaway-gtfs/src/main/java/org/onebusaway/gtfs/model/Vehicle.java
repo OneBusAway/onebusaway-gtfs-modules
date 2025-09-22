@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.model;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
@@ -21,7 +22,7 @@ import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 /** GTFS Extension representing vehicle configuration data. */
 @CsvFields(filename = "vehicles.txt", required = false)
 public final class Vehicle extends IdentityBean<AgencyAndId> {
-  private static final long serialVersionUID = 2L;
+  @Serial private static final long serialVersionUID = 2L;
 
   @CsvField(name = "vehicle_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;

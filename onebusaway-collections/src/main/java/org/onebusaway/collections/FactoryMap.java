@@ -13,6 +13,7 @@
  */
 package org.onebusaway.collections;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
@@ -36,7 +37,7 @@ import java.util.SortedMap;
  */
 public class FactoryMap<K, V> extends HashMap<K, V> {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private IValueFactory<K, V> _valueFactory;
 
@@ -148,7 +149,7 @@ public class FactoryMap<K, V> extends HashMap<K, V> {
 
   private static class ClassInstanceFactory<K, V> implements IValueFactory<K, V>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private Class<? extends V> _valueClass;
 
@@ -159,7 +160,7 @@ public class FactoryMap<K, V> extends HashMap<K, V> {
 
     public V create(K key) {
       try {
-        return _valueClass.newInstance();
+        return _valueClass.getDeclaredConstructor().newInstance();
       } catch (Exception e) {
         throw new IllegalStateException(e);
       }
@@ -168,7 +169,7 @@ public class FactoryMap<K, V> extends HashMap<K, V> {
 
   private static class MapImpl<K, V> implements Map<K, V>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private Map<K, V> _source;
 
@@ -236,7 +237,7 @@ public class FactoryMap<K, V> extends HashMap<K, V> {
 
   private static class SortedMapImpl<K, V> extends MapImpl<K, V> implements SortedMap<K, V> {
 
-    private static final long serialVersionUID = 1L;
+    @Serial private static final long serialVersionUID = 1L;
 
     private SortedMap<K, V> _source;
 

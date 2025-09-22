@@ -75,7 +75,7 @@ public class RouteAgencyFieldMappingFactory implements FieldMappingFactory {
         } else if (agencies.size() > 1) {
           throw new MissingRequiredFieldException(_entityType, _csvFieldName);
         }
-        agency = agencies.get(0);
+        agency = agencies.getFirst();
       } else {
         agencyId = ctx.getTranslatedAgencyId(agencyId);
 

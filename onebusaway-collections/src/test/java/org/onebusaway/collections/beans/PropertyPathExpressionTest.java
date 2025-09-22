@@ -30,25 +30,25 @@ public class PropertyPathExpressionTest {
     assertEquals("string-value", expr.invoke(obj));
 
     expr = new PropertyPathExpression("integerValue");
-    assertEquals(new Integer(31), expr.invoke(obj));
+    assertEquals(Integer.valueOf(31), expr.invoke(obj));
 
     expr = new PropertyPathExpression("doubleValue");
-    assertEquals(new Double(3.14), expr.invoke(obj));
+    assertEquals(Double.valueOf(3.14), expr.invoke(obj));
 
     expr = new PropertyPathExpression("nullA");
     assertNull(expr.invoke(obj));
 
     expr = new PropertyPathExpression("depth");
-    assertEquals(new Integer(0), expr.invoke(obj));
+    assertEquals(Integer.valueOf(0), expr.invoke(obj));
 
     expr = new PropertyPathExpression("a.depth");
-    assertEquals(new Integer(1), expr.invoke(obj));
+    assertEquals(Integer.valueOf(1), expr.invoke(obj));
 
     expr = new PropertyPathExpression("a.a.depth");
-    assertEquals(new Integer(2), expr.invoke(obj));
+    assertEquals(Integer.valueOf(2), expr.invoke(obj));
 
     expr = new PropertyPathExpression("a.doubleValue");
-    assertEquals(new Double(3.14), expr.invoke(obj));
+    assertEquals(Double.valueOf(3.14), expr.invoke(obj));
 
     expr = new PropertyPathExpression("dne");
 
@@ -68,7 +68,7 @@ public class PropertyPathExpressionTest {
 
     }
 
-    assertEquals(new Double(3.14), PropertyPathExpression.evaluate(obj, "a.doubleValue"));
+    assertEquals(Double.valueOf(3.14), PropertyPathExpression.evaluate(obj, "a.doubleValue"));
   }
 
   @Test

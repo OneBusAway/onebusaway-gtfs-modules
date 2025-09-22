@@ -126,7 +126,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     riderships = dao.getRidershipForTrip(new AgencyAndId("1", "34741339"));
     assertNotNull(riderships);
     assertEquals(1, riderships.size());
-    Ridership ridership = riderships.get(0);
+    Ridership ridership = riderships.getFirst();
     assertEquals("1", ridership.getAgencyId());
     assertEquals("1", ridership.getRouteId());
     assertEquals("34741339", ridership.getTripId());
@@ -205,7 +205,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals(1, trip.getWheelchairAccessible());
 
     List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
-    StopTime stopTime = stopTimes.get(0);
+    StopTime stopTime = stopTimes.getFirst();
     assertEquals(trip, stopTime.getTrip());
     assertEquals(stop, stopTime.getStop());
     assertEquals((9 * 60 + 1) * 60 + 30, stopTime.getArrivalTime());
@@ -231,7 +231,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
 
     List<ServiceCalendarDate> calendarDates =
         dao.getCalendarDatesForServiceId(new AgencyAndId("1", "WEEK"));
-    ServiceCalendarDate calendarDate = calendarDates.get(0);
+    ServiceCalendarDate calendarDate = calendarDates.getFirst();
     assertEquals(new AgencyAndId("1", "WEEK"), calendarDate.getServiceId());
     assertEquals(new ServiceDate(2012, 03, 04), calendarDate.getDate());
     assertEquals(2, calendarDate.getExceptionType());
@@ -246,7 +246,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals(61, fareAttribute.getJourneyDuration());
 
     List<FareRule> rules = dao.getFareRulesForFareAttribute(fareAttribute);
-    FareRule fareRule = rules.get(0);
+    FareRule fareRule = rules.getFirst();
     assertEquals(fareAttribute, fareRule.getFare());
     assertEquals(route, fareRule.getRoute());
     assertEquals("Z1", fareRule.getOriginId());
@@ -254,7 +254,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals("Z3", fareRule.getContainsId());
 
     List<ShapePoint> shapePoints = dao.getShapePointsForShapeId(new AgencyAndId("1", "SHP1"));
-    ShapePoint shapePoint = shapePoints.get(0);
+    ShapePoint shapePoint = shapePoints.getFirst();
     assertEquals(new AgencyAndId("1", "SHP1"), shapePoint.getShapeId());
     assertEquals(2, shapePoint.getSequence());
     assertEquals(47.0, shapePoint.getLat(), 0.0);
@@ -262,7 +262,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     assertEquals(123.4, shapePoint.getDistTraveled(), 0.0);
 
     List<Frequency> frequencies = dao.getFrequenciesForTrip(trip);
-    Frequency frequency = frequencies.get(0);
+    Frequency frequency = frequencies.getFirst();
     assertEquals(trip, frequency.getTrip());
     assertEquals((9 * 60 + 1) * 60 + 30, frequency.getStartTime());
     assertEquals((10 * 60 + 20) * 60 + 2, frequency.getEndTime());
@@ -300,7 +300,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     riderships = dao.getRidershipForTrip(new AgencyAndId("1", "34741338"));
     assertNotNull(riderships);
     assertEquals(2, riderships.size());
-    assertEquals("34741338", riderships.get(0).getTripId());
+    assertEquals("34741338", riderships.getFirst().getTripId());
   }
 
   @Test
@@ -520,8 +520,8 @@ public class GtfsReaderTest extends BaseGtfsTest {
     Collection<ServiceCalendar> calendars = entityStore.getAllCalendars();
     assertEquals(6, calendars.size());
 
-    ServiceCalendar calendarA = entityStore.getCalendarForId(new Integer(1));
-    assertEquals(new Integer(1), calendarA.getId());
+    ServiceCalendar calendarA = entityStore.getCalendarForId(Integer.valueOf(1));
+    assertEquals(Integer.valueOf(1), calendarA.getId());
     assertEquals(new AgencyAndId(agencyId, "SN01272009"), calendarA.getServiceId());
     assertEquals(new ServiceDate(2009, 3, 2), calendarA.getStartDate());
     assertEquals(new ServiceDate(2019, 3, 2), calendarA.getEndDate());
@@ -535,8 +535,8 @@ public class GtfsReaderTest extends BaseGtfsTest {
 
     Collection<ServiceCalendarDate> calendarDates = entityStore.getAllCalendarDates();
     assertEquals(10, calendarDates.size());
-    ServiceCalendarDate cd = entityStore.getCalendarDateForId(new Integer(1));
-    assertEquals(new Integer(1), cd.getId());
+    ServiceCalendarDate cd = entityStore.getCalendarDateForId(Integer.valueOf(1));
+    assertEquals(Integer.valueOf(1), cd.getId());
     assertEquals(new AgencyAndId(agencyId, "SN01272009"), cd.getServiceId());
     assertEquals(new ServiceDate(2009, 5, 25), cd.getDate());
     assertEquals(1, cd.getExceptionType());
@@ -562,7 +562,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     fareRuleMatches = GtfsTestData.grep(fareRuleMatches, "originId", "1");
     assertEquals(1, fareRuleMatches.size());
 
-    FareRule fareRule = fareRuleMatches.get(0);
+    FareRule fareRule = fareRuleMatches.getFirst();
     assertEquals(fareAttribute, fareRule.getFare());
     assertEquals("1", fareRule.getOriginId());
     assertEquals("1", fareRule.getDestinationId());
@@ -585,7 +585,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     List<Frequency> frequenciesForTrip =
         GtfsTestData.grep(frequencies, "trip.id", new AgencyAndId("AirBART", "M-FSAT1DN"));
     assertEquals(1, frequenciesForTrip.size());
-    Frequency frequencyForTrip = frequenciesForTrip.get(0);
+    Frequency frequencyForTrip = frequenciesForTrip.getFirst();
     assertEquals(18000, frequencyForTrip.getStartTime());
     assertEquals(21600, frequencyForTrip.getEndTime());
     assertEquals(1200, frequencyForTrip.getHeadwaySecs());
@@ -672,7 +672,7 @@ public class GtfsReaderTest extends BaseGtfsTest {
     List<StopTime> stopTimes = dao.getStopTimesForTrip(trip12);
     assertEquals(3, stopTimes.size());
 
-    StopTime stopTimeA = stopTimes.get(0);
+    StopTime stopTimeA = stopTimes.getFirst();
     assertTrue(stopTimeA.isArrivalTimeSet());
     assertTrue(stopTimeA.isDepartureTimeSet());
     assertEquals(20 * 60, stopTimeA.getArrivalTime());

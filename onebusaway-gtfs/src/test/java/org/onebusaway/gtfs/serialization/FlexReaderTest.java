@@ -44,7 +44,7 @@ public class FlexReaderTest extends BaseGtfsTest {
 
     var stopLocations =
         stopTimes.stream().map(StopTime::getStopLocation).collect(Collectors.toList());
-    var first = stopLocations.get(0);
+    var first = stopLocations.getFirst();
     assertEquals("4149546", first.getId().getId());
     assertEquals(Stop.class, first.getClass());
 
@@ -56,7 +56,7 @@ public class FlexReaderTest extends BaseGtfsTest {
   @Test
   public void locationGroupIdAsSeparateColumn() throws CsvEntityIOException, IOException {
     var dao = processFeed(GtfsTestData.getAuburnTransitFlex(), AGENCY_ID, false);
-    var locationGroup = List.copyOf(dao.getAllLocationGroups()).get(0);
+    var locationGroup = List.copyOf(dao.getAllLocationGroups()).getFirst();
     assertEquals("Aurburn Loop Stops", locationGroup.getName());
     assertEquals("1_4230479", locationGroup.getId().toString());
     var actualStops =
@@ -75,7 +75,7 @@ public class FlexReaderTest extends BaseGtfsTest {
 
     var stopLocations =
         stopTimes.stream().map(StopTime::getStopLocation).collect(Collectors.toList());
-    var first = stopLocations.get(0);
+    var first = stopLocations.getFirst();
     assertEquals("4230479", first.getId().getId());
     assertEquals(LocationGroup.class, first.getClass());
 

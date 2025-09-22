@@ -119,15 +119,11 @@ public class MTAStationAccessibilityStrategyTest extends AbstractTestSupport {
    * @return
    */
   private int converGTFSccessibilityToMTA(int gtfsValue) {
-    switch (gtfsValue) {
-      case 1:
-        return ADA_FULLY_ACCESSIBLE;
-      case 2:
-        return ADA_NOT_ACCESSIBLE;
-      case 3:
-        return ADA_PARTIALLY_ACCESSIBLE;
-      default:
-        return 0; // unknown
-    }
+    return switch (gtfsValue) {
+      case 1 -> ADA_FULLY_ACCESSIBLE;
+      case 2 -> ADA_NOT_ACCESSIBLE;
+      case 3 -> ADA_PARTIALLY_ACCESSIBLE;
+      default -> 0; // unknown
+    };
   }
 }

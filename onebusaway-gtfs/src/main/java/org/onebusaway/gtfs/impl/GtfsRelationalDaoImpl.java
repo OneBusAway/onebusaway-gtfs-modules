@@ -265,7 +265,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements GtfsMutableRel
       case 0:
         return null;
       case 1:
-        return calendars.get(0);
+        return calendars.getFirst();
     }
     throw new MultipleCalendarsForServiceIdException(serviceId);
   }
@@ -384,7 +384,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements GtfsMutableRel
       if (valuesForKey == null) {
 
         try {
-          valuesForKey = collectionType.newInstance();
+          valuesForKey = collectionType.getDeclaredConstructor().newInstance();
         } catch (Exception ex) {
           throw new EntityInstantiationException(collectionType, ex);
         }

@@ -35,7 +35,6 @@ public class PredateCalendars implements GtfsTransformStrategy {
       TransformContext transformContext, GtfsMutableRelationalDao gtfsMutableRelationalDao) {
     for (ServiceCalendar calendar : gtfsMutableRelationalDao.getAllCalendars()) {
       ServiceDate today = new ServiceDate(new java.util.Date());
-      ;
       calendar.setStartDate(today);
     }
   }

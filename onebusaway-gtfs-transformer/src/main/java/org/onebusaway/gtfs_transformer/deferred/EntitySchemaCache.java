@@ -48,8 +48,7 @@ public class EntitySchemaCache {
       _entitySchemasByFileName.put(schema.getFilename(), schema);
     }
     for (FieldMapping mapping : schema.getFields()) {
-      if (mapping instanceof SingleFieldMapping) {
-        SingleFieldMapping single = (SingleFieldMapping) mapping;
+      if (mapping instanceof SingleFieldMapping single) {
         putMappingForEntityTypeAndName(
             _mappingsByTypeAndCsvFieldName,
             schema.getEntityClass(),

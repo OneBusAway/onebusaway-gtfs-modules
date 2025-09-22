@@ -88,17 +88,17 @@ public class TranslationServiceImpl implements TranslationService {
   }
 
   private boolean objectIdMatches(Object object, String id, String subId) {
-    if (object instanceof Agency) {
-      return ((Agency) object).getId().equals(id);
-    } else if (object instanceof Stop) {
-      return ((Stop) object).getId().getId().equals(id);
-    } else if (object instanceof Route) {
-      return ((Route) object).getId().getId().equals(id);
-    } else if (object instanceof Trip) {
-      return ((Trip) object).getId().getId().equals(id);
-    } else if (object instanceof StopTime) {
-      return ((StopTime) object).getTrip().getId().getId().equals(id)
-          && ((StopTime) object).getStopSequence() == Integer.parseInt(subId);
+    if (object instanceof Agency agency) {
+      return agency.getId().equals(id);
+    } else if (object instanceof Stop stop) {
+      return stop.getId().getId().equals(id);
+    } else if (object instanceof Route route) {
+      return route.getId().getId().equals(id);
+    } else if (object instanceof Trip trip) {
+      return trip.getId().getId().equals(id);
+    } else if (object instanceof StopTime time) {
+      return time.getTrip().getId().getId().equals(id)
+          && time.getStopSequence() == Integer.parseInt(subId);
     } else if (object instanceof FeedInfo) {
       // only one
       return true;

@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.model;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
@@ -20,7 +21,7 @@ import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 @CsvFields(filename = "facilities_properties.txt", required = false)
 public class FacilityProperty extends IdentityBean<Integer> {
 
-  private static final long serialVersionUID = 2L;
+  @Serial private static final long serialVersionUID = 2L;
 
   private static final int MISSING_VALUE = -999;
 

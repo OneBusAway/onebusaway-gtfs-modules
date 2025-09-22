@@ -55,8 +55,8 @@ public class AdaptableValueSortedMapTest {
   public void testSubMap() {
     SortedMap<Integer, String> m = _m2.subMap(1, 2);
     assertEquals(1, m.size());
-    assertEquals(new Integer(1), m.firstKey());
-    assertEquals(new Integer(1), m.lastKey());
+    assertEquals(Integer.valueOf(1), m.firstKey());
+    assertEquals(Integer.valueOf(1), m.lastKey());
     assertEquals("a", m.get(1));
   }
 

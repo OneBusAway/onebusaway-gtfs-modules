@@ -75,8 +75,7 @@ class IndividualCsvEntityWriter implements EntityHandler {
     for (FieldMapping field : _schema.getFields()) {
       field.translateFromObjectToCSV(_context, wrapper, csvValues);
     }
-    if (object instanceof HasExtensions) {
-      HasExtensions hasExtensions = (HasExtensions) object;
+    if (object instanceof HasExtensions hasExtensions) {
       for (ExtensionEntitySchema extensionSchema : _schema.getExtensions()) {
         Object extension = hasExtensions.getExtension(extensionSchema.getEntityClass());
         if (extension != null) {

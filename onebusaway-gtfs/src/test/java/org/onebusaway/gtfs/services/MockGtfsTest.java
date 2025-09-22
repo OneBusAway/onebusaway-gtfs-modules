@@ -56,13 +56,13 @@ public class MockGtfsTest {
     List<ServiceCalendarDate> dates =
         dao.getCalendarDatesForServiceId(new AgencyAndId("a0", "sid0"));
     assertEquals(2, dates.size());
-    assertEquals(new ServiceDate(2012, 9, 1), dates.get(0).getDate());
-    assertEquals(1, dates.get(0).getExceptionType());
+    assertEquals(new ServiceDate(2012, 9, 1), dates.getFirst().getDate());
+    assertEquals(1, dates.getFirst().getExceptionType());
     assertEquals(new ServiceDate(2012, 9, 2), dates.get(1).getDate());
     assertEquals(2, dates.get(1).getExceptionType());
     dates = dao.getCalendarDatesForServiceId(new AgencyAndId("a0", "sid1"));
     assertEquals(1, dates.size());
-    assertEquals(new ServiceDate(2012, 9, 3), dates.get(0).getDate());
-    assertEquals(1, dates.get(0).getExceptionType());
+    assertEquals(new ServiceDate(2012, 9, 3), dates.getFirst().getDate());
+    assertEquals(1, dates.getFirst().getExceptionType());
   }
 }

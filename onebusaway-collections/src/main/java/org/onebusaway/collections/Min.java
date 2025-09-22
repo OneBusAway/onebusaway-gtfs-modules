@@ -42,7 +42,7 @@ public class Min<T> {
 
   public T getMinElement() {
     if (_minElements.isEmpty()) return null;
-    return _minElements.get(0);
+    return _minElements.getFirst();
   }
 
   public List<T> getMinElements() {

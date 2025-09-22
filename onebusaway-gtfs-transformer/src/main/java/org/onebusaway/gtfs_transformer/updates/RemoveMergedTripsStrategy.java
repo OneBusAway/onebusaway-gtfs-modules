@@ -67,7 +67,7 @@ public class RemoveMergedTripsStrategy implements GtfsTransformStrategy {
 
         Collections.sort(trips, new TripComparator());
 
-        Trip a = trips.get(0);
+        Trip a = trips.getFirst();
         Trip b = trips.get(1);
 
         List<StopTime> sta = dao.getStopTimesForTrip(a);

@@ -42,8 +42,6 @@ public class ThirtyDayCalendarExtensionStrategy implements GtfsTransformStrategy
             dao,
             removeTime(new Date(System.currentTimeMillis() - 7 * milisPerDay)),
             removeTime(new Date(System.currentTimeMillis() + 31 * milisPerDay)));
-    ;
-
     //  for the week 30 days from now, ensures there's an active calendar
     for (int i = 31; i > 24; i--) {
       ensureActiveCalendar(i, serviceIdsByDate, dao);

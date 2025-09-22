@@ -65,8 +65,7 @@ public class DeferredValueMatcher implements ValueMatcher {
         if (expectedId == null) {
           return false;
         }
-        if (expectedId instanceof AgencyAndId) {
-          AgencyAndId expectedFullId = (AgencyAndId) expectedId;
+        if (expectedId instanceof AgencyAndId expectedFullId) {
           return expectedFullId.getId().equals(actualValue);
         } else if (expectedId instanceof String) {
           return expectedId.equals(actualValue);
@@ -98,7 +97,7 @@ public class DeferredValueMatcher implements ValueMatcher {
 
   private boolean isRegexObj(Object value) {
     if (isRegexObj == null) {
-      isRegexObj = (_value instanceof String && isRegex((String) _value));
+      isRegexObj = (_value instanceof String s && isRegex(s));
     }
     return isRegexObj;
   }

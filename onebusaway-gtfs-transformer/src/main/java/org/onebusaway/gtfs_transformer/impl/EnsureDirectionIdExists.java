@@ -47,8 +47,8 @@ public class EnsureDirectionIdExists implements GtfsTransformStrategy {
 
   private String getDirectionForTrip(GtfsMutableRelationalDao dao, Trip trip) {
     List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
-    Stop s1 = dao.getStopForId(stopTimes.get(0).getStop().getId());
-    Stop s2 = dao.getStopForId(stopTimes.get(stopTimes.size() - 1).getStop().getId());
+    Stop s1 = dao.getStopForId(stopTimes.getFirst().getStop().getId());
+    Stop s2 = dao.getStopForId(stopTimes.getLast().getStop().getId());
     return String.valueOf(getDirectionFromStops(s1, s2));
   }
 

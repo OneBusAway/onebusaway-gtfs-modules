@@ -306,10 +306,10 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
    * @return the raw GTFS id
    */
   private String getRawId(Object id) {
-    if (id instanceof String) {
-      return (String) id;
-    } else if (id instanceof AgencyAndId) {
-      return ((AgencyAndId) id).getId();
+    if (id instanceof String string) {
+      return string;
+    } else if (id instanceof AgencyAndId andId) {
+      return andId.getId();
     }
     throw new UnsupportedOperationException("cannot generate raw key for type: " + id.getClass());
   }

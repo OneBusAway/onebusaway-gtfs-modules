@@ -98,14 +98,14 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
     // M-F only for this service id
     List<ServiceDate> serviceDates = data.getServiceDatesForServiceId(serviceIdA1);
     assertEquals(11, serviceDates.size());
-    assertEquals(dStart, serviceDates.get(0));
+    assertEquals(dStart, serviceDates.getFirst());
     assertEquals(new ServiceDate(2010, 2, 16), serviceDates.get(4));
     assertEquals(dEnd, serviceDates.get(10));
 
     // 7-days a week, with some calendar modifications for this service id
     serviceDates = data.getServiceDatesForServiceId(serviceIdA2);
     assertEquals(15, serviceDates.size());
-    assertEquals(dStart, serviceDates.get(0));
+    assertEquals(dStart, serviceDates.getFirst());
     assertEquals(new ServiceDate(2010, 2, 14), serviceDates.get(4));
     // 2010-02-15 should be excluded
     assertEquals(new ServiceDate(2010, 2, 16), serviceDates.get(5));
@@ -115,7 +115,7 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
     // Just weekends for this service id
     serviceDates = data.getServiceDatesForServiceId(serviceIdB1);
     assertEquals(4, serviceDates.size());
-    assertEquals(new ServiceDate(2010, 2, 13), serviceDates.get(0));
+    assertEquals(new ServiceDate(2010, 2, 13), serviceDates.getFirst());
     assertEquals(new ServiceDate(2010, 2, 14), serviceDates.get(1));
     assertEquals(new ServiceDate(2010, 2, 20), serviceDates.get(2));
     assertEquals(new ServiceDate(2010, 2, 21), serviceDates.get(3));
@@ -141,7 +141,7 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
     // Localized service dates
     List<Date> dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(serviceIdA1, tzA));
     assertEquals(11, dates.size());
-    assertEquals(DateSupport.date("2010-02-10 00:00 Pacific Standard Time"), dates.get(0));
+    assertEquals(DateSupport.date("2010-02-10 00:00 Pacific Standard Time"), dates.getFirst());
     assertEquals(DateSupport.date("2010-02-24 00:00 Pacific Standard Time"), dates.get(10));
 
     dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(serviceIdA1, tzB));
@@ -149,12 +149,12 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
 
     dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(serviceIdA2, tzA));
     assertEquals(15, dates.size());
-    assertEquals(DateSupport.date("2010-02-10 00:00 Pacific Standard Time"), dates.get(0));
+    assertEquals(DateSupport.date("2010-02-10 00:00 Pacific Standard Time"), dates.getFirst());
     assertEquals(DateSupport.date("2010-02-26 00:00 Pacific Standard Time"), dates.get(14));
 
     dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(serviceIdA2, tzB));
     assertEquals(15, dates.size());
-    assertEquals(DateSupport.date("2010-02-10 00:00 Mountain Standard Time"), dates.get(0));
+    assertEquals(DateSupport.date("2010-02-10 00:00 Mountain Standard Time"), dates.getFirst());
     assertEquals(DateSupport.date("2010-02-26 00:00 Mountain Standard Time"), dates.get(14));
 
     dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(serviceIdB1, tzA));
@@ -162,7 +162,7 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
 
     dates = data.getDatesForLocalizedServiceId(new LocalizedServiceId(serviceIdB1, tzB));
     assertEquals(4, dates.size());
-    assertEquals(DateSupport.date("2010-02-13 00:00 Mountain Standard Time"), dates.get(0));
+    assertEquals(DateSupport.date("2010-02-13 00:00 Mountain Standard Time"), dates.getFirst());
     assertEquals(DateSupport.date("2010-02-21 00:00 Mountain Standard Time"), dates.get(3));
   }
 

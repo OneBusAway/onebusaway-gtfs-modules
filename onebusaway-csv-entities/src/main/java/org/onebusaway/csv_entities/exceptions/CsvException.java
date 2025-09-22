@@ -13,6 +13,8 @@
  */
 package org.onebusaway.csv_entities.exceptions;
 
+import java.io.Serial;
+
 /**
  * Extend from {@link Exception} or {@link RuntimeException}? The debate rages on, but I chose to
  * extend from {@link RuntimeException} to maintain compatibility with existing method signatures
@@ -23,7 +25,7 @@ package org.onebusaway.csv_entities.exceptions;
  */
 public class CsvException extends RuntimeException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   public CsvException(String message) {
     super(message);

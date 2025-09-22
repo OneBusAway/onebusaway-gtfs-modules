@@ -1,0 +1,4 @@
+fare_product_id,fare_product_name,amount,currency,fare_media_id
+817,test,1.00,USD,0
+818,818,2.00,USD,0
+1848,1848,0.00,USD,0

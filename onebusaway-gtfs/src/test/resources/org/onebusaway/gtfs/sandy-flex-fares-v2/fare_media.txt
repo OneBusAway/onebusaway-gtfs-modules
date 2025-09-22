@@ -1,0 +1,2 @@
+fare_media_id,fare_media_name,fare_media_type,rider_category_id
+0,Cash,0,ADULT

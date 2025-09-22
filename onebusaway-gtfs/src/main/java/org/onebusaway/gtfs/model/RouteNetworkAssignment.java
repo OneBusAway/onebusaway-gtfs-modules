@@ -4,28 +4,28 @@ import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 
-@CsvFields(filename = "route_networks.txt")
+@CsvFields(filename = "route_networks.txt", required = false)
 public final class RouteNetworkAssignment extends IdentityBean<String> {
 
-  @CsvField(name = "route_id", optional = true, mapping = EntityFieldMappingFactory.class)
+  @CsvField(name = "route_id", mapping = EntityFieldMappingFactory.class)
   private Route route;
 
   @CsvField(name = "network_id")
   private String networkId;
 
-  private Route getRouteId() {
+  public Route getRoute() {
     return route;
   }
 
-  private void setRouteId(Route routeId) {
+  public void setRoute(Route routeId) {
     this.route = routeId;
   }
 
-  private String getNetworkId() {
+  public String getNetworkId() {
     return networkId;
   }
 
-  private void setNetworkId(String networkId) {
+  public void setNetworkId(String networkId) {
     this.networkId = networkId;
   }
 

@@ -1,0 +1,5 @@
+leg_group_id,network_id,fare_product_id,from_area_id,to_area_id
+47a674dc-2e5c-4ffe-ab03-e01c77118ea1,86,817,,
+b9012600-5e2f-4a31-b653-065c3a9cec02,188,818,,
+87910048-3cee-4011-a705-2bd46cb1e2db,188,1848,,
+1a5f658d-1b74-4d1c-8986-f27535ca4787,86,1848,,

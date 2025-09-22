@@ -16,7 +16,7 @@ package org.onebusaway.gtfs_transformer.impl;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import org.onebusaway.csv_entities.CSVLibrary;
@@ -165,8 +165,8 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
 
     _log.info(out);
     try {
-      Files.deleteIfExists(Paths.get(dayAvgTripMapFile));
-      Files.write(Paths.get(dayAvgTripMapFile), out.getBytes());
+      Files.deleteIfExists(Path.of(dayAvgTripMapFile));
+      Files.write(Path.of(dayAvgTripMapFile), out.getBytes());
     } catch (IOException io) {
       _log.error(io.getMessage());
     }

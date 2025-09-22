@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.model;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
@@ -21,7 +22,7 @@ import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 @CsvFields(filename = "pathways.txt", required = false)
 public final class Pathway extends IdentityBean<AgencyAndId> {
 
-  private static final long serialVersionUID = -2404871423254094109L;
+  @Serial private static final long serialVersionUID = -2404871423254094109L;
 
   private static final int MISSING_VALUE = -999;
 

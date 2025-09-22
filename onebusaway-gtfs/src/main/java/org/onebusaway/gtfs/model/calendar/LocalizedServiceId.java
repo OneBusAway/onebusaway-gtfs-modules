@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.model.calendar;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.TimeZone;
 import org.onebusaway.gtfs.model.AgencyAndId;
@@ -29,7 +30,7 @@ import org.onebusaway.gtfs.services.calendar.CalendarService;
  */
 public class LocalizedServiceId implements Serializable, Comparable<LocalizedServiceId> {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private final AgencyAndId id;
 

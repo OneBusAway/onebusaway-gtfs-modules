@@ -127,8 +127,7 @@ public class IndividualCsvEntityReader implements CSVListener {
     for (FieldMapping mapping : _schema.getFields())
       mapping.translateFromCSVToObject(_context, values, wrapper);
 
-    if (object instanceof HasExtensions) {
-      HasExtensions hasExtensions = (HasExtensions) object;
+    if (object instanceof HasExtensions hasExtensions) {
       for (ExtensionEntitySchema extensionSchema : _schema.getExtensions()) {
         Object extension = createNewEntityInstance(extensionSchema);
         BeanWrapper extensionWrapper = BeanWrapperFactory.wrap(extension);
@@ -148,7 +147,7 @@ public class IndividualCsvEntityReader implements CSVListener {
   private static Object createNewEntityInstance(BaseEntitySchema schema) {
     Class<?> entityClass = schema.getEntityClass();
     try {
-      return entityClass.newInstance();
+      return entityClass.getDeclaredConstructor().newInstance();
     } catch (Exception ex) {
       throw new EntityInstantiationException(entityClass, ex);
     }

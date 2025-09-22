@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.model;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
@@ -28,7 +29,7 @@ import org.onebusaway.gtfs.serialization.mappings.ServiceDateFieldMappingFactory
 @CsvFields(filename = "calendar.txt", required = false)
 public final class ServiceCalendar extends IdentityBean<Integer> {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   @CsvField(ignore = true)
   private int id;

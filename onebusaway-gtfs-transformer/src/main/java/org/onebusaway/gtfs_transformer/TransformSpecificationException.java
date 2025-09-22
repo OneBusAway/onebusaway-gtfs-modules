@@ -13,9 +13,11 @@
  */
 package org.onebusaway.gtfs_transformer;
 
+import java.io.Serial;
+
 public class TransformSpecificationException extends Exception {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private final String line;
 

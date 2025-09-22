@@ -297,7 +297,7 @@ public class InterpolationLibrary {
         Number prevKey, Number prevValue, Number nextKey, Number nextValue, double ratio) {
 
       double result = interpolatePair(prevValue.doubleValue(), nextValue.doubleValue(), ratio);
-      return new Double(result);
+      return Double.valueOf(result);
     }
   }
 }

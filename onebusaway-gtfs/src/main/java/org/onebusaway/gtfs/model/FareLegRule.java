@@ -86,9 +86,8 @@ public final class FareLegRule extends IdentityBean<String> {
     String toAreaId = Optional.ofNullable(toArea).map(Area::getAreaId).orElse(null);
     String baseLegGroupId = Optional.ofNullable(legGroupId).map(AgencyAndId::getId).orElse(null);
     String baseProductId = Optional.ofNullable(fareProductId).map(AgencyAndId::getId).orElse(null);
-    return String.format(
-        "groupId=%s|product=%s|network=%s|fromArea=%s|toArea=%s",
-        baseLegGroupId, baseProductId, networkId, fromAreaId, toAreaId);
+    return "groupId=%s|product=%s|network=%s|fromArea=%s|toArea=%s"
+        .formatted(baseLegGroupId, baseProductId, networkId, fromAreaId, toAreaId);
   }
 
   @Override

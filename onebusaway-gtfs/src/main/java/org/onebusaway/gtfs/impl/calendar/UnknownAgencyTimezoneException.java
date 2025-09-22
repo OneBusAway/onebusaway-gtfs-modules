@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.impl.calendar;
 
+import java.io.Serial;
 import java.util.TimeZone;
 import org.onebusaway.csv_entities.exceptions.CsvEntityException;
 import org.onebusaway.gtfs.model.Agency;
@@ -26,7 +27,7 @@ import org.onebusaway.gtfs.model.Agency;
  */
 public class UnknownAgencyTimezoneException extends CsvEntityException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   public UnknownAgencyTimezoneException(String agencyName, String timezone) {
     super(Agency.class, "unknown timezone \"" + timezone + "\" for agency \"" + agencyName + "\"");

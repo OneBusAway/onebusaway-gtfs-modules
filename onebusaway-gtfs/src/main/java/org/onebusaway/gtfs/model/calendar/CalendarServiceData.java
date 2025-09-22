@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.model.calendar;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +28,7 @@ import org.onebusaway.gtfs.model.AgencyAndId;
 
 public class CalendarServiceData implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private Map<String, TimeZone> _timeZonesByAgencyId = new HashMap<String, TimeZone>();
 

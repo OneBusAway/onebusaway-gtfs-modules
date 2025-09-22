@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.serialization;
 
+import java.io.Serial;
 import java.io.Serializable;
 import org.onebusaway.csv_entities.exceptions.CsvEntityException;
 
@@ -23,7 +24,7 @@ import org.onebusaway.csv_entities.exceptions.CsvEntityException;
  */
 public class DuplicateEntityException extends CsvEntityException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private final Serializable id;
 

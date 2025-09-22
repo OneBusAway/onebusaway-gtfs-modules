@@ -13,6 +13,7 @@
  */
 package org.onebusaway.csv_entities.exceptions;
 
+import java.io.Serial;
 import org.apache.commons.beanutils2.ConvertUtils;
 
 /**
@@ -25,7 +26,7 @@ import org.apache.commons.beanutils2.ConvertUtils;
  */
 public class NoDefaultConverterException extends CsvEntityException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
   private final String _csvFieldName;
   private final String _objFieldName;
   private final Class<?> _objFieldType;

@@ -13,6 +13,7 @@
  */
 package org.onebusaway.collections.combinations;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +27,7 @@ import org.onebusaway.collections.tuple.Tuples;
 
 class CombinationIterator<T> implements Iterator<Pair<T>>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private List<T> _readings;
 

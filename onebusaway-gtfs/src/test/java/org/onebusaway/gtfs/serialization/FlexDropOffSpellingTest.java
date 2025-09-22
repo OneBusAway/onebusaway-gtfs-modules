@@ -45,9 +45,8 @@ public class FlexDropOffSpellingTest {
     gtfs.putDefaultTrips();
 
     String rows =
-        String.format(
-            "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_booking_rule_id,drop_off_booking_rule_id,start_pickup_%s_window,end_pickup_%s_window",
-            "drop_off", "drop_off");
+        "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,pickup_booking_rule_id,drop_off_booking_rule_id,start_pickup_%s_window,end_pickup_%s_window"
+            .formatted("drop_off", "drop_off");
 
     gtfs.putLines("stop_times.txt", rows, "T10-0,,,location-123,0,headsign-1,,,10:00:00,18:00:00");
     GtfsRelationalDao dao = processFeed(gtfs.getPath(), "1", false);

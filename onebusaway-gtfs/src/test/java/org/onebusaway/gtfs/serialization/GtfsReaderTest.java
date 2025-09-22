@@ -520,8 +520,8 @@ public class GtfsReaderTest extends BaseGtfsTest {
     Collection<ServiceCalendar> calendars = entityStore.getAllCalendars();
     assertEquals(6, calendars.size());
 
-    ServiceCalendar calendarA = entityStore.getCalendarForId(new Integer(1));
-    assertEquals(new Integer(1), calendarA.getId());
+    ServiceCalendar calendarA = entityStore.getCalendarForId(Integer.valueOf(1));
+    assertEquals(Integer.valueOf(1), calendarA.getId());
     assertEquals(new AgencyAndId(agencyId, "SN01272009"), calendarA.getServiceId());
     assertEquals(new ServiceDate(2009, 3, 2), calendarA.getStartDate());
     assertEquals(new ServiceDate(2019, 3, 2), calendarA.getEndDate());
@@ -535,8 +535,8 @@ public class GtfsReaderTest extends BaseGtfsTest {
 
     Collection<ServiceCalendarDate> calendarDates = entityStore.getAllCalendarDates();
     assertEquals(10, calendarDates.size());
-    ServiceCalendarDate cd = entityStore.getCalendarDateForId(new Integer(1));
-    assertEquals(new Integer(1), cd.getId());
+    ServiceCalendarDate cd = entityStore.getCalendarDateForId(Integer.valueOf(1));
+    assertEquals(Integer.valueOf(1), cd.getId());
     assertEquals(new AgencyAndId(agencyId, "SN01272009"), cd.getServiceId());
     assertEquals(new ServiceDate(2009, 5, 25), cd.getDate());
     assertEquals(1, cd.getExceptionType());

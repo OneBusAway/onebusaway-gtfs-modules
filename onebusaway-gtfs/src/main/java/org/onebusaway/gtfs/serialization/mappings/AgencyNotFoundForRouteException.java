@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.serialization.mappings;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.exceptions.CsvEntityException;
 import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.Route;
@@ -32,7 +33,7 @@ import org.onebusaway.gtfs.serialization.GtfsReaderContext;
  */
 public class AgencyNotFoundForRouteException extends CsvEntityException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private Route _route;
 

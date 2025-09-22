@@ -13,12 +13,13 @@
  */
 package org.onebusaway.gtfs.model.translation;
 
+import java.io.Serial;
 import java.io.Serializable;
 import org.onebusaway.gtfs.model.Translation;
 
 public class PropertyTranslation implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private String propertyName;
 

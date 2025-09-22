@@ -13,6 +13,8 @@
  */
 package org.onebusaway.csv_entities.exceptions;
 
+import java.io.Serial;
+
 /**
  * Indicates that the specified entity type does not have a property with the given name, or that
  * there was an error examining the property.
@@ -21,7 +23,7 @@ package org.onebusaway.csv_entities.exceptions;
  */
 public class NoSuchPropertyException extends CsvEntityException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private String _propertyName;
 

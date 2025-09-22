@@ -272,10 +272,10 @@ public class HibernateOperationsImpl implements HibernateOperations {
   protected void applyNamedParameterToQuery(Query queryObject, String paramName, Object value)
       throws HibernateException {
 
-    if (value instanceof Collection<?>) {
-      queryObject.setParameterList(paramName, (Collection<?>) value);
-    } else if (value instanceof Object[]) {
-      queryObject.setParameterList(paramName, (Object[]) value);
+    if (value instanceof Collection<?> collection) {
+      queryObject.setParameterList(paramName, collection);
+    } else if (value instanceof Object[] objects) {
+      queryObject.setParameterList(paramName, objects);
     } else {
       queryObject.setParameter(paramName, value);
     }

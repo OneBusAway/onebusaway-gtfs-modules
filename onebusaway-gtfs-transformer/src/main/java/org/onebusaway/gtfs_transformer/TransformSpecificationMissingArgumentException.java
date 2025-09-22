@@ -13,10 +13,12 @@
  */
 package org.onebusaway.gtfs_transformer;
 
+import java.io.Serial;
+
 public class TransformSpecificationMissingArgumentException
     extends TransformSpecificationException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   public TransformSpecificationMissingArgumentException(String line, String name) {
     super("missing required argument: \"" + name + "\"", line);

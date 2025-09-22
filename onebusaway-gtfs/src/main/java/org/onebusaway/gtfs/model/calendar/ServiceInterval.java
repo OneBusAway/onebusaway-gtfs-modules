@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.model.calendar;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -22,7 +23,7 @@ import java.io.Serializable;
  */
 public final class ServiceInterval implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private final int minArrival;
   private final int minDeparture;

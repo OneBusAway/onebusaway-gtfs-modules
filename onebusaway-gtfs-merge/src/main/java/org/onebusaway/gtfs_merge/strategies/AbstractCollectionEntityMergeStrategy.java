@@ -243,8 +243,8 @@ public abstract class AbstractCollectionEntityMergeStrategy<KEY extends Serializ
    * @return
    */
   protected String getRawKey(KEY key) {
-    if (key instanceof AgencyAndId) {
-      return ((AgencyAndId) key).getId();
+    if (key instanceof AgencyAndId id) {
+      return id.getId();
     }
     throw new UnsupportedOperationException("cannot generate raw key for type: " + key.getClass());
   }
@@ -298,13 +298,11 @@ public abstract class AbstractCollectionEntityMergeStrategy<KEY extends Serializ
         _log.warn("rename with type String not supported for key=" + key);
       }
       return (KEY) (context.getPrefix() + key);
-    } else if (key instanceof AgencyAndId) {
+    } else if (key instanceof AgencyAndId id) {
       if (this.getDuplicateRenamingStrategy() == EDuplicateRenamingStrategy.AGENCY) {
-        return (KEY)
-            MergeSupport.renameAgencyAndId(
-                ((AgencyAndId) key).getAgencyId() + "-", (AgencyAndId) key);
+        return (KEY) MergeSupport.renameAgencyAndId(id.getAgencyId() + "-", id);
       }
-      return (KEY) MergeSupport.renameAgencyAndId(context, (AgencyAndId) key);
+      return (KEY) MergeSupport.renameAgencyAndId(context, id);
     }
     throw new UnsupportedOperationException("uknown key type: " + key.getClass());
   }

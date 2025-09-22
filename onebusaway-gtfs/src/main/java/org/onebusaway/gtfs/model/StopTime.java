@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.model;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
@@ -23,7 +24,7 @@ import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 public final class StopTime extends IdentityBean<Integer>
     implements Comparable<StopTime>, StopTimeProxy {
 
-  private static final long serialVersionUID = 2L;
+  @Serial private static final long serialVersionUID = 2L;
 
   public static final int MISSING_VALUE = -999;
 

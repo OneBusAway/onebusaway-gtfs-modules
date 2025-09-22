@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.model;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +24,7 @@ import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFac
 
 @CsvFields(filename = "location_groups.txt", required = false)
 public class LocationGroup extends IdentityBean<AgencyAndId> implements StopLocation {
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   @CsvField(name = "location_group_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;

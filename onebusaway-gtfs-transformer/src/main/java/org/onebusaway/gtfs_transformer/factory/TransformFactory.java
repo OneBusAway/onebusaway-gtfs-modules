@@ -329,7 +329,7 @@ public class TransformFactory {
       String factoryType = json.getString("factory");
       try {
         Class<?> clazz = Class.forName(factoryType);
-        Object factoryObj = clazz.newInstance();
+        Object factoryObj = clazz.getDeclaredConstructor().newInstance();
         if (!(factoryObj instanceof EntityTransformStrategy)) {
           throw new TransformSpecificationException(
               "factory object is not an instance of EntityTransformStrategy: " + clazz.getName(),
@@ -471,7 +471,7 @@ public class TransformFactory {
     Object factoryObj = null;
     try {
       Class<?> clazz = Class.forName(value);
-      factoryObj = clazz.newInstance();
+      factoryObj = clazz.getDeclaredConstructor().newInstance();
     } catch (Exception ex) {
       throw new TransformSpecificationException("error instantiating class: " + value, ex, line);
     }
@@ -485,16 +485,15 @@ public class TransformFactory {
 
     boolean added = false;
 
-    if (factoryObj instanceof GtfsTransformStrategy) {
-      _transformer.addTransform((GtfsTransformStrategy) factoryObj);
+    if (factoryObj instanceof GtfsTransformStrategy strategy) {
+      _transformer.addTransform(strategy);
       added = true;
     }
-    if (factoryObj instanceof GtfsEntityTransformStrategy) {
-      _transformer.addEntityTransform((GtfsEntityTransformStrategy) factoryObj);
+    if (factoryObj instanceof GtfsEntityTransformStrategy strategy) {
+      _transformer.addEntityTransform(strategy);
       added = true;
     }
-    if (factoryObj instanceof GtfsTransformStrategyFactory) {
-      GtfsTransformStrategyFactory factory = (GtfsTransformStrategyFactory) factoryObj;
+    if (factoryObj instanceof GtfsTransformStrategyFactory factory) {
       factory.createTransforms(_transformer);
       added = true;
     }
@@ -517,8 +516,7 @@ public class TransformFactory {
     for (Iterator<?> it = json.keys(); it.hasNext(); ) {
       String key = (String) it.next();
       Object v = json.get(key);
-      if (v instanceof JSONArray) {
-        JSONArray array = (JSONArray) v;
+      if (v instanceof JSONArray array) {
         List<Object> asList = new ArrayList<Object>();
         for (int i = 0; i < array.length(); ++i) {
           asList.add(array.get(i));
@@ -739,7 +737,7 @@ public class TransformFactory {
 
   private Object instantiate(Class<?> entityClass) {
     try {
-      return entityClass.newInstance();
+      return entityClass.getDeclaredConstructor().newInstance();
     } catch (Exception ex) {
       throw new IllegalStateException("error instantiating type: " + entityClass.getName());
     }

@@ -13,6 +13,7 @@
  */
 package org.onebusaway.csv_entities.exceptions;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.schema.AnnotationDrivenEntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 
@@ -26,7 +27,7 @@ import org.onebusaway.csv_entities.schema.annotations.CsvFields;
  */
 public class NoCsvFieldsAnnotationException extends CsvEntityException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   public NoCsvFieldsAnnotationException(Class<?> entityType) {
     super(entityType, "No @CsvFields annotation found for entity type " + entityType.getName());

@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.model;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
@@ -20,7 +21,7 @@ import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFac
 /** GTFS Extension representing icon configuration data. */
 @CsvFields(filename = "icons.txt", required = false, prefix = "icon_")
 public final class Icon extends IdentityBean<AgencyAndId> {
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   @CsvField(mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId id;

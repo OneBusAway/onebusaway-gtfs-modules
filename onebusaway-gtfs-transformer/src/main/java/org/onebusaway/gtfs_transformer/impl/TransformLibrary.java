@@ -24,16 +24,16 @@ import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 public class TransformLibrary {
 
   public void removeEntity(GtfsMutableRelationalDao dao, Object obj) {
-    if (obj instanceof Agency) {
-      removeAgency(dao, (Agency) obj);
-    } else if (obj instanceof Route) {
-      removeRoute(dao, (Route) obj);
-    } else if (obj instanceof Stop) {
-      removeStop(dao, (Stop) obj);
-    } else if (obj instanceof Trip) {
-      removeTrip(dao, (Trip) obj);
-    } else if (obj instanceof StopTime) {
-      removeStopTime(dao, (StopTime) obj);
+    if (obj instanceof Agency agency) {
+      removeAgency(dao, agency);
+    } else if (obj instanceof Route route) {
+      removeRoute(dao, route);
+    } else if (obj instanceof Stop stop) {
+      removeStop(dao, stop);
+    } else if (obj instanceof Trip trip) {
+      removeTrip(dao, trip);
+    } else if (obj instanceof StopTime time) {
+      removeStopTime(dao, time);
     }
   }
 

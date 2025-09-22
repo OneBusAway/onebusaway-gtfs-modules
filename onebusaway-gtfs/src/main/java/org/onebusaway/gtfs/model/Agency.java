@@ -14,6 +14,7 @@
  */
 package org.onebusaway.gtfs.model;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.AgencyIdTranslationFieldMappingFactory;
@@ -21,7 +22,7 @@ import org.onebusaway.gtfs.serialization.mappings.AgencyIdTranslationFieldMappin
 @CsvFields(filename = "agency.txt", prefix = "agency_")
 public final class Agency extends IdentityBean<String> {
 
-  private static final long serialVersionUID = 2L;
+  @Serial private static final long serialVersionUID = 2L;
 
   @CsvField(optional = true, mapping = AgencyIdTranslationFieldMappingFactory.class)
   private String id;

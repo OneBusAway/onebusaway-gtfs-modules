@@ -94,7 +94,7 @@ class EntityFieldMappingImpl extends AbstractFieldMapping implements ConverterFa
     @Override
     public Object convert(@SuppressWarnings("rawtypes") Class type, Object value) {
       if (type == String.class) {
-        if (value instanceof String) return (String) value;
+        if (value instanceof String string) return string;
       } else if (type == _objFieldType) {
         String entityId = value.toString();
         String agencyId = _context.getAgencyForEntity(_objFieldType, entityId);

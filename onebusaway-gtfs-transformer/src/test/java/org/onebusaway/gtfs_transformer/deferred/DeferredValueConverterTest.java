@@ -54,13 +54,13 @@ public class DeferredValueConverterTest {
   @Test
   public void testDouble() {
     Object value = convert(new Stop(), "lat", "47.1");
-    assertEquals(new Double(47.1), value);
+    assertEquals(Double.valueOf(47.1), value);
   }
 
   @Test
   public void testInteger() {
     Object value = convert(new Stop(), "locationType", "1");
-    assertEquals(new Integer(1), value);
+    assertEquals(Integer.valueOf(1), value);
   }
 
   @Test

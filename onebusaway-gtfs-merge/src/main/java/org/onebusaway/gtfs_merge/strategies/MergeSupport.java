@@ -43,8 +43,8 @@ public class MergeSupport {
   }
 
   public static void clearCaches(GtfsRelationalDao source) {
-    if (source instanceof GtfsRelationalDaoImpl) {
-      ((GtfsRelationalDaoImpl) source).clearAllCaches();
+    if (source instanceof GtfsRelationalDaoImpl impl) {
+      impl.clearAllCaches();
     }
   }
 

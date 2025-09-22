@@ -18,8 +18,7 @@ import org.onebusaway.gtfs.services.GtfsRelationalDao;
 
 public class UpdateLibrary {
   public static void clearDaoCache(GtfsRelationalDao dao) {
-    if (dao instanceof GtfsRelationalDaoImpl) {
-      GtfsRelationalDaoImpl daoImpl = (GtfsRelationalDaoImpl) dao;
+    if (dao instanceof GtfsRelationalDaoImpl daoImpl) {
       daoImpl.clearAllCaches();
     }
   }

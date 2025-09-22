@@ -13,6 +13,8 @@
  */
 package org.onebusaway.csv_entities.exceptions;
 
+import java.io.Serial;
+
 /**
  * Indicates that the value of the specified field for the specified entity type is invalid.
  *
@@ -20,7 +22,7 @@ package org.onebusaway.csv_entities.exceptions;
  */
 public class InvalidValueEntityException extends CsvEntityException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private final String _fieldName;
 

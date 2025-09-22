@@ -56,8 +56,7 @@ public class GtfsReaderExampleMain {
   private static class GtfsEntityHandler implements EntityHandler {
 
     public void handleEntity(Object bean) {
-      if (bean instanceof Stop) {
-        Stop stop = (Stop) bean;
+      if (bean instanceof Stop stop) {
         System.out.println("stop: " + stop.getName());
       }
     }

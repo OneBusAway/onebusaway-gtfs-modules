@@ -14,6 +14,7 @@
 package org.onebusaway.csv_entities.exceptions;
 
 import java.beans.Introspector;
+import java.io.Serial;
 
 /**
  * Indicates that introspection failed for the specified entity type. Usually indicates a failure
@@ -24,7 +25,7 @@ import java.beans.Introspector;
  */
 public class IntrospectionException extends CsvEntityException {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   public IntrospectionException(Class<?> entityType) {
     super(entityType, "introspection error for type " + entityType);

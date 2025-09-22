@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.model;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.RouteAgencyFieldMappingFactory;
@@ -21,7 +22,7 @@ import org.onebusaway.gtfs.serialization.mappings.RouteAgencyIdFieldMappingFacto
 @CsvFields(filename = "routes.txt", prefix = "route_")
 public final class Route extends IdentityBean<AgencyAndId> {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   private static final int MISSING_VALUE = -999;
 

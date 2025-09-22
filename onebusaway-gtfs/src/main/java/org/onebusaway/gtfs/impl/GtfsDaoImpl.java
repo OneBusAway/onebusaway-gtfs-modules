@@ -93,6 +93,11 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getAllEntitiesForType(Route.class);
   }
 
+  @Override
+  public Collection<RouteNetworkAssignment> getAllRouteNetworkAssignments() {
+    return getAllEntitiesForType(RouteNetworkAssignment.class);
+  }
+
   public Collection<ShapePoint> getAllShapePoints() {
     if (packShapePoints) {
       return shapePoints;

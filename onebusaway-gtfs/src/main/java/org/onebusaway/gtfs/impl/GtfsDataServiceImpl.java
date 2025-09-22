@@ -223,6 +223,11 @@ public class GtfsDataServiceImpl implements GtfsDataService {
   }
 
   @Override
+  public Collection<RouteNetworkAssignment> getAllRouteNetworkAssignments() {
+    return _dao.getAllRouteNetworkAssignments();
+  }
+
+  @Override
   public Route getRouteForId(AgencyAndId id) {
     return _dao.getRouteForId(id);
   }

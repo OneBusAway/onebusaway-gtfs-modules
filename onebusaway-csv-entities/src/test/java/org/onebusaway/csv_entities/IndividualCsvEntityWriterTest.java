@@ -13,11 +13,11 @@
  */
 package org.onebusaway.csv_entities;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.EntitySchemaFactoryHelper;
 import org.onebusaway.csv_entities.schema.beans.CsvEntityMappingBean;

@@ -13,14 +13,12 @@
  */
 package org.onebusaway.csv_entities;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.csv_entities.schema.AnnotationDrivenEntitySchemaFactory;
 

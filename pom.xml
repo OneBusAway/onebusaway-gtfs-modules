@@ -137,6 +137,7 @@
           <exportDatatables>true</exportDatatables>
           <activeRecipes>
             <recipe>org.openrewrite.java.migrate.UpgradeToJava21</recipe>
+            <recipe>org.openrewrite.java.spring.boot2.SpringBoot2JUnit4to5Migration</recipe>
           </activeRecipes>
         </configuration>
         <dependencies>
@@ -144,6 +145,11 @@
             <groupId>org.openrewrite.recipe</groupId>
             <artifactId>rewrite-migrate-java</artifactId>
             <version>3.17.1</version>
+          </dependency>
+          <dependency>
+            <groupId>org.openrewrite.recipe</groupId>
+            <artifactId>rewrite-spring</artifactId>
+            <version>6.14.0</version>
           </dependency>
         </dependencies>
       </plugin>

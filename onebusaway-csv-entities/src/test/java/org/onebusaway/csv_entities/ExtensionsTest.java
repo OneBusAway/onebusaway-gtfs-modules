@@ -13,8 +13,8 @@
  */
 package org.onebusaway.csv_entities;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,7 +25,7 @@ import java.io.StringReader;
 import java.util.Collections;
 import java.util.List;
 import java.util.zip.ZipFile;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.ExcludeOptionalAndMissingEntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;

@@ -13,11 +13,9 @@
  */
 package org.onebusaway.collections.beans;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PropertyPathExpressionTest {
 

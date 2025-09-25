@@ -33,7 +33,9 @@
       automerge: true,
       matchPackageNames: [
         'org.apache.maven.plugins:{/,}**',
-        'org.sonatype.central:central-publishing-maven-plugin'
+        'org.sonatype.central:central-publishing-maven-plugin',
+        'org.openrewrite.maven:{/,}**',
+        'org.openrewrite.recipe:{/,}**'
       ],
     },
     {

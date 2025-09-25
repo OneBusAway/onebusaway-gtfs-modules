@@ -34,6 +34,7 @@
       matchPackageNames: [
         'org.apache.maven.plugins:{/,}**',
         'org.sonatype.central:central-publishing-maven-plugin',
+        'com.diffplug.spotless:spotless-maven-plugin',
         'org.openrewrite.maven:{/,}**',
         'org.openrewrite.recipe:{/,}**'
       ],

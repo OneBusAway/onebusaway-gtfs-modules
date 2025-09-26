@@ -83,15 +83,15 @@ public class TransformFactory {
   private static final Set<String> _excludeForMatchSpec =
       new HashSet<String>(Arrays.asList(ARG_FILE, ARG_CLASS, ARG_COLLECTION));
 
-  private static Pattern _anyMatcher = Pattern.compile("^any\\((.*)\\)$");
+  private static final Pattern _anyMatcher = Pattern.compile("^any\\((.*)\\)$");
 
-  private static Pattern _pathMatcher = Pattern.compile("^path\\((.*)\\)$");
+  private static final Pattern _pathMatcher = Pattern.compile("^path\\((.*)\\)$");
 
-  private static Pattern _replaceMatcher = Pattern.compile("^s/(.*)/(.*)/$");
+  private static final Pattern _replaceMatcher = Pattern.compile("^s/(.*)/(.*)/$");
 
   private final GtfsTransformer _transformer;
 
-  private List<String> _entityPackages = new ArrayList<String>();
+  private final List<String> _entityPackages = new ArrayList<String>();
 
   private final EntitySchemaCache _schemaCache = new EntitySchemaCache();
 
@@ -183,8 +183,6 @@ public class TransformFactory {
           handleTransformOperation(line, json, new UpdateTripHeadsignByDestinationStrategy());
         } else if (opType.equals("update_trip_headsign_exclude_nonreference")) {
           handleTransformOperation(line, json, new UpdateTripHeadsignExcludeNonreference());
-        } else if (opType.equals("update_trip_headsign_by_reference")) {
-          handleTransformOperation(line, json, new UpdateTripHeadsignByReference());
         } else if (opType.equals("update_trip_headsign_if_null")) {
           handleTransformOperation(line, json, new UpdateTripHeadsignIfNull());
         } else if (opType.equals("update_trip_headsign_railroad_convention")) {
@@ -209,8 +207,6 @@ public class TransformFactory {
           handleTransformOperation(line, json, new MergeRouteFromReferenceStrategy());
         } else if (opType.equals("merge_route_five")) {
           handleTransformOperation(line, json, new MergeRouteFive());
-        } else if (opType.equals("update_stop_id_by_id")) {
-          handleTransformOperation(line, json, new UpdateStopIdById());
         } else if (opType.equals("update_route_name")) {
           handleTransformOperation(line, json, new UpdateRouteNames());
         } else if (opType.equals("validate_gtfs")) {
@@ -255,13 +251,9 @@ public class TransformFactory {
           handleTransformOperation(line, json, new VerifyReferenceService());
         } else if (opType.equals("sanitize_for_api_access")) {
           handleTransformOperation(line, json, new SanitizeForApiAccess());
-        } else if (opType.equals("add_omny_subway_data")) {
-          handleTransformOperation(line, json, new AddOmnySubwayData());
         } else if (opType.equals("add_omny_lirr_data")) {
           handleTransformOperation(line, json, new AddOmnyLIRRData());
         } else if (opType.equals("add_omny_bus_data")) {
-          handleTransformOperation(line, json, new AddOmnyBusData());
-        } else if (opType.equals("verify_route_ids")) {
           handleTransformOperation(line, json, new VerifyRouteIds());
         } else if (opType.equals("KCMSuite")) {
           String baseUrl = "https://raw.github.com/wiki/camsys/onebusaway-application-modules";

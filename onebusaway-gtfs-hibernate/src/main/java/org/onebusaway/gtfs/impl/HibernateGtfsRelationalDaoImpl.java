@@ -345,16 +345,6 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
     return _ops.find("FROM Network");
   }
 
-  @Override
-  public boolean hasMetadata(String filename) {
-    return false;
-  }
-
-  @Override
-  public String getMetadata(String filename) {
-    return null;
-  }
-
   /****
    * {@link GtfsRelationalDao} Interface
    ****/

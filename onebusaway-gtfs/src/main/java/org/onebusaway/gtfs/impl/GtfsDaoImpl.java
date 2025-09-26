@@ -30,8 +30,6 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   private boolean packShapePoints = false;
 
-  private final Map<String, String> metadataByFilename = new HashMap<>();
-
   public boolean isPackStopTimes() {
     return packStopTimes;
   }

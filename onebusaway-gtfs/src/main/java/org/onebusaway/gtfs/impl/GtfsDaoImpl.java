@@ -379,16 +379,6 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     super.close();
   }
 
-  @Override
-  public boolean hasMetadata(String filename) {
-    return metadataByFilename.containsKey(filename);
-  }
-
-  @Override
-  public String getMetadata(String filename) {
-    return metadataByFilename.get(filename);
-  }
-
   /****
    * Private Methods
    ****/

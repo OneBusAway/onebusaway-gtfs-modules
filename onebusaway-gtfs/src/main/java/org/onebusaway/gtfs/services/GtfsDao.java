@@ -232,7 +232,4 @@ public interface GtfsDao extends GenericDao {
         .isPresent();
   }
 
-  boolean hasMetadata(String filename);
-
-  String getMetadata(String filename);
 }

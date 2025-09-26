@@ -18,7 +18,6 @@ import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /*
@@ -27,8 +26,6 @@ on ids that are not more than 2 characters and will truncate longer ids
  */
 
 public class MergeRouteFromReferenceStrategy implements GtfsTransformStrategy {
-
-  private final Logger _log = LoggerFactory.getLogger(MergeRouteFromReferenceStrategy.class);
 
   @Override
   public String getName() {

@@ -17,11 +17,9 @@ import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UpdateRouteNames implements GtfsTransformStrategy {
-  private final Logger _log = LoggerFactory.getLogger(UpdateRouteNames.class);
 
   @Override
   public String getName() {

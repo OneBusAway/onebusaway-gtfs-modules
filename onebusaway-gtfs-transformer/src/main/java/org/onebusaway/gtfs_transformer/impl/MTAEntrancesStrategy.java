@@ -136,7 +136,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     Collection<FeedInfo> feedInfos = dao.getAllFeedInfos();
-    if (feedInfos.size() > 0){}
+    if (feedInfos.size() > 0) {}
     if (elevatorsCsv != null) {
       File elevatorsFile = new File(elevatorsCsv);
     }

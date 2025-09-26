@@ -28,10 +28,6 @@ public class UpdateStopIdFromReferenceStrategy implements GtfsTransformStrategy 
 
   private final Logger _log = LoggerFactory.getLogger(UpdateStopIdFromReferenceStrategy.class);
 
-  private static final int LOCATION_NAME_INDEX = 0;
-  private static final int DIRECTION = 3;
-  private static final int ATIS_ID_INDEX = 6;
-
   @Override
   public String getName() {
     return this.getClass().getSimpleName();

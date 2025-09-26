@@ -39,8 +39,6 @@ import org.slf4j.LoggerFactory;
  * Looks at Routes running today through next 3 days
  */
 public class VerifyReferenceService implements GtfsTransformStrategy {
-  private final int ACTIVE_ROUTES = 0;
-  private final int ALARMING_ROUTES = 1;
   private final Logger _log = LoggerFactory.getLogger(VerifyReferenceService.class);
 
   @CsvField(optional = true)

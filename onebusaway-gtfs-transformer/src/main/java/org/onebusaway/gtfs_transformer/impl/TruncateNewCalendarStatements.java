@@ -22,7 +22,6 @@ import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -32,8 +31,6 @@ import org.slf4j.LoggerFactory;
  * @see RemoveOldCalendarStatements
  */
 public class TruncateNewCalendarStatements implements GtfsTransformStrategy {
-
-  private final Logger _log = LoggerFactory.getLogger(TruncateNewCalendarStatements.class);
 
   /*
    * add two arguments used in the truncated transformation strategy

@@ -43,7 +43,6 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
   private final Logger _log = LoggerFactory.getLogger(VerifyFutureRouteService.class);
   private final int ACTIVE_ROUTES = 0;
-  private final int ALARMING_ROUTES = 1;
 
   @CsvField(optional = true)
   private String problemRoutesUrl;
@@ -224,8 +223,6 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
   private class ProblemRouteListener implements CSVListener {
 
     private Collection<String> routeIds = new HashSet<String>();
-
-    private GtfsMutableRelationalDao dao;
 
     @Override
     public void handleLine(List<String> list) throws Exception {

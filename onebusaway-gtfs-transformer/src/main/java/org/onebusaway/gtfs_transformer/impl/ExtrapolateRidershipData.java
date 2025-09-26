@@ -38,7 +38,6 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
   private final Logger _log = LoggerFactory.getLogger(ExtrapolateRidershipData.class);
 
   private static final int ROUTE_ID = 0;
-  private static final int DIR = 1;
   private static final int TRIP_ID = 2;
   private static final int STOP_ID = 5;
   private static final int STOP_SEQ = 11;

@@ -20,7 +20,6 @@ import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 import org.onebusaway.gtfs_merge.strategies.scoring.StopDistanceDuplicateScoringStrategy;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -29,8 +28,6 @@ import org.slf4j.LoggerFactory;
  * @author bdferris
  */
 public class StopMergeStrategy extends AbstractIdentifiableSingleEntityMergeStrategy<Stop> {
-
-  private static Logger _log = LoggerFactory.getLogger(StopMergeStrategy.class);
 
   public StopMergeStrategy() {
     super(Stop.class);

@@ -22,7 +22,6 @@ import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFac
 public class FacilityPropertyDefinition extends IdentityBean<AgencyAndId> {
 
   @Serial private static final long serialVersionUID = 2L;
-  private static final int MISSING_VALUE = -999;
 
   @CsvField(name = "property_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   AgencyAndId id;

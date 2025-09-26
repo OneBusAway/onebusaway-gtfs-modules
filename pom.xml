@@ -136,8 +136,9 @@
         <configuration>
           <exportDatatables>true</exportDatatables>
           <activeRecipes>
-            <recipe>org.openrewrite.java.migrate.UpgradeToJava21</recipe>
-            <recipe>org.openrewrite.java.spring.boot2.SpringBoot2JUnit4to5Migration</recipe>
+            <recipe>org.openrewrite.staticanalysis.RemoveUnusedPrivateMethods</recipe>
+            <recipe>org.openrewrite.staticanalysis.RemoveUnusedLocalVariables</recipe>
+            <recipe>org.openrewrite.staticanalysis.RemoveUnusedPrivateFields</recipe>
           </activeRecipes>
         </configuration>
         <dependencies>

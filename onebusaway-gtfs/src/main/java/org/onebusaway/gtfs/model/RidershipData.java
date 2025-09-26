@@ -19,8 +19,6 @@ import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.serialization.mappings.ServiceDateFieldMappingFactory;
 
 public class RidershipData {
-
-  private static final long serialVersionUID = 1L;
   private static final int MISSING_VALUE = -999;
 
   private String rsTripId;

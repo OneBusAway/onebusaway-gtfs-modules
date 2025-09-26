@@ -36,10 +36,8 @@ public class CountAndTest implements GtfsTransformStrategy {
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     int countSt = 0;
-    int countCd = 0;
 
     int countNoSt = 0;
-    int countNoCd = 0;
     int curSerTrips = 0;
     int tomSerTrips = 0;
     int countNoHs = 0;
@@ -58,9 +56,7 @@ public class CountAndTest implements GtfsTransformStrategy {
 
       serviceAgencyAndId = trip.getServiceId();
       if (dao.getCalendarDatesForServiceId(serviceAgencyAndId).size() == 0) {
-        countNoCd++;
       } else {
-        countCd++;
       }
 
       // check for current service

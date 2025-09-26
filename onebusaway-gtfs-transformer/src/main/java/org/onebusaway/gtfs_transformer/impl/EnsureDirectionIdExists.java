@@ -21,12 +21,9 @@ import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EnsureDirectionIdExists implements GtfsTransformStrategy {
-
-  private final Logger _log = LoggerFactory.getLogger(CheckForLengthyRouteNames.class);
 
   @Override
   public String getName() {

@@ -59,7 +59,6 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
     int matched = 0;
     int unmatched = 0;
     int duplicate = 0;
-    int inCntrlRefNotAtis = 0;
 
     ArrayList<AgencyAndId> stopsToRemove = new ArrayList();
 
@@ -168,20 +167,6 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
   @CsvField(ignore = true)
   private String _referenceAgencyId = null;
 
-  private String getReferenceAgencyId(GtfsMutableRelationalDao dao) {
-    if (_referenceAgencyId == null) {
-      _referenceAgencyId = dao.getAllAgencies().iterator().next().getId();
-    }
-    return _referenceAgencyId;
-  }
-
   @CsvField(ignore = true)
   private String _daoAgencyId = null;
-
-  private String getDaoAgencyId(GtfsMutableRelationalDao dao) {
-    if (_daoAgencyId == null) {
-      _daoAgencyId = dao.getAllAgencies().iterator().next().getId();
-    }
-    return _daoAgencyId;
-  }
 }

@@ -37,12 +37,9 @@ import org.onebusaway.gtfs_merge.strategies.RouteMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.ServiceCalendarMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.StopMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.TripMergeStrategy;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GtfsMergerTest {
-
-  private static Logger _log = LoggerFactory.getLogger(GtfsMergerTest.class);
   private MockGtfs _oldGtfs;
 
   private MockGtfs _newGtfs;

@@ -168,10 +168,6 @@ public class CalendarServiceDataFactoryImpl implements CalendarServiceDataFactor
     return activeDates;
   }
 
-  private void setTimeZonesForAgencies(CalendarServiceData data) {
-    setTimeZonesForAgencies(data, _dao.getAllAgencies());
-  }
-
   private void setTimeZonesForAgencies(CalendarServiceData data, Collection<Agency> allAgencies) {
     for (Agency agency : allAgencies) {
       TimeZone timeZone = TimeZone.getTimeZone(agency.getTimezone());

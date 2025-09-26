@@ -85,12 +85,9 @@ public class InferPathwaysFromEntrancesStrategy implements GtfsTransformStrategy
       for (Stop stop : stops) {
         for (Stop entrance : entrances) {
           String id = stop.getId().getId();
-          int accessibleTime = -1;
           if (stop.getWheelchairBoarding() == WHEELCHAIR_BOARDING_ALLOWED) {
-            accessibleTime = wheelchairTraversalTime;
           } else if (stop.getWheelchairBoarding() == 0
               && station.getWheelchairBoarding() == WHEELCHAIR_BOARDING_ALLOWED) {
-            accessibleTime = wheelchairTraversalTime;
           }
           pathwayUtil.createPathway(stop, entrance, MODE_WALKWAY, traversalTime, id, null);
         }

@@ -147,17 +147,13 @@ public class CountAndTestBus implements GtfsTransformStrategy {
     // MOTP-1060 Number of trips in reference GTFS that don't appear in mta_trip_id in ATIS
     // for each reference trip
     int noMatch = 0;
-    int noMatchNoSdon = 0;
-    int noMatchNoSdonNoH9 = 0;
     int refTripsWithSdon = 0;
     int refTripsWoutSdonWithh9 = 0;
     int refTripsThisWeekWithSdon = 0;
     int refTripsThisWeekWoutSdonWithA9 = 0;
     int refTripsThisWeekWoutSdonWithE9 = 0;
-    int refTripsThisWeekWoutSdonWithD9 = 0;
     int refTripsThisWeekWoutSdonWithB9 = 0;
     int refTripsThisWeekWoutSdonWithH9 = 0;
-    int checkMatchesThisWeek = 0;
     int doesntMatchThisWeek = 0;
     int leftOverNoMatchThisWeek = 0;
     List<String> refTripsMissingATIS = new ArrayList<String>();
@@ -177,7 +173,6 @@ public class CountAndTestBus implements GtfsTransformStrategy {
           } else if (refTrip.getId().getId().contains("B9")) {
             refTripsThisWeekWoutSdonWithB9++;
           } else if (refTrip.getId().getId().contains("D9")) {
-            refTripsThisWeekWoutSdonWithD9++;
           } else if (refTrip.getId().getId().contains("E9")) {
             refTripsThisWeekWoutSdonWithE9++;
           } else if (refTrip.getId().getId().contains("H9")) {
@@ -197,10 +192,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         refTripsMissingATIS.add(refTrip.getId().getId());
         noMatch++;
         if (!refTrip.getId().getId().contains("SDon")) {
-          noMatchNoSdon++;
           if (!refTrip.getId().getId().contains("H9")) {
-            // _log.info(refTrip.getId().getId());
-            noMatchNoSdonNoH9++;
           }
           // No Sdon, has H9
           else {

@@ -137,6 +137,7 @@
           <exportDatatables>true</exportDatatables>
           <activeRecipes>
             <recipe>org.openrewrite.staticanalysis.RemoveUnusedPrivateMethods</recipe>
+            <recipe>org.openrewrite.staticanalysis.RemoveUnusedLocalVariables</recipe>
           </activeRecipes>
         </configuration>
         <dependencies>

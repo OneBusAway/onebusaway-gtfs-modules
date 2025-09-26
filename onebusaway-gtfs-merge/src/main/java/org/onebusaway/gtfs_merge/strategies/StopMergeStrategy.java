@@ -55,8 +55,6 @@ public class StopMergeStrategy extends AbstractIdentifiableSingleEntityMergeStra
     GtfsRelationalDao source = context.getSource();
     GtfsMutableRelationalDao target = context.getTarget();
 
-    Stop stop = (Stop) entity;
-
     super.save(context, entity);
   }
 }

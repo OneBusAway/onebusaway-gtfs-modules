@@ -49,10 +49,8 @@ public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     Collection<FeedInfo> feedInfos = dao.getAllFeedInfos();
-
     // name the feed for logging/reference
-    String feed = null;
-    if (feedInfos.size() > 0) feed = feedInfos.iterator().next().getPublisherName();
+    if (feedInfos.size() > 0){}
 
     // stops are unqualified, build up a map of them for lookups
     for (Stop stop : dao.getAllStops()) {

@@ -59,7 +59,6 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
     int matched = 0;
     int unmatched = 0;
     int duplicate = 0;
-    int inCntrlRefNotAtis = 0;
 
     ArrayList<AgencyAndId> stopsToRemove = new ArrayList();
 

@@ -231,5 +231,4 @@ public interface GtfsDao extends GenericDao {
         .findAny()
         .isPresent();
   }
-
 }

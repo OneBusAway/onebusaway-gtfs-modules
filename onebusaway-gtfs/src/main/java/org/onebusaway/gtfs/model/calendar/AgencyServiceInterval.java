@@ -94,16 +94,6 @@ public class AgencyServiceInterval implements Serializable {
     return cal.getTime();
   }
 
-  private Date startOfDay(ServiceDate serviceDate) {
-    final Calendar cal = Calendar.getInstance();
-    cal.setTime(serviceDate.getAsDate());
-    cal.set(Calendar.HOUR_OF_DAY, 0);
-    cal.set(Calendar.MINUTE, 0);
-    cal.set(Calendar.SECOND, 0);
-    cal.set(Calendar.MILLISECOND, 000);
-    return cal.getTime();
-  }
-
   @Override
   public boolean equals(Object other) {
     if (!(other instanceof AgencyServiceInterval)) {

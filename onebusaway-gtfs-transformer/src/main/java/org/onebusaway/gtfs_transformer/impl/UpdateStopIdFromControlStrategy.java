@@ -168,20 +168,6 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
   @CsvField(ignore = true)
   private String _referenceAgencyId = null;
 
-  private String getReferenceAgencyId(GtfsMutableRelationalDao dao) {
-    if (_referenceAgencyId == null) {
-      _referenceAgencyId = dao.getAllAgencies().iterator().next().getId();
-    }
-    return _referenceAgencyId;
-  }
-
   @CsvField(ignore = true)
   private String _daoAgencyId = null;
-
-  private String getDaoAgencyId(GtfsMutableRelationalDao dao) {
-    if (_daoAgencyId == null) {
-      _daoAgencyId = dao.getAllAgencies().iterator().next().getId();
-    }
-    return _daoAgencyId;
-  }
 }

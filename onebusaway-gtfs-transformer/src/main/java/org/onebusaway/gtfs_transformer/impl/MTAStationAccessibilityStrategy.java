@@ -127,8 +127,4 @@ public class MTAStationAccessibilityStrategy implements GtfsTransformStrategy {
   public void setStationsCsv(String stationsCsv) {
     this.stationsCsv = stationsCsv;
   }
-
-  private String getNamespace() {
-    return System.getProperty("cloudwatch.namespace");
-  }
 }

@@ -719,10 +719,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     pathwayUtil.createPathway(from, to, MODE_ELEVATOR, elevatorTraversalTime, idStr, code);
   }
 
-  private String getTopic() {
-    return System.getProperty("sns.topic");
-  }
-
   private List<MTAElevator> getElevators() {
     return readCsv(MTAElevator.class, elevatorsCsv);
   }
@@ -777,10 +773,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
   public void setContextualAccessibility(boolean contextualAccessibility) {
     this.contextualAccessibility = contextualAccessibility;
-  }
-
-  private String getNamespace() {
-    return System.getProperty("cloudwatch.namespace");
   }
 
   public void setMarkStopsAccessible(boolean flag) {

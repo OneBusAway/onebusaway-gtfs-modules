@@ -21,7 +21,10 @@ import org.onebusaway.csv_entities.CSVLibrary;
 import org.onebusaway.csv_entities.CSVListener;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
-import org.onebusaway.gtfs.model.*;
+import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.Route;
+import org.onebusaway.gtfs.model.ServiceCalendarDate;
+import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
@@ -206,10 +209,6 @@ public class VerifyReferenceService implements GtfsTransformStrategy {
         calendar.get(Calendar.YEAR),
         calendar.get(Calendar.MONTH) + 1,
         calendar.get(Calendar.DAY_OF_MONTH));
-  }
-
-  private String getTopic() {
-    return System.getProperty("sns.topic");
   }
 
   public void setProblemRoutesFile(String problemRoutesFile) {

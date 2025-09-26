@@ -350,10 +350,6 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
     dao.saveOrUpdateEntity(ridership);
   }
 
-  private String getTopic() {
-    return System.getProperty("sns.topic");
-  }
-
   private LocalTime convertToTime(String passingTime) {
     // grab the time which is after the space
     int index = passingTime.lastIndexOf(" ");
@@ -377,9 +373,5 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
       // _log.error("Converted time: {}", time);
     }
     return time;
-  }
-
-  private String getNamespace() {
-    return System.getProperty("cloudwatch.namespace");
   }
 }

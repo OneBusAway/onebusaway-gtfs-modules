@@ -21,7 +21,7 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-@Fork(2)
+@Fork(value = 2)
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @BenchmarkMode(Mode.SingleShotTime)
@@ -39,14 +39,15 @@ public class ShapeSingleShotBenchmark {
       reader.setOverwriteDuplicates(true);
 
       GtfsDaoImpl entityStore = (GtfsDaoImpl) reader.getEntityStore();
-      //entityStore.setPackShapePoints(true);
-      //entityStore.setPackStopTimes(true);
+      entityStore.setPackShapePoints(true);
+      entityStore.setPackStopTimes(true);
     }
   }
 
   @Benchmark
   public Object testParse(ThreadState state) throws Exception {
-    return processWithGtfsReader(new File(directory), "abcd", false, state.reader, ShapePoint.class);
+    return processWithGtfsReader(
+        new File(directory), "abcd", false, state.reader, ShapePoint.class);
   }
 
   @Benchmark
@@ -56,23 +57,29 @@ public class ShapeSingleShotBenchmark {
 
   @Benchmark
   public Object testParseLegacy(ThreadState state) throws Exception {
-    return processWithGtfsReader(new File(directory), "abcd", false, state.reader, LegacyShapePoint.class);
+    return processWithGtfsReader(
+        new File(directory), "abcd", false, state.reader, LegacyShapePoint.class);
   }
 
   @Benchmark
   public Object testParseLegacyStringInterning(ThreadState state) throws Exception {
-    return processWithGtfsReader(new File(directory), "abcd", true, state.reader, LegacyShapePoint.class);
+    return processWithGtfsReader(
+        new File(directory), "abcd", true, state.reader, LegacyShapePoint.class);
   }
 
   public static GtfsReader processWithEntityStore(
-          File resourcePath, String agencyId, boolean internStrings, GenericMutableDao entityStore, Class<?> cls)
-          throws Exception {
+      File resourcePath,
+      String agencyId,
+      boolean internStrings,
+      GenericMutableDao entityStore,
+      Class<?> cls)
+      throws Exception {
     GtfsReader reader = new GtfsReader();
     reader.setEntityStore(entityStore);
     return processWithGtfsReader(resourcePath, agencyId, internStrings, reader, cls);
   }
 
-    public static GtfsReader processWithGtfsReader(
+  public static GtfsReader processWithGtfsReader(
       File resourcePath, String agencyId, boolean internStrings, GtfsReader reader, Class<?> cls)
       throws Exception {
 
@@ -83,7 +90,7 @@ public class ShapeSingleShotBenchmark {
 
     CsvInputSource inputSource = reader.getInputSource();
 
-    if(cls != null) {
+    if (cls != null) {
       reader.readEntities(cls, inputSource);
     } else {
       reader.run(inputSource);

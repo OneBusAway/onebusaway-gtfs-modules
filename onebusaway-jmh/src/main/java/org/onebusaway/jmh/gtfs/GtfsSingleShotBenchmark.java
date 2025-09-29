@@ -43,6 +43,11 @@ public class GtfsSingleShotBenchmark {
     return processFeed(new File(directory).getCanonicalFile(), "abcd", false, state.reader);
   }
 
+  @Benchmark
+  public GtfsRelationalDao testParseStringInterning(ThreadState state) throws Exception {
+    return processFeed(new File(directory).getCanonicalFile(), "abcd", true, state.reader);
+  }
+
   public static GtfsRelationalDao processFeed(
       File resourcePath, String agencyId, boolean internStrings, GtfsReader reader)
       throws IOException {

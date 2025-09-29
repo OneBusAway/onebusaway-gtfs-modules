@@ -49,7 +49,6 @@ public final class Trip extends IdentityBean<AgencyAndId> {
   private String blockId;
 
   @CsvField(optional = true, mapping = InternAgencyIdFieldMappingFactory.class)
-  //@CsvField(optional = true, mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId shapeId;
 
   @CsvField(optional = true, defaultValue = "0")

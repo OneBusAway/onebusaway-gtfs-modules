@@ -17,5 +17,4 @@ public class MemoryPrinter {
   private static String toMegabytes(long l) {
     return Long.toString(l / (1024 * 1024));
   }
-
 }

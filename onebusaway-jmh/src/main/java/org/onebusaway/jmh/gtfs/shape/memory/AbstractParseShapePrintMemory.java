@@ -40,7 +40,8 @@ public class AbstractParseShapePrintMemory {
               "abcd",
               internStrings,
               entityStore,
-              cls);
+              cls,
+                  false);
 
       System.out.println("Read file.");
       System.out.println("Memory after parsing:");

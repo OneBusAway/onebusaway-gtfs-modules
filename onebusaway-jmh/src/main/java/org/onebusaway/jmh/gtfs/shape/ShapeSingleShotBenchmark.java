@@ -2,6 +2,7 @@ package org.onebusaway.jmh.gtfs.shape;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+
 import org.onebusaway.csv_entities.CsvInputSource;
 import org.onebusaway.gtfs.impl.GtfsDaoImpl;
 import org.onebusaway.gtfs.model.ShapePoint;
@@ -47,24 +48,36 @@ public class ShapeSingleShotBenchmark {
   @Benchmark
   public Object testParse(ThreadState state) throws Exception {
     return processWithGtfsReader(
-        new File(directory), "abcd", false, state.reader, ShapePoint.class);
+        new File(directory), "abcd", false, state.reader, ShapePoint.class, false);
   }
 
   @Benchmark
   public Object testParseStringInterning(ThreadState state) throws Exception {
-    return processWithGtfsReader(new File(directory), "abcd", true, state.reader, ShapePoint.class);
+    return processWithGtfsReader(
+        new File(directory), "abcd", true, state.reader, ShapePoint.class, false);
   }
 
   @Benchmark
   public Object testParseLegacy(ThreadState state) throws Exception {
     return processWithGtfsReader(
-        new File(directory), "abcd", false, state.reader, LegacyShapePoint.class);
+        new File(directory), "abcd", false, state.reader, LegacyShapePoint.class, false);
   }
 
   @Benchmark
   public Object testParseLegacyStringInterning(ThreadState state) throws Exception {
     return processWithGtfsReader(
-        new File(directory), "abcd", true, state.reader, LegacyShapePoint.class);
+        new File(directory), "abcd", true, state.reader, LegacyShapePoint.class, false);
+  }
+
+  @Benchmark
+  public Object testParseStringSelectiveInterning(ThreadState state) throws Exception {
+    return processWithGtfsReader(
+        new File(directory),
+        "abcd",
+        true,
+        state.reader,
+        ShapePoint.class,
+        true);
   }
 
   public static GtfsReader processWithEntityStore(
@@ -72,20 +85,28 @@ public class ShapeSingleShotBenchmark {
       String agencyId,
       boolean internStrings,
       GenericMutableDao entityStore,
-      Class<?> cls)
+      Class<?> cls,
+      boolean disableInternStrings)
       throws Exception {
     GtfsReader reader = new GtfsReader();
     reader.setEntityStore(entityStore);
-    return processWithGtfsReader(resourcePath, agencyId, internStrings, reader, cls);
+    return processWithGtfsReader(resourcePath, agencyId, internStrings, reader, cls, disableInternStrings);
   }
 
   public static GtfsReader processWithGtfsReader(
-      File resourcePath, String agencyId, boolean internStrings, GtfsReader reader, Class<?> cls)
+      File resourcePath,
+      String agencyId,
+      boolean internStrings,
+      GtfsReader reader,
+      Class<?> cls,
+      boolean selectivelyDisableInternStrings)
       throws Exception {
 
     reader.setDefaultAgencyId(agencyId);
     reader.setInternStrings(internStrings);
-
+    if(selectivelyDisableInternStrings) {
+      reader.disableInternStringsForEntities(cls);
+    }
     reader.setInputLocation(resourcePath);
 
     CsvInputSource inputSource = reader.getInputSource();

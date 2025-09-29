@@ -44,7 +44,8 @@ public class AbstractParsePrintMemory {
               "abcd",
               internStrings,
               entityStore,
-              null);
+              null,
+              false);
 
       System.out.println("Read done.");
 

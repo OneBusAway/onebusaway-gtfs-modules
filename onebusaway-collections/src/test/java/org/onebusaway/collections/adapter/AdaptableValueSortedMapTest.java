@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 public class AdaptableValueSortedMapTest {
 
   private SortedMap<Integer, String> _m2;
-  private Map<Integer, TestBean> _m;
+  private SortedMap<Integer, TestBean> _m;
 
   @BeforeEach
   public void before() {

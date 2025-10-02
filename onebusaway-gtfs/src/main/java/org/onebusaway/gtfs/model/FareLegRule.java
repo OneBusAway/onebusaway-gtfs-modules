@@ -135,7 +135,11 @@ public final class FareLegRule extends IdentityBean<String> {
     this.rulePriority = rulePriority;
   }
 
-  public OptionalInt getRulePriority() {
+  public int getRulePriority() {
+    return this.rulePriority;
+  }
+
+  public OptionalInt getRulePriorityOption() {
     if (this.rulePriority == NO_RULE_PRIORITY) {
       return OptionalInt.empty();
     } else {

@@ -73,7 +73,7 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
     var fareLegRules = new ArrayList<>(dao.getAllFareLegRules());
     assertEquals(12, fareLegRules.size());
 
-    fareLegRules.forEach(lr -> assertTrue(lr.getRulePriority().isEmpty()));
+    fareLegRules.forEach(lr -> assertTrue(lr.getRulePriorityOption().isEmpty()));
 
     FareLegRule flr =
         fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
@@ -251,8 +251,15 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
 
     assertEquals("1116", first.getRoute().getId().getId());
     assertEquals("188", first.getNetworkId());
+  }
 
-    assertThat(dao.getAllFareLegRules()).hasSize(4);
-    dao.getAllFareLegRules().forEach(flr -> assertTrue(flr.getRulePriority().isEmpty()));
+  @Test
+  public void rulePriority() throws CsvEntityIOException, IOException {
+    var dao = processFeed(GtfsTestData.sandyFlexFaresV2(), AGENCY_ID, false);
+    var rules = List.copyOf(dao.getAllFareLegRules());
+    assertThat(rules).hasSize(4);
+
+    assertThat(rules.getFirst().getRulePriorityOption()).isPresent();
+    assertThat(rules.getLast().getRulePriorityOption()).isEmpty();
   }
 }

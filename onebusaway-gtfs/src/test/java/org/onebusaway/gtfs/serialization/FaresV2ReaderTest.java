@@ -69,8 +69,10 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
     assertEquals("Persons with Disabilities", cat.getName());
     assertEquals("disabled", cat.getId().getId());
 
-    List<FareLegRule> fareLegRules = new ArrayList<>(dao.getAllFareLegRules());
+    var fareLegRules = new ArrayList<>(dao.getAllFareLegRules());
     assertEquals(12, fareLegRules.size());
+
+    fareLegRules.forEach(lr -> assertTrue(lr.getRulePriority().isEmpty()));
 
     FareLegRule flr =
         fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
@@ -220,20 +222,20 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
   public void testFaresV2Distance() throws IOException {
     MockGtfs gtfs = MockGtfs.create();
     gtfs.putMinimal();
-    gtfs.putLines("fare_products.txt", "fare_product_id, amount, currency", "" + "fare_1,5,EUR");
+    gtfs.putLines("fare_products.txt", "fare_product_id, amount, currency", "fare_1,5,EUR");
     gtfs.putLines(
         "fare_leg_rules.txt",
         "network_id,min_distance,max_distance,distance_type,fare_product_id",
         "bus,0,3,1,fare_1");
     GtfsRelationalDao dao = processFeed(gtfs.getPath(), "1", false);
-    assertTrue(
-        dao.getAllFareLegRules().stream().map(FareLegRule::getMaxDistance).findFirst().get()
-            == 3.0);
-    assertTrue(
-        dao.getAllFareLegRules().stream().map(FareLegRule::getMinDistance).findFirst().get()
-            == 0.0);
-    assertTrue(
-        dao.getAllFareLegRules().stream().map(FareLegRule::getDistanceType).findFirst().get() == 1);
+    assertEquals(
+        3.0, dao.getAllFareLegRules().stream().map(FareLegRule::getMaxDistance).findFirst().get());
+    assertEquals(
+        0.0, dao.getAllFareLegRules().stream().map(FareLegRule::getMinDistance).findFirst().get());
+    assertEquals(
+        1,
+        (int)
+            dao.getAllFareLegRules().stream().map(FareLegRule::getDistanceType).findFirst().get());
   }
 
   @Test

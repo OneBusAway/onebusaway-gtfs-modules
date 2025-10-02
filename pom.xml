@@ -30,7 +30,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <slf4j.version>2.0.17</slf4j.version>
-    <junit.version>5.13.4</junit.version>
+    <junit.version>6.0.0</junit.version>
     <jmh.version>1.37</jmh.version>
     <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
   </properties>
@@ -148,6 +148,7 @@
             <recipe>org.openrewrite.staticanalysis.IndexOfReplaceableByContains</recipe>
             <recipe>org.openrewrite.staticanalysis.ReplaceLambdaWithMethodReference</recipe>
             <recipe>org.openrewrite.staticanalysis.UseCollectionInterfaces</recipe>
+            <recipe>org.openrewrite.java.testing.junit6.JUnit5to6Migration</recipe>
           </activeRecipes>
         </configuration>
         <dependencies>
@@ -160,6 +161,11 @@
             <groupId>org.openrewrite.recipe</groupId>
             <artifactId>rewrite-spring</artifactId>
             <version>6.15.0</version>
+          </dependency>
+          <dependency>
+            <groupId>org.openrewrite.recipe</groupId>
+            <artifactId>rewrite-testing-frameworks</artifactId>
+            <version>3.17.0</version>
           </dependency>
         </dependencies>
       </plugin>

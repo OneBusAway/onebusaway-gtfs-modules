@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
@@ -50,7 +51,7 @@ public class MergeStopIdsFromReferenceStrategy implements GtfsTransformStrategy 
     int matched = 0;
     int unmatched = 0;
 
-    HashMap<String, Stop> referenceStopNamesToStops = new HashMap<>();
+    Map<String, Stop> referenceStopNamesToStops = new HashMap<>();
     for (Stop stop : reference.getAllStops()) {
       referenceStopNamesToStops.put(stop.getName(), stop);
     }

@@ -42,8 +42,7 @@ public class GtfsReader extends CsvEntityReader {
 
   private List<Agency> _agencies = new ArrayList<>();
 
-  private Map<Class<?>, Map<String, String>> _agencyIdsByEntityClassAndId =
-      new HashMap<>();
+  private Map<Class<?>, Map<String, String>> _agencyIdsByEntityClassAndId = new HashMap<>();
 
   private String _defaultAgencyId;
 

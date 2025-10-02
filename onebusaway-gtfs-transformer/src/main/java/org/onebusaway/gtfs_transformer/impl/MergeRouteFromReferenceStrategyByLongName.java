@@ -14,6 +14,7 @@
 package org.onebusaway.gtfs_transformer.impl;
 
 import java.util.HashMap;
+import java.util.Map;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
@@ -34,7 +35,7 @@ public class MergeRouteFromReferenceStrategyByLongName implements GtfsTransformS
     GtfsMutableRelationalDao reference =
         (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
 
-    HashMap<String, Route> referenceRoutes = new HashMap<>();
+    Map<String, Route> referenceRoutes = new HashMap<>();
     for (Route route : reference.getAllRoutes()) {
       referenceRoutes.put(route.getId().getId(), route);
     }

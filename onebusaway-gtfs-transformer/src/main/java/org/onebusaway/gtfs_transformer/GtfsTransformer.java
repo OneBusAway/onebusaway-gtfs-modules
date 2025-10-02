@@ -56,8 +56,7 @@ public class GtfsTransformer {
 
   private List<GtfsTransformStrategy> _transformStrategies = new ArrayList<>();
 
-  private List<GtfsEntityTransformStrategy> _entityTransformStrategies =
-      new ArrayList<>();
+  private List<GtfsEntityTransformStrategy> _entityTransformStrategies = new ArrayList<>();
 
   private TransformContext _context = new TransformContext();
 

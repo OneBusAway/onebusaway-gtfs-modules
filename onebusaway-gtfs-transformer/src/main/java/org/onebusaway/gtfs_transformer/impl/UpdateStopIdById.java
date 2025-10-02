@@ -15,6 +15,8 @@ package org.onebusaway.gtfs_transformer.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -40,13 +42,13 @@ public class UpdateStopIdById implements GtfsTransformStrategy {
         (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
     RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
 
-    HashMap<String, Stop> referenceStops = new HashMap<>();
+    Map<String, Stop> referenceStops = new HashMap<>();
     for (Stop stop : reference.getAllStops()) {
       referenceStops.put(stop.getId().getId(), stop);
     }
 
-    ArrayList<Stop> stopsToDelete = new ArrayList<>();
-    ArrayList<String> existingStops = new ArrayList<>();
+    List<Stop> stopsToDelete = new ArrayList<>();
+    List<String> existingStops = new ArrayList<>();
     String feed = CloudContextService.getLikelyFeedName(dao);
     String agency = dao.getAllAgencies().iterator().next().getId();
     String name = dao.getAllAgencies().iterator().next().getName();

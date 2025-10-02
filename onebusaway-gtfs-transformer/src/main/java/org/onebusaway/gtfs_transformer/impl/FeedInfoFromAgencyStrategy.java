@@ -76,7 +76,7 @@ public class FeedInfoFromAgencyStrategy implements GtfsTransformStrategy {
     FeedInfo info =
         dao.getAllFeedInfos().stream()
             .filter(feed -> feed.getId().equals(agencyId))
-            .collect(Collectors.toMap(feed -> feed.getId(), feed -> feed))
+            .collect(Collectors.toMap(FeedInfo::getId, feed -> feed))
             .get(agency.getId());
     if (info == null) {
       info = new FeedInfo();

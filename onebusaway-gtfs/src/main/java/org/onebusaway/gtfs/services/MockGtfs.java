@@ -468,8 +468,7 @@ public class MockGtfs {
 
   private static class TableBuilder {
 
-    private final LinkedHashMap<String, List<String>> _columnsAndValues =
-        new LinkedHashMap<>();
+    private final Map<String, List<String>> _columnsAndValues = new LinkedHashMap<>();
 
     private final int _numberOfRows;
 

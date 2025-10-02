@@ -15,6 +15,7 @@ package org.onebusaway.collections.adapter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,7 @@ import org.junit.jupiter.api.Test;
 public class AdaptableValueSortedMapTest {
 
   private SortedMap<Integer, String> _m2;
-  private TreeMap<Integer, TestBean> _m;
+  private Map<Integer, TestBean> _m;
 
   @BeforeEach
   public void before() {

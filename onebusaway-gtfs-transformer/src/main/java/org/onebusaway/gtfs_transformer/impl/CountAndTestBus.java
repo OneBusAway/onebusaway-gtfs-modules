@@ -42,17 +42,17 @@ public class CountAndTestBus implements GtfsTransformStrategy {
     String agency = dao.getAllTrips().iterator().next().getId().getAgencyId();
     String name = dao.getAllAgencies().iterator().next().getName();
 
-    HashMap<String, Route> referenceRoutes = new HashMap<>();
+    Map<String, Route> referenceRoutes = new HashMap<>();
     for (Route route : reference.getAllRoutes()) {
       referenceRoutes.put(route.getId().getId(), route);
     }
 
-    HashMap<String, Trip> referenceTrips = new HashMap<>();
+    Map<String, Trip> referenceTrips = new HashMap<>();
     for (Trip trip : reference.getAllTrips()) {
       referenceTrips.put(trip.getId().getId(), trip);
     }
 
-    HashMap<String, Stop> referenceStops = new HashMap<>();
+    Map<String, Stop> referenceStops = new HashMap<>();
     for (Stop stop : reference.getAllStops()) {
       referenceStops.put(stop.getId().getId(), stop);
     }
@@ -267,7 +267,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
       _log.error("There are trips with no headsign");
     }
 
-    HashSet<String> ids = new HashSet<>();
+    Set<String> ids = new HashSet<>();
     for (Stop stop : dao.getAllStops()) {
       // check for duplicate stop ids.
       if (!ids.contains(stop.getId().getId())) {

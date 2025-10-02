@@ -89,8 +89,7 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
 
     RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
 
-    Map<Set<AgencyAndId>, AgencyAndId> serviceIdsToUpdatedServiceId =
-        new HashMap<>();
+    Map<Set<AgencyAndId>, AgencyAndId> serviceIdsToUpdatedServiceId = new HashMap<>();
 
     Map<AgencyAndId, List<AgencyAndId>> mergeToolIdMapping = computeMergeToolIdMapping(dao);
 

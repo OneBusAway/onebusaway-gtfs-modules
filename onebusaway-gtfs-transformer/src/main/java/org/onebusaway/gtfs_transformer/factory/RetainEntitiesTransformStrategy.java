@@ -31,8 +31,7 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class RetainEntitiesTransformStrategy implements GtfsTransformStrategy {
 
-  private Map<Class<?>, List<EntityRetention>> _retentionMatchesByType =
-      new HashMap<>();
+  private Map<Class<?>, List<EntityRetention>> _retentionMatchesByType = new HashMap<>();
 
   private boolean _retainBlocks = true;
 

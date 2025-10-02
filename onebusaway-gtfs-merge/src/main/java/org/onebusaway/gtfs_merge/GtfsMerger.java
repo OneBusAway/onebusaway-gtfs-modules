@@ -143,8 +143,7 @@ public class GtfsMerger {
      * different agency prefixes to sneak in. Since we ultimately serialize the data to a GTFS feed
      * with no agency prefixes, we need to track the raw id.
      */
-    Map<EntityMergeStrategy, Map<String, Object>> rawEntityIdMapsByMergeStrategy =
-        new HashMap<>();
+    Map<EntityMergeStrategy, Map<String, Object>> rawEntityIdMapsByMergeStrategy = new HashMap<>();
     for (EntityMergeStrategy strategy : strategies) {
       rawEntityIdMapsByMergeStrategy.put(strategy, new HashMap<String, Object>());
     }

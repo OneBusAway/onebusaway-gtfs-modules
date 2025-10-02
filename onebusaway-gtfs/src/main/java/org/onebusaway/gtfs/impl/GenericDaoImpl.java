@@ -29,11 +29,9 @@ public class GenericDaoImpl implements GenericMutableDao {
 
   private final Logger _log = LoggerFactory.getLogger(GenericDaoImpl.class);
 
-  private final Map<Class<?>, Map<Object, Object>> _entitiesByClassAndId =
-      new HashMap<>();
+  private final Map<Class<?>, Map<Object, Object>> _entitiesByClassAndId = new HashMap<>();
 
-  private final Map<Class<?>, EntityHandler<Serializable>> _handlers =
-      new HashMap<>();
+  private final Map<Class<?>, EntityHandler<Serializable>> _handlers = new HashMap<>();
 
   private boolean _generateIds = true;
 

@@ -34,8 +34,7 @@ public class DeduplicateRoutesStrategy implements GtfsTransformStrategy {
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-    Map<AgencyAndId, List<Route>> routesById =
-        new FactoryMap<>(new ArrayList<Route>());
+    Map<AgencyAndId, List<Route>> routesById = new FactoryMap<>(new ArrayList<Route>());
 
     for (Route route : dao.getAllRoutes()) {
 

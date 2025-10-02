@@ -35,8 +35,7 @@ class PropertyMethodResolverImpl extends DefaultPropertyMethodResolver {
   private final EntitySchemaCache _schemaCache;
 
   @SuppressWarnings("rawtypes")
-  private Map<T2<Class, String>, PropertyMethod> _virtualPropertyMethods =
-      new HashMap<>();
+  private Map<T2<Class, String>, PropertyMethod> _virtualPropertyMethods = new HashMap<>();
 
   /**
    * @param dao

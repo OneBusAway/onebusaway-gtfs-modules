@@ -32,14 +32,11 @@ public class CalendarServiceData implements Serializable {
 
   private Map<String, TimeZone> _timeZonesByAgencyId = new HashMap<>();
 
-  private Map<AgencyAndId, List<ServiceDate>> _serviceDatesByServiceId =
-      new HashMap<>();
+  private Map<AgencyAndId, List<ServiceDate>> _serviceDatesByServiceId = new HashMap<>();
 
-  private Map<LocalizedServiceId, List<Date>> _datesByLocalizedServiceId =
-      new HashMap<>();
+  private Map<LocalizedServiceId, List<Date>> _datesByLocalizedServiceId = new HashMap<>();
 
-  private Map<ServiceDate, Set<AgencyAndId>> _serviceIdsByDate =
-      new HashMap<>();
+  private Map<ServiceDate, Set<AgencyAndId>> _serviceIdsByDate = new HashMap<>();
 
   /**
    * @param agencyId

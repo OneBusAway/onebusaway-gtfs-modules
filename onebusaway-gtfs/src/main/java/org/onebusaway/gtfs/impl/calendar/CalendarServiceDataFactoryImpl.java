@@ -73,8 +73,7 @@ public class CalendarServiceDataFactoryImpl implements CalendarServiceDataFactor
     serviceIds.addAll(getCalendarDatesByServiceId(calendarDates).keySet());
     serviceIds.addAll(getCalendarsByServiceId(allCalendars).keySet());
 
-    Map<AgencyAndId, List<String>> tripAgencyIdsReferencingServiceId =
-        new HashMap<>();
+    Map<AgencyAndId, List<String>> tripAgencyIdsReferencingServiceId = new HashMap<>();
 
     for (AgencyAndId serviceId : serviceIds) {
       tripAgencyIdsReferencingServiceId.put(
@@ -255,16 +254,14 @@ public class CalendarServiceDataFactoryImpl implements CalendarServiceDataFactor
 
   private Map<AgencyAndId, ServiceCalendar> getCalendarsByServiceId(
       Collection<ServiceCalendar> calendars) {
-    Map<AgencyAndId, ServiceCalendar> calendarsByServiceId =
-        new HashMap<>();
+    Map<AgencyAndId, ServiceCalendar> calendarsByServiceId = new HashMap<>();
     for (ServiceCalendar c : calendars) calendarsByServiceId.put(c.getServiceId(), c);
     return calendarsByServiceId;
   }
 
   private Map<AgencyAndId, List<ServiceCalendarDate>> getCalendarDatesByServiceId(
       Collection<ServiceCalendarDate> calendarDates) {
-    Map<AgencyAndId, List<ServiceCalendarDate>> calendarDatesByServiceId =
-        new HashMap<>();
+    Map<AgencyAndId, List<ServiceCalendarDate>> calendarDatesByServiceId = new HashMap<>();
 
     for (ServiceCalendarDate calendarDate : calendarDates) {
       List<ServiceCalendarDate> cds = calendarDatesByServiceId.get(calendarDate.getServiceId());

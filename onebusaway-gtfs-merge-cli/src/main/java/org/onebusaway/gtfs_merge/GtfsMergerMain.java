@@ -63,8 +63,7 @@ public class GtfsMergerMain {
    * If we ever need to register a custom option handler for a specific entity type, we would do it
    * here.
    */
-  private Map<Class<?>, OptionHandler> _optionHandlersByEntityClass =
-      new HashMap<>();
+  private Map<Class<?>, OptionHandler> _optionHandlersByEntityClass = new HashMap<>();
 
   public static void main(String[] args) throws IOException {
     GtfsMergerMain m = new GtfsMergerMain();

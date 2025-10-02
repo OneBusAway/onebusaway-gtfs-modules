@@ -35,8 +35,7 @@ public class DeduplicateStopsStrategy implements GtfsTransformStrategy {
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-    Map<AgencyAndId, List<Stop>> stopsById =
-        new FactoryMap<>(new ArrayList<Stop>());
+    Map<AgencyAndId, List<Stop>> stopsById = new FactoryMap<>(new ArrayList<Stop>());
 
     for (Stop stop : dao.getAllStops()) {
 

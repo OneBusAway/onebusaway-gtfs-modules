@@ -25,8 +25,7 @@ public class EntitySchemaCache {
 
   private Map<String, EntitySchema> _entitySchemasByFileName = new HashMap<>();
 
-  private Map<Class<?>, EntitySchema> _entitySchemasByEntityType =
-      new HashMap<>();
+  private Map<Class<?>, EntitySchema> _entitySchemasByEntityType = new HashMap<>();
 
   private Map<Class<?>, Map<String, SingleFieldMapping>> _mappingsByTypeAndCsvFieldName =
       new HashMap<>();

@@ -15,6 +15,8 @@ package org.onebusaway.gtfs_transformer.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
@@ -43,12 +45,12 @@ public class MergeRouteAndRemoveShuttles implements GtfsTransformStrategy {
         (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
     RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
 
-    HashMap<String, Route> referenceRoutes = new HashMap<>();
+    Map<String, Route> referenceRoutes = new HashMap<>();
     for (Route route : reference.getAllRoutes()) {
       referenceRoutes.put(route.getId().getId(), route);
     }
 
-    ArrayList<Route> routesToRemove = new ArrayList<>();
+    List<Route> routesToRemove = new ArrayList<>();
 
     for (Route route : dao.getAllRoutes()) {
       String identifier = route.getId().getId();

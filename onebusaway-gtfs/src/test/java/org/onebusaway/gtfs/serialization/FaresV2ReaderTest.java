@@ -227,23 +227,13 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
         "bus,0,3,1,fare_1");
     GtfsRelationalDao dao = processFeed(gtfs.getPath(), "1", false);
     assertTrue(
-        dao.getAllFareLegRules().stream()
-                .map(fareLegRule -> fareLegRule.getMaxDistance())
-                .findFirst()
-                .get()
+        dao.getAllFareLegRules().stream().map(FareLegRule::getMaxDistance).findFirst().get()
             == 3.0);
     assertTrue(
-        dao.getAllFareLegRules().stream()
-                .map(fareLegRule -> fareLegRule.getMinDistance())
-                .findFirst()
-                .get()
+        dao.getAllFareLegRules().stream().map(FareLegRule::getMinDistance).findFirst().get()
             == 0.0);
     assertTrue(
-        dao.getAllFareLegRules().stream()
-                .map(fareLegRule -> fareLegRule.getDistanceType())
-                .findFirst()
-                .get()
-            == 1);
+        dao.getAllFareLegRules().stream().map(FareLegRule::getDistanceType).findFirst().get() == 1);
   }
 
   @Test

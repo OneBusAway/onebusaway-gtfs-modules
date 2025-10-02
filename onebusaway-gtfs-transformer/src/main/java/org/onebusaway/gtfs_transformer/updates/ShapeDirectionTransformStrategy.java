@@ -61,8 +61,7 @@ public class ShapeDirectionTransformStrategy implements GtfsTransformStrategy {
       AgencyAndId inputShapeId = new AgencyAndId(agencyId, shapeId);
       AgencyAndId newShapeId = new AgencyAndId(agencyId, shapeId + "R");
 
-      List<ShapePoint> shapePoints =
-          new ArrayList<>(dao.getShapePointsForShapeId(inputShapeId));
+      List<ShapePoint> shapePoints = new ArrayList<>(dao.getShapePointsForShapeId(inputShapeId));
 
       Collections.reverse(shapePoints);
 

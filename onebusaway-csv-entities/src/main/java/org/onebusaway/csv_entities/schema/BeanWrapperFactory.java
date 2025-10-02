@@ -24,8 +24,7 @@ import org.onebusaway.csv_entities.exceptions.NoSuchPropertyException;
 
 public class BeanWrapperFactory {
 
-  private static Map<Class<?>, BeanClassWrapperImpl> _classWrappers =
-      new HashMap<>();
+  private static Map<Class<?>, BeanClassWrapperImpl> _classWrappers = new HashMap<>();
 
   public static BeanWrapper wrap(Object object) {
     Class<? extends Object> c = object.getClass();

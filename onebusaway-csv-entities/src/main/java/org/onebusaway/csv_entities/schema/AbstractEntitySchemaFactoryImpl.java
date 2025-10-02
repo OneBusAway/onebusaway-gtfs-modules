@@ -42,11 +42,9 @@ public abstract class AbstractEntitySchemaFactoryImpl
 
   private boolean _initialized = false;
 
-  private Map<Class<?>, CsvEntityMappingBean> _mappingBeansByClass =
-      new HashMap<>();
+  private Map<Class<?>, CsvEntityMappingBean> _mappingBeansByClass = new HashMap<>();
 
-  private Map<Class<?>, List<Class<?>>> _extensionsByClass =
-      new HashMap<>();
+  private Map<Class<?>, List<Class<?>>> _extensionsByClass = new HashMap<>();
 
   private Map<Class<?>, EntitySchema> _schemasByClass = new HashMap<>();
 

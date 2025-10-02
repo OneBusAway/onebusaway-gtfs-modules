@@ -39,8 +39,7 @@ public class RemoveDuplicateTripsStrategy implements GtfsTransformStrategy {
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-    Map<Pattern, List<Trip>> tripsByPattern =
-        new FactoryMap<>(new ArrayList<Trip>());
+    Map<Pattern, List<Trip>> tripsByPattern = new FactoryMap<>(new ArrayList<Trip>());
 
     for (Trip trip : dao.getAllTrips()) {
       Pattern pattern = getPatternForTrip(dao, trip);

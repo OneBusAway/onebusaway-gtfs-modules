@@ -40,7 +40,7 @@ public class UpdateTripHeadsignByReference implements GtfsTransformStrategy {
 
     GtfsMutableRelationalDao reference =
         (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
-    ArrayList<String> missingStops = new ArrayList<>();
+    List<String> missingStops = new ArrayList<>();
 
     for (Trip trip : dao.getAllTrips()) {
       List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);

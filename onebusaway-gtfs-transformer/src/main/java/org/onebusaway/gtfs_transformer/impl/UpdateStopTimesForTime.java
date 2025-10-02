@@ -14,6 +14,7 @@
 package org.onebusaway.gtfs_transformer.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -37,7 +38,7 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
 
     StopTime currentStop = new StopTime();
     int negativeTimes = 0;
-    ArrayList<Trip> tripsToRemove = new ArrayList<>();
+    List<Trip> tripsToRemove = new ArrayList<>();
 
     // For now, for any trip with stop_times that go back in time, remove the trip.
     for (Trip trip : dao.getAllTrips()) {

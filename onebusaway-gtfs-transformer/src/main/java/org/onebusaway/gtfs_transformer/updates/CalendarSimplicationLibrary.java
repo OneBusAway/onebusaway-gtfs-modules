@@ -195,7 +195,6 @@ public class CalendarSimplicationLibrary {
     public Set<ServiceDate> allServiceDates = new HashSet<>();
     public List<ServiceDate> serviceDatesInOrder = new ArrayList<>();
     public Set<Integer> daysOfTheWeekToUse = new HashSet<>();
-    public Map<Integer, ServiceDate> mostRecentServiceDateByDayOfWeek =
-        new HashMap<>();
+    public Map<Integer, ServiceDate> mostRecentServiceDateByDayOfWeek = new HashMap<>();
   }
 }

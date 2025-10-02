@@ -32,8 +32,7 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class SubsectionTripTransformStrategy implements GtfsTransformStrategy {
 
-  private Map<String, List<SubsectionOperation>> _operationsByRouteId =
-      new HashMap<>();
+  private Map<String, List<SubsectionOperation>> _operationsByRouteId = new HashMap<>();
 
   @Override
   public String getName() {

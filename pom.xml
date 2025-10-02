@@ -139,6 +139,9 @@
             <recipe>org.openrewrite.staticanalysis.RemoveUnusedLocalVariables</recipe>
             <recipe>org.openrewrite.staticanalysis.RemoveUnusedPrivateFields</recipe>
             <recipe>org.openrewrite.staticanalysis.UseDiamondOperator</recipe>
+            <recipe>org.openrewrite.staticanalysis.IndexOfReplaceableByContains</recipe>
+            <recipe>org.openrewrite.staticanalysis.ReplaceLambdaWithMethodReference</recipe>
+            <recipe>org.openrewrite.staticanalysis.UseCollectionInterfaces</recipe>
           </activeRecipes>
         </configuration>
         <dependencies>

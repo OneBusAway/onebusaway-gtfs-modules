@@ -101,7 +101,7 @@ public class CsvEntityReader {
     _internStrings = internStrings;
   }
 
-  public void disableInternStringsForEntities(Class<?> ... entityClasses) {
+  public void disableInternStringsForEntities(Class<?>... entityClasses) {
     Set<Class> set = new HashSet<>();
     for (Class<?> entityClass : entityClasses) {
       set.add(entityClass);
@@ -147,7 +147,8 @@ public class CsvEntityReader {
     int lineNumber = 1;
 
     boolean internStrings =
-        _internStrings && (_internStringsDisabled == null || !_internStringsDisabled.test(entityClass));
+        _internStrings
+            && (_internStringsDisabled == null || !_internStringsDisabled.test(entityClass));
 
     try {
       while ((line = lineReader.readLine()) != null) {

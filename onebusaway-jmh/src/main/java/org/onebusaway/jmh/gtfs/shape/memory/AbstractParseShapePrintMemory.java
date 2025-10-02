@@ -41,7 +41,7 @@ public class AbstractParseShapePrintMemory {
               internStrings,
               entityStore,
               cls,
-                  false);
+              false);
 
       System.out.println("Read file.");
       System.out.println("Memory after parsing:");

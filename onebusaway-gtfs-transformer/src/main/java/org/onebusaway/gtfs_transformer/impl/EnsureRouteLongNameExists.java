@@ -33,7 +33,7 @@ public class EnsureRouteLongNameExists implements GtfsTransformStrategy {
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
     // <route, <headsign, count>>
-    Map<AgencyAndId, HashMap<String, Integer>> routeToHeadsignToCount = new HashMap();
+    Map<AgencyAndId, Map<String, Integer>> routeToHeadsignToCount = new HashMap();
     Collection<Trip> trips = dao.getAllTrips();
     // go through each trip
     for (Trip trip : trips) {
@@ -50,7 +50,7 @@ public class EnsureRouteLongNameExists implements GtfsTransformStrategy {
       }
       headsignCounts.put(headsign, headsignCounts.get(headsign) + 1);
     }
-    for (Map.Entry<AgencyAndId, HashMap<String, Integer>> routeToHeadsignToCountEntry :
+    for (Map.Entry<AgencyAndId, Map<String, Integer>> routeToHeadsignToCountEntry :
         routeToHeadsignToCount.entrySet()) {
       String h1 = "";
       String h2 = "";

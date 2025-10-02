@@ -15,7 +15,6 @@ package org.onebusaway.collections.adapter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import org.junit.jupiter.api.BeforeEach;

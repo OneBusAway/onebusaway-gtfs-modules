@@ -15,7 +15,7 @@ package org.onebusaway.collections;
 
 public class Max<T> {
 
-  private Min<T> _min = new Min<T>();
+  private Min<T> _min = new Min<>();
 
   public void add(double value, T element) {
     _min.add(-value, element);

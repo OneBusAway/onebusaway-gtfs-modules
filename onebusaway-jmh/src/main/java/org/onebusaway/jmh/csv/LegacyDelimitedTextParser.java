@@ -47,7 +47,7 @@ public class LegacyDelimitedTextParser {
   public final List<String> parse(String line) {
 
     StringBuilder token = new StringBuilder();
-    List<StringBuilder> tokens = new ArrayList<StringBuilder>();
+    List<StringBuilder> tokens = new ArrayList<>();
     if (line.length() > 0) tokens.add(token);
 
     EParseState resetState =
@@ -124,7 +124,7 @@ public class LegacyDelimitedTextParser {
           break;
       }
     }
-    List<String> retro = new ArrayList<String>(tokens.size());
+    List<String> retro = new ArrayList<>(tokens.size());
     for (StringBuilder b : tokens) retro.add(b.toString());
     return retro;
   }

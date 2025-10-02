@@ -61,7 +61,7 @@ final class PairImpl<T> implements Pair<T>, Serializable {
   }
 
   public PairImpl<T> swap() {
-    return new PairImpl<T>(_second, _first);
+    return new PairImpl<>(_second, _first);
   }
 
   @Override

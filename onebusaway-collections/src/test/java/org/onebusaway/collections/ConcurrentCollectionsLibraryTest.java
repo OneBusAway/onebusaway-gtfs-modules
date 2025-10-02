@@ -30,9 +30,9 @@ public class ConcurrentCollectionsLibraryTest {
   @Test
   public void testAddToMapValueList() throws InterruptedException {
 
-    ConcurrentMap<String, List<String>> m = new ConcurrentHashMap<String, List<String>>();
+    ConcurrentMap<String, List<String>> m = new ConcurrentHashMap<>();
 
-    List<AddOp> ops = new ArrayList<AddOp>();
+    List<AddOp> ops = new ArrayList<>();
     ops.add(new AddOp(m, "a", "1"));
     ops.add(new AddOp(m, "b", "1"));
     ops.add(new AddOp(m, "a", "2"));

@@ -35,11 +35,11 @@ public class RouteStopsInCommonDuplicateScoringStrategy implements DuplicateScor
 
   private Set<StopLocation> getAllStopsForRoute(GtfsRelationalDao dao, Route route) {
     Set<StopLocation> stops = new HashSet<>();
-    List<Trip> tripsForRoute = new ArrayList<Trip>();
+    List<Trip> tripsForRoute = new ArrayList<>();
     // make this thread safe
     tripsForRoute.addAll(dao.getTripsForRoute(route));
     for (Trip trip : tripsForRoute) {
-      List<StopTime> stopTimesForTrip = new ArrayList<StopTime>();
+      List<StopTime> stopTimesForTrip = new ArrayList<>();
       stopTimesForTrip.addAll(dao.getStopTimesForTrip(trip));
       for (StopTime stopTime : stopTimesForTrip) {
         stops.add(stopTime.getStop());

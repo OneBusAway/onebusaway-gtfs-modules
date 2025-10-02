@@ -69,19 +69,18 @@ public class CalendarServiceDataFactoryImpl implements CalendarServiceDataFactor
     Collection<ServiceCalendar> allCalendars = _dao.getAllCalendars();
     Collection<ServiceCalendarDate> calendarDates = _dao.getAllCalendarDates();
 
-    Set<AgencyAndId> serviceIds = new HashSet<AgencyAndId>();
+    Set<AgencyAndId> serviceIds = new HashSet<>();
     serviceIds.addAll(getCalendarDatesByServiceId(calendarDates).keySet());
     serviceIds.addAll(getCalendarsByServiceId(allCalendars).keySet());
 
-    Map<AgencyAndId, List<String>> tripAgencyIdsReferencingServiceId =
-        new HashMap<AgencyAndId, List<String>>();
+    Map<AgencyAndId, List<String>> tripAgencyIdsReferencingServiceId = new HashMap<>();
 
     for (AgencyAndId serviceId : serviceIds) {
       tripAgencyIdsReferencingServiceId.put(
           serviceId, _dao.getTripAgencyIdsReferencingServiceId(serviceId));
     }
 
-    Map<String, TimeZone> timeZoneMapByAgencyId = new HashMap<String, TimeZone>();
+    Map<String, TimeZone> timeZoneMapByAgencyId = new HashMap<>();
 
     for (Agency a : _dao.getAllAgencies()) {
       timeZoneMapByAgencyId.put(a.getId(), TimeZone.getTimeZone(a.getTimezone()));
@@ -123,14 +122,14 @@ public class CalendarServiceDataFactoryImpl implements CalendarServiceDataFactor
 
       Set<ServiceDate> activeDates = getServiceDatesForServiceId(serviceId, serviceIdTimeZone);
 
-      List<ServiceDate> serviceDates = new ArrayList<ServiceDate>(activeDates);
+      List<ServiceDate> serviceDates = new ArrayList<>(activeDates);
       Collections.sort(serviceDates);
 
       data.putServiceDatesForServiceId(serviceId, serviceDates);
 
       List<String> tripAgencyIds = tripAgencyIdsReferencingServiceId.get(serviceId);
 
-      Set<TimeZone> timeZones = new HashSet<TimeZone>();
+      Set<TimeZone> timeZones = new HashSet<>();
       for (String tripAgencyId : tripAgencyIds) {
         TimeZone timeZone = timeZoneMapByAgencyId.get(tripAgencyId);
         if (timeZone == null) {
@@ -141,7 +140,7 @@ public class CalendarServiceDataFactoryImpl implements CalendarServiceDataFactor
 
       for (TimeZone timeZone : timeZones) {
 
-        List<Date> dates = new ArrayList<Date>(serviceDates.size());
+        List<Date> dates = new ArrayList<>(serviceDates.size());
         for (ServiceDate serviceDate : serviceDates) {
           dates.add(serviceDate.getAsDate(timeZone));
         }
@@ -156,7 +155,7 @@ public class CalendarServiceDataFactoryImpl implements CalendarServiceDataFactor
 
   public Set<ServiceDate> getServiceDatesForServiceId(
       AgencyAndId serviceId, TimeZone serviceIdTimeZone) {
-    Set<ServiceDate> activeDates = new HashSet<ServiceDate>();
+    Set<ServiceDate> activeDates = new HashSet<>();
     ServiceCalendar c = _dao.getCalendarForServiceId(serviceId);
 
     if (c != null) {
@@ -255,21 +254,19 @@ public class CalendarServiceDataFactoryImpl implements CalendarServiceDataFactor
 
   private Map<AgencyAndId, ServiceCalendar> getCalendarsByServiceId(
       Collection<ServiceCalendar> calendars) {
-    Map<AgencyAndId, ServiceCalendar> calendarsByServiceId =
-        new HashMap<AgencyAndId, ServiceCalendar>();
+    Map<AgencyAndId, ServiceCalendar> calendarsByServiceId = new HashMap<>();
     for (ServiceCalendar c : calendars) calendarsByServiceId.put(c.getServiceId(), c);
     return calendarsByServiceId;
   }
 
   private Map<AgencyAndId, List<ServiceCalendarDate>> getCalendarDatesByServiceId(
       Collection<ServiceCalendarDate> calendarDates) {
-    Map<AgencyAndId, List<ServiceCalendarDate>> calendarDatesByServiceId =
-        new HashMap<AgencyAndId, List<ServiceCalendarDate>>();
+    Map<AgencyAndId, List<ServiceCalendarDate>> calendarDatesByServiceId = new HashMap<>();
 
     for (ServiceCalendarDate calendarDate : calendarDates) {
       List<ServiceCalendarDate> cds = calendarDatesByServiceId.get(calendarDate.getServiceId());
       if (cds == null) {
-        cds = new ArrayList<ServiceCalendarDate>();
+        cds = new ArrayList<>();
         calendarDatesByServiceId.put(calendarDate.getServiceId(), cds);
       }
       cds.add(calendarDate);

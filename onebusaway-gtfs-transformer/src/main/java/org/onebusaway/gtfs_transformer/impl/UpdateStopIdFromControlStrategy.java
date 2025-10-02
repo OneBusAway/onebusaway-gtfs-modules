@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Stop;
@@ -60,13 +61,13 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
     int unmatched = 0;
     int duplicate = 0;
 
-    ArrayList<AgencyAndId> stopsToRemove = new ArrayList();
+    List<AgencyAndId> stopsToRemove = new ArrayList();
 
     // a map of the new id (from reference/control file) to the old id
     // so that stop times can be associated with new id
-    HashMap<AgencyAndId, AgencyAndId> stopsUpdated = new HashMap<>();
+    Map<AgencyAndId, AgencyAndId> stopsUpdated = new HashMap<>();
 
-    HashMap<String, Stop> referenceStops = new HashMap<>();
+    Map<String, Stop> referenceStops = new HashMap<>();
     for (Stop stop : reference.getAllStops()) {
       referenceStops.put(stop.getId().getId(), stop);
     }

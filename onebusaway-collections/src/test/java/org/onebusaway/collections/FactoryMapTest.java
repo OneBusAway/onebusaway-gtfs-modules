@@ -24,8 +24,7 @@ public class FactoryMapTest {
   @Test
   public void test() {
 
-    FactoryMap<String, List<String>> m =
-        new FactoryMap<String, List<String>>(new ArrayList<String>());
+    FactoryMap<String, List<String>> m = new FactoryMap<>(new ArrayList<String>());
 
     List<String> list = m.get("a");
     assertEquals(0, list.size());

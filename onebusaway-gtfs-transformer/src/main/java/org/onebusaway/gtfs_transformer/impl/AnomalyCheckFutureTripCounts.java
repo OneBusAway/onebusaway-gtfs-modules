@@ -81,7 +81,7 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
     holidaysListener = (SetListener) readCsvFrom(holidaysListener, holidaysUrl, holidaysFile);
     holidays = holidaysListener.returnContents();
 
-    Map<String, Double> dayAvgTripsMap = new HashMap<String, Double>();
+    Map<String, Double> dayAvgTripsMap = new HashMap<>();
     MapListener mapListener = new MapListener();
     mapListener = (MapListener) readCsvFrom(mapListener, dayAvgTripMapUrl, dayAvgTripMapFile);
     dayAvgTripsMap = mapListener.returnContents();
@@ -104,7 +104,7 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
     Map<Date, Integer> dateTripMap = getDateTripMap(dao);
 
     int dayCounter = 0;
-    Map<String, ArrayList<Double>> dayAvgTripsMapUpdate = new HashMap<String, ArrayList<Double>>();
+    Map<String, ArrayList<Double>> dayAvgTripsMapUpdate = new HashMap<>();
 
     for (String day : days) {
       dayAvgTripsMapUpdate.put(day, new ArrayList<Double>());
@@ -173,7 +173,7 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
   }
 
   private Map<Date, Integer> getDateTripMap(GtfsMutableRelationalDao dao) {
-    Map<Date, Integer> dateTripMap = new HashMap<Date, Integer>();
+    Map<Date, Integer> dateTripMap = new HashMap<>();
     for (Trip trip : dao.getAllTrips()) {
       _log.debug(trip.toString());
       // check for service

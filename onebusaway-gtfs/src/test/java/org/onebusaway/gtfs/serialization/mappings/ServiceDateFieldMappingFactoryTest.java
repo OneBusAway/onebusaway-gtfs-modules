@@ -40,7 +40,7 @@ public class ServiceDateFieldMappingFactoryTest {
 
     CsvEntityContext context = new CsvEntityContextImpl();
 
-    Map<String, Object> csvValues = new HashMap<String, Object>();
+    Map<String, Object> csvValues = new HashMap<>();
     csvValues.put(propName, "20100212");
 
     Dummy obj = new Dummy();

@@ -20,7 +20,6 @@ import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
-import org.slf4j.LoggerFactory;
 
 public class ThirtyDayCalendarExtensionStrategy implements GtfsTransformStrategy {
   private final long milisPerDay = 24 * 60 * 60 * 1000;

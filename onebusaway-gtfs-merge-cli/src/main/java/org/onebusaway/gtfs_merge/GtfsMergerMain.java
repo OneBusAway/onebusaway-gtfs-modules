@@ -57,14 +57,13 @@ public class GtfsMergerMain {
   private Options _options = new Options();
 
   /** Mapping from GTFS file name to the entity type handled by that class. */
-  private Map<String, Class<?>> _entityClassesByFilename = new HashMap<String, Class<?>>();
+  private Map<String, Class<?>> _entityClassesByFilename = new HashMap<>();
 
   /**
    * If we ever need to register a custom option handler for a specific entity type, we would do it
    * here.
    */
-  private Map<Class<?>, OptionHandler> _optionHandlersByEntityClass =
-      new HashMap<Class<?>, OptionHandler>();
+  private Map<Class<?>, OptionHandler> _optionHandlersByEntityClass = new HashMap<>();
 
   public static void main(String[] args) throws IOException {
     GtfsMergerMain m = new GtfsMergerMain();
@@ -147,7 +146,7 @@ public class GtfsMergerMain {
 
     processOptions(cli, merger);
 
-    List<File> inputPaths = new ArrayList<File>();
+    List<File> inputPaths = new ArrayList<>();
     for (int i = 0; i < args.length - 1; ++i) {
       inputPaths.add(new File(args[i]));
     }

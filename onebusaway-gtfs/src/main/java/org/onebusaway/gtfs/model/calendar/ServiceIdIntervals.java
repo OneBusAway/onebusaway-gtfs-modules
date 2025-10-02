@@ -32,8 +32,7 @@ public class ServiceIdIntervals
 
   @Serial private static final long serialVersionUID = 1L;
 
-  private Map<LocalizedServiceId, ServiceInterval> _intervals =
-      new HashMap<LocalizedServiceId, ServiceInterval>();
+  private Map<LocalizedServiceId, ServiceInterval> _intervals = new HashMap<>();
 
   public void addStopTime(LocalizedServiceId serviceId, int arrivalTime, int departureTime) {
 

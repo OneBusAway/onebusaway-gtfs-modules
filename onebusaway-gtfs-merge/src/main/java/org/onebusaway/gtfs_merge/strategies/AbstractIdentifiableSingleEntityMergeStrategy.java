@@ -53,7 +53,7 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
    * add rules to this scoring strategy specific to their entity type to guide duplication scoring.
    */
   protected AndDuplicateScoringStrategy<T> _duplicateScoringStrategy =
-      new AndDuplicateScoringStrategy<T>();
+      new AndDuplicateScoringStrategy<>();
 
   public AbstractIdentifiableSingleEntityMergeStrategy(Class<T> entityType) {
     super(entityType);
@@ -102,7 +102,7 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
      * First we check to make sure that the two feeds have enough identifiers in common to suggest
      * that identity-based duplicate detection should be used.
      */
-    Set<Serializable> commonIds = new HashSet<Serializable>();
+    Set<Serializable> commonIds = new HashSet<>();
     double elementOvelapScore =
         DuplicateScoringSupport.scoreElementOverlap(
             sourceById.keySet(), targetById.keySet(), commonIds);
@@ -158,10 +158,10 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
     int end = targetEntities.size() / cpus;
     int increment = targetEntities.size() / cpus;
     ExecutorService executorService = Executors.newFixedThreadPool(cpus);
-    List<Result> results = new ArrayList<Result>(cpus);
+    List<Result> results = new ArrayList<>(cpus);
     if (end < 10) {
       // no need to segregate is set is small
-      Set<T> remainingSourceEntities = new HashSet<T>(sourceEntities);
+      Set<T> remainingSourceEntities = new HashSet<>(sourceEntities);
       Result result = new Result();
       results.add(result);
       executorService.submit(
@@ -178,7 +178,7 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
       for (int i = 0; i < cpus; i++) {
         Collection<T> t_targetEntities = (Collection<T>) target.getAllEntitiesForType(_entityType);
         Collection<T> t_sourceEntities = (Collection<T>) source.getAllEntitiesForType(_entityType);
-        Set<T> t_remainingSourceEntities = new HashSet<T>(t_sourceEntities);
+        Set<T> t_remainingSourceEntities = new HashSet<>(t_sourceEntities);
 
         Result result = new Result();
         results.add(result);
@@ -260,7 +260,7 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
     if (targets.isEmpty()) {
       return null;
     }
-    Max<T> best = new Max<T>();
+    Max<T> best = new Max<>();
     for (T target : targets) {
       /**
        * If we just added the target entity as part of the current feed, do not attempt a fuzzy
@@ -454,7 +454,7 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
           result.setPercentComplete(percent);
         }
         T targetEntity = iterator.next();
-        Max<T> best = new Max<T>();
+        Max<T> best = new Max<>();
         for (T sourceEntity : remainingSourceEntities) {
           double score = duplicateScoringStrategy.score(context, sourceEntity, targetEntity);
           if (score < min) {

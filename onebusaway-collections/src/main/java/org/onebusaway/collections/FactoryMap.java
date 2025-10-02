@@ -61,7 +61,7 @@ public class FactoryMap<K, V> extends HashMap<K, V> {
    * @return a {@link Map} with factory-map behavior
    */
   public static <K, V> Map<K, V> create(Map<K, V> map, V defaultValue) {
-    return new MapImpl<K, V>(map, new ClassInstanceFactory<K, V>(defaultValue.getClass()));
+    return new MapImpl<>(map, new ClassInstanceFactory<K, V>(defaultValue.getClass()));
   }
 
   /**
@@ -73,7 +73,7 @@ public class FactoryMap<K, V> extends HashMap<K, V> {
    * @return a {@link Map} with factory-map behavior
    */
   public static <K, V> Map<K, V> create(Map<K, V> map, IValueFactory<K, V> factory) {
-    return new MapImpl<K, V>(map, factory);
+    return new MapImpl<>(map, factory);
   }
 
   /**
@@ -86,7 +86,7 @@ public class FactoryMap<K, V> extends HashMap<K, V> {
    * @return a {@link SortedMap} with factory-map behavior
    */
   public static <K, V> SortedMap<K, V> createSorted(SortedMap<K, V> map, V defaultValue) {
-    return new SortedMapImpl<K, V>(map, new ClassInstanceFactory<K, V>(defaultValue.getClass()));
+    return new SortedMapImpl<>(map, new ClassInstanceFactory<K, V>(defaultValue.getClass()));
   }
 
   /**
@@ -99,7 +99,7 @@ public class FactoryMap<K, V> extends HashMap<K, V> {
    */
   public static <K, V> SortedMap<K, V> createSorted(
       SortedMap<K, V> map, IValueFactory<K, V> factory) {
-    return new SortedMapImpl<K, V>(map, factory);
+    return new SortedMapImpl<>(map, factory);
   }
 
   /**

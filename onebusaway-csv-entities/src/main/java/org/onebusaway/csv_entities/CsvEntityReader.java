@@ -44,13 +44,13 @@ public class CsvEntityReader {
 
   private TokenizerStrategy _tokenizerStrategy = new CsvTokenizerStrategy();
 
-  private List<EntityHandler> _handlers = new ArrayList<EntityHandler>();
+  private List<EntityHandler> _handlers = new ArrayList<>();
 
   private boolean _trimValues = false;
 
   private boolean _internStrings = false;
 
-  private Map<String, String> _stringTable = new HashMap<String, String>();
+  private Map<String, String> _stringTable = new HashMap<>();
 
   /**
    * @return the {@link EntitySchemaFactory} that will be used for introspection of bean classes

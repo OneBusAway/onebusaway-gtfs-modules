@@ -156,7 +156,7 @@ public class CountAndTest implements GtfsTransformStrategy {
 
     String feed = CloudContextService.getLikelyFeedName(dao);
 
-    HashSet<String> ids = new HashSet<String>();
+    Set<String> ids = new HashSet<>();
     for (Stop stop : dao.getAllStops()) {
       // check for duplicate stop ids.
       if (ids.contains(stop.getId().getId())) {

@@ -18,13 +18,13 @@ import java.util.List;
 
 public class BaseEntitySchema {
 
-  private List<FieldMapping> _fields = new ArrayList<FieldMapping>();
+  private List<FieldMapping> _fields = new ArrayList<>();
 
-  private List<EntityValidator> _validators = new ArrayList<EntityValidator>();
+  private List<EntityValidator> _validators = new ArrayList<>();
 
   private Class<?> _entityClass;
 
-  private List<String> _fieldsInOrder = new ArrayList<String>();
+  private List<String> _fieldsInOrder = new ArrayList<>();
 
   public BaseEntitySchema(Class<?> entityClass) {
     _entityClass = entityClass;

@@ -52,7 +52,7 @@ public class CsvEntityReaderTest {
   @Test
   public void testInternString() throws CsvEntityIOException, IOException {
 
-    ListEntityHandler<AnnotatedTestBean> handler = new ListEntityHandler<AnnotatedTestBean>();
+    ListEntityHandler<AnnotatedTestBean> handler = new ListEntityHandler<>();
 
     CsvEntityReader reader = new CsvEntityReader();
     reader.setInternStrings(true);

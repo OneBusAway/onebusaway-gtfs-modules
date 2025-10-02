@@ -23,16 +23,15 @@ import org.onebusaway.gtfs.serialization.GtfsReader;
 
 public class EntitySchemaCache {
 
-  private Map<String, EntitySchema> _entitySchemasByFileName = new HashMap<String, EntitySchema>();
+  private Map<String, EntitySchema> _entitySchemasByFileName = new HashMap<>();
 
-  private Map<Class<?>, EntitySchema> _entitySchemasByEntityType =
-      new HashMap<Class<?>, EntitySchema>();
+  private Map<Class<?>, EntitySchema> _entitySchemasByEntityType = new HashMap<>();
 
   private Map<Class<?>, Map<String, SingleFieldMapping>> _mappingsByTypeAndCsvFieldName =
-      new HashMap<Class<?>, Map<String, SingleFieldMapping>>();
+      new HashMap<>();
 
   private Map<Class<?>, Map<String, SingleFieldMapping>> _mappingsByTypeAndObjectFieldName =
-      new HashMap<Class<?>, Map<String, SingleFieldMapping>>();
+      new HashMap<>();
 
   public void addEntitySchemasFromGtfsReader(GtfsReader reader) {
     EntitySchemaFactory factory = reader.getEntitySchemaFactory();
@@ -96,7 +95,7 @@ public class EntitySchemaCache {
       SingleFieldMapping mapping) {
     Map<String, SingleFieldMapping> mappings = mappingsByEntityType.get(entityType);
     if (mappings == null) {
-      mappings = new HashMap<String, SingleFieldMapping>();
+      mappings = new HashMap<>();
       mappingsByEntityType.put(entityType, mappings);
     }
     mappings.put(name, mapping);

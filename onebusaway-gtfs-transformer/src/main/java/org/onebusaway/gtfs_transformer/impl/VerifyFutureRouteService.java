@@ -57,7 +57,7 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-    Collection<String> problemRoutes = new HashSet<String>();
+    Collection<String> problemRoutes = new HashSet<>();
     ProblemRouteListener listener = new ProblemRouteListener();
     try {
       if (problemRoutesUrl != null) {
@@ -222,7 +222,7 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
   private class ProblemRouteListener implements CSVListener {
 
-    private Collection<String> routeIds = new HashSet<String>();
+    private Collection<String> routeIds = new HashSet<>();
 
     @Override
     public void handleLine(List<String> list) throws Exception {

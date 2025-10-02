@@ -89,8 +89,7 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
 
     RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
 
-    Map<Set<AgencyAndId>, AgencyAndId> serviceIdsToUpdatedServiceId =
-        new HashMap<Set<AgencyAndId>, AgencyAndId>();
+    Map<Set<AgencyAndId>, AgencyAndId> serviceIdsToUpdatedServiceId = new HashMap<>();
 
     Map<AgencyAndId, List<AgencyAndId>> mergeToolIdMapping = computeMergeToolIdMapping(dao);
 
@@ -125,7 +124,7 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
     }
 
     CalendarService calendarService = CalendarServiceDataFactoryImpl.createService(dao);
-    List<Object> newEntities = new ArrayList<Object>();
+    List<Object> newEntities = new ArrayList<>();
     for (Map.Entry<Set<AgencyAndId>, AgencyAndId> entry : serviceIdsToUpdatedServiceId.entrySet()) {
       Set<ServiceDate> allServiceDates =
           getServiceDatesForServiceIds(calendarService, entry.getKey());
@@ -143,7 +142,7 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
     if (updatedServiceId == null) {
 
       if (serviceIds.isEmpty()) throw new IllegalStateException();
-      List<AgencyAndId> toSort = new ArrayList<AgencyAndId>(serviceIds);
+      List<AgencyAndId> toSort = new ArrayList<>(serviceIds);
       Collections.sort(toSort);
       StringBuilder b = new StringBuilder();
       String agencyId = null;
@@ -164,9 +163,9 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
     if (!undoGoogleTransitDataFeedMergeTool) return Collections.emptyMap();
 
     Map<AgencyAndId, List<AgencyAndId>> mergedIdMapping =
-        new FactoryMap<AgencyAndId, List<AgencyAndId>>(new ArrayList<AgencyAndId>());
+        new FactoryMap<>(new ArrayList<AgencyAndId>());
     Map<AgencyAndId, List<AgencyAndId>> unmergedIdMapping =
-        new FactoryMap<AgencyAndId, List<AgencyAndId>>(new ArrayList<AgencyAndId>());
+        new FactoryMap<>(new ArrayList<AgencyAndId>());
 
     for (Trip trip : dao.getAllTrips()) {
       AgencyAndId tripId = trip.getId();
@@ -177,7 +176,7 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
         mergedIdMapping.get(unmergedTripId).add(tripId);
       }
     }
-    Set<AgencyAndId> intersection = new HashSet<AgencyAndId>(mergedIdMapping.keySet());
+    Set<AgencyAndId> intersection = new HashSet<>(mergedIdMapping.keySet());
     intersection.retainAll(unmergedIdMapping.keySet());
     if (!intersection.isEmpty()) {
       throw new IllegalStateException(
@@ -219,7 +218,7 @@ public class CalendarSimplicationStrategy implements GtfsTransformStrategy {
 
   private Set<ServiceDate> getServiceDatesForServiceIds(
       CalendarService calendarService, Set<AgencyAndId> serviceIds) {
-    Set<ServiceDate> allServiceDates = new HashSet<ServiceDate>();
+    Set<ServiceDate> allServiceDates = new HashSet<>();
     for (AgencyAndId serviceId : serviceIds) {
       Set<ServiceDate> serviceDates = calendarService.getServiceDatesForServiceId(serviceId);
       allServiceDates.addAll(serviceDates);

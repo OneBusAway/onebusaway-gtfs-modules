@@ -110,7 +110,7 @@ public class MappingLibraryTest {
   }
 
   private <T> Set<T> set(T... objects) {
-    Set<T> set = new HashSet<T>();
+    Set<T> set = new HashSet<>();
     for (T object : objects) set.add(object);
     return set;
   }

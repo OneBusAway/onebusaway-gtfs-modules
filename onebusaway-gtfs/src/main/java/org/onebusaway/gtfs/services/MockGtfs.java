@@ -37,7 +37,7 @@ public class MockGtfs {
 
   private final File _path;
 
-  private Map<String, byte[]> _contentByFileName = new HashMap<String, byte[]>();
+  private Map<String, byte[]> _contentByFileName = new HashMap<>();
 
   public MockGtfs(File path) {
     _path = path;
@@ -147,8 +147,8 @@ public class MockGtfs {
     b.addColumnSpec("stop_id", "s$0");
     b.addColumnSpec("stop_name", "Stop $0");
 
-    List<String> stopLats = new ArrayList<String>();
-    List<String> stopLons = new ArrayList<String>();
+    List<String> stopLats = new ArrayList<>();
+    List<String> stopLons = new ArrayList<>();
     for (int i = 0; i < numberOfRows; ++i) {
       double lat = 47.65383950857904 + 0.004 * i;
       double lon = -122.30782950811766;
@@ -171,8 +171,8 @@ public class MockGtfs {
     int numberOfRows = rows.length;
     List<String> stopIds = new ArrayList<>();
     List<String> stopNames = new ArrayList<>();
-    List<String> stopLats = new ArrayList<String>();
-    List<String> stopLons = new ArrayList<String>();
+    List<String> stopLats = new ArrayList<>();
+    List<String> stopLons = new ArrayList<>();
     TableBuilder b = new TableBuilder(numberOfRows);
     for (String column : rows) {
       String[] parts = column.split(",");
@@ -219,10 +219,10 @@ public class MockGtfs {
       b.addColumnSpec(day, "1");
     }
 
-    List<String> mask = new ArrayList<String>();
+    List<String> mask = new ArrayList<>();
     columns = b.removeColumn("mask", columns, mask);
     if (!mask.isEmpty()) {
-      Map<String, List<String>> valuesByDay = new HashMap<String, List<String>>();
+      Map<String, List<String>> valuesByDay = new HashMap<>();
 
       for (String day : days) {
         valuesByDay.put(day, new ArrayList<String>());
@@ -252,9 +252,9 @@ public class MockGtfs {
   }
 
   public void putCalendarDates(String... specs) {
-    List<String> serviceIds = new ArrayList<String>();
-    List<String> serviceDates = new ArrayList<String>();
-    List<String> exceptionTypes = new ArrayList<String>();
+    List<String> serviceIds = new ArrayList<>();
+    List<String> serviceDates = new ArrayList<>();
+    List<String> exceptionTypes = new ArrayList<>();
     for (String spec : specs) {
       int index = spec.indexOf('=');
       if (index == -1) {
@@ -296,14 +296,14 @@ public class MockGtfs {
   }
 
   public void putStopTimes(String tripIds, String stopIds) {
-    List<String> tripIdColumn = new ArrayList<String>();
-    List<String> stopIdColumn = new ArrayList<String>();
-    List<String> arrivalTimeColumn = new ArrayList<String>();
-    List<String> departureTimeColumn = new ArrayList<String>();
-    List<String> stopSequenceColumn = new ArrayList<String>();
+    List<String> tripIdColumn = new ArrayList<>();
+    List<String> stopIdColumn = new ArrayList<>();
+    List<String> arrivalTimeColumn = new ArrayList<>();
+    List<String> departureTimeColumn = new ArrayList<>();
+    List<String> stopSequenceColumn = new ArrayList<>();
 
     String[] expandedTripIds = tripIds.isEmpty() ? new String[0] : tripIds.split(",");
-    List<List<String>> expandedStopIds = new ArrayList<List<String>>();
+    List<List<String>> expandedStopIds = new ArrayList<>();
     if (!stopIds.isEmpty()) {
       for (String stopIdsEntry : stopIds.split("\\|")) {
         expandedStopIds.add(Arrays.asList(stopIdsEntry.split(",")));
@@ -355,19 +355,19 @@ public class MockGtfs {
    */
   public void putStopTimesWithDistances(
       String tripIds, String stopIds, String distances, String timepoints) {
-    List<String> tripIdColumn = new ArrayList<String>();
-    List<String> stopIdColumn = new ArrayList<String>();
-    List<String> arrivalTimeColumn = new ArrayList<String>();
-    List<String> departureTimeColumn = new ArrayList<String>();
-    List<String> stopSequenceColumn = new ArrayList<String>();
-    List<String> timepointColumn = new ArrayList<String>();
-    List<String> shapeDistColumn = new ArrayList<String>();
+    List<String> tripIdColumn = new ArrayList<>();
+    List<String> stopIdColumn = new ArrayList<>();
+    List<String> arrivalTimeColumn = new ArrayList<>();
+    List<String> departureTimeColumn = new ArrayList<>();
+    List<String> stopSequenceColumn = new ArrayList<>();
+    List<String> timepointColumn = new ArrayList<>();
+    List<String> shapeDistColumn = new ArrayList<>();
 
     String[] expandedTimepoints =
         timepoints == null || timepoints.isEmpty() ? new String[0] : timepoints.split(",");
 
     String[] expandedTripIds = tripIds.isEmpty() ? new String[0] : tripIds.split(",");
-    List<List<String>> expandedStopIds = new ArrayList<List<String>>();
+    List<List<String>> expandedStopIds = new ArrayList<>();
     if (!stopIds.isEmpty()) {
       for (String stopIdsEntry : stopIds.split("\\|")) {
         expandedStopIds.add(Arrays.asList(stopIdsEntry.split(",")));
@@ -468,8 +468,7 @@ public class MockGtfs {
 
   private static class TableBuilder {
 
-    private final LinkedHashMap<String, List<String>> _columnsAndValues =
-        new LinkedHashMap<String, List<String>>();
+    private final Map<String, List<String>> _columnsAndValues = new LinkedHashMap<>();
 
     private final int _numberOfRows;
 
@@ -500,7 +499,7 @@ public class MockGtfs {
     }
 
     public String[] removeColumn(String name, String[] columns, List<String> values) {
-      List<String> filtered = new ArrayList<String>();
+      List<String> filtered = new ArrayList<>();
       for (String columnSpec : columns) {
         int index = columnSpec.indexOf('=');
         if (index == -1) {

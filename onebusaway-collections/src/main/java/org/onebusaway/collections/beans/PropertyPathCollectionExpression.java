@@ -43,7 +43,7 @@ public final class PropertyPathCollectionExpression {
 
   public static List<Object> evaluate(Object target, String query) {
     PropertyPathCollectionExpression expression = new PropertyPathCollectionExpression(query);
-    List<Object> values = new ArrayList<Object>();
+    List<Object> values = new ArrayList<>();
     expression.invoke(target, values);
     return values;
   }

@@ -29,11 +29,9 @@ public class GenericDaoImpl implements GenericMutableDao {
 
   private final Logger _log = LoggerFactory.getLogger(GenericDaoImpl.class);
 
-  private final Map<Class<?>, Map<Object, Object>> _entitiesByClassAndId =
-      new HashMap<Class<?>, Map<Object, Object>>();
+  private final Map<Class<?>, Map<Object, Object>> _entitiesByClassAndId = new HashMap<>();
 
-  private final Map<Class<?>, EntityHandler<Serializable>> _handlers =
-      new HashMap<Class<?>, EntityHandler<Serializable>>();
+  private final Map<Class<?>, EntityHandler<Serializable>> _handlers = new HashMap<>();
 
   private boolean _generateIds = true;
 
@@ -62,7 +60,7 @@ public class GenericDaoImpl implements GenericMutableDao {
   @Override
   public <T> Collection<T> getAllEntitiesForType(Class<T> type) {
     Map<Object, Object> entitiesById = _entitiesByClassAndId.get(type);
-    if (entitiesById == null) return new ArrayList<T>();
+    if (entitiesById == null) return new ArrayList<>();
     return (Collection<T>) entitiesById.values();
   }
 
@@ -96,7 +94,7 @@ public class GenericDaoImpl implements GenericMutableDao {
 
     Map<Object, Object> byId = _entitiesByClassAndId.get(c);
     if (byId == null) {
-      byId = new HashMap<Object, Object>();
+      byId = new HashMap<>();
       _entitiesByClassAndId.put(c, byId);
     }
     Object id = bean.getId();

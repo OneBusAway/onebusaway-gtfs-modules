@@ -38,7 +38,7 @@ public class LatLonFieldMappingFactoryTest {
 
   @Test
   public void testTranslateFromCSVToObject() {
-    Map<String, Object> csvValues = new HashMap<String, Object>();
+    Map<String, Object> csvValues = new HashMap<>();
     csvValues.put("stop_lat", "47.1234");
     Stop stop = new Stop();
     _fieldMapping.translateFromCSVToObject(
@@ -50,7 +50,7 @@ public class LatLonFieldMappingFactoryTest {
   public void testTranslateFromObjectToCSV() {
     Stop stop = new Stop();
     stop.setLat(47.5678);
-    Map<String, Object> csvValues = new HashMap<String, Object>();
+    Map<String, Object> csvValues = new HashMap<>();
 
     _fieldMapping.translateFromObjectToCSV(
         new CsvEntityContextImpl(), BeanWrapperFactory.wrap(stop), csvValues);
@@ -64,7 +64,7 @@ public class LatLonFieldMappingFactoryTest {
 
     Stop stop = new Stop();
     stop.setLat(47.5678);
-    Map<String, Object> csvValues = new HashMap<String, Object>();
+    Map<String, Object> csvValues = new HashMap<>();
 
     _fieldMapping.translateFromObjectToCSV(
         new CsvEntityContextImpl(), BeanWrapperFactory.wrap(stop), csvValues);

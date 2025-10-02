@@ -21,7 +21,7 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class AddEntitiesTransformStrategy implements GtfsTransformStrategy {
 
-  private List<EntityFactory> _objectsToAdd = new ArrayList<EntityFactory>();
+  private List<EntityFactory> _objectsToAdd = new ArrayList<>();
 
   public void addEntity(Object object) {
     addEntityFactory(new EntityFactoryImpl(object));

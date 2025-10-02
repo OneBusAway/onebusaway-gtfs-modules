@@ -38,13 +38,13 @@ public abstract class Combinations {
 
   public static <T> Iterable<Pair<T>> getCombinations(
       Iterable<T> objects, boolean includeReflexive) {
-    List<T> elements = new ArrayList<T>();
+    List<T> elements = new ArrayList<>();
     for (T element : objects) elements.add(element);
     return new CombinationsIterable<T>(elements, includeReflexive);
   }
 
   public static <T> Iterable<Pair<T>> getPermutations(final Iterable<T> objects) {
-    return new Iterable<Pair<T>>() {
+    return new Iterable<>() {
       public Iterator<Pair<T>> iterator() {
         return new PermutationIterator<T>(objects);
       }
@@ -53,7 +53,7 @@ public abstract class Combinations {
 
   public static <T> Iterable<Pair<T>> getPermutations(
       final Iterable<T> objectsA, final Iterable<T> objectsB) {
-    return new Iterable<Pair<T>>() {
+    return new Iterable<>() {
       public Iterator<Pair<T>> iterator() {
         return new PermutationIterator<T>(objectsA, objectsB);
       }
@@ -61,7 +61,7 @@ public abstract class Combinations {
   }
 
   public static <T> Iterable<Pair<T>> getSequentialPairs(final Iterable<T> objects) {
-    return new Iterable<Pair<T>>() {
+    return new Iterable<>() {
       public Iterator<Pair<T>> iterator() {
         return new SequentialPairIterator<T>(objects);
       }
@@ -71,8 +71,8 @@ public abstract class Combinations {
   public static <T> List<List<T>> getGroupCombinations(List<T> elements, int groupSize) {
     if (groupSize > elements.size())
       throw new IllegalStateException("group size is larger than number of available elements");
-    List<List<T>> lists = new ArrayList<List<T>>();
-    List<T> current = new ArrayList<T>();
+    List<List<T>> lists = new ArrayList<>();
+    List<T> current = new ArrayList<>();
     getGroupCombinations(elements, groupSize, 0, lists, current);
     return lists;
   }
@@ -92,7 +92,7 @@ public abstract class Combinations {
     int g = groupSize - current.size();
 
     for (int i = index; i < elements.size() - g + 1; i++) {
-      List<T> c = new ArrayList<T>(current.size() + 1);
+      List<T> c = new ArrayList<>(current.size() + 1);
       c.addAll(current);
       c.add(elements.get(i));
       getGroupCombinations(elements, groupSize, i + 1, lists, c);

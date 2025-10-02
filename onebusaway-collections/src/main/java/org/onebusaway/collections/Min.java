@@ -20,7 +20,7 @@ public class Min<T> {
 
   private double _minValue = Double.POSITIVE_INFINITY;
 
-  private List<T> _minElements = new ArrayList<T>();
+  private List<T> _minElements = new ArrayList<>();
 
   public void add(double value, T element) {
     if (value == _minValue) {

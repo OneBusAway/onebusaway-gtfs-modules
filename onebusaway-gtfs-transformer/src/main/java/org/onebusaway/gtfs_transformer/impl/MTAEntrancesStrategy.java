@@ -75,7 +75,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
       Arrays.asList("Ramp", "Walkway", "Road_Walkway", "Elevator", "Door", "Entrance", "Tunnel");
 
   @CsvField(ignore = true)
-  private Set<AgencyAndId> stopIdsWithPathways = new HashSet<AgencyAndId>();
+  private Set<AgencyAndId> stopIdsWithPathways = new HashSet<>();
 
   @CsvField(ignore = true)
   private Map<String, Stop> complexStopIds = new HashMap<>();
@@ -600,7 +600,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
   private Map<String, List<Stop>> getComplexList(GtfsDao dao) {
     Map<String, Stop> stops = getStopMap(dao);
-    Map<String, List<Stop>> complexes = new HashMap<String, List<Stop>>();
+    Map<String, List<Stop>> complexes = new HashMap<>();
     try (BufferedReader br =
         new BufferedReader(new FileReader(new File(this.accessibleComplexFile)))) {
       String line;

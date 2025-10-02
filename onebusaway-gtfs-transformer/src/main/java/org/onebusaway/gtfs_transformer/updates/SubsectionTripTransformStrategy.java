@@ -32,8 +32,7 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class SubsectionTripTransformStrategy implements GtfsTransformStrategy {
 
-  private Map<String, List<SubsectionOperation>> _operationsByRouteId =
-      new HashMap<String, List<SubsectionOperation>>();
+  private Map<String, List<SubsectionOperation>> _operationsByRouteId = new HashMap<>();
 
   @Override
   public String getName() {
@@ -46,7 +45,7 @@ public class SubsectionTripTransformStrategy implements GtfsTransformStrategy {
     }
     List<SubsectionOperation> operations = _operationsByRouteId.get(operation.getRouteId());
     if (operations == null) {
-      operations = new ArrayList<SubsectionOperation>();
+      operations = new ArrayList<>();
       _operationsByRouteId.put(operation.getRouteId(), operations);
     }
     operations.add(operation);
@@ -55,11 +54,11 @@ public class SubsectionTripTransformStrategy implements GtfsTransformStrategy {
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-    List<Trip> tripsToAdd = new ArrayList<Trip>();
-    List<StopTime> stopTimesToAdd = new ArrayList<StopTime>();
-    List<Trip> tripsToRemove = new ArrayList<Trip>();
-    List<StopTime> stopTimesToRemove = new ArrayList<StopTime>();
-    Set<AgencyAndId> newShapeIds = new HashSet<AgencyAndId>();
+    List<Trip> tripsToAdd = new ArrayList<>();
+    List<StopTime> stopTimesToAdd = new ArrayList<>();
+    List<Trip> tripsToRemove = new ArrayList<>();
+    List<StopTime> stopTimesToRemove = new ArrayList<>();
+    Set<AgencyAndId> newShapeIds = new HashSet<>();
 
     for (Trip trip : dao.getAllTrips()) {
       String routeId = trip.getRoute().getId().getId();
@@ -103,7 +102,7 @@ public class SubsectionTripTransformStrategy implements GtfsTransformStrategy {
         newTrip.setId(new AgencyAndId("1", id));
         tripsToAdd.add(newTrip);
 
-        List<StopTime> newStopTimes = new ArrayList<StopTime>();
+        List<StopTime> newStopTimes = new ArrayList<>();
         for (int i = fromIndex; i <= toIndex; ++i) {
           StopTime stopTime = new StopTime(stopTimes.get(i));
           stopTime.setId(0);
@@ -134,7 +133,7 @@ public class SubsectionTripTransformStrategy implements GtfsTransformStrategy {
     }
 
     ((GtfsRelationalDaoImpl) dao).clearAllCaches();
-    Set<AgencyAndId> shapeIds = new HashSet<AgencyAndId>(dao.getAllShapeIds());
+    Set<AgencyAndId> shapeIds = new HashSet<>(dao.getAllShapeIds());
     for (Trip trip : dao.getAllTrips()) {
       shapeIds.remove(trip.getShapeId());
     }
@@ -209,7 +208,7 @@ public class SubsectionTripTransformStrategy implements GtfsTransformStrategy {
   }
 
   private Map<String, Integer> getStopIndices(List<StopTime> stopTimes) {
-    Map<String, Integer> indices = new HashMap<String, Integer>();
+    Map<String, Integer> indices = new HashMap<>();
     int index = 0;
     for (StopTime stopTime : stopTimes) {
       String id = stopTime.getStop().getId().getId();

@@ -34,7 +34,7 @@ public abstract class IdentityBean<T extends Serializable> implements Serializab
   @Override
   public void putExtension(Class<?> type, Object extension) {
     if (_extensionsByType == null) {
-      _extensionsByType = new HashMap<Class<?>, Object>();
+      _extensionsByType = new HashMap<>();
     }
     _extensionsByType.put(type, extension);
   }

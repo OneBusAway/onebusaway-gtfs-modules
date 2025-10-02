@@ -35,7 +35,7 @@ public abstract class Tuples {
    * @return a new {@link Pair} object with the specified members
    */
   public static <T> Pair<T> pair(T first, T second) {
-    return new PairImpl<T>(first, second);
+    return new PairImpl<>(first, second);
   }
 
   /**
@@ -46,7 +46,7 @@ public abstract class Tuples {
    * @return a new {@link T2} object with the specified members
    */
   public static <S1, S2> T2<S1, S2> tuple(S1 first, S2 second) {
-    return new T2Impl<S1, S2>(first, second);
+    return new T2Impl<>(first, second);
   }
 
   /**

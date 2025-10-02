@@ -22,7 +22,6 @@ import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
-import org.slf4j.LoggerFactory;
 
 public class EnsureRouteLongNameExists implements GtfsTransformStrategy {
 
@@ -34,14 +33,14 @@ public class EnsureRouteLongNameExists implements GtfsTransformStrategy {
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
     // <route, <headsign, count>>
-    HashMap<AgencyAndId, HashMap<String, Integer>> routeToHeadsignToCount = new HashMap();
+    Map<AgencyAndId, Map<String, Integer>> routeToHeadsignToCount = new HashMap();
     Collection<Trip> trips = dao.getAllTrips();
     // go through each trip
     for (Trip trip : trips) {
       AgencyAndId routeId = trip.getRoute().getId();
       String headsign = trip.getTripHeadsign();
       // check route
-      HashMap<String, Integer> headsignCounts = routeToHeadsignToCount.get(trip.getRoute().getId());
+      Map<String, Integer> headsignCounts = routeToHeadsignToCount.get(trip.getRoute().getId());
       if (headsignCounts == null) {
         headsignCounts = new HashMap<>();
         routeToHeadsignToCount.put(routeId, headsignCounts);
@@ -51,7 +50,7 @@ public class EnsureRouteLongNameExists implements GtfsTransformStrategy {
       }
       headsignCounts.put(headsign, headsignCounts.get(headsign) + 1);
     }
-    for (Map.Entry<AgencyAndId, HashMap<String, Integer>> routeToHeadsignToCountEntry :
+    for (Map.Entry<AgencyAndId, Map<String, Integer>> routeToHeadsignToCountEntry :
         routeToHeadsignToCount.entrySet()) {
       String h1 = "";
       String h2 = "";

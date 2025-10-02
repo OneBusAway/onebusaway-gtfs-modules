@@ -97,7 +97,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements GtfsMutableRel
 
     if (_tripAgencyIdsByServiceId == null) {
 
-      Map<AgencyAndId, Set<String>> agencyIdsByServiceIds = new HashMap<AgencyAndId, Set<String>>();
+      Map<AgencyAndId, Set<String>> agencyIdsByServiceIds = new HashMap<>();
 
       for (Trip trip : getAllTrips()) {
         AgencyAndId tripId = trip.getId();
@@ -105,24 +105,24 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements GtfsMutableRel
         AgencyAndId tripServiceId = trip.getServiceId();
         Set<String> agencyIds = agencyIdsByServiceIds.get(tripServiceId);
         if (agencyIds == null) {
-          agencyIds = new HashSet<String>();
+          agencyIds = new HashSet<>();
           agencyIdsByServiceIds.put(tripServiceId, agencyIds);
         }
         agencyIds.add(tripAgencyId);
       }
 
-      _tripAgencyIdsByServiceId = new HashMap<AgencyAndId, List<String>>();
+      _tripAgencyIdsByServiceId = new HashMap<>();
 
       for (Map.Entry<AgencyAndId, Set<String>> entry : agencyIdsByServiceIds.entrySet()) {
         AgencyAndId tripServiceId = entry.getKey();
-        List<String> agencyIds = new ArrayList<String>(entry.getValue());
+        List<String> agencyIds = new ArrayList<>(entry.getValue());
         Collections.sort(agencyIds);
         _tripAgencyIdsByServiceId.put(tripServiceId, agencyIds);
       }
     }
 
     List<String> agencyIds = _tripAgencyIdsByServiceId.get(serviceId);
-    if (agencyIds == null) agencyIds = new ArrayList<String>();
+    if (agencyIds == null) agencyIds = new ArrayList<>();
     return agencyIds;
   }
 
@@ -136,14 +136,14 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements GtfsMutableRel
   @Override
   public List<Stop> getStopsForStation(Stop station) {
     if (_stopsByStation == null) {
-      _stopsByStation = new HashMap<Stop, List<Stop>>();
+      _stopsByStation = new HashMap<>();
       for (Stop stop : getAllStops()) {
         if (stop.getLocationType() == 0 && stop.getParentStation() != null) {
           Stop parentStation =
               getStopForId(new AgencyAndId(stop.getId().getAgencyId(), stop.getParentStation()));
           List<Stop> subStops = _stopsByStation.get(parentStation);
           if (subStops == null) {
-            subStops = new ArrayList<Stop>(2);
+            subStops = new ArrayList<>(2);
             _stopsByStation.put(parentStation, subStops);
           }
           subStops.add(stop);
@@ -164,7 +164,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements GtfsMutableRel
   @Override
   public List<AgencyAndId> getAllShapeIds() {
     ensureShapePointRelation();
-    return new ArrayList<AgencyAndId>(_shapePointsByShapeId.keySet());
+    return new ArrayList<>(_shapePointsByShapeId.keySet());
   }
 
   @Override
@@ -217,13 +217,13 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements GtfsMutableRel
   public List<Trip> getTripsForBlockId(AgencyAndId blockId) {
 
     if (_tripsByBlockId == null) {
-      _tripsByBlockId = new HashMap<AgencyAndId, List<Trip>>();
+      _tripsByBlockId = new HashMap<>();
       for (Trip trip : getAllTrips()) {
         if (trip.getBlockId() != null) {
           AgencyAndId bid = new AgencyAndId(trip.getId().getAgencyId(), trip.getBlockId());
           List<Trip> trips = _tripsByBlockId.get(bid);
           if (trips == null) {
-            trips = new ArrayList<Trip>();
+            trips = new ArrayList<>();
             _tripsByBlockId.put(bid, trips);
           }
           trips.add(trip);
@@ -245,10 +245,10 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements GtfsMutableRel
   public List<AgencyAndId> getAllServiceIds() {
     ensureCalendarDatesByServiceIdRelation();
     ensureCalendarsByServiceIdRelation();
-    Set<AgencyAndId> serviceIds = new HashSet<AgencyAndId>();
+    Set<AgencyAndId> serviceIds = new HashSet<>();
     serviceIds.addAll(_calendarDatesByServiceId.keySet());
     serviceIds.addAll(_calendarsByServiceId.keySet());
-    return new ArrayList<AgencyAndId>(serviceIds);
+    return new ArrayList<>(serviceIds);
   }
 
   @Override
@@ -360,7 +360,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements GtfsMutableRel
   }
 
   private static <T> List<T> list(List<T> list) {
-    if (list == null) list = new ArrayList<T>();
+    if (list == null) list = new ArrayList<>();
     return Collections.unmodifiableList(list);
   }
 
@@ -374,7 +374,7 @@ public class GtfsRelationalDaoImpl extends GtfsDaoImpl implements GtfsMutableRel
   private static <K, V, C extends Collection<V>, CIMPL extends C> Map<K, C> mapToValueCollection(
       Iterable<V> values, String property, Class<K> keyType, Class<CIMPL> collectionType) {
 
-    Map<K, C> byKey = new HashMap<K, C>();
+    Map<K, C> byKey = new HashMap<>();
     SimplePropertyQuery query = new SimplePropertyQuery(property);
 
     for (V value : values) {

@@ -70,7 +70,7 @@ public class CalendarServiceImpl implements CalendarService {
 
   @Override
   public Set<ServiceDate> getServiceDatesForServiceId(AgencyAndId serviceId) {
-    Set<ServiceDate> dates = new HashSet<ServiceDate>();
+    Set<ServiceDate> dates = new HashSet<>();
     CalendarServiceData allData = getData();
     List<ServiceDate> serviceDates = allData.getServiceDatesForServiceId(serviceId);
     if (serviceDates != null) dates.addAll(serviceDates);
@@ -236,7 +236,7 @@ public class CalendarServiceImpl implements CalendarService {
 
     CalendarServiceData allData = getData();
 
-    Map<LocalizedServiceId, List<Date>> results = new HashMap<LocalizedServiceId, List<Date>>();
+    Map<LocalizedServiceId, List<Date>> results = new HashMap<>();
 
     for (Map.Entry<LocalizedServiceId, ServiceInterval> entry : serviceIdIntervals) {
 
@@ -263,7 +263,7 @@ public class CalendarServiceImpl implements CalendarService {
 
     List<Date> serviceDates = allData.getDatesForLocalizedServiceId(serviceId);
 
-    List<Date> resultsForServiceId = new ArrayList<Date>();
+    List<Date> resultsForServiceId = new ArrayList<>();
     Date nextDate = null;
 
     if (serviceDates == null) return resultsForServiceId;

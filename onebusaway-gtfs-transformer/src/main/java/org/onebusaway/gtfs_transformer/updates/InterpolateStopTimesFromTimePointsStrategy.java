@@ -94,7 +94,7 @@ public class InterpolateStopTimesFromTimePointsStrategy implements GtfsTransform
       double[] distanceTraveled,
       int[] arrivalTimes,
       int[] departureTimes) {
-    SortedMap<Double, Integer> scheduleTimesByDistanceTraveled = new TreeMap<Double, Integer>();
+    SortedMap<Double, Integer> scheduleTimesByDistanceTraveled = new TreeMap<>();
     populateArrivalAndDepartureTimesByDistanceTravelledForStopTimes(
         stopTimes, distanceTraveled, scheduleTimesByDistanceTraveled);
 

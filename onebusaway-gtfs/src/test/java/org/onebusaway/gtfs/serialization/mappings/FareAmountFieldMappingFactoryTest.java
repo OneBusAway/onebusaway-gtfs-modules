@@ -37,7 +37,7 @@ public class FareAmountFieldMappingFactoryTest {
 
   @Test
   public void testTranslateFromCSVToObject() {
-    Map<String, Object> csvValues = new HashMap<String, Object>();
+    Map<String, Object> csvValues = new HashMap<>();
     csvValues.put("amount", "47.12");
     csvValues.put("currency", "USD");
     FareProduct fp = new FareProduct();
@@ -48,7 +48,7 @@ public class FareAmountFieldMappingFactoryTest {
 
   @Test
   public void testTranslateFromCSVToObjectWhole() {
-    Map<String, Object> csvValues = new HashMap<String, Object>();
+    Map<String, Object> csvValues = new HashMap<>();
     csvValues.put("amount", "47");
     csvValues.put("currency", "USD");
     FareProduct fp = new FareProduct();
@@ -59,7 +59,7 @@ public class FareAmountFieldMappingFactoryTest {
 
   @Test
   public void testTranslateFromCSVToObjectWholeDecimals() {
-    Map<String, Object> csvValues = new HashMap<String, Object>();
+    Map<String, Object> csvValues = new HashMap<>();
     csvValues.put("amount", "47.00");
     csvValues.put("currency", "USD");
     FareProduct fp = new FareProduct();
@@ -70,7 +70,7 @@ public class FareAmountFieldMappingFactoryTest {
 
   @Test
   public void testTranslateFromCSVToObjectNonUSD() {
-    Map<String, Object> csvValues = new HashMap<String, Object>();
+    Map<String, Object> csvValues = new HashMap<>();
     csvValues.put("amount", "47");
     csvValues.put("currency", "JPY");
     FareProduct fp = new FareProduct();
@@ -84,7 +84,7 @@ public class FareAmountFieldMappingFactoryTest {
     FareProduct fp = new FareProduct();
     fp.setAmount(4.7f);
     fp.setCurrency("USD");
-    Map<String, Object> csvValues = new HashMap<String, Object>();
+    Map<String, Object> csvValues = new HashMap<>();
 
     _fieldMapping.translateFromObjectToCSV(
         new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
@@ -96,7 +96,7 @@ public class FareAmountFieldMappingFactoryTest {
     FareProduct fp = new FareProduct();
     fp.setAmount(4.75f);
     fp.setCurrency("USD");
-    Map<String, Object> csvValues = new HashMap<String, Object>();
+    Map<String, Object> csvValues = new HashMap<>();
 
     _fieldMapping.translateFromObjectToCSV(
         new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
@@ -108,7 +108,7 @@ public class FareAmountFieldMappingFactoryTest {
     FareProduct fp = new FareProduct();
     fp.setAmount(4.123f);
     fp.setCurrency("USD");
-    Map<String, Object> csvValues = new HashMap<String, Object>();
+    Map<String, Object> csvValues = new HashMap<>();
 
     _fieldMapping.translateFromObjectToCSV(
         new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
@@ -120,7 +120,7 @@ public class FareAmountFieldMappingFactoryTest {
     FareProduct fp = new FareProduct();
     fp.setAmount(0.7f);
     fp.setCurrency("EUR");
-    Map<String, Object> csvValues = new HashMap<String, Object>();
+    Map<String, Object> csvValues = new HashMap<>();
 
     _fieldMapping.translateFromObjectToCSV(
         new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
@@ -132,7 +132,7 @@ public class FareAmountFieldMappingFactoryTest {
     FareProduct fp = new FareProduct();
     fp.setAmount(4f);
     fp.setCurrency("USD");
-    Map<String, Object> csvValues = new HashMap<String, Object>();
+    Map<String, Object> csvValues = new HashMap<>();
 
     _fieldMapping.translateFromObjectToCSV(
         new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);
@@ -144,7 +144,7 @@ public class FareAmountFieldMappingFactoryTest {
     FareProduct fp = new FareProduct();
     fp.setAmount(4f);
     fp.setCurrency("VND");
-    Map<String, Object> csvValues = new HashMap<String, Object>();
+    Map<String, Object> csvValues = new HashMap<>();
 
     _fieldMapping.translateFromObjectToCSV(
         new CsvEntityContextImpl(), BeanWrapperFactory.wrap(fp), csvValues);

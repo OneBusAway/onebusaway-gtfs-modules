@@ -146,7 +146,7 @@ public class CountAndTestSubway implements GtfsTransformStrategy {
       _log.error("There are trips with no headsign");
     }
 
-    HashSet<String> ids = new HashSet<String>();
+    HashSet<String> ids = new HashSet<>();
     for (Stop stop : dao.getAllStops()) {
       // check for duplicate stop ids.
       if (ids.contains(stop.getId().getId())) {

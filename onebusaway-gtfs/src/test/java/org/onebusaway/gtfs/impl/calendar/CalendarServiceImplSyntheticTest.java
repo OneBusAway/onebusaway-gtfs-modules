@@ -545,7 +545,7 @@ public class CalendarServiceImplSyntheticTest {
   private void putServiceDatesForServiceId(
       CalendarServiceData data, LocalizedServiceId lsid, List<ServiceDate> serviceDates) {
     data.putServiceDatesForServiceId(lsid.getId(), serviceDates);
-    List<Date> dates = new ArrayList<Date>();
+    List<Date> dates = new ArrayList<>();
     for (ServiceDate serviceDate : serviceDates)
       dates.add(serviceDate.getAsDate(lsid.getTimeZone()));
     data.putDatesForLocalizedServiceId(lsid, dates);

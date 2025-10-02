@@ -150,7 +150,7 @@ public class ValidateGTFS implements GtfsTransformStrategy {
 
     String feed = CloudContextService.getLikelyFeedName(dao);
 
-    HashSet<String> ids = new HashSet<String>();
+    HashSet<String> ids = new HashSet<>();
     for (Stop stop : dao.getAllStops()) {
       // check for duplicate stop ids.
       if (ids.contains(stop.getId().getId())) {
@@ -164,7 +164,7 @@ public class ValidateGTFS implements GtfsTransformStrategy {
       }
     }
 
-    HashSet<String> codes = new HashSet<String>();
+    HashSet<String> codes = new HashSet<>();
     for (Stop stop : dao.getAllStops()) {
       // check for duplicate stop ids.
       if (codes.contains(stop.getCode())) {

@@ -167,7 +167,7 @@ public abstract class AbstractCollectionEntityMergeStrategy<KEY extends Serializ
      * There needs to be a reasonable number of overlapping identifiers in the first place for us to
      * consider using identifier-based duplicate detection.
      */
-    Set<KEY> commonKeys = new HashSet<KEY>();
+    Set<KEY> commonKeys = new HashSet<>();
     double elementOvelapScore =
         DuplicateScoringSupport.scoreElementOverlap(sourceKeys, targetKeys, commonKeys);
     if (commonKeys.isEmpty() || elementOvelapScore < _minElementsInCommonScoreForAutoDetect) {

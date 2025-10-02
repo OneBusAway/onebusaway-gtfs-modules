@@ -35,7 +35,7 @@ public class StopTimesFactoryStrategy implements GtfsTransformStrategy {
 
   private String endTime;
 
-  private List<String> stopIds = new ArrayList<String>();
+  private List<String> stopIds = new ArrayList<>();
 
   public String getTripId() {
     return tripId;
@@ -102,7 +102,7 @@ public class StopTimesFactoryStrategy implements GtfsTransformStrategy {
   }
 
   private List<Stop> getStops(GtfsReaderContext context, GtfsMutableRelationalDao dao) {
-    List<Stop> stops = new ArrayList<Stop>();
+    List<Stop> stops = new ArrayList<>();
     for (String stopId : stopIds) {
       String agencyId = context.getAgencyForEntity(Stop.class, stopId);
       AgencyAndId id = new AgencyAndId(agencyId, stopId);

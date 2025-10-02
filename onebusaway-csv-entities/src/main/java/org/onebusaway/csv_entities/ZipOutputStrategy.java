@@ -40,7 +40,7 @@ class ZipOutputStrategy implements OutputStrategy {
 
   private final PrintWriter _writer;
 
-  private final Set<Class<?>> _typesWeHaveAlreadySeen = new HashSet<Class<?>>();
+  private final Set<Class<?>> _typesWeHaveAlreadySeen = new HashSet<>();
 
   private Class<?> _currentType = null;
 

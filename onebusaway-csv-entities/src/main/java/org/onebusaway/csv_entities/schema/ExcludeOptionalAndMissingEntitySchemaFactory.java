@@ -24,7 +24,7 @@ public class ExcludeOptionalAndMissingEntitySchemaFactory implements EntitySchem
 
   private final EntitySchemaFactory _source;
 
-  private Map<Class<?>, EntitySchema> _schemas = new HashMap<Class<?>, EntitySchema>();
+  private Map<Class<?>, EntitySchema> _schemas = new HashMap<>();
 
   public ExcludeOptionalAndMissingEntitySchemaFactory(EntitySchemaFactory source) {
     _source = source;

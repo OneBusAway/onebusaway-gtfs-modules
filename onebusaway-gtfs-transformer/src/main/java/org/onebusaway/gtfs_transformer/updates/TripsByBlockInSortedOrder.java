@@ -34,8 +34,8 @@ public class TripsByBlockInSortedOrder {
 
   public static Map<String, List<Trip>> getTripsByBlockInSortedOrder(GtfsMutableRelationalDao dao) {
 
-    Map<String, List<Trip>> tripsByBlockId = new HashMap<String, List<Trip>>();
-    Map<Trip, Integer> averageStopTimeByTrip = new HashMap<Trip, Integer>();
+    Map<String, List<Trip>> tripsByBlockId = new HashMap<>();
+    Map<Trip, Integer> averageStopTimeByTrip = new HashMap<>();
 
     int totalTrips = 0;
     int tripsWithoutStopTimes = 0;
@@ -51,7 +51,7 @@ public class TripsByBlockInSortedOrder {
 
       List<Trip> trips = tripsByBlockId.get(blockId);
       if (trips == null) {
-        trips = new ArrayList<Trip>();
+        trips = new ArrayList<>();
         tripsByBlockId.put(blockId, trips);
       }
       trips.add(trip);
@@ -91,8 +91,8 @@ public class TripsByBlockInSortedOrder {
   public static Map<T2, List<Trip>> getTripsByBlockAndServiceIdInSortedOrder(
       GtfsMutableRelationalDao dao) {
 
-    Map<T2, List<Trip>> tripsByBlockAndServiceId = new HashMap<T2, List<Trip>>();
-    Map<Trip, Integer> averageStopTimeByTrip = new HashMap<Trip, Integer>();
+    Map<T2, List<Trip>> tripsByBlockAndServiceId = new HashMap<>();
+    Map<Trip, Integer> averageStopTimeByTrip = new HashMap<>();
 
     int totalTrips = 0;
     int tripsWithoutStopTimes = 0;
@@ -109,7 +109,7 @@ public class TripsByBlockInSortedOrder {
 
       List<Trip> trips = tripsByBlockAndServiceId.get(key);
       if (trips == null) {
-        trips = new ArrayList<Trip>();
+        trips = new ArrayList<>();
         tripsByBlockAndServiceId.put(key, trips);
       }
       trips.add(trip);

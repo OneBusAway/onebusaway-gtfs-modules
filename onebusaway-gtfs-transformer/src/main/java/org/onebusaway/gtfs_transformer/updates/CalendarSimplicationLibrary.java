@@ -56,12 +56,12 @@ public class CalendarSimplicationLibrary {
       Map<TripKey, List<Trip>> tripsByKey) {
 
     Map<Set<AgencyAndId>, List<TripKey>> tripKeysByServiceIds =
-        new FactoryMap<Set<AgencyAndId>, List<TripKey>>(new ArrayList<TripKey>());
+        new FactoryMap<>(new ArrayList<TripKey>());
 
     for (Map.Entry<TripKey, List<Trip>> entry : tripsByKey.entrySet()) {
       TripKey key = entry.getKey();
       List<Trip> tripsForKey = entry.getValue();
-      Set<AgencyAndId> serviceIds = new HashSet<AgencyAndId>();
+      Set<AgencyAndId> serviceIds = new HashSet<>();
       for (Trip trip : tripsForKey) {
         serviceIds.add(trip.getServiceId());
       }
@@ -131,7 +131,7 @@ public class CalendarSimplicationLibrary {
   public ServiceCalendarSummary getSummaryForServiceDates(Set<ServiceDate> allServiceDates) {
     ServiceCalendarSummary summary = new ServiceCalendarSummary();
     summary.allServiceDates = allServiceDates;
-    summary.serviceDatesInOrder = new ArrayList<ServiceDate>(summary.allServiceDates);
+    summary.serviceDatesInOrder = new ArrayList<>(summary.allServiceDates);
     Collections.sort(summary.serviceDatesInOrder);
 
     if (summary.serviceDatesInOrder.isEmpty()) {
@@ -139,7 +139,7 @@ public class CalendarSimplicationLibrary {
     }
 
     Calendar c = Calendar.getInstance();
-    Counter<Integer> daysOfTheWeekCounts = new Counter<Integer>();
+    Counter<Integer> daysOfTheWeekCounts = new Counter<>();
     for (ServiceDate serviceDate : summary.serviceDatesInOrder) {
       c.setTime(serviceDate.getAsDate());
       // Move the service date to "noon" to avoid problems with DST and the
@@ -192,10 +192,10 @@ public class CalendarSimplicationLibrary {
      */
     public int maxDayOfWeekCount;
 
-    public Set<ServiceDate> allServiceDates = new HashSet<ServiceDate>();
-    public List<ServiceDate> serviceDatesInOrder = new ArrayList<ServiceDate>();
-    public Set<Integer> daysOfTheWeekToUse = new HashSet<Integer>();
+    public Set<ServiceDate> allServiceDates = new HashSet<>();
+    public List<ServiceDate> serviceDatesInOrder = new ArrayList<>();
+    public Set<Integer> daysOfTheWeekToUse = new HashSet<>();
     public Map<Integer, ServiceDate> mostRecentServiceDateByDayOfWeek =
-        new HashMap<Integer, ServiceDate>();
+        new HashMap<>();
   }
 }

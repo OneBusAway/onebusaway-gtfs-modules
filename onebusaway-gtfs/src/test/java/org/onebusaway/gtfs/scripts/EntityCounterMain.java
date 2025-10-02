@@ -41,7 +41,7 @@ public class EntityCounterMain {
     reader.run();
 
     Map<Class<?>, Integer> counts = counter.getCounts();
-    List<Class<?>> types = new ArrayList<Class<?>>(counts.keySet());
+    List<Class<?>> types = new ArrayList<>(counts.keySet());
     Collections.sort(types, new ClassNameComparator());
 
     for (Class<?> type : types) System.out.println(type.getName() + " " + counts.get(type));
@@ -49,7 +49,7 @@ public class EntityCounterMain {
 
   private static class EntityCounter implements EntityHandler {
 
-    private Map<Class<?>, Integer> _counts = new HashMap<Class<?>, Integer>();
+    private Map<Class<?>, Integer> _counts = new HashMap<>();
 
     public Map<Class<?>, Integer> getCounts() {
       return _counts;

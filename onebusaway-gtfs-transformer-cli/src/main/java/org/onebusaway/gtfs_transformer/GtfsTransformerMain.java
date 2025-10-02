@@ -265,7 +265,7 @@ public class GtfsTransformerMain {
   private Option[] getOptionsInCommandLineOrder(CommandLine cli, String[] originalArgs) {
 
     Option[] options = cli.getOptions();
-    List<Ordered<Option>> orderedOptions = new ArrayList<Ordered<Option>>();
+    List<Ordered<Option>> orderedOptions = new ArrayList<>();
 
     for (Option option : options) {
 

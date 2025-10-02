@@ -37,8 +37,8 @@ public class CheckForPlausibleStopTimes implements GtfsTransformStrategy {
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
     RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-    Set<Trip> stopsWarn = new HashSet<Trip>();
-    Set<Trip> stopsRemove = new HashSet<Trip>();
+    Set<Trip> stopsWarn = new HashSet<>();
+    Set<Trip> stopsRemove = new HashSet<>();
     String collectedWarnString = "";
     String collectedRemoveString = "";
 

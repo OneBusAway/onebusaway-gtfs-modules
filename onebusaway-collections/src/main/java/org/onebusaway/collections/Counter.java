@@ -27,7 +27,7 @@ public class Counter<T> implements Serializable {
 
   @Serial private static final long serialVersionUID = 1L;
 
-  private Map<T, Integer> _counts = new HashMap<T, Integer>();
+  private Map<T, Integer> _counts = new HashMap<>();
 
   private int _total = 0;
 
@@ -83,7 +83,7 @@ public class Counter<T> implements Serializable {
    * @return sorted from min to max
    */
   public List<T> getSortedKeys() {
-    List<T> values = new ArrayList<T>(_counts.keySet());
+    List<T> values = new ArrayList<>(_counts.keySet());
     Collections.sort(
         values,
         new Comparator<T>() {

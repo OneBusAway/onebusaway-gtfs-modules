@@ -126,7 +126,7 @@ public class CalendarExtensionStrategy implements GtfsTransformStrategy {
    * @return the set of active days of the week
    */
   private HashSet<Integer> getDaysOfTheWeekToUse(ServiceCalendarSummary summary) {
-    HashSet<Integer> days = new HashSet<Integer>(summary.daysOfTheWeekToUse);
+    HashSet<Integer> days = new HashSet<>(summary.daysOfTheWeekToUse);
     for (Map.Entry<Integer, ServiceDate> entry :
         summary.mostRecentServiceDateByDayOfWeek.entrySet()) {
       if (entry.getValue().compareTo(inactiveCalendarCutoff) < 0) {

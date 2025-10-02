@@ -23,8 +23,8 @@ public class DuplicateScoringSupportTest {
 
   @Test
   public void testScoreElementOverlap() {
-    Set<String> a = new HashSet<String>();
-    Set<String> b = new HashSet<String>();
+    Set<String> a = new HashSet<>();
+    Set<String> b = new HashSet<>();
 
     assertEquals(0.0, DuplicateScoringSupport.scoreElementOverlap(a, b), 0.0);
 

@@ -30,7 +30,7 @@ import org.onebusaway.gtfs.serialization.comparators.StopTimeComparator;
 public class GtfsEntitySchemaFactory {
 
   public static List<Class<?>> getEntityClasses() {
-    List<Class<?>> entityClasses = new ArrayList<Class<?>>();
+    List<Class<?>> entityClasses = new ArrayList<>();
     entityClasses.add(FeedInfo.class);
     entityClasses.add(Agency.class);
     entityClasses.add(Area.class);
@@ -71,7 +71,7 @@ public class GtfsEntitySchemaFactory {
   }
 
   public static Map<Class<?>, Comparator<?>> getEntityComparators() {
-    Map<Class<?>, Comparator<?>> comparators = new HashMap<Class<?>, Comparator<?>>();
+    Map<Class<?>, Comparator<?>> comparators = new HashMap<>();
     comparators.put(Agency.class, getComparatorForIdentityBeanType(Agency.class));
     comparators.put(Area.class, getComparatorForIdentityBeanType(Area.class));
     comparators.put(Block.class, getComparatorForIdentityBeanType(Block.class));
@@ -100,7 +100,7 @@ public class GtfsEntitySchemaFactory {
 
   private static <T extends IdentityBean<?>> Comparator<T> getComparatorForIdentityBeanType(
       Class<T> entityType) {
-    return new Comparator<T>() {
+    return new Comparator<>() {
       @SuppressWarnings("unchecked")
       @Override
       public int compare(T o1, T o2) {

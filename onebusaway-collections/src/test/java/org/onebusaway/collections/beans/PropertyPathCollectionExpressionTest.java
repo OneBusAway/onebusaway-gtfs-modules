@@ -48,7 +48,7 @@ public class PropertyPathCollectionExpressionTest {
 
     {
       PropertyPathCollectionExpression expression = new PropertyPathCollectionExpression("values");
-      List<PropertyInvocationResult> results = new ArrayList<PropertyInvocationResult>();
+      List<PropertyInvocationResult> results = new ArrayList<>();
       expression.invokeReturningFullResult(a, results);
       assertEquals(1, results.size());
       PropertyInvocationResult result = results.getFirst();
@@ -60,7 +60,7 @@ public class PropertyPathCollectionExpressionTest {
     {
       PropertyPathCollectionExpression expression =
           new PropertyPathCollectionExpression("values.value");
-      List<PropertyInvocationResult> results = new ArrayList<PropertyInvocationResult>();
+      List<PropertyInvocationResult> results = new ArrayList<>();
       expression.invokeReturningFullResult(a, results);
       assertEquals(1, results.size());
       PropertyInvocationResult result = results.getFirst();
@@ -74,7 +74,7 @@ public class PropertyPathCollectionExpressionTest {
 
     private String value;
 
-    private List<TestObject> values = new ArrayList<TestObject>();
+    private List<TestObject> values = new ArrayList<>();
 
     public TestObject(String value) {
       this.value = value;

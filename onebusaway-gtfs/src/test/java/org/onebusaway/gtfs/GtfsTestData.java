@@ -128,7 +128,7 @@ public class GtfsTestData {
   public static <T> List<T> grep(Iterable<T> elements, String propertyExpression, Object value) {
 
     String[] properties = propertyExpression.split("\\.");
-    List<T> matches = new ArrayList<T>();
+    List<T> matches = new ArrayList<>();
 
     for (T element : elements) {
       Object v = element;

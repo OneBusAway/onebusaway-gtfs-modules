@@ -28,7 +28,7 @@ public class AdaptableValueSortedMapTest {
   @BeforeEach
   public void before() {
 
-    _m = new TreeMap<Integer, TestBean>();
+    _m = new TreeMap<>();
     _m.put(1, new TestBean("a"));
     _m.put(2, new TestBean("b"));
     _m.put(3, new TestBean("c"));

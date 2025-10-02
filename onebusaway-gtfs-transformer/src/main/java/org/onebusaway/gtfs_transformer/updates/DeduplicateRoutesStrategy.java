@@ -23,7 +23,6 @@ import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
-import org.slf4j.LoggerFactory;
 
 public class DeduplicateRoutesStrategy implements GtfsTransformStrategy {
 
@@ -36,7 +35,7 @@ public class DeduplicateRoutesStrategy implements GtfsTransformStrategy {
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     Map<AgencyAndId, List<Route>> routesById =
-        new FactoryMap<AgencyAndId, List<Route>>(new ArrayList<Route>());
+        new FactoryMap<>(new ArrayList<Route>());
 
     for (Route route : dao.getAllRoutes()) {
 

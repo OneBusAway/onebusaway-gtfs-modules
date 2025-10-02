@@ -34,7 +34,7 @@ public class DecimalFieldMappingFactoryTest {
 
     CsvEntityContext context = new CsvEntityContextImpl();
     BeanWrapper wrapped = BeanWrapperFactory.wrap(dummy);
-    Map<String, Object> values = new HashMap<String, Object>();
+    Map<String, Object> values = new HashMap<>();
     mapping.translateFromObjectToCSV(context, wrapped, values);
     assertEquals("3.14", values.get("value"));
   }
@@ -49,7 +49,7 @@ public class DecimalFieldMappingFactoryTest {
 
     CsvEntityContext context = new CsvEntityContextImpl();
     BeanWrapper wrapped = BeanWrapperFactory.wrap(dummy);
-    Map<String, Object> values = new HashMap<String, Object>();
+    Map<String, Object> values = new HashMap<>();
     mapping.translateFromObjectToCSV(context, wrapped, values);
     assertEquals("3,14", values.get("value"));
   }

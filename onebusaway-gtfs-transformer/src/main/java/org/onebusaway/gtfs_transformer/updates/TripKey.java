@@ -35,7 +35,7 @@ class TripKey {
       GtfsMutableRelationalDao dao, Route route) {
     List<Trip> trips = dao.getTripsForRoute(route);
     Map<TripKey, List<Trip>> tripsByKey =
-        new FactoryMap<TripKey, List<Trip>>(new ArrayList<Trip>());
+        new FactoryMap<>(new ArrayList<Trip>());
     for (Trip trip : trips) {
       TripKey key = getTripKeyForTrip(dao, trip);
       tripsByKey.get(key).add(trip);

@@ -21,7 +21,7 @@ import org.onebusaway.gtfs.services.GtfsRelationalDao;
 public class CacheByEntity<S extends IdentityBean<?>, T> {
 
   private CacheGetter<S, T> _getter;
-  private Map<Key, T> _map = new ConcurrentHashMap<Key, T>();
+  private Map<Key, T> _map = new ConcurrentHashMap<>();
 
   public CacheByEntity(CacheGetter<S, T> getter) {
     _getter = getter;

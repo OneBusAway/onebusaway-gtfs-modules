@@ -22,7 +22,7 @@ public final class FunctionalLibrary {
 
   public static <T> List<T> filter(
       Iterable<T> elements, String propertyPathExpression, Object value) {
-    List<T> matches = new ArrayList<T>();
+    List<T> matches = new ArrayList<>();
     PropertyPathExpression query = new PropertyPathExpression(propertyPathExpression);
     for (T element : elements) {
       Object result = query.invoke(element);

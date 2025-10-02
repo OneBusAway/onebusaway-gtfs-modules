@@ -20,7 +20,7 @@ import org.onebusaway.csv_entities.schema.beans.CsvEntityMappingBean;
 
 public class DefaultEntitySchemaFactory extends AbstractEntitySchemaFactoryImpl {
 
-  private List<BeanDefinitionSource> _sources = new ArrayList<BeanDefinitionSource>();
+  private List<BeanDefinitionSource> _sources = new ArrayList<>();
 
   public void addBean(CsvEntityMappingBean bean) {
     _sources.add(new CsvEntityMappingBeanSource(bean));

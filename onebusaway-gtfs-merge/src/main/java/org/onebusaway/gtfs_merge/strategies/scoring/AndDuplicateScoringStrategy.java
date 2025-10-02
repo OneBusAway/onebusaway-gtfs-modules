@@ -22,7 +22,7 @@ import org.onebusaway.gtfs_merge.GtfsMergeContext;
 public class AndDuplicateScoringStrategy<T> implements DuplicateScoringStrategy<T> {
 
   private List<DuplicateScoringStrategy<T>> _strategies =
-      new ArrayList<DuplicateScoringStrategy<T>>();
+      new ArrayList<>();
 
   public void addPropertyMatch(String property) {
     addStrategy(new PropertyMatchScoringStrategy<T>(property));

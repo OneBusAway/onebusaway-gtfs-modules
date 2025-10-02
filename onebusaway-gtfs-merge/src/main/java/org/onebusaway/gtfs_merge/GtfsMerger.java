@@ -114,10 +114,10 @@ public class GtfsMerger {
   }
 
   public EntityMergeStrategy getEntityMergeStrategyForEntityType(Class<?> entityType) {
-    List<EntityMergeStrategy> strategies = new ArrayList<EntityMergeStrategy>();
+    List<EntityMergeStrategy> strategies = new ArrayList<>();
     buildStrategies(strategies);
     for (EntityMergeStrategy strategy : strategies) {
-      Set<Class<?>> entityTypes = new HashSet<Class<?>>();
+      Set<Class<?>> entityTypes = new HashSet<>();
       strategy.getEntityTypes(entityTypes);
       if (entityTypes.contains(entityType)) {
         return strategy;
@@ -132,7 +132,7 @@ public class GtfsMerger {
     mergedDao.setPackShapePoints(true);
     mergedDao.setPackStopTimes(true);
 
-    List<EntityMergeStrategy> strategies = new ArrayList<EntityMergeStrategy>();
+    List<EntityMergeStrategy> strategies = new ArrayList<>();
     buildStrategies(strategies);
 
     /**
@@ -144,7 +144,7 @@ public class GtfsMerger {
      * with no agency prefixes, we need to track the raw id.
      */
     Map<EntityMergeStrategy, Map<String, Object>> rawEntityIdMapsByMergeStrategy =
-        new HashMap<EntityMergeStrategy, Map<String, Object>>();
+        new HashMap<>();
     for (EntityMergeStrategy strategy : strategies) {
       rawEntityIdMapsByMergeStrategy.put(strategy, new HashMap<String, Object>());
     }

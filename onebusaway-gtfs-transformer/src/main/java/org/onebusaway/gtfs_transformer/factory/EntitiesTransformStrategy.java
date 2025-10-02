@@ -26,7 +26,7 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class EntitiesTransformStrategy implements GtfsTransformStrategy {
 
-  private List<MatchAndTransform> _modifications = new ArrayList<MatchAndTransform>();
+  private List<MatchAndTransform> _modifications = new ArrayList<>();
 
   public List<MatchAndTransform> getModifications() {
     return _modifications;
@@ -52,7 +52,7 @@ public class EntitiesTransformStrategy implements GtfsTransformStrategy {
         IdKeyMatch keyMatch = (IdKeyMatch) match.getPropertyMatches();
         transform.run(context, dao, keyMatch.getKey());
       } else {
-        Collection<Object> entities = new ArrayList<Object>(dao.getAllEntitiesForType(entityType));
+        Collection<Object> entities = new ArrayList<>(dao.getAllEntitiesForType(entityType));
         for (Object object : entities) {
           if (match.isApplicableToObject(object)) {
             transform.run(context, dao, object);

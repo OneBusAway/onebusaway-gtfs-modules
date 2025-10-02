@@ -62,8 +62,8 @@ public class RiderCategoryTest {
     writer.run(dao);
 
     Scanner scan = new Scanner(new File(_tmpDirectory + "/rider_categories.txt"));
-    Set<String> expectedRiderCategoryNames = new HashSet<String>();
-    Set<String> foundRiderCategoryNames = new HashSet<String>();
+    Set<String> expectedRiderCategoryNames = new HashSet<>();
+    Set<String> foundRiderCategoryNames = new HashSet<>();
     expectedRiderCategoryNames.add("Adult");
     expectedRiderCategoryNames.add("Reduced");
     expectedRiderCategoryNames.add("Youth");

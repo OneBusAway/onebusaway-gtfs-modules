@@ -26,9 +26,9 @@ import org.onebusaway.collections.tuple.Tuples;
 
 public class DirectedGraph<T> {
 
-  private Map<T, Set<T>> _outboundEdges = new HashMap<T, Set<T>>();
+  private Map<T, Set<T>> _outboundEdges = new HashMap<>();
 
-  private Map<T, Set<T>> _inboundEdges = new HashMap<T, Set<T>>();
+  private Map<T, Set<T>> _inboundEdges = new HashMap<>();
 
   public DirectedGraph() {}
 
@@ -38,14 +38,14 @@ public class DirectedGraph<T> {
   }
 
   public Set<T> getNodes() {
-    Set<T> nodes = new HashSet<T>();
+    Set<T> nodes = new HashSet<>();
     nodes.addAll(_outboundEdges.keySet());
     nodes.addAll(_inboundEdges.keySet());
     return nodes;
   }
 
   public Set<Pair<T>> getEdges() {
-    Set<Pair<T>> edges = new HashSet<Pair<T>>();
+    Set<Pair<T>> edges = new HashSet<>();
     for (T from : _outboundEdges.keySet()) {
       for (T to : _outboundEdges.get(from)) edges.add(Tuples.pair(from, to));
     }
@@ -93,8 +93,8 @@ public class DirectedGraph<T> {
 
   public List<T> getTopologicalSort(Comparator<T> tieBreaker) {
 
-    List<T> order = new ArrayList<T>();
-    DirectedGraph<T> g = new DirectedGraph<T>(this);
+    List<T> order = new ArrayList<>();
+    DirectedGraph<T> g = new DirectedGraph<>(this);
 
     while (true) {
 
@@ -102,7 +102,7 @@ public class DirectedGraph<T> {
 
       if (nodes.isEmpty()) return order;
 
-      List<T> noInbound = new ArrayList<T>();
+      List<T> noInbound = new ArrayList<>();
 
       for (T node : nodes) {
         if (g.getInboundNodes(node).isEmpty()) noInbound.add(node);
@@ -138,7 +138,7 @@ public class DirectedGraph<T> {
   private Set<T> get(Map<T, Set<T>> edges, T key, boolean create) {
     Set<T> set = edges.get(key);
     if (set == null) {
-      set = new HashSet<T>();
+      set = new HashSet<>();
       if (create) edges.put(key, set);
     }
     return set;

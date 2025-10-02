@@ -37,7 +37,7 @@ public class UpdateStopTimesForTime implements GtfsTransformStrategy {
 
     StopTime currentStop = new StopTime();
     int negativeTimes = 0;
-    ArrayList<Trip> tripsToRemove = new ArrayList<Trip>();
+    ArrayList<Trip> tripsToRemove = new ArrayList<>();
 
     // For now, for any trip with stop_times that go back in time, remove the trip.
     for (Trip trip : dao.getAllTrips()) {

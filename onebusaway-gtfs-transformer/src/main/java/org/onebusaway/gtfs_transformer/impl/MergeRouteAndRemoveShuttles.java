@@ -48,7 +48,7 @@ public class MergeRouteAndRemoveShuttles implements GtfsTransformStrategy {
       referenceRoutes.put(route.getId().getId(), route);
     }
 
-    ArrayList<Route> routesToRemove = new ArrayList<Route>();
+    ArrayList<Route> routesToRemove = new ArrayList<>();
 
     for (Route route : dao.getAllRoutes()) {
       String identifier = route.getId().getId();

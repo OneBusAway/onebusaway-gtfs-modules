@@ -158,7 +158,7 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
     _log.error("Number of trips in GTFS: {}", daoTrips.size());
 
     // used for metrics, each ridership trip_id that is added to dao ridership.txt
-    Set<String> ridershipIds = new HashSet<String>();
+    Set<String> ridershipIds = new HashSet<>();
 
     // Try to find trips that match by comparing the stops on that trip.  We will get a lot of
     // matches as identical trips run

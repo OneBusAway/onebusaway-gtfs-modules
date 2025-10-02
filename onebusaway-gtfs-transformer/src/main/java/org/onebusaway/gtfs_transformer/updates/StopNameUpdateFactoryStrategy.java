@@ -85,7 +85,7 @@ public class StopNameUpdateFactoryStrategy {
       return this.getClass().getSimpleName();
     }
 
-    private Map<Integer, String> _stopNamesByStopId = new HashMap<Integer, String>();
+    private Map<Integer, String> _stopNamesByStopId = new HashMap<>();
 
     public void addName(Integer stopId, String name) {
       _stopNamesByStopId.put(stopId, name);

@@ -43,12 +43,12 @@ public abstract class AbstractEntitySchemaFactoryImpl
   private boolean _initialized = false;
 
   private Map<Class<?>, CsvEntityMappingBean> _mappingBeansByClass =
-      new HashMap<Class<?>, CsvEntityMappingBean>();
+      new HashMap<>();
 
   private Map<Class<?>, List<Class<?>>> _extensionsByClass =
-      new HashMap<Class<?>, List<Class<?>>>();
+      new HashMap<>();
 
-  private Map<Class<?>, EntitySchema> _schemasByClass = new HashMap<Class<?>, EntitySchema>();
+  private Map<Class<?>, EntitySchema> _schemasByClass = new HashMap<>();
 
   /**
    * It can be useful to support the reading and writing of additional custom fields for a
@@ -65,7 +65,7 @@ public abstract class AbstractEntitySchemaFactoryImpl
   public void addExtension(Class<? extends HasExtensions> type, Class<?> extensionType) {
     List<Class<?>> extensionTypes = _extensionsByClass.get(type);
     if (extensionTypes == null) {
-      extensionTypes = new ArrayList<Class<?>>();
+      extensionTypes = new ArrayList<>();
       _extensionsByClass.put(type, extensionTypes);
     }
     extensionTypes.add(extensionType);
@@ -79,7 +79,7 @@ public abstract class AbstractEntitySchemaFactoryImpl
 
   public Collection<CsvEntityMappingBean> getEntityMappings() {
     initialize();
-    return new ArrayList<CsvEntityMappingBean>(_mappingBeansByClass.values());
+    return new ArrayList<>(_mappingBeansByClass.values());
   }
 
   /****
@@ -254,7 +254,7 @@ public abstract class AbstractEntitySchemaFactoryImpl
   private void fillSchemaForEntityClass(
       Class<?> entityClass, CsvEntityMappingBean mappingBean, BaseEntitySchema schema) {
     Map<Field, CsvFieldMappingBean> existingFieldBeans = mappingBean.getFields();
-    List<FieldMapping> fieldMappings = new ArrayList<FieldMapping>();
+    List<FieldMapping> fieldMappings = new ArrayList<>();
 
     String prefix = "";
     if (mappingBean.isPrefixSet()) prefix = mappingBean.getPrefix();
@@ -270,7 +270,7 @@ public abstract class AbstractEntitySchemaFactoryImpl
       autoGenerateSchema = mappingBean.isAutoGenerateSchema();
 
     if (autoGenerateSchema) {
-      Set<Field> remainingFields = new LinkedHashSet<Field>();
+      Set<Field> remainingFields = new LinkedHashSet<>();
       for (Field field : entityClass.getDeclaredFields()) {
         remainingFields.add(field);
       }
@@ -301,8 +301,8 @@ public abstract class AbstractEntitySchemaFactoryImpl
     for (FieldMapping fieldMapping : mappingBean.getAdditionalFieldMappings())
       fieldMappings.add(fieldMapping);
 
-    List<FieldMapping> sortableMappings = new ArrayList<FieldMapping>();
-    List<FieldMapping> unsortableMappings = new ArrayList<FieldMapping>();
+    List<FieldMapping> sortableMappings = new ArrayList<>();
+    List<FieldMapping> unsortableMappings = new ArrayList<>();
     for (FieldMapping fieldMapping : fieldMappings) {
       if (fieldMapping.getOrder() == Integer.MAX_VALUE) {
         unsortableMappings.add(fieldMapping);
@@ -319,7 +319,7 @@ public abstract class AbstractEntitySchemaFactoryImpl
 
     for (FieldMapping mapping : fieldMappings) schema.addField(mapping);
 
-    List<EntityValidator> validators = new ArrayList<EntityValidator>();
+    List<EntityValidator> validators = new ArrayList<>();
     validators.addAll(mappingBean.getValidators());
 
     Collections.sort(validators, new ValidatorComparator());

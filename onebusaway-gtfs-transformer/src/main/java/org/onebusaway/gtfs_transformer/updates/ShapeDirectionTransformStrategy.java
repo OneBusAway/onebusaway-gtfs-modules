@@ -46,7 +46,7 @@ public class ShapeDirectionTransformStrategy implements GtfsTransformStrategy {
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-    List<Trip> tripsToTransform = new ArrayList<Trip>();
+    List<Trip> tripsToTransform = new ArrayList<>();
 
     Collection<Trip> allTrips = dao.getAllTrips();
 
@@ -62,7 +62,7 @@ public class ShapeDirectionTransformStrategy implements GtfsTransformStrategy {
       AgencyAndId newShapeId = new AgencyAndId(agencyId, shapeId + "R");
 
       List<ShapePoint> shapePoints =
-          new ArrayList<ShapePoint>(dao.getShapePointsForShapeId(inputShapeId));
+          new ArrayList<>(dao.getShapePointsForShapeId(inputShapeId));
 
       Collections.reverse(shapePoints);
 

@@ -53,7 +53,7 @@ public class CalendarSimplicationLibraryTest {
     AgencyAndId updatedId = new AgencyAndId("a0", "sidX");
     ServiceCalendarSummary summary =
         _library.getSummaryForServiceDates(calendarService.getServiceDatesForServiceId(originalId));
-    List<Object> newEntities = new ArrayList<Object>();
+    List<Object> newEntities = new ArrayList<>();
     _library.computeSimplifiedCalendar(updatedId, summary, newEntities);
 
     List<ServiceCalendar> calendars = getEntities(newEntities, ServiceCalendar.class);
@@ -80,7 +80,7 @@ public class CalendarSimplicationLibraryTest {
 
   @SuppressWarnings("unchecked")
   private <T> List<T> getEntities(List<Object> entities, Class<T> targetType) {
-    List<T> matching = new ArrayList<T>();
+    List<T> matching = new ArrayList<>();
     for (Object entity : entities) {
       if (targetType.isAssignableFrom(entity.getClass())) {
         matching.add((T) entity);

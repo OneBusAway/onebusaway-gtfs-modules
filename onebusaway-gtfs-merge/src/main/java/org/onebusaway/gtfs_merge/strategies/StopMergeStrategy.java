@@ -20,7 +20,6 @@ import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 import org.onebusaway.gtfs_merge.strategies.scoring.StopDistanceDuplicateScoringStrategy;
-import org.slf4j.LoggerFactory;
 
 /**
  * Entity merge strategy for handling {@link Stop} entities.

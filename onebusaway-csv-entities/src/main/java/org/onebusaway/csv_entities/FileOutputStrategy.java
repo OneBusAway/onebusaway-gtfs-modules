@@ -33,7 +33,7 @@ class FileOutputStrategy implements OutputStrategy {
   private final File _outputDirectory;
 
   private Map<Class<?>, IndividualCsvEntityWriter> _writersByType =
-      new HashMap<Class<?>, IndividualCsvEntityWriter>();
+      new HashMap<>();
 
   public FileOutputStrategy(File outputDirectory) {
     _outputDirectory = outputDirectory;

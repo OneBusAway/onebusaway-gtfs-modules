@@ -32,7 +32,7 @@ public class GtfsWriter extends CsvEntityWriter {
 
   private final Logger _log = LoggerFactory.getLogger(GtfsWriter.class);
 
-  private List<Class<?>> _entityClasses = new ArrayList<Class<?>>();
+  private List<Class<?>> _entityClasses = new ArrayList<>();
 
   private File _outputLocation = null;
 
@@ -41,7 +41,7 @@ public class GtfsWriter extends CsvEntityWriter {
     _outputLocation = path;
   }
 
-  private Map<Class<?>, Comparator<?>> _entityComparators = new HashMap<Class<?>, Comparator<?>>();
+  private Map<Class<?>, Comparator<?>> _entityComparators = new HashMap<>();
 
   public GtfsWriter() {
 
@@ -83,7 +83,7 @@ public class GtfsWriter extends CsvEntityWriter {
 
     if (comparator == null) return (Collection<Object>) entities;
 
-    List<Object> sorted = new ArrayList<Object>();
+    List<Object> sorted = new ArrayList<>();
     sorted.addAll(entities);
     Collections.sort(sorted, comparator);
     return sorted;

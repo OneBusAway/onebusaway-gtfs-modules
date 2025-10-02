@@ -116,7 +116,7 @@ public class IndividualCsvEntityReader implements CSVListener {
     Object object = createNewEntityInstance(_schema);
     BeanWrapper wrapper = BeanWrapperFactory.wrap(object);
 
-    Map<String, Object> values = new HashMap<String, Object>();
+    Map<String, Object> values = new HashMap<>();
 
     for (int i = 0; i < line.size(); i++) {
       String csvFieldName = _fields.get(i);

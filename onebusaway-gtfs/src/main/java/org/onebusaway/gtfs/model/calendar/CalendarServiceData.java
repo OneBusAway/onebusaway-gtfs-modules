@@ -30,16 +30,16 @@ public class CalendarServiceData implements Serializable {
 
   @Serial private static final long serialVersionUID = 1L;
 
-  private Map<String, TimeZone> _timeZonesByAgencyId = new HashMap<String, TimeZone>();
+  private Map<String, TimeZone> _timeZonesByAgencyId = new HashMap<>();
 
   private Map<AgencyAndId, List<ServiceDate>> _serviceDatesByServiceId =
-      new HashMap<AgencyAndId, List<ServiceDate>>();
+      new HashMap<>();
 
   private Map<LocalizedServiceId, List<Date>> _datesByLocalizedServiceId =
-      new HashMap<LocalizedServiceId, List<Date>>();
+      new HashMap<>();
 
   private Map<ServiceDate, Set<AgencyAndId>> _serviceIdsByDate =
-      new HashMap<ServiceDate, Set<AgencyAndId>>();
+      new HashMap<>();
 
   /**
    * @param agencyId
@@ -67,19 +67,19 @@ public class CalendarServiceData implements Serializable {
 
   public Set<AgencyAndId> getServiceIdsForDate(ServiceDate date) {
     Set<AgencyAndId> serviceIds = _serviceIdsByDate.get(date);
-    if (serviceIds == null) serviceIds = new HashSet<AgencyAndId>();
+    if (serviceIds == null) serviceIds = new HashSet<>();
     return serviceIds;
   }
 
   public void putServiceDatesForServiceId(AgencyAndId serviceId, List<ServiceDate> serviceDates) {
-    serviceDates = new ArrayList<ServiceDate>(serviceDates);
+    serviceDates = new ArrayList<>(serviceDates);
     Collections.sort(serviceDates);
     serviceDates = Collections.unmodifiableList(serviceDates);
     _serviceDatesByServiceId.put(serviceId, serviceDates);
     for (ServiceDate serviceDate : serviceDates) {
       Set<AgencyAndId> serviceIds = _serviceIdsByDate.get(serviceDate);
       if (serviceIds == null) {
-        serviceIds = new HashSet<AgencyAndId>();
+        serviceIds = new HashSet<>();
         _serviceIdsByDate.put(serviceDate, serviceIds);
       }
       serviceIds.add(serviceId);

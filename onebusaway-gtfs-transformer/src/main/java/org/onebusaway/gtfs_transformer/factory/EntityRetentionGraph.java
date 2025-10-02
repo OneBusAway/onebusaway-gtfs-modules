@@ -51,9 +51,9 @@ import org.onebusaway.gtfs_transformer.collections.ShapeIdKey;
  */
 public class EntityRetentionGraph {
 
-  private Set<Object> _retainedDown = new HashSet<Object>();
+  private Set<Object> _retainedDown = new HashSet<>();
 
-  private Set<Object> _retainedUp = new HashSet<Object>();
+  private Set<Object> _retainedUp = new HashSet<>();
 
   private GtfsRelationalDao _dao;
 

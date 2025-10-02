@@ -36,7 +36,7 @@ class PropertyMethodResolverImpl extends DefaultPropertyMethodResolver {
 
   @SuppressWarnings("rawtypes")
   private Map<T2<Class, String>, PropertyMethod> _virtualPropertyMethods =
-      new HashMap<T2<Class, String>, PropertyMethod>();
+      new HashMap<>();
 
   /**
    * @param dao

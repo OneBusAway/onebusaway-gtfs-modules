@@ -44,13 +44,13 @@ public class CsvEntityMappingBean {
 
   private CsvFieldNameConvention fieldNameConvention;
 
-  private List<EntityValidator> _validators = new ArrayList<EntityValidator>();
+  private List<EntityValidator> _validators = new ArrayList<>();
 
-  private Map<Field, CsvFieldMappingBean> fields = new LinkedHashMap<Field, CsvFieldMappingBean>();
+  private Map<Field, CsvFieldMappingBean> fields = new LinkedHashMap<>();
 
-  private List<String> fieldsInOrder = new ArrayList<String>();
+  private List<String> fieldsInOrder = new ArrayList<>();
 
-  private List<FieldMapping> additionalFieldMappings = new ArrayList<FieldMapping>();
+  private List<FieldMapping> additionalFieldMappings = new ArrayList<>();
 
   public CsvEntityMappingBean(Class<?> type) {
     this.type = type;

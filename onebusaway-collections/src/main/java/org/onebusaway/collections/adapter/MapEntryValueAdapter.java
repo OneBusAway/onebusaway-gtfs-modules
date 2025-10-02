@@ -27,7 +27,7 @@ class MapEntryValueAdapter<KEY, FROM_VALUE, TO_VALUE>
   @Override
   public Entry<KEY, TO_VALUE> adapt(Entry<KEY, FROM_VALUE> source) {
     TO_VALUE v = AdapterLibrary.apply(_adapter, source.getValue());
-    return new EntryImpl<KEY, TO_VALUE>(source.getKey(), v);
+    return new EntryImpl<>(source.getKey(), v);
   }
 
   private static class EntryImpl<K, V> implements Entry<K, V> {

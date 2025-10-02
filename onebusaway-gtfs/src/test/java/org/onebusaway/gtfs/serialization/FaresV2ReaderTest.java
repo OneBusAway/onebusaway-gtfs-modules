@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs.serialization;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -250,5 +251,8 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
 
     assertEquals("1116", first.getRoute().getId().getId());
     assertEquals("188", first.getNetworkId());
+
+    assertThat(dao.getAllFareLegRules()).hasSize(4);
+    dao.getAllFareLegRules().forEach(flr -> assertTrue(flr.getRulePriority().isEmpty()));
   }
 }

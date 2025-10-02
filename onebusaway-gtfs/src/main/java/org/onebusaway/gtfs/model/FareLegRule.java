@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2022 Leonard Ehrenfried <mail@leonard.io>
+ * Copyright (C) 2025 Leonard Ehrenfried <mail@leonard.io>
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -14,6 +14,7 @@
 package org.onebusaway.gtfs.model;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
@@ -21,6 +22,8 @@ import org.onebusaway.gtfs.serialization.mappings.EntityFieldMappingFactory;
 
 @CsvFields(filename = "fare_leg_rules.txt", required = false)
 public final class FareLegRule extends IdentityBean<String> {
+  private static final int NO_RULE_PRIORITY = -999;
+
   @CsvField(
       optional = true,
       name = "leg_group_id",
@@ -47,6 +50,9 @@ public final class FareLegRule extends IdentityBean<String> {
 
   @CsvField(name = "fare_product_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId fareProductId;
+
+  @CsvField(name = "rule_priority", optional = true)
+  private int rulePriority = NO_RULE_PRIORITY;
 
   public AgencyAndId getLegGroupId() {
     return legGroupId;
@@ -123,5 +129,17 @@ public final class FareLegRule extends IdentityBean<String> {
 
   public void setDistanceType(Integer distanceType) {
     this.distanceType = distanceType;
+  }
+
+  public void setRulePriority(int rulePriority) {
+    this.rulePriority = rulePriority;
+  }
+
+  public OptionalInt getRulePriority() {
+    if (this.rulePriority == NO_RULE_PRIORITY) {
+      return OptionalInt.empty();
+    } else {
+      return OptionalInt.of(this.rulePriority);
+    }
   }
 }

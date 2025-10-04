@@ -24,12 +24,12 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @BenchmarkMode(Mode.SingleShotTime)
-@Measurement(time = 10, timeUnit = TimeUnit.SECONDS, iterations = 1)
+@Measurement(time = 100, timeUnit = TimeUnit.SECONDS, iterations = 1)
 @Timeout(timeUnit = TimeUnit.SECONDS, time = 1000)
 public class GtfsSingleShotBenchmark {
 
   // note: generally simpler to benchmark larger gtfs feeds for this signle shot benchmark
-  private static final String directory = "./src/main/resources/island-transit_20090312_0314";
+  private static final String directory = "./onebusaway-jmh/src/main/resources/entur";
 
   @State(Scope.Thread)
   public static class ThreadState {
@@ -40,7 +40,12 @@ public class GtfsSingleShotBenchmark {
 
   @Benchmark
   public GtfsRelationalDao testParse(ThreadState state) throws Exception {
-    return processFeed(new File(directory), "abcd", false, state.reader);
+    return processFeed(new File(directory).getCanonicalFile(), "abcd", false, state.reader);
+  }
+
+  @Benchmark
+  public GtfsRelationalDao testParseStringInterning(ThreadState state) throws Exception {
+    return processFeed(new File(directory).getCanonicalFile(), "abcd", true, state.reader);
   }
 
   public static GtfsRelationalDao processFeed(

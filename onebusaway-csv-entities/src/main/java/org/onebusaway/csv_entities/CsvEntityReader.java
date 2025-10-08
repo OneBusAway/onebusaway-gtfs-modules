@@ -55,7 +55,7 @@ public class CsvEntityReader {
 
   private Map<String, String> _stringTable = new HashMap<>();
 
-  private Predicate<Class> _internStringsDisabled;
+  private Predicate<Class> _internStringsDisabled = (p) -> false;
 
   /**
    * @return the {@link EntitySchemaFactory} that will be used for introspection of bean classes
@@ -146,9 +146,7 @@ public class CsvEntityReader {
     String line = null;
     int lineNumber = 1;
 
-    boolean internStrings =
-        _internStrings
-            && (_internStringsDisabled == null || !_internStringsDisabled.test(entityClass));
+    boolean internStrings = _internStrings && !_internStringsDisabled.test(entityClass);
 
     try {
       while ((line = lineReader.readLine()) != null) {

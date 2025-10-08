@@ -16,6 +16,7 @@ package org.onebusaway.gtfs.serialization.mappings;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
 import org.onebusaway.csv_entities.schema.AbstractFieldMapping;
@@ -24,37 +25,13 @@ import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.FieldMapping;
 import org.onebusaway.csv_entities.schema.FieldMappingFactory;
-import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.Route;
-import org.onebusaway.gtfs.model.Trip;
-import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsReaderContext;
 
 /**
- * A {@link FieldMappingFactory} implementation that produces a {@link FieldMapping} that is
- * responsible for setting the {@link AgencyAndId#setAgencyId(String)} portion of an {@link
- * AgencyAndId} identifier.
- *
- * <p>The GTFS library makes use of {@link AgencyAndId} identifier for most ids for GTFS entities,
- * so as to provide as simple namespace mechanism for loading multiple feeds from different agencies
- * into the same data-store. Since agency ids only appear in a few places in a GTFS feed, if at all,
- * we need some mechanism for setting the agencyId portion of ids for all appropriate entities in
- * the system.
- *
- * <p>This {@link FieldMappingFactory} and the {@link FieldMapping} it produces does the heavy
- * lifting of setting those agencyId values in an appropriate way.
- *
- * <p>By default, we use the agencyId returned by {@link GtfsReaderContext#getDefaultAgencyId()}.
- * However, if you specify a property path expression to the {@link
- * #InternAgencyIdFieldMappingFactory(String)} constructor, we will evaluate that property path
- * expression against the target entity instance to determine the agencyId. So, for example, to set
- * the agencyId for {@link Route#getId()}, we specify a path of "agency.id", which will call {@link
- * Route#getAgency()} and then {@link Agency#getId()} to set the agency id. See also the path
- * "route.agency.id" for {@link Trip}.
- *
- * @see GtfsEntitySchemaFactory
+ * As {@linkplain DefaultAgencyIdFieldMappingFactory}, but also interning the {@linkplain
+ * AgencyAndId} fields.
  */
 public class InternAgencyIdFieldMappingFactory implements FieldMappingFactory {
 
@@ -151,7 +128,7 @@ public class InternAgencyIdFieldMappingFactory implements FieldMappingFactory {
         CsvEntityContext context, Map<String, Object> csvValues, BeanWrapper object) {
 
       String id = (String) csvValues.get(_csvFieldName);
-      if (id == null || id.isEmpty()) {
+      if (StringUtils.isBlank(id)) {
         // optional and not present
         return;
       }
@@ -186,7 +163,7 @@ public class InternAgencyIdFieldMappingFactory implements FieldMappingFactory {
         CsvEntityContext context, Map<String, Object> csvValues, BeanWrapper object) {
 
       String id = (String) csvValues.get(_csvFieldName);
-      if (id == null || id.isEmpty()) {
+      if (StringUtils.isBlank(id)) {
         // required and not present
         throw new MissingRequiredFieldException(_entityType, _csvFieldName);
       }
@@ -217,7 +194,7 @@ public class InternAgencyIdFieldMappingFactory implements FieldMappingFactory {
         CsvEntityContext context, Map<String, Object> csvValues, BeanWrapper object) {
 
       String id = (String) csvValues.get(_csvFieldName);
-      if (id == null || id.isEmpty()) {
+      if (StringUtils.isBlank(id)) {
         // required and not present
         throw new MissingRequiredFieldException(_entityType, _csvFieldName);
       }
@@ -239,7 +216,7 @@ public class InternAgencyIdFieldMappingFactory implements FieldMappingFactory {
         CsvEntityContext context, Map<String, Object> csvValues, BeanWrapper object) {
 
       String id = (String) csvValues.get(_csvFieldName);
-      if (id == null || id.isEmpty()) {
+      if (StringUtils.isBlank(id)) {
         // optional and not present
         return;
       }

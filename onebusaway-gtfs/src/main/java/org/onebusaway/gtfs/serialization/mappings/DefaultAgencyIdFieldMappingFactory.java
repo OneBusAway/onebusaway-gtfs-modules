@@ -14,6 +14,7 @@
 package org.onebusaway.gtfs.serialization.mappings;
 
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
 import org.onebusaway.csv_entities.schema.AbstractFieldMapping;
@@ -122,7 +123,7 @@ public class DefaultAgencyIdFieldMappingFactory implements FieldMappingFactory {
         CsvEntityContext context, Map<String, Object> csvValues, BeanWrapper object) {
 
       String id = (String) csvValues.get(_csvFieldName);
-      if (id == null || id.isEmpty()) {
+      if (StringUtils.isBlank(id)) {
         // optional and not present
         return;
       }
@@ -156,7 +157,7 @@ public class DefaultAgencyIdFieldMappingFactory implements FieldMappingFactory {
         CsvEntityContext context, Map<String, Object> csvValues, BeanWrapper object) {
 
       String id = (String) csvValues.get(_csvFieldName);
-      if (id == null || id.isEmpty()) {
+      if (StringUtils.isBlank(id)) {
         // required and not present
         throw new MissingRequiredFieldException(_entityType, _csvFieldName);
       }
@@ -186,7 +187,7 @@ public class DefaultAgencyIdFieldMappingFactory implements FieldMappingFactory {
         CsvEntityContext context, Map<String, Object> csvValues, BeanWrapper object) {
 
       String id = (String) csvValues.get(_csvFieldName);
-      if (id == null || id.isEmpty()) {
+      if (StringUtils.isBlank(id)) {
         // required and not present
         throw new MissingRequiredFieldException(_entityType, _csvFieldName);
       }
@@ -207,7 +208,7 @@ public class DefaultAgencyIdFieldMappingFactory implements FieldMappingFactory {
         CsvEntityContext context, Map<String, Object> csvValues, BeanWrapper object) {
 
       String id = (String) csvValues.get(_csvFieldName);
-      if (id == null || id.isEmpty()) {
+      if (StringUtils.isBlank(id)) {
         // optional and not present
         return;
       }

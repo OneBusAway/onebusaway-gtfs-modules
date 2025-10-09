@@ -13,7 +13,9 @@
  */
 package org.onebusaway.gtfs.serialization.mappings;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.onebusaway.csv_entities.CsvEntityContext;
 import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
@@ -23,48 +25,23 @@ import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.FieldMapping;
 import org.onebusaway.csv_entities.schema.FieldMappingFactory;
-import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.model.AgencyAndId;
-import org.onebusaway.gtfs.model.Route;
-import org.onebusaway.gtfs.model.Trip;
-import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsReaderContext;
 
 /**
- * A {@link FieldMappingFactory} implementation that produces a {@link FieldMapping} that is
- * responsible for setting the {@link AgencyAndId#setAgencyId(String)} portion of an {@link
- * AgencyAndId} identifier.
- *
- * <p>The GTFS library makes use of {@link AgencyAndId} identifier for most ids for GTFS entities,
- * so as to provide as simple namespace mechanism for loading multiple feeds from different agencies
- * into the same data-store. Since agency ids only appear in a few places in a GTFS feed, if at all,
- * we need some mechanism for setting the agencyId portion of ids for all appropriate entities in
- * the system.
- *
- * <p>This {@link FieldMappingFactory} and the {@link FieldMapping} it produces does the heavy
- * lifting of setting those agencyId values in an appropriate way.
- *
- * <p>By default, we use the agencyId returned by {@link GtfsReaderContext#getDefaultAgencyId()}.
- * However, if you specify a property path expression to the {@link
- * #DefaultAgencyIdFieldMappingFactory(String)} constructor, we will evaluate that property path
- * expression against the target entity instance to determine the agencyId. So, for example, to set
- * the agencyId for {@link Route#getId()}, we specify a path of "agency.id", which will call {@link
- * Route#getAgency()} and then {@link Agency#getId()} to set the agency id. See also the path
- * "route.agency.id" for {@link Trip}.
- *
- * @author bdferris
- * @see GtfsEntitySchemaFactory
+ * As {@linkplain DefaultAgencyIdFieldMappingFactory}, but also interning the {@linkplain
+ * AgencyAndId} fields.
  */
-public class DefaultAgencyIdFieldMappingFactory implements FieldMappingFactory {
+public class InternAgencyIdFieldMappingFactory implements FieldMappingFactory {
 
   private String _agencyIdPath = null;
 
-  public DefaultAgencyIdFieldMappingFactory() {
+  public InternAgencyIdFieldMappingFactory() {
     this(null);
   }
 
-  public DefaultAgencyIdFieldMappingFactory(String agencyIdPath) {
+  public InternAgencyIdFieldMappingFactory(String agencyIdPath) {
     _agencyIdPath = agencyIdPath;
   }
 
@@ -91,6 +68,10 @@ public class DefaultAgencyIdFieldMappingFactory implements FieldMappingFactory {
 
   private abstract static class AbstractAgencyFieldMappingImpl extends AbstractFieldMapping {
 
+    private Map<AgencyAndId, AgencyAndId> intern = new HashMap<>(1024);
+
+    private AgencyAndId previousAgencyAndId;
+
     public AbstractAgencyFieldMappingImpl(
         Class<?> entityType, String csvFieldName, String objFieldName, boolean required) {
       super(entityType, csvFieldName, objFieldName, required);
@@ -105,17 +86,41 @@ public class DefaultAgencyIdFieldMappingFactory implements FieldMappingFactory {
       AgencyAndId id = (AgencyAndId) object.getPropertyValue(_objFieldName);
       csvValues.put(_csvFieldName, id.getId());
     }
+
+    protected void setAgencyId(BeanWrapper object, String id, String agencyId) {
+      AgencyAndId agencyAndId = this.previousAgencyAndId;
+      if (agencyAndId == null
+          || !Objects.equals(id, agencyAndId.getId())
+          || agencyId != agencyAndId.getAgencyId()) {
+        agencyAndId = new AgencyAndId(agencyId, id);
+
+        agencyAndId = intern(agencyAndId);
+
+        this.previousAgencyAndId = agencyAndId;
+      }
+
+      object.setPropertyValue(_objFieldName, agencyAndId);
+    }
+
+    protected AgencyAndId intern(AgencyAndId agencyAndId) {
+      AgencyAndId interned = intern.get(agencyAndId);
+      if (interned != null) {
+        return interned;
+      }
+      intern.put(agencyAndId, agencyAndId);
+      return agencyAndId;
+    }
   }
 
   private static class OptionalPathFieldMappingImpl extends AbstractAgencyFieldMappingImpl {
 
-    private String[] _agencyIdPathProperties;
+    private final String[] _agencyIdPathProperties;
 
     public OptionalPathFieldMappingImpl(
         Class<?> entityType, String csvFieldName, String objFieldName, String path) {
       super(entityType, csvFieldName, objFieldName, false);
 
-      _agencyIdPathProperties = path.split("\\.");
+      _agencyIdPathProperties = path.split(".");
     }
 
     @Override
@@ -128,7 +133,8 @@ public class DefaultAgencyIdFieldMappingFactory implements FieldMappingFactory {
         return;
       }
 
-      object.setPropertyValue(_objFieldName, new AgencyAndId(resolveAgencyId(object), id));
+      String agencyId = resolveAgencyId(object);
+      setAgencyId(object, id, agencyId);
     }
 
     private String resolveAgencyId(BeanWrapper object) {
@@ -143,13 +149,13 @@ public class DefaultAgencyIdFieldMappingFactory implements FieldMappingFactory {
 
   private static class RequiredPathFieldMappingImpl extends AbstractAgencyFieldMappingImpl {
 
-    private String[] _agencyIdPathProperties;
+    private final String[] _agencyIdPathProperties;
 
     public RequiredPathFieldMappingImpl(
         Class<?> entityType, String csvFieldName, String objFieldName, String path) {
       super(entityType, csvFieldName, objFieldName, true);
 
-      _agencyIdPathProperties = path.split("\\.");
+      _agencyIdPathProperties = path.split(".");
     }
 
     @Override
@@ -162,7 +168,8 @@ public class DefaultAgencyIdFieldMappingFactory implements FieldMappingFactory {
         throw new MissingRequiredFieldException(_entityType, _csvFieldName);
       }
 
-      object.setPropertyValue(_objFieldName, new AgencyAndId(resolveAgencyId(object), id));
+      String agencyId = resolveAgencyId(object);
+      setAgencyId(object, id, agencyId);
     }
 
     private String resolveAgencyId(BeanWrapper object) {
@@ -193,7 +200,8 @@ public class DefaultAgencyIdFieldMappingFactory implements FieldMappingFactory {
       }
 
       GtfsReaderContext ctx = (GtfsReaderContext) context.get(GtfsReader.KEY_CONTEXT);
-      object.setPropertyValue(_objFieldName, new AgencyAndId(ctx.getDefaultAgencyId(), id));
+      String agencyId = ctx.getDefaultAgencyId();
+      setAgencyId(object, id, agencyId);
     }
   }
 
@@ -214,7 +222,8 @@ public class DefaultAgencyIdFieldMappingFactory implements FieldMappingFactory {
       }
 
       GtfsReaderContext ctx = (GtfsReaderContext) context.get(GtfsReader.KEY_CONTEXT);
-      object.setPropertyValue(_objFieldName, new AgencyAndId(ctx.getDefaultAgencyId(), id));
+      String agencyId = ctx.getDefaultAgencyId();
+      setAgencyId(object, id, agencyId);
     }
   }
 }

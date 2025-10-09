@@ -107,7 +107,7 @@ public class CsvEntityReader {
       set.add(entityClass);
     }
 
-    this._internStringsDisabled = (c) -> set.contains(c);
+    this._internStringsDisabled = set::contains;
   }
 
   public void readEntities(Class<?> entityClass) throws IOException {

@@ -19,11 +19,7 @@ import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 import org.onebusaway.gtfs_merge.strategies.scoring.StopDistanceDuplicateScoringStrategy;
 
-/**
- * Entity merge strategy for handling {@link Stop} entities.
- *
- * @author bdferris
- */
+/** Entity merge strategy for handling {@link Stop} entities. */
 public class StopMergeStrategy extends AbstractIdentifiableSingleEntityMergeStrategy<Stop> {
 
   public StopMergeStrategy() {

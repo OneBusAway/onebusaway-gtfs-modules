@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 public class GtfsMerger {
 
-  private static final Logger _log = LoggerFactory.getLogger(GtfsMerger.class);
+  private static final Logger LOG = LoggerFactory.getLogger(GtfsMerger.class);
 
   private static final String _alphaPrefix = "abcdefghijklmnopqrstuvwxyz";
 
@@ -146,7 +146,7 @@ public class GtfsMerger {
      */
     Map<EntityMergeStrategy, Map<String, Object>> rawEntityIdMapsByMergeStrategy = new HashMap<>();
     for (EntityMergeStrategy strategy : strategies) {
-      rawEntityIdMapsByMergeStrategy.put(strategy, new HashMap<String, Object>());
+      rawEntityIdMapsByMergeStrategy.put(strategy, new HashMap<>());
     }
 
     /**
@@ -168,7 +168,7 @@ public class GtfsMerger {
           newestFile = fileTime.toMillis();
         }
       }
-      _log.info("reading input: " + inputPath + " with lastModifiedTime " + fileTime);
+      LOG.info("reading input: " + inputPath + " with lastModifiedTime " + fileTime);
       GtfsReader reader = new GtfsReader();
       reader.setInputLocation(inputPath);
 
@@ -179,7 +179,7 @@ public class GtfsMerger {
       reader.run();
 
       for (EntityMergeStrategy strategy : strategies) {
-        _log.info("strategy=" + strategy.getClass());
+        LOG.info("strategy=" + strategy.toString());
         GtfsMergeContext context =
             new GtfsMergeContext(
                 dao, mergedDao, prefix, rawEntityIdMapsByMergeStrategy.get(strategy));
@@ -187,16 +187,16 @@ public class GtfsMerger {
       }
     }
 
-    _log.info("writing merged output: " + outputPath);
+    LOG.info("writing merged output: " + outputPath);
 
     GtfsWriter writer = new GtfsWriter();
     writer.setOutputLocation(outputPath);
     writer.run(mergedDao);
     if (outputPath.isFile()) {
-      _log.info("setting merged file lastModified to " + new Date(newestFile));
+      LOG.info("setting merged file lastModified to " + new Date(newestFile));
       Files.setAttribute(outputPath.toPath(), "lastModifiedTime", FileTime.fromMillis(newestFile));
     } else {
-      _log.info("outputPath not a file, skipping setting lastModified");
+      LOG.info("outputPath not a file, skipping setting lastModified");
     }
   }
 

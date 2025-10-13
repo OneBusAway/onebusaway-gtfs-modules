@@ -46,21 +46,26 @@ public class AndDuplicateScoringStrategy<T> implements DuplicateScoringStrategy<
 
   private static class PropertyMatchScoringStrategy<T> implements DuplicateScoringStrategy<T> {
 
-    private final String _property;
+    private final String property;
 
     public PropertyMatchScoringStrategy(String property) {
-      _property = property;
+      this.property = property;
     }
 
     @Override
     public double score(GtfsMergeContext context, T source, T target) {
       BeanWrapper wrappedA = BeanWrapperFactory.wrap(source);
       BeanWrapper wrappedB = BeanWrapperFactory.wrap(target);
-      Object valueA = wrappedA.getPropertyValue(_property);
-      Object valueB = wrappedB.getPropertyValue(_property);
+      Object valueA = wrappedA.getPropertyValue(property);
+      Object valueB = wrappedB.getPropertyValue(property);
       return (valueA == null && valueB == null) || (valueA != null && valueA.equals(valueB))
           ? 1.0
           : 0.0;
+    }
+
+    @Override
+    public String toString() {
+      return new ToStringBuilder(this).append("property", property).toString();
     }
   }
 

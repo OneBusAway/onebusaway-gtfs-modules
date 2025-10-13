@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs_merge.strategies.AbstractEntityMergeStrategy;
@@ -89,7 +88,7 @@ public class GtfsMergerMain implements Callable<Integer> {
 
     var merger = buildMerger();
 
-    ToStringBuilder.setDefaultStyle(ToStringStyle.MULTI_LINE_STYLE);
+    ToStringBuilder.setDefaultStyle(MergerStyle.MULTI_LINE_STYLE);
 
     List<File> inputPaths = files.subList(0, files.size() - 1);
     File outputPath = files.getLast();

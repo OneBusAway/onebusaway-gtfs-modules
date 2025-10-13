@@ -15,7 +15,7 @@ https://repo1.maven.org/maven2/org/onebusaway/onebusaway-gtfs-merge-cli/3.2.2/on
 
 ## Using the Application
 
-You'll need a Java 17 runtime installed to run the client. 
+You'll need a Java 21 runtime installed to run the cli. 
 
 To run the application:
 
@@ -23,7 +23,7 @@ To run the application:
 java -jar onebusaway-gtfs-merge-cli.jar [--args] input_gtfs_path_a input_gtfs_path_b ... output_gtfs_path
 ```
 
-**Note**: Merging large GTFS feeds is often processor and memory intensive.  You'll likely need to increase the
+**Note**: Merging large GTFS feeds is often processor and memory intensive. You'll likely need to increase the
 max amount of memory allocated to Java with an option like `-Xmx1G` (adjust the limit as needed).  I also recommend
 adding the `-server` argument if you are running the Oracle or OpenJDK, as it can really increase performance. 
 
@@ -51,12 +51,12 @@ specific options for each file type after the `--file` option.  Here's a quick e
  - `transfers.txt`
    
 You can specify merge options for each of these files using the `--file=gtfs_file.txt` option.  File types listed
-together (eg. `trips.txt>> and `stop_times.txt`) are handled by the same merge strategy, so specifying options for
+together (eg. `trips.txt` and `stop_times.txt`) are handled by the same merge strategy, so specifying options for
 either will have the same effect.  For details on options you might specify, read on.
 
 ## Handling Duplicates
 
-The main issue to considering when merging GTFS feeds is the handling of duplicate entries between the two feeds,
+The main issue to consider when merging GTFS feeds is the handling of duplicate entries between the two feeds,
 including how to identify duplicates and what to do with duplicates when they are found.
 
 ### Identifying Duplicates
@@ -66,14 +66,14 @@ the merge tool will attempt to automatically determine the best merge strategy t
 strategy used on a per-file basis using the `--duplicateDetection` argument.  You can specify any of the following
 strategies for duplicate detection.
   
- - `--duplicateDetection=identity` - If two entries have the same id (eg. stop id, route id, trip id), then they are
-    considered the same.  This is the more strict matching policy.
+ - `--duplicateDetection=identity`: If two entries have the same id (eg. stop id, route id, trip id), then they are
+    considered the same. This is the more strict matching policy.
   
- - `--duplicateDetection=fuzzy` - If two entries have common elements (eg. stop name or location, route short name,
+ - `--duplicateDetection=fuzzy`: If two entries have common elements (eg. stop name or location, route short name,
     trip stop sequence), then they are considered the same.  This is the more lenient matching policy, and is highly
     dependent on the type of GTFS entry being matched.
     
- - `--duplicateDetection=none` - Entries between two feeds are never considered to be duplicates, even if they have
+ - `--duplicateDetection=none`: Entries between two feeds are never considered to be duplicates, even if they have
     the same id or similar properties.
 
 ### Logging Duplicates

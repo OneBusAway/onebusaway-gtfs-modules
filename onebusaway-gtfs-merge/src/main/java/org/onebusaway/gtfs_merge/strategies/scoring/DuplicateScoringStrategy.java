@@ -16,5 +16,5 @@ package org.onebusaway.gtfs_merge.strategies.scoring;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
 public interface DuplicateScoringStrategy<T> {
-  public double score(GtfsMergeContext context, T source, T target);
+  double score(GtfsMergeContext context, T source, T target);
 }

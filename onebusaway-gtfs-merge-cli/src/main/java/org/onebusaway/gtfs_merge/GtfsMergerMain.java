@@ -89,7 +89,7 @@ public class GtfsMergerMain implements Callable<Integer> {
 
     var merger = buildMerger();
 
-    ToStringBuilder.setDefaultStyle(ToStringStyle.SHORT_PREFIX_STYLE);
+    ToStringBuilder.setDefaultStyle(ToStringStyle.MULTI_LINE_STYLE);
     if (debug) {
       System.out.println(merger);
     }

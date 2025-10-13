@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 
 mvn clean package --no-transfer-progress -DskipTests -Dmaven.source.skip=true -Dmaven.javadoc.skip=true
 
@@ -28,6 +28,8 @@ wget "http://data.trilliumtransit.com/gtfs/deathvalley-demo-ca-us/deathvalley-de
 java -jar ${MERGE_JAR} --help
 
 java -jar ${MERGE_JAR} ${EXAMPLE_1} ${EXAMPLE_2} ${MERGED_GTFS}
+
+ls -lah
 
 if [[ -f ${MERGED_GTFS} && -s ${MERGED_GTFS} ]]; then
   echo "File exists and is above zero bytes."

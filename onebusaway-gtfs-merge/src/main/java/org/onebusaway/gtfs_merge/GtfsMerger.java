@@ -42,6 +42,8 @@ public class GtfsMerger {
 
   private static final NumberFormat _numberPrefixFormat = new DecimalFormat("00");
 
+  private final boolean debug;
+
   private EntityMergeStrategy _agencyStrategy = new AgencyMergeStrategy();
 
   private EntityMergeStrategy _areaStrategy = new AreaMergeStrategy();
@@ -65,6 +67,10 @@ public class GtfsMerger {
   private EntityMergeStrategy _fareRuleStrategy = new FareRuleMergeStrategy();
 
   private EntityMergeStrategy _feedInfoStrategy = new FeedInfoMergeStrategy();
+
+  public GtfsMerger(boolean debug) {
+    this.debug = debug;
+  }
 
   public void setAgencyStrategy(EntityMergeStrategy agencyStrategy) {
     _agencyStrategy = agencyStrategy;
@@ -179,7 +185,9 @@ public class GtfsMerger {
       reader.run();
 
       for (EntityMergeStrategy strategy : strategies) {
-        LOG.info("strategy=" + strategy.toString());
+        if (debug) {
+          LOG.info(strategy.toString());
+        }
         GtfsMergeContext context =
             new GtfsMergeContext(
                 dao, mergedDao, prefix, rawEntityIdMapsByMergeStrategy.get(strategy));

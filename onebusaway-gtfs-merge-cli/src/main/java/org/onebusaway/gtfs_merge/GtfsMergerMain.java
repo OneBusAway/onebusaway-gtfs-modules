@@ -65,7 +65,7 @@ public class GtfsMergerMain implements Callable<Integer> {
 
   @Option(
       names = {"--debug"},
-      description = "Show parsed command line options before starting merge")
+      description = "Show detailed options before starting merge")
   boolean debug;
 
   /** Mapping from GTFS file name to the entity type handled by that class. */
@@ -116,7 +116,7 @@ public class GtfsMergerMain implements Callable<Integer> {
   }
 
   private GtfsMerger buildMerger() {
-    var merger = new GtfsMerger();
+    var merger = new GtfsMerger(debug);
 
     for (int i = 0; i < fileOptions.size(); i++) {
       String filename = fileOptions.get(i);

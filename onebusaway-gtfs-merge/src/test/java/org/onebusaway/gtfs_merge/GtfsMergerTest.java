@@ -55,7 +55,7 @@ public class GtfsMergerTest {
     _newGtfs = MockGtfs.create();
     _pugetGtfs = null;
     _mergedGtfs = MockGtfs.create();
-    _merger = new GtfsMerger();
+    _merger = new GtfsMerger(false);
   }
 
   @AfterEach

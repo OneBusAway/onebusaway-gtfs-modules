@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
@@ -35,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 public class GtfsMerger {
 
-  private static Logger _log = LoggerFactory.getLogger(GtfsMerger.class);
+  private static final Logger _log = LoggerFactory.getLogger(GtfsMerger.class);
 
   private static final String _alphaPrefix = "abcdefghijklmnopqrstuvwxyz";
 
@@ -201,7 +202,7 @@ public class GtfsMerger {
 
   private String getIndexAsPrefix(int index, int total) {
     if (total <= _alphaPrefix.length()) {
-      return Character.toString(_alphaPrefix.charAt(index)) + "-";
+      return _alphaPrefix.charAt(index) + "-";
     }
     return _numberPrefixFormat.format(index) + "-";
   }
@@ -219,5 +220,10 @@ public class GtfsMerger {
     strategies.add(_fareAttributeStrategy);
     strategies.add(_fareRuleStrategy);
     strategies.add(_feedInfoStrategy);
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this).append("stopStrategy", _stopStrategy).toString();
   }
 }

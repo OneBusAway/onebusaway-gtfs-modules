@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.onebusaway.collections.MappingLibrary;
 import org.onebusaway.collections.Max;
 import org.onebusaway.gtfs.model.AgencyAndId;
@@ -471,5 +472,13 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
       result.setDuplicateElements(duplicateElements);
       result.setTotalScore(totalScore);
     }
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this)
+        .append("fileName", _entityType.getSimpleName())
+        .append("duplicateScoring", _duplicateScoringStrategy)
+        .toString();
   }
 }

@@ -78,8 +78,9 @@ public class GtfsMergerMain implements Callable<Integer> {
           new CommandLine(this), "At least one input file and one output file required");
     }
 
-    GtfsMerger merger = new GtfsMerger();
-    processOptions(merger);
+    var merger = buildMerger();
+
+    System.out.println(merger.toString());
 
     List<File> inputPaths = files.subList(0, files.size() - 1);
     File outputPath = files.getLast();
@@ -99,10 +100,8 @@ public class GtfsMergerMain implements Callable<Integer> {
     }
   }
 
-  private void processOptions(GtfsMerger merger) {
-    if (fileOptions == null || fileOptions.isEmpty()) {
-      return;
-    }
+  private GtfsMerger buildMerger() {
+    var merger = new GtfsMerger();
 
     for (int i = 0; i < fileOptions.size(); i++) {
       String filename = fileOptions.get(i);
@@ -130,6 +129,7 @@ public class GtfsMergerMain implements Callable<Integer> {
         mergeStrategy.setLogDuplicatesStrategy(ELogDuplicatesStrategy.ERROR);
       }
     }
+    return merger;
   }
 
   private AbstractEntityMergeStrategy getMergeStrategyForEntityClass(

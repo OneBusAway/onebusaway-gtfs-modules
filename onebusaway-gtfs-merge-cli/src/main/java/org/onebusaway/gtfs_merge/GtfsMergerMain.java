@@ -19,6 +19,8 @@ import java.util.concurrent.Callable;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs_merge.strategies.AbstractEntityMergeStrategy;
+import org.onebusaway.gtfs_merge.strategies.EDuplicateDetectionStrategy;
+import org.onebusaway.gtfs_merge.strategies.ELogDuplicatesStrategy;
 import org.onebusaway.gtfs_merge.strategies.EntityMergeStrategy;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -35,36 +37,30 @@ public class GtfsMergerMain implements Callable<Integer> {
   @Parameters(
       arity = "2..*",
       description = "Input GTFS directories/files followed by output directory")
-  private List<File> files;
+  List<File> files;
 
   @Option(
       names = {"--file"},
       description = "GTFS file name to configure")
-  private List<String> fileOptions;
+  List<String> fileOptions;
 
   @Option(
       names = {"--duplicateDetection"},
       description = "Duplicate detection strategy")
-  private List<String> duplicateDetectionOptions;
+  List<String> duplicateDetectionOptions;
 
   @Option(
       names = {"--logDroppedDuplicates"},
       description = "Log dropped duplicates")
-  private boolean logDroppedDuplicates;
+  boolean logDroppedDuplicates;
 
   @Option(
       names = {"--errorOnDroppedDuplicates"},
       description = "Error on dropped duplicates")
-  private boolean errorOnDroppedDuplicates;
+  boolean errorOnDroppedDuplicates;
 
   /** Mapping from GTFS file name to the entity type handled by that class. */
   private final Map<String, Class<?>> _entityClassesByFilename = new HashMap<>();
-
-  /**
-   * If we ever need to register a custom option handler for a specific entity type, we would do it
-   * here.
-   */
-  private final Map<Class<?>, OptionHandler> _optionHandlersByEntityClass = new HashMap<>();
 
   public static void main(String[] args) {
     int exitCode = new CommandLine(new GtfsMergerMain()).execute(args);
@@ -117,21 +113,21 @@ public class GtfsMergerMain implements Callable<Integer> {
 
       AbstractEntityMergeStrategy mergeStrategy =
           getMergeStrategyForEntityClass(entityClass, merger);
-      OptionHandler handler = new OptionHandler();
 
       // Apply duplicate detection if specified for this file index
       if (duplicateDetectionOptions != null && i < duplicateDetectionOptions.size()) {
-        handler.handleDuplicateDetection(duplicateDetectionOptions.get(i), mergeStrategy);
+        mergeStrategy.setDuplicateDetectionStrategy(
+            EDuplicateDetectionStrategy.valueOf(duplicateDetectionOptions.get(i).toUpperCase()));
       }
 
       // Apply log dropped duplicates if specified
       if (logDroppedDuplicates) {
-        handler.handleLogDroppedDuplicates(mergeStrategy);
+        mergeStrategy.setLogDuplicatesStrategy(ELogDuplicatesStrategy.WARNING);
       }
 
       // Apply error on dropped duplicates if specified
       if (errorOnDroppedDuplicates) {
-        handler.handleErrorOnDroppedDuplicates(mergeStrategy);
+        mergeStrategy.setLogDuplicatesStrategy(ELogDuplicatesStrategy.ERROR);
       }
     }
   }

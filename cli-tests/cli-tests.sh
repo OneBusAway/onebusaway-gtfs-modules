@@ -14,7 +14,7 @@ wget https://github.com/google/transit/blob/master/gtfs/spec/en/examples/sample-
 
 java -jar ${TRANSFORMER_JAR} --help
 
-java -jar ${TRANSFORMER_JAR} --transform="{'op':'remove','match':{'file':'stops.txt','stop_id':'BEATTY_AIRPORT'}}" ${EXAMPLE_1} gtfs.transformed.zip
+java -jar ${TRANSFORMER_JAR} --transform="{'op':'remove','match':{'file':'stops.txt','stop_id':'BEATTY_AIRPORT'}}" ${EXAMPLE_1} transformed.gtfs.zip
 
 # merge-cli
 

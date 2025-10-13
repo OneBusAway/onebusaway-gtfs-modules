@@ -477,7 +477,7 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
   @Override
   public String toString() {
     return new ToStringBuilder(this)
-        .append("fileName", _entityType.getSimpleName())
+        .append("entity", _entityType.getSimpleName())
         .append("duplicateScoring", _duplicateScoringStrategy)
         .toString();
   }

@@ -90,9 +90,6 @@ public class GtfsMergerMain implements Callable<Integer> {
     var merger = buildMerger();
 
     ToStringBuilder.setDefaultStyle(ToStringStyle.MULTI_LINE_STYLE);
-    if (debug) {
-      System.out.println(merger);
-    }
 
     List<File> inputPaths = files.subList(0, files.size() - 1);
     File outputPath = files.getLast();

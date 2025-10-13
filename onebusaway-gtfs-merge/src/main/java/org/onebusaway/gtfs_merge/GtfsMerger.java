@@ -224,6 +224,10 @@ public class GtfsMerger {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this).append("stopStrategy", _stopStrategy).toString();
+    return new ToStringBuilder(this)
+        .append("agency", _agencyStrategy)
+        .append("stop", _stopStrategy)
+        .append("trip", _tripStrategy)
+        .toString();
   }
 }

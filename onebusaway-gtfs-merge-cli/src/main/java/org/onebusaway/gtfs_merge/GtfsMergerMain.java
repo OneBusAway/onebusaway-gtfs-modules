@@ -12,6 +12,8 @@
 package org.onebusaway.gtfs_merge;
 
 import java.io.File;
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +63,11 @@ public class GtfsMergerMain implements Callable<Integer> {
       description = "Error on dropped duplicates")
   boolean errorOnDroppedDuplicates;
 
+  @Option(
+      names = {"--debug"},
+      description = "Show parsed command line options before starting merge")
+  boolean debug;
+
   /** Mapping from GTFS file name to the entity type handled by that class. */
   private final Map<String, Class<?>> entityClassesByFilename = new HashMap<>();
 
@@ -83,12 +90,17 @@ public class GtfsMergerMain implements Callable<Integer> {
     var merger = buildMerger();
 
     ToStringBuilder.setDefaultStyle(ToStringStyle.SHORT_PREFIX_STYLE);
-    System.out.println(merger.toString());
+    if (debug) {
+      System.out.println(merger);
+    }
 
     List<File> inputPaths = files.subList(0, files.size() - 1);
     File outputPath = files.getLast();
 
     merger.run(inputPaths, outputPath);
+
+    String size = humanReadableByteCountBin(outputPath.length());
+    System.out.printf("Merged GTFS file written to %s (%s)%n", outputPath, size);
     return 0;
   }
 
@@ -142,5 +154,20 @@ public class GtfsMergerMain implements Callable<Integer> {
       throw new IllegalStateException("no merge strategy found for entityType=" + entityClass);
     }
     return (AbstractEntityMergeStrategy) strategy;
+  }
+
+  public static String humanReadableByteCountBin(long bytes) {
+    long absB = bytes == Long.MIN_VALUE ? Long.MAX_VALUE : Math.abs(bytes);
+    if (absB < 1024) {
+      return bytes + " B";
+    }
+    long value = absB;
+    CharacterIterator ci = new StringCharacterIterator("KMGTPE");
+    for (int i = 40; i >= 0 && absB > 0xfffccccccccccccL >> i; i -= 10) {
+      value >>= 10;
+      ci.next();
+    }
+    value *= Long.signum(bytes);
+    return String.format("%.1f %ciB", value / 1024.0, ci.current());
   }
 }

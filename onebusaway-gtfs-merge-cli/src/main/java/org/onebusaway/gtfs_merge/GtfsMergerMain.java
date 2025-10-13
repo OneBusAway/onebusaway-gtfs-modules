@@ -1,8 +1,6 @@
 /**
- * Copyright (C) 2012 Google, Inc.
- *
- * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
  * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -13,161 +11,85 @@
  */
 package org.onebusaway.gtfs_merge;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.cli.AlreadySelectedException;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.MissingArgumentException;
-import org.apache.commons.cli.MissingOptionException;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
-import org.apache.commons.cli.UnrecognizedOptionException;
+import java.util.concurrent.Callable;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs_merge.strategies.AbstractEntityMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.EntityMergeStrategy;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
-public class GtfsMergerMain {
+@Command(
+    name = "gtfs-merge",
+    description = "Merge GTFS feeds",
+    usageHelpAutoWidth = true,
+    mixinStandardHelpOptions = true)
+public class GtfsMergerMain implements Callable<Integer> {
 
-  public static final String ARG_FILE = "file";
+  @Parameters(
+      arity = "2..*",
+      description = "Input GTFS directories/files followed by output directory")
+  private List<File> files;
 
-  public static final String ARG_DUPLICATE_DETECTION = "duplicateDetection";
+  @Option(
+      names = {"--file"},
+      description = "GTFS file name to configure")
+  private List<String> fileOptions;
 
-  public static final String ARG_LOG_DROPPED_DUPLICATES = "logDroppedDuplicates";
+  @Option(
+      names = {"--duplicateDetection"},
+      description = "Duplicate detection strategy")
+  private List<String> duplicateDetectionOptions;
 
-  public static final String ARG_ERROR_ON_DROPPED_DUPLICATES = "errorOnDroppedDuplicates";
+  @Option(
+      names = {"--logDroppedDuplicates"},
+      description = "Log dropped duplicates")
+  private boolean logDroppedDuplicates;
 
-  /****
-   * Generic Arguments
-   ****/
-
-  private static CommandLineParser _parser = new PosixParser();
-
-  private Options _options = new Options();
+  @Option(
+      names = {"--errorOnDroppedDuplicates"},
+      description = "Error on dropped duplicates")
+  private boolean errorOnDroppedDuplicates;
 
   /** Mapping from GTFS file name to the entity type handled by that class. */
-  private Map<String, Class<?>> _entityClassesByFilename = new HashMap<>();
+  private final Map<String, Class<?>> _entityClassesByFilename = new HashMap<>();
 
   /**
    * If we ever need to register a custom option handler for a specific entity type, we would do it
    * here.
    */
-  private Map<Class<?>, OptionHandler> _optionHandlersByEntityClass = new HashMap<>();
+  private final Map<Class<?>, OptionHandler> _optionHandlersByEntityClass = new HashMap<>();
 
-  public static void main(String[] args) throws IOException {
-    GtfsMergerMain m = new GtfsMergerMain();
-    m.run(args);
+  public static void main(String[] args) {
+    int exitCode = new CommandLine(new GtfsMergerMain()).execute(args);
+    System.exit(exitCode);
   }
 
   public GtfsMergerMain() {
-    buildOptions(_options);
     mapEntityClassesToFilenames();
   }
 
-  /*****************************************************************************
-   * {@link Runnable} Interface
-   ****************************************************************************/
-
-  public void run(String[] args) throws IOException {
-
-    if (needsHelp(args)) {
-      printHelp();
-      System.exit(0);
-    }
-
-    try {
-      CommandLine cli = _parser.parse(_options, args, true);
-      runApplication(cli, args);
-    } catch (MissingOptionException ex) {
-      System.err.println("Missing argument: " + ex.getMessage());
-      printHelp();
-    } catch (MissingArgumentException ex) {
-      System.err.println("Missing argument: " + ex.getMessage());
-      printHelp();
-    } catch (UnrecognizedOptionException ex) {
-      System.err.println("Unknown argument: " + ex.getMessage());
-      printHelp();
-    } catch (AlreadySelectedException ex) {
-      System.err.println("Argument already selected: " + ex.getMessage());
-      printHelp();
-    } catch (ParseException ex) {
-      System.err.println(ex.getMessage());
-      printHelp();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /*****************************************************************************
-   * Abstract Methods
-   ****************************************************************************/
-
-  protected void buildOptions(Options options) {
-    options.addOption(ARG_FILE, true, "GTFS file name");
-    options.addOption(ARG_DUPLICATE_DETECTION, true, "duplicate detection strategy");
-    options.addOption(ARG_LOG_DROPPED_DUPLICATES, false, "log dropped duplicates");
-    options.addOption(ARG_ERROR_ON_DROPPED_DUPLICATES, false, "error on dropped duplicates");
-  }
-
-  protected void printHelp(PrintWriter out, Options options) throws IOException {
-
-    InputStream is = getClass().getResourceAsStream("usage.txt");
-    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-    String line = null;
-
-    while ((line = reader.readLine()) != null) {
-      System.err.println(line);
-    }
-
-    reader.close();
-  }
-
-  protected void runApplication(CommandLine cli, String[] originalArgs) throws Exception {
-
-    String[] args = cli.getArgs();
-
-    if (args.length < 2) {
-      printHelp();
-      System.exit(-1);
+  @Override
+  public Integer call() throws Exception {
+    if (files == null || files.size() < 2) {
+      throw new CommandLine.ParameterException(
+          new CommandLine(this), "At least one input file and one output file required");
     }
 
     GtfsMerger merger = new GtfsMerger();
+    processOptions(merger);
 
-    processOptions(cli, merger);
-
-    List<File> inputPaths = new ArrayList<>();
-    for (int i = 0; i < args.length - 1; ++i) {
-      inputPaths.add(new File(args[i]));
-    }
-    File outputPath = new File(args[args.length - 1]);
+    List<File> inputPaths = files.subList(0, files.size() - 1);
+    File outputPath = files.getLast();
 
     merger.run(inputPaths, outputPath);
-  }
-
-  /*****************************************************************************
-   * Protected Methods
-   ****************************************************************************/
-
-  protected void printHelp() throws IOException {
-    printHelp(new PrintWriter(System.err, true), _options);
-  }
-
-  private boolean needsHelp(String[] args) {
-    for (String arg : args) {
-      if (arg.equals("-h") || arg.equals("--help") || arg.equals("-help")) return true;
-    }
-    return false;
+    return 0;
   }
 
   private void mapEntityClassesToFilenames() {
@@ -181,26 +103,35 @@ public class GtfsMergerMain {
     }
   }
 
-  private void processOptions(CommandLine cli, GtfsMerger merger) {
+  private void processOptions(GtfsMerger merger) {
+    if (fileOptions == null || fileOptions.isEmpty()) {
+      return;
+    }
 
-    OptionHandler currentOptionHandler = null;
-    AbstractEntityMergeStrategy mergeStrategy = null;
+    for (int i = 0; i < fileOptions.size(); i++) {
+      String filename = fileOptions.get(i);
+      Class<?> entityClass = _entityClassesByFilename.get(filename);
+      if (entityClass == null) {
+        throw new IllegalStateException("unknown GTFS filename: " + filename);
+      }
 
-    for (Option option : cli.getOptions()) {
-      if (option.getOpt().equals(ARG_FILE)) {
-        String filename = option.getValue();
-        Class<?> entityClass = _entityClassesByFilename.get(filename);
-        if (entityClass == null) {
-          throw new IllegalStateException("unknown GTFS filename: " + filename);
-        }
-        mergeStrategy = getMergeStrategyForEntityClass(entityClass, merger);
-        currentOptionHandler = getOptionHandlerForEntityClass(entityClass);
-      } else {
-        if (currentOptionHandler == null) {
-          throw new IllegalArgumentException(
-              "you must specify a --file argument first before specifying file-specific arguments");
-        }
-        currentOptionHandler.handleOption(option, mergeStrategy);
+      AbstractEntityMergeStrategy mergeStrategy =
+          getMergeStrategyForEntityClass(entityClass, merger);
+      OptionHandler handler = new OptionHandler();
+
+      // Apply duplicate detection if specified for this file index
+      if (duplicateDetectionOptions != null && i < duplicateDetectionOptions.size()) {
+        handler.handleDuplicateDetection(duplicateDetectionOptions.get(i), mergeStrategy);
+      }
+
+      // Apply log dropped duplicates if specified
+      if (logDroppedDuplicates) {
+        handler.handleLogDroppedDuplicates(mergeStrategy);
+      }
+
+      // Apply error on dropped duplicates if specified
+      if (errorOnDroppedDuplicates) {
+        handler.handleErrorOnDroppedDuplicates(mergeStrategy);
       }
     }
   }
@@ -212,13 +143,5 @@ public class GtfsMergerMain {
       throw new IllegalStateException("no merge strategy found for entityType=" + entityClass);
     }
     return (AbstractEntityMergeStrategy) strategy;
-  }
-
-  private OptionHandler getOptionHandlerForEntityClass(Class<?> entityClass) {
-    OptionHandler handler = _optionHandlersByEntityClass.get(entityClass);
-    if (handler == null) {
-      handler = new OptionHandler();
-    }
-    return handler;
   }
 }

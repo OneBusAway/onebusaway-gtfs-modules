@@ -13,21 +13,22 @@
  */
 package org.onebusaway.gtfs_merge;
 
-import org.apache.commons.cli.Option;
 import org.onebusaway.gtfs_merge.strategies.AbstractEntityMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.EDuplicateDetectionStrategy;
 import org.onebusaway.gtfs_merge.strategies.ELogDuplicatesStrategy;
 
 public class OptionHandler {
 
-  public void handleOption(Option option, AbstractEntityMergeStrategy strategy) {
-    if (option.getOpt().equals(GtfsMergerMain.ARG_DUPLICATE_DETECTION)) {
-      String strategyName = option.getValue().toUpperCase();
-      strategy.setDuplicateDetectionStrategy(EDuplicateDetectionStrategy.valueOf(strategyName));
-    } else if (option.getOpt().equals(GtfsMergerMain.ARG_LOG_DROPPED_DUPLICATES)) {
-      strategy.setLogDuplicatesStrategy(ELogDuplicatesStrategy.WARNING);
-    } else if (option.getOpt().equals(GtfsMergerMain.ARG_ERROR_ON_DROPPED_DUPLICATES)) {
-      strategy.setLogDuplicatesStrategy(ELogDuplicatesStrategy.ERROR);
-    }
+  public void handleDuplicateDetection(String strategyName, AbstractEntityMergeStrategy strategy) {
+    strategy.setDuplicateDetectionStrategy(
+        EDuplicateDetectionStrategy.valueOf(strategyName.toUpperCase()));
+  }
+
+  public void handleLogDroppedDuplicates(AbstractEntityMergeStrategy strategy) {
+    strategy.setLogDuplicatesStrategy(ELogDuplicatesStrategy.WARNING);
+  }
+
+  public void handleErrorOnDroppedDuplicates(AbstractEntityMergeStrategy strategy) {
+    strategy.setLogDuplicatesStrategy(ELogDuplicatesStrategy.ERROR);
   }
 }

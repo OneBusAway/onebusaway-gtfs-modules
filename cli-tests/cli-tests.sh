@@ -27,7 +27,7 @@ wget "http://data.trilliumtransit.com/gtfs/deathvalley-demo-ca-us/deathvalley-de
 
 java -jar ${MERGE_JAR} --help
 
-java -jar ${MERGE_JAR} ${EXAMPLE_1} ${EXAMPLE_2} ${MERGED_GTFS}
+java -jar ${MERGE_JAR} ${EXAMPLE_1} ${EXAMPLE_2} ${MERGED_GTFS} --file=stops.txt --duplicateDetection=identity --logDroppedDuplicates
 
 ls -lah
 

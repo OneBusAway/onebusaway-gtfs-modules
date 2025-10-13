@@ -60,7 +60,7 @@ public class GtfsMergerMain implements Callable<Integer> {
   boolean errorOnDroppedDuplicates;
 
   /** Mapping from GTFS file name to the entity type handled by that class. */
-  private final Map<String, Class<?>> _entityClassesByFilename = new HashMap<>();
+  private final Map<String, Class<?>> entityClassesByFilename = new HashMap<>();
 
   public static void main(String[] args) {
     int exitCode = new CommandLine(new GtfsMergerMain()).execute(args);
@@ -95,7 +95,7 @@ public class GtfsMergerMain implements Callable<Integer> {
         continue;
       }
       String filename = csvFields.filename();
-      _entityClassesByFilename.put(filename, entityClass);
+      entityClassesByFilename.put(filename, entityClass);
     }
   }
 
@@ -106,7 +106,7 @@ public class GtfsMergerMain implements Callable<Integer> {
 
     for (int i = 0; i < fileOptions.size(); i++) {
       String filename = fileOptions.get(i);
-      Class<?> entityClass = _entityClassesByFilename.get(filename);
+      Class<?> entityClass = entityClassesByFilename.get(filename);
       if (entityClass == null) {
         throw new IllegalStateException("unknown GTFS filename: " + filename);
       }

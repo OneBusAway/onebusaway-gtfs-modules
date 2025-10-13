@@ -127,8 +127,9 @@ public class GtfsMergerMain implements Callable<Integer> {
 
       // Apply duplicate detection if specified for this file index
       if (duplicateDetectionOptions != null && i < duplicateDetectionOptions.size()) {
-        mergeStrategy.setDuplicateDetectionStrategy(
-            EDuplicateDetectionStrategy.valueOf(duplicateDetectionOptions.get(i).toUpperCase()));
+        var duplicateDetectionStrategy =
+            EDuplicateDetectionStrategy.valueOf(duplicateDetectionOptions.get(i).toUpperCase());
+        mergeStrategy.setDuplicateDetectionStrategy(duplicateDetectionStrategy);
       }
 
       // Apply log dropped duplicates if specified

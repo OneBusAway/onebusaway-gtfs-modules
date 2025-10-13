@@ -479,6 +479,7 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
     return new ToStringBuilder(this)
         .append("entity", _entityType.getSimpleName())
         .append("duplicateScoring", _duplicateScoringStrategy)
+        .append("duplicateDetection", _duplicateDetectionStrategy)
         .toString();
   }
 }

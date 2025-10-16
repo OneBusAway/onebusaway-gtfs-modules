@@ -87,7 +87,10 @@ public class TransformFactory {
 
   private static Pattern _pathMatcher = Pattern.compile("^path\\((.*)\\)$");
 
-  private static Pattern _replaceMatcher = Pattern.compile("^s/(.*)/(.*)/$");
+  private static Pattern _replaceMatcher =
+      Pattern.compile("^s/((?:\\\\.|[^/])*)/((?:\\\\.|[^/])*)/$");
+
+  private static Pattern _legacyReplaceMatcher = Pattern.compile("^s/(.*)/(.*)/$");
 
   private final GtfsTransformer _transformer;
 
@@ -667,8 +670,13 @@ public class TransformFactory {
           _transformer.getReader(), _schemaCache, _transformer.getDao(), expression);
     }
     Matcher replaceMatcher = _replaceMatcher.matcher(stringValue);
+    if (!replaceMatcher.matches()) {
+      replaceMatcher = _legacyReplaceMatcher.matcher(stringValue);
+    }
     if (replaceMatcher.matches()) {
-      return new ReplaceValueSetter(replaceMatcher.group(1), replaceMatcher.group(2));
+      String matchRegex = unescapeReplaceExpression(replaceMatcher.group(1));
+      String replacementValue = unescapeReplaceExpression(replaceMatcher.group(2));
+      return new ReplaceValueSetter(matchRegex, replacementValue);
     }
     return new DeferredValueSetter(
         _transformer.getReader(), _schemaCache, _transformer.getDao(), value);
@@ -805,5 +813,21 @@ public class TransformFactory {
     } catch (IOException ex) {
       throw new IllegalStateException(ex);
     }
+  }
+
+  private String unescapeReplaceExpression(String value) {
+    StringBuilder b = new StringBuilder(value.length());
+    boolean esc = false;
+    for (char c : value.toCharArray()) {
+      if (esc) {
+        b.append(c == '/' ? '/' : "\\" + c);
+        esc = false;
+      } else if (c == '\\') {
+        esc = true;
+      } else {
+        b.append(c);
+      }
+    }
+    return esc ? b.append('\\').toString() : b.toString();
   }
 }

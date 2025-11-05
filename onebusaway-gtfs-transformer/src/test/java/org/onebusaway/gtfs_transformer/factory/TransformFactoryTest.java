@@ -178,6 +178,51 @@ public class TransformFactoryTest {
   }
 
   @Test
+  public void testReplaceValueWithEscapedSlash()
+      throws IOException, TransformSpecificationException {
+    _factory.addModificationsFromString(
+        "{'op':'update', "
+            + "'match':{'file':'trips.txt'}, "
+            + "'update':{'trip_id': 's/foo\\/bar/baz/'}}");
+
+    GtfsTransformStrategy transform = _transformer.getLastTransform();
+    TransformContext context = new TransformContext();
+    context.setDefaultAgencyId("3");
+    GtfsMutableRelationalDao dao = new GtfsRelationalDaoImpl();
+
+    Trip trip = new Trip();
+    trip.setId(new AgencyAndId("3", "foo/bar"));
+    dao.saveEntity(trip);
+
+    transform.run(context, dao);
+
+    assertEquals("baz", trip.getId().getId());
+  }
+
+  @Test
+  public void testReplaceValueWithEscapedSlashRouteUrl()
+      throws IOException, TransformSpecificationException {
+    _factory.addModificationsFromString(
+        "{'op':'update', "
+            + "'match':{'file':'routes.txt'}, "
+            + "'update':{'route_url': 's/foo\\/bar/baz/'}}");
+
+    GtfsTransformStrategy transform = _transformer.getLastTransform();
+    TransformContext context = new TransformContext();
+    context.setDefaultAgencyId("4");
+    GtfsMutableRelationalDao dao = new GtfsRelationalDaoImpl();
+
+    Route route = new Route();
+    route.setId(new AgencyAndId("4", "route1"));
+    route.setUrl("https://example.com/foo/bar");
+    dao.saveEntity(route);
+
+    transform.run(context, dao);
+
+    assertEquals("https://example.com/baz", route.getUrl());
+  }
+
+  @Test
   public void testCalendarSimplification() throws IOException, TransformSpecificationException {
     _factory.addModificationsFromString("{'op':'calendar_simplification'}");
     GtfsTransformStrategy transform = _transformer.getLastTransform();

@@ -37,9 +37,14 @@ public class ReplaceValueSetter implements ValueSetter {
     String updatedValue = stringValue.replaceAll(matchRegex, replacementValue);
     if (!stringValue.equals(updatedValue)) {
       if (bean.getPropertyType(propertyName) == AgencyAndId.class) {
-        AgencyAndId aid = (AgencyAndId) bean.getPropertyValue(propertyName);
-        aid.setId(updatedValue);
-        bean.setPropertyValue(propertyName, aid);
+        if (updatedValue.indexOf(AgencyAndId.ID_SEPARATOR) != -1) {
+          AgencyAndId parsed = AgencyAndId.convertFromString(updatedValue);
+          bean.setPropertyValue(propertyName, parsed);
+        } else {
+          AgencyAndId aid = (AgencyAndId) bean.getPropertyValue(propertyName);
+          aid.setId(updatedValue);
+          bean.setPropertyValue(propertyName, aid);
+        }
       } else {
         bean.setPropertyValue(propertyName, updatedValue);
       }

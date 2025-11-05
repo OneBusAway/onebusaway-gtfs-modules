@@ -275,6 +275,10 @@ public class GtfsReader extends CsvEntityReader {
         var locationGroup =
             _entityStore.getEntityForId(
                 LocationGroup.class, locationGroupElement.getLocationGroupId());
+        Objects.requireNonNull(
+            locationGroup,
+            "Cannot find location group for id: %s"
+                .formatted(locationGroupElement.getLocationGroupId()));
         locationGroup.addLocation(locationGroupElement.getStop());
       } else if (entity instanceof final StopAreaElement stopAreaElement) {
         var area = _entityStore.getEntityForId(Area.class, stopAreaElement.getArea().getId());

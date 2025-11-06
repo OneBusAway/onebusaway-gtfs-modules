@@ -78,10 +78,10 @@ public class TransformFactory {
   private static final String ARG_COLLECTION = "collection";
 
   private static final Set<String> _excludeForObjectSpec =
-      new HashSet<String>(Arrays.asList(ARG_FILE, ARG_CLASS));
+      new HashSet<>(Arrays.asList(ARG_FILE, ARG_CLASS));
 
   private static final Set<String> _excludeForMatchSpec =
-      new HashSet<String>(Arrays.asList(ARG_FILE, ARG_CLASS, ARG_COLLECTION));
+      new HashSet<>(Arrays.asList(ARG_FILE, ARG_CLASS, ARG_COLLECTION));
 
   private static final Pattern _anyMatcher = Pattern.compile("^any\\((.*)\\)$");
 
@@ -91,7 +91,7 @@ public class TransformFactory {
 
   private final GtfsTransformer _transformer;
 
-  private final List<String> _entityPackages = new ArrayList<String>();
+  private final List<String> _entityPackages = new ArrayList<>();
 
   private final EntitySchemaCache _schemaCache = new EntitySchemaCache();
 
@@ -504,12 +504,12 @@ public class TransformFactory {
     EntitySchemaFactory entitySchemaFactory = _transformer.getReader().getEntitySchemaFactory();
     EntitySchema schema = entitySchemaFactory.getSchema(object.getClass());
     BeanWrapper wrapped = BeanWrapperFactory.wrap(object);
-    Map<String, Object> values = new HashMap<String, Object>();
+    Map<String, Object> values = new HashMap<>();
     for (Iterator<?> it = json.keys(); it.hasNext(); ) {
       String key = (String) it.next();
       Object v = json.get(key);
       if (v instanceof JSONArray array) {
-        List<Object> asList = new ArrayList<Object>();
+        List<Object> asList = new ArrayList<>();
         for (int i = 0; i < array.length(); ++i) {
           asList.add(array.get(i));
         }
@@ -591,7 +591,7 @@ public class TransformFactory {
     Map<String, DeferredValueMatcher> propertyMatches =
         getPropertyValueMatchersFromJsonObject(match, _excludeForMatchSpec);
 
-    List<EntityMatch> matches = new ArrayList<EntityMatch>();
+    List<EntityMatch> matches = new ArrayList<>();
 
     for (Map.Entry<String, DeferredValueMatcher> entry : propertyMatches.entrySet()) {
       String property = entry.getKey();
@@ -636,7 +636,7 @@ public class TransformFactory {
   private Map<String, ValueSetter> getPropertyValueSettersFromJsonObject(
       Class<?> entityType, JSONObject obj, Set<String> propertiesToExclude) throws JSONException {
     Map<String, Object> map = getPropertyValuesFromJsonObject(obj, propertiesToExclude);
-    Map<String, ValueSetter> setters = new HashMap<String, ValueSetter>();
+    Map<String, ValueSetter> setters = new HashMap<>();
     for (Map.Entry<String, Object> entry : map.entrySet()) {
       String propertyName = entry.getKey();
       SingleFieldMapping mapping =
@@ -669,7 +669,7 @@ public class TransformFactory {
   private Map<String, DeferredValueMatcher> getPropertyValueMatchersFromJsonObject(
       JSONObject obj, Set<String> propertiesToExclude) throws JSONException {
     Map<String, Object> map = getPropertyValuesFromJsonObject(obj, propertiesToExclude);
-    Map<String, DeferredValueMatcher> matchers = new HashMap<String, DeferredValueMatcher>();
+    Map<String, DeferredValueMatcher> matchers = new HashMap<>();
     for (Map.Entry<String, Object> entry : map.entrySet()) {
       matchers.put(
           entry.getKey(),
@@ -680,7 +680,7 @@ public class TransformFactory {
 
   private Map<String, Object> getPropertyValuesFromJsonObject(
       JSONObject obj, Set<String> propertiesToExclude) throws JSONException {
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
     for (@SuppressWarnings("unchecked") Iterator<String> it = obj.keys(); it.hasNext(); ) {
       String property = it.next();
       if (propertiesToExclude.contains(property)) {
@@ -699,7 +699,7 @@ public class TransformFactory {
   private Map<String, Pair<String>> getEntityPropertiesAndStringReplacementsFromJsonObject(
       Class<?> entityType, JSONObject obj) throws JSONException {
 
-    Map<String, Pair<String>> map = new HashMap<String, Pair<String>>();
+    Map<String, Pair<String>> map = new HashMap<>();
 
     for (Iterator<String> it = obj.keys(); it.hasNext(); ) {
 

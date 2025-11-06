@@ -14,20 +14,16 @@
 package org.onebusaway.gtfs_transformer.impl;
 
 import java.util.HashMap;
+import java.util.Map;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /*
 Update the Route with data in reference strategy, keying off the Longname
  */
 public class MergeRouteFromReferenceStrategyByLongName implements GtfsTransformStrategy {
-
-  private final Logger _log =
-      LoggerFactory.getLogger(MergeRouteFromReferenceStrategyByLongName.class);
 
   @Override
   public String getName() {
@@ -39,7 +35,7 @@ public class MergeRouteFromReferenceStrategyByLongName implements GtfsTransformS
     GtfsMutableRelationalDao reference =
         (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
 
-    HashMap<String, Route> referenceRoutes = new HashMap<>();
+    Map<String, Route> referenceRoutes = new HashMap<>();
     for (Route route : reference.getAllRoutes()) {
       referenceRoutes.put(route.getId().getId(), route);
     }

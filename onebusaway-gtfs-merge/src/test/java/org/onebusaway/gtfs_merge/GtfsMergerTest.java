@@ -37,12 +37,8 @@ import org.onebusaway.gtfs_merge.strategies.RouteMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.ServiceCalendarMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.StopMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.TripMergeStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class GtfsMergerTest {
-
-  private static Logger _log = LoggerFactory.getLogger(GtfsMergerTest.class);
   private MockGtfs _oldGtfs;
 
   private MockGtfs _newGtfs;
@@ -59,7 +55,7 @@ public class GtfsMergerTest {
     _newGtfs = MockGtfs.create();
     _pugetGtfs = null;
     _mergedGtfs = MockGtfs.create();
-    _merger = new GtfsMerger();
+    _merger = new GtfsMerger(false);
   }
 
   @AfterEach
@@ -476,7 +472,7 @@ public class GtfsMergerTest {
   }
 
   private GtfsRelationalDao merge() throws IOException {
-    List<File> paths = new ArrayList<File>();
+    List<File> paths = new ArrayList<>();
     paths.add(_oldGtfs.getPath());
     paths.add(_newGtfs.getPath());
     if (_pugetGtfs != null) {

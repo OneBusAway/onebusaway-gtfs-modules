@@ -63,6 +63,12 @@ jobs:
       - name: Run CLI integration tests
         run: ./cli-tests/cli-tests.sh
 
+      - name: Archive GTFS files
+        uses: actions/upload-artifact@v5
+        with:
+          name: gtfs-files
+          path: '*.gtfs.zip'
+
   container-image:
     if: github.repository_owner == 'onebusaway' && github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
@@ -85,3 +91,4 @@ jobs:
         run: |
           MAVEN_SKIP_ARGS="-Dmaven.test.skip=true -Dmaven.source.skip=true"
           mvn $MAVEN_ARGS $MAVEN_SKIP_ARGS package jib:build
+

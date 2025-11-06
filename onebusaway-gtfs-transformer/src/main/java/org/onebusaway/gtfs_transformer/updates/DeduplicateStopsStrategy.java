@@ -24,14 +24,8 @@ import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DeduplicateStopsStrategy implements GtfsTransformStrategy {
-
-  private static Logger _log =
-      LoggerFactory.getLogger(
-          org.onebusaway.gtfs_transformer.updates.DeduplicateServiceIdsStrategy.class);
 
   @Override
   public String getName() {
@@ -41,8 +35,7 @@ public class DeduplicateStopsStrategy implements GtfsTransformStrategy {
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-    Map<AgencyAndId, List<Stop>> stopsById =
-        new FactoryMap<AgencyAndId, List<Stop>>(new ArrayList<Stop>());
+    Map<AgencyAndId, List<Stop>> stopsById = new FactoryMap<>(new ArrayList<Stop>());
 
     for (Stop stop : dao.getAllStops()) {
 

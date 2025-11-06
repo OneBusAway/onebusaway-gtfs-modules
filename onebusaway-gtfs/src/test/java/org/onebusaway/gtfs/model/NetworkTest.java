@@ -61,8 +61,8 @@ public class NetworkTest {
     writer.run(dao);
 
     Scanner scan = new Scanner(new File(_tmpDirectory + "/networks.txt"));
-    Set<String> expectedNetworkNames = new HashSet<String>();
-    Set<String> foundNetworkNames = new HashSet<String>();
+    Set<String> expectedNetworkNames = new HashSet<>();
+    Set<String> foundNetworkNames = new HashSet<>();
     expectedNetworkNames.add("Rail Network");
     expectedNetworkNames.add("Bus Network");
     boolean onHeader = true;

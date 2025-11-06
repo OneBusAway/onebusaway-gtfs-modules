@@ -38,7 +38,6 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
   private final Logger _log = LoggerFactory.getLogger(ExtrapolateRidershipData.class);
 
   private static final int ROUTE_ID = 0;
-  private static final int DIR = 1;
   private static final int TRIP_ID = 2;
   private static final int STOP_ID = 5;
   private static final int STOP_SEQ = 11;
@@ -159,7 +158,7 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
     _log.error("Number of trips in GTFS: {}", daoTrips.size());
 
     // used for metrics, each ridership trip_id that is added to dao ridership.txt
-    Set<String> ridershipIds = new HashSet<String>();
+    Set<String> ridershipIds = new HashSet<>();
 
     // Try to find trips that match by comparing the stops on that trip.  We will get a lot of
     // matches as identical trips run
@@ -350,10 +349,6 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
     dao.saveOrUpdateEntity(ridership);
   }
 
-  private String getTopic() {
-    return System.getProperty("sns.topic");
-  }
-
   private LocalTime convertToTime(String passingTime) {
     // grab the time which is after the space
     int index = passingTime.lastIndexOf(" ");
@@ -377,9 +372,5 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
       // _log.error("Converted time: {}", time);
     }
     return time;
-  }
-
-  private String getNamespace() {
-    return System.getProperty("cloudwatch.namespace");
   }
 }

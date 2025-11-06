@@ -79,11 +79,4 @@ public class UpdateTripHeadsignExcludeNonreference implements GtfsTransformStrat
 
   @CsvField(ignore = true)
   private String _referenceAgencyId = null;
-
-  private String getReferenceAgencyId(GtfsMutableRelationalDao dao) {
-    if (_referenceAgencyId == null) {
-      _referenceAgencyId = dao.getAllAgencies().iterator().next().getId();
-    }
-    return _referenceAgencyId;
-  }
 }

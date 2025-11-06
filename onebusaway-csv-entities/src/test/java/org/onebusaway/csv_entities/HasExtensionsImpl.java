@@ -20,7 +20,7 @@ import org.onebusaway.csv_entities.schema.annotations.CsvField;
 public class HasExtensionsImpl implements HasExtensions {
 
   @CsvField(ignore = true)
-  private Map<Class<?>, Object> extensions = new HashMap<Class<?>, Object>();
+  private Map<Class<?>, Object> extensions = new HashMap<>();
 
   @Override
   public void putExtension(Class<?> type, Object extension) {

@@ -15,6 +15,8 @@ package org.onebusaway.gtfs_transformer.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
@@ -28,10 +30,6 @@ public class UpdateStopIdFromReferenceStrategy implements GtfsTransformStrategy 
 
   private final Logger _log = LoggerFactory.getLogger(UpdateStopIdFromReferenceStrategy.class);
 
-  private static final int LOCATION_NAME_INDEX = 0;
-  private static final int DIRECTION = 3;
-  private static final int ATIS_ID_INDEX = 6;
-
   @Override
   public String getName() {
     return this.getClass().getSimpleName();
@@ -43,11 +41,11 @@ public class UpdateStopIdFromReferenceStrategy implements GtfsTransformStrategy 
         (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
 
     // list of ids added to prevent duplicates
-    ArrayList<AgencyAndId> stopsAdded = new ArrayList();
+    List<AgencyAndId> stopsAdded = new ArrayList();
     // list of stops to add
-    ArrayList<Stop> stopsToAdd = new ArrayList<>();
+    List<Stop> stopsToAdd = new ArrayList<>();
 
-    HashMap<String, Stop> referenceStops = new HashMap<>();
+    Map<String, Stop> referenceStops = new HashMap<>();
     for (Stop stop : reference.getAllStops()) {
       referenceStops.put(stop.getId().getId(), stop);
     }

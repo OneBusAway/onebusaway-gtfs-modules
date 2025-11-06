@@ -60,9 +60,9 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
 
   private final Logger _log = LoggerFactory.getLogger(AnnotationDrivenEntitySchemaFactory.class);
 
-  private List<String> _packagesToScan = new ArrayList<String>();
+  private List<String> _packagesToScan = new ArrayList<>();
 
-  private List<Class<?>> _classesToScan = new ArrayList<Class<?>>();
+  private List<Class<?>> _classesToScan = new ArrayList<>();
 
   public void addPackageToScan(String packageToScan) {
     _packagesToScan.add(packageToScan);

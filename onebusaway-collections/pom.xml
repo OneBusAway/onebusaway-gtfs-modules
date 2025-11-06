@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.onebusaway</groupId>
     <artifactId>onebusaway-gtfs-modules</artifactId>
-    <version>10.0.2-SNAPSHOT</version>
+    <version>10.3.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -18,7 +18,7 @@
     <dependency>
       <groupId>io.github.classgraph</groupId>
       <artifactId>classgraph</artifactId>
-      <version>4.8.181</version>
+      <version>4.8.184</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>

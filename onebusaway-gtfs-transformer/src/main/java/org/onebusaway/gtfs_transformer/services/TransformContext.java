@@ -26,7 +26,7 @@ public class TransformContext {
 
   private GtfsReader _referenceReader;
 
-  private Map<String, Object> _parameters = new HashMap<String, Object>();
+  private Map<String, Object> _parameters = new HashMap<>();
 
   public void setDefaultAgencyId(String agencyId) {
     _defaultAgencyId = agencyId;

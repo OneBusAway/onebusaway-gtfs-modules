@@ -34,20 +34,19 @@ public class GtfsReader extends CsvEntityReader {
 
   public static final String KEY_CONTEXT = GtfsReader.class.getName() + ".context";
 
-  private List<Class<?>> _entityClasses = new ArrayList<Class<?>>();
+  private List<Class<?>> _entityClasses = new ArrayList<>();
 
   private GtfsReaderContextImpl _context = new GtfsReaderContextImpl();
 
   private GenericMutableDao _entityStore = new GtfsDaoImpl();
 
-  private List<Agency> _agencies = new ArrayList<Agency>();
+  private List<Agency> _agencies = new ArrayList<>();
 
-  private Map<Class<?>, Map<String, String>> _agencyIdsByEntityClassAndId =
-      new HashMap<Class<?>, Map<String, String>>();
+  private Map<Class<?>, Map<String, String>> _agencyIdsByEntityClassAndId = new HashMap<>();
 
   private String _defaultAgencyId;
 
-  private final Map<String, String> _agencyIdMapping = new HashMap<String, String>();
+  private final Map<String, String> _agencyIdMapping = new HashMap<>();
 
   private boolean _overwriteDuplicates = false;
 
@@ -123,7 +122,7 @@ public class GtfsReader extends CsvEntityReader {
   }
 
   public void setAgencies(List<Agency> agencies) {
-    _agencies = new ArrayList<Agency>(agencies);
+    _agencies = new ArrayList<>(agencies);
   }
 
   public void setDefaultAgencyId(String feedId) {
@@ -276,6 +275,10 @@ public class GtfsReader extends CsvEntityReader {
         var locationGroup =
             _entityStore.getEntityForId(
                 LocationGroup.class, locationGroupElement.getLocationGroupId());
+        Objects.requireNonNull(
+            locationGroup,
+            "Cannot find location group for id: %s"
+                .formatted(locationGroupElement.getLocationGroupId()));
         locationGroup.addLocation(locationGroupElement.getStop());
       } else if (entity instanceof final StopAreaElement stopAreaElement) {
         var area = _entityStore.getEntityForId(Area.class, stopAreaElement.getArea().getId());

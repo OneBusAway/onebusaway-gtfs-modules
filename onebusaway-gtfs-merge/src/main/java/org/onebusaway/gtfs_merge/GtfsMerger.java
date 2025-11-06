@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.serialization.GtfsWriter;
@@ -35,11 +36,13 @@ import org.slf4j.LoggerFactory;
 
 public class GtfsMerger {
 
-  private static Logger _log = LoggerFactory.getLogger(GtfsMerger.class);
+  private static final Logger LOG = LoggerFactory.getLogger(GtfsMerger.class);
 
   private static final String _alphaPrefix = "abcdefghijklmnopqrstuvwxyz";
 
   private static final NumberFormat _numberPrefixFormat = new DecimalFormat("00");
+
+  private final boolean debug;
 
   private EntityMergeStrategy _agencyStrategy = new AgencyMergeStrategy();
 
@@ -64,6 +67,10 @@ public class GtfsMerger {
   private EntityMergeStrategy _fareRuleStrategy = new FareRuleMergeStrategy();
 
   private EntityMergeStrategy _feedInfoStrategy = new FeedInfoMergeStrategy();
+
+  public GtfsMerger(boolean debug) {
+    this.debug = debug;
+  }
 
   public void setAgencyStrategy(EntityMergeStrategy agencyStrategy) {
     _agencyStrategy = agencyStrategy;
@@ -114,10 +121,10 @@ public class GtfsMerger {
   }
 
   public EntityMergeStrategy getEntityMergeStrategyForEntityType(Class<?> entityType) {
-    List<EntityMergeStrategy> strategies = new ArrayList<EntityMergeStrategy>();
+    List<EntityMergeStrategy> strategies = new ArrayList<>();
     buildStrategies(strategies);
     for (EntityMergeStrategy strategy : strategies) {
-      Set<Class<?>> entityTypes = new HashSet<Class<?>>();
+      Set<Class<?>> entityTypes = new HashSet<>();
       strategy.getEntityTypes(entityTypes);
       if (entityTypes.contains(entityType)) {
         return strategy;
@@ -132,7 +139,7 @@ public class GtfsMerger {
     mergedDao.setPackShapePoints(true);
     mergedDao.setPackStopTimes(true);
 
-    List<EntityMergeStrategy> strategies = new ArrayList<EntityMergeStrategy>();
+    List<EntityMergeStrategy> strategies = new ArrayList<>();
     buildStrategies(strategies);
 
     /**
@@ -143,10 +150,9 @@ public class GtfsMerger {
      * different agency prefixes to sneak in. Since we ultimately serialize the data to a GTFS feed
      * with no agency prefixes, we need to track the raw id.
      */
-    Map<EntityMergeStrategy, Map<String, Object>> rawEntityIdMapsByMergeStrategy =
-        new HashMap<EntityMergeStrategy, Map<String, Object>>();
+    Map<EntityMergeStrategy, Map<String, Object>> rawEntityIdMapsByMergeStrategy = new HashMap<>();
     for (EntityMergeStrategy strategy : strategies) {
-      rawEntityIdMapsByMergeStrategy.put(strategy, new HashMap<String, Object>());
+      rawEntityIdMapsByMergeStrategy.put(strategy, new HashMap<>());
     }
 
     /**
@@ -168,7 +174,7 @@ public class GtfsMerger {
           newestFile = fileTime.toMillis();
         }
       }
-      _log.info("reading input: " + inputPath + " with lastModifiedTime " + fileTime);
+      LOG.info("reading input: " + inputPath + " with lastModifiedTime " + fileTime);
       GtfsReader reader = new GtfsReader();
       reader.setInputLocation(inputPath);
 
@@ -179,7 +185,9 @@ public class GtfsMerger {
       reader.run();
 
       for (EntityMergeStrategy strategy : strategies) {
-        _log.info("strategy=" + strategy.getClass());
+        if (debug) {
+          LOG.info(strategy.toString());
+        }
         GtfsMergeContext context =
             new GtfsMergeContext(
                 dao, mergedDao, prefix, rawEntityIdMapsByMergeStrategy.get(strategy));
@@ -187,22 +195,22 @@ public class GtfsMerger {
       }
     }
 
-    _log.info("writing merged output: " + outputPath);
+    LOG.info("writing merged output: " + outputPath);
 
     GtfsWriter writer = new GtfsWriter();
     writer.setOutputLocation(outputPath);
     writer.run(mergedDao);
     if (outputPath.isFile()) {
-      _log.info("setting merged file lastModified to " + new Date(newestFile));
+      LOG.info("setting merged file lastModified to " + new Date(newestFile));
       Files.setAttribute(outputPath.toPath(), "lastModifiedTime", FileTime.fromMillis(newestFile));
     } else {
-      _log.info("outputPath not a file, skipping setting lastModified");
+      LOG.info("outputPath not a file, skipping setting lastModified");
     }
   }
 
   private String getIndexAsPrefix(int index, int total) {
     if (total <= _alphaPrefix.length()) {
-      return Character.toString(_alphaPrefix.charAt(index)) + "-";
+      return _alphaPrefix.charAt(index) + "-";
     }
     return _numberPrefixFormat.format(index) + "-";
   }
@@ -220,5 +228,14 @@ public class GtfsMerger {
     strategies.add(_fareAttributeStrategy);
     strategies.add(_fareRuleStrategy);
     strategies.add(_feedInfoStrategy);
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this)
+        .append("agency", _agencyStrategy)
+        .append("stop", _stopStrategy)
+        .append("trip", _tripStrategy)
+        .toString();
   }
 }

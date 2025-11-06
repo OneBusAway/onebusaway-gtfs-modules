@@ -165,9 +165,9 @@ public class StopMatrixFareModificationStrategy implements GtfsTransformStrategy
 
     private List<String> stopIds;
 
-    private Map<Float, FareAttribute> newFareAttributes = new HashMap<Float, FareAttribute>();
+    private Map<Float, FareAttribute> newFareAttributes = new HashMap<>();
 
-    private Map<Pair<String>, FareRule> newFareRules = new HashMap<Pair<String>, FareRule>();
+    private Map<Pair<String>, FareRule> newFareRules = new HashMap<>();
 
     int fareId = initialFareId;
 

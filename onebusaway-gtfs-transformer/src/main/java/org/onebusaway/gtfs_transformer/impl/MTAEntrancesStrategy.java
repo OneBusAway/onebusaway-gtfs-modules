@@ -75,7 +75,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
       Arrays.asList("Ramp", "Walkway", "Road_Walkway", "Elevator", "Door", "Entrance", "Tunnel");
 
   @CsvField(ignore = true)
-  private Set<AgencyAndId> stopIdsWithPathways = new HashSet<AgencyAndId>();
+  private Set<AgencyAndId> stopIdsWithPathways = new HashSet<>();
 
   @CsvField(ignore = true)
   private Map<String, Stop> complexStopIds = new HashMap<>();
@@ -136,8 +136,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
     Collection<FeedInfo> feedInfos = dao.getAllFeedInfos();
-    String feed = null;
-    if (feedInfos.size() > 0) feed = feedInfos.iterator().next().getPublisherName();
+    if (feedInfos.size() > 0) {}
     if (elevatorsCsv != null) {
       File elevatorsFile = new File(elevatorsCsv);
     }
@@ -601,7 +600,7 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
   private Map<String, List<Stop>> getComplexList(GtfsDao dao) {
     Map<String, Stop> stops = getStopMap(dao);
-    Map<String, List<Stop>> complexes = new HashMap<String, List<Stop>>();
+    Map<String, List<Stop>> complexes = new HashMap<>();
     try (BufferedReader br =
         new BufferedReader(new FileReader(new File(this.accessibleComplexFile)))) {
       String line;
@@ -719,10 +718,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
     pathwayUtil.createPathway(from, to, MODE_ELEVATOR, elevatorTraversalTime, idStr, code);
   }
 
-  private String getTopic() {
-    return System.getProperty("sns.topic");
-  }
-
   private List<MTAElevator> getElevators() {
     return readCsv(MTAElevator.class, elevatorsCsv);
   }
@@ -777,10 +772,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
   public void setContextualAccessibility(boolean contextualAccessibility) {
     this.contextualAccessibility = contextualAccessibility;
-  }
-
-  private String getNamespace() {
-    return System.getProperty("cloudwatch.namespace");
   }
 
   public void setMarkStopsAccessible(boolean flag) {

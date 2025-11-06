@@ -18,12 +18,14 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
-import java.util.Set;
 import org.onebusaway.csv_entities.CSVLibrary;
 import org.onebusaway.csv_entities.CSVListener;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.impl.calendar.CalendarServiceDataFactoryImpl;
-import org.onebusaway.gtfs.model.*;
+import org.onebusaway.gtfs.model.AgencyAndId;
+import org.onebusaway.gtfs.model.Route;
+import org.onebusaway.gtfs.model.ServiceCalendarDate;
+import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.model.calendar.ServiceDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.calendar.CalendarService;
@@ -41,7 +43,6 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
   private final Logger _log = LoggerFactory.getLogger(VerifyFutureRouteService.class);
   private final int ACTIVE_ROUTES = 0;
-  private final int ALARMING_ROUTES = 1;
 
   @CsvField(optional = true)
   private String problemRoutesUrl;
@@ -56,7 +57,7 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-    Collection<String> problemRoutes = new HashSet<String>();
+    Collection<String> problemRoutes = new HashSet<>();
     ProblemRouteListener listener = new ProblemRouteListener();
     try {
       if (problemRoutesUrl != null) {
@@ -211,10 +212,6 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
         calendar.get(Calendar.DAY_OF_MONTH));
   }
 
-  private String getTopic() {
-    return System.getProperty("sns.topic");
-  }
-
   public void setProblemRoutesUrl(String url) {
     this.problemRoutesUrl = url;
   }
@@ -225,9 +222,7 @@ public class VerifyFutureRouteService implements GtfsTransformStrategy {
 
   private class ProblemRouteListener implements CSVListener {
 
-    private Collection<String> routeIds = new HashSet<String>();
-
-    private GtfsMutableRelationalDao dao;
+    private Collection<String> routeIds = new HashSet<>();
 
     @Override
     public void handleLine(List<String> list) throws Exception {

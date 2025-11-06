@@ -25,7 +25,7 @@ public class EntityMergeTestSupport {
 
   @BeforeEach
   public void setup() {
-    entityByRawId = new HashMap<String, Object>();
+    entityByRawId = new HashMap<>();
   }
 
   protected GtfsMergeContext context(

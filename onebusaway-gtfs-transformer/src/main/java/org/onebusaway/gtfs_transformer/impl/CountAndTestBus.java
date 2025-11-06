@@ -42,17 +42,17 @@ public class CountAndTestBus implements GtfsTransformStrategy {
     String agency = dao.getAllTrips().iterator().next().getId().getAgencyId();
     String name = dao.getAllAgencies().iterator().next().getName();
 
-    HashMap<String, Route> referenceRoutes = new HashMap<>();
+    Map<String, Route> referenceRoutes = new HashMap<>();
     for (Route route : reference.getAllRoutes()) {
       referenceRoutes.put(route.getId().getId(), route);
     }
 
-    HashMap<String, Trip> referenceTrips = new HashMap<>();
+    Map<String, Trip> referenceTrips = new HashMap<>();
     for (Trip trip : reference.getAllTrips()) {
       referenceTrips.put(trip.getId().getId(), trip);
     }
 
-    HashMap<String, Stop> referenceStops = new HashMap<>();
+    Map<String, Stop> referenceStops = new HashMap<>();
     for (Stop stop : reference.getAllStops()) {
       referenceStops.put(stop.getId().getId(), stop);
     }
@@ -85,8 +85,8 @@ public class CountAndTestBus implements GtfsTransformStrategy {
 
     AgencyAndId serviceAgencyAndId = new AgencyAndId();
     matches = 0;
-    List<String> matchingIds = new ArrayList<String>();
-    List<String> matchingIdsThisWeek = new ArrayList<String>();
+    List<String> matchingIds = new ArrayList<>();
+    List<String> matchingIdsThisWeek = new ArrayList<>();
     // _log.info("ATIS trips that don't have a match in reference: ");
     for (Trip trip : dao.getAllTrips()) {
       if (trip.getId().getId() != null) {
@@ -147,20 +147,16 @@ public class CountAndTestBus implements GtfsTransformStrategy {
     // MOTP-1060 Number of trips in reference GTFS that don't appear in mta_trip_id in ATIS
     // for each reference trip
     int noMatch = 0;
-    int noMatchNoSdon = 0;
-    int noMatchNoSdonNoH9 = 0;
     int refTripsWithSdon = 0;
     int refTripsWoutSdonWithh9 = 0;
     int refTripsThisWeekWithSdon = 0;
     int refTripsThisWeekWoutSdonWithA9 = 0;
     int refTripsThisWeekWoutSdonWithE9 = 0;
-    int refTripsThisWeekWoutSdonWithD9 = 0;
     int refTripsThisWeekWoutSdonWithB9 = 0;
     int refTripsThisWeekWoutSdonWithH9 = 0;
-    int checkMatchesThisWeek = 0;
     int doesntMatchThisWeek = 0;
     int leftOverNoMatchThisWeek = 0;
-    List<String> refTripsMissingATIS = new ArrayList<String>();
+    List<String> refTripsMissingATIS = new ArrayList<>();
     for (Trip refTrip : reference.getAllTrips()) {
       // count number of reference trips this week
       Set<ServiceDate> activeDates =
@@ -177,7 +173,6 @@ public class CountAndTestBus implements GtfsTransformStrategy {
           } else if (refTrip.getId().getId().contains("B9")) {
             refTripsThisWeekWoutSdonWithB9++;
           } else if (refTrip.getId().getId().contains("D9")) {
-            refTripsThisWeekWoutSdonWithD9++;
           } else if (refTrip.getId().getId().contains("E9")) {
             refTripsThisWeekWoutSdonWithE9++;
           } else if (refTrip.getId().getId().contains("H9")) {
@@ -197,10 +192,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
         refTripsMissingATIS.add(refTrip.getId().getId());
         noMatch++;
         if (!refTrip.getId().getId().contains("SDon")) {
-          noMatchNoSdon++;
           if (!refTrip.getId().getId().contains("H9")) {
-            // _log.info(refTrip.getId().getId());
-            noMatchNoSdonNoH9++;
           }
           // No Sdon, has H9
           else {
@@ -275,7 +267,7 @@ public class CountAndTestBus implements GtfsTransformStrategy {
       _log.error("There are trips with no headsign");
     }
 
-    HashSet<String> ids = new HashSet<String>();
+    Set<String> ids = new HashSet<>();
     for (Stop stop : dao.getAllStops()) {
       // check for duplicate stop ids.
       if (!ids.contains(stop.getId().getId())) {

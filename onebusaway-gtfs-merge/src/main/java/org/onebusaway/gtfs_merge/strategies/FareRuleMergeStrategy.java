@@ -13,6 +13,7 @@
  */
 package org.onebusaway.gtfs_merge.strategies;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.onebusaway.gtfs.model.FareRule;
 
 /**
@@ -47,7 +48,14 @@ public class FareRuleMergeStrategy
     return true;
   }
 
-  private static final boolean equals(Object a, Object b) {
+  private static boolean equals(Object a, Object b) {
     return a == null ? b == null : a.equals(b);
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this)
+        .append("detectionStrategy", _duplicateDetectionStrategy)
+        .toString();
   }
 }

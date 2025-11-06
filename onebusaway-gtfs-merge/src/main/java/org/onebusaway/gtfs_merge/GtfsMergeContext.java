@@ -36,7 +36,7 @@ public class GtfsMergeContext {
 
   private final Map<String, Object> entityByRawId;
 
-  private final Set<String> entitiesJustAdded = new HashSet<String>();
+  private final Set<String> entitiesJustAdded = new HashSet<>();
 
   private int _sequenceCounter = 1;
 

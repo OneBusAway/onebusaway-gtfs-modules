@@ -43,8 +43,7 @@ public class RemoveMergedTripsStrategy implements GtfsTransformStrategy {
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
 
-    Map<String, List<Trip>> tripsByCommonId =
-        new FactoryMap<String, List<Trip>>(new ArrayList<Trip>());
+    Map<String, List<Trip>> tripsByCommonId = new FactoryMap<>(new ArrayList<Trip>());
     for (Trip trip : dao.getAllTrips()) {
       String id = trip.getId().getId();
       int index = id.indexOf('_');
@@ -97,7 +96,7 @@ public class RemoveMergedTripsStrategy implements GtfsTransformStrategy {
     _log.info("removed: " + removed + "/" + total);
     UpdateLibrary.clearDaoCache(dao);
 
-    Map<String, Set<String>> m = new FactoryMap<String, Set<String>>(new HashSet<String>());
+    Map<String, Set<String>> m = new FactoryMap<>(new HashSet<String>());
     for (Trip trip : dao.getAllTrips()) {
       String blockId = trip.getBlockId();
       int index = blockId.indexOf('_');

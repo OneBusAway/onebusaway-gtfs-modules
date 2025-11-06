@@ -56,7 +56,7 @@ public class RetainUpFromPolygon implements GtfsTransformStrategy {
 
     // remove non retained objects
     for (Class<?> entityClass : GtfsEntitySchemaFactory.getEntityClasses()) {
-      List<Object> objectsToRemove = new ArrayList<Object>();
+      List<Object> objectsToRemove = new ArrayList<>();
       for (Object entity : gtfsMutableRelationalDao.getAllEntitiesForType(entityClass)) {
         if (!graph.isRetained(entity)) {
           objectsToRemove.add(entity);

@@ -47,7 +47,7 @@ public class CalendarServiceImplTest {
     ServiceDate from = new ServiceDate(2008, 10, 27);
     ServiceDate to = new ServiceDate(2009, 9, 27);
 
-    Set<ServiceDate> toExclude = new HashSet<ServiceDate>();
+    Set<ServiceDate> toExclude = new HashSet<>();
     toExclude.add(new ServiceDate(2009, 1, 1));
 
     // 23,1,1,1,1,1,0,0,20081027,20090927

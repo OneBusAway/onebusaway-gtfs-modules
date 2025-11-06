@@ -48,7 +48,7 @@ public class RemoveOldCalendarStatements implements GtfsTransformStrategy {
   public void run(
       TransformContext transformContext, GtfsMutableRelationalDao gtfsMutableRelationalDao) {
     RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
-    Set<ServiceCalendar> serviceCalendarsToRemove = new HashSet<ServiceCalendar>();
+    Set<ServiceCalendar> serviceCalendarsToRemove = new HashSet<>();
     java.util.Date today = new java.util.Date();
 
     if (!removeToday) {
@@ -64,7 +64,7 @@ public class RemoveOldCalendarStatements implements GtfsTransformStrategy {
       removeEntityLibrary.removeCalendar(gtfsMutableRelationalDao, serviceCalendar.getServiceId());
     }
 
-    Set<ServiceCalendarDate> serviceCalendarDatesToRemove = new HashSet<ServiceCalendarDate>();
+    Set<ServiceCalendarDate> serviceCalendarDatesToRemove = new HashSet<>();
     for (ServiceCalendarDate calendarDate : gtfsMutableRelationalDao.getAllCalendarDates()) {
       if (calendarDate.getDate().getAsDate().before(today)) {
         serviceCalendarDatesToRemove.add(calendarDate);

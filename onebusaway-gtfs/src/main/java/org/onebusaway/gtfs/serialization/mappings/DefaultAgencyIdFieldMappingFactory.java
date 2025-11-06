@@ -14,10 +14,12 @@
 package org.onebusaway.gtfs.serialization.mappings;
 
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.onebusaway.csv_entities.CsvEntityContext;
+import org.onebusaway.csv_entities.exceptions.MissingRequiredFieldException;
+import org.onebusaway.csv_entities.schema.AbstractFieldMapping;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
-import org.onebusaway.csv_entities.schema.DefaultFieldMapping;
 import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.FieldMapping;
 import org.onebusaway.csv_entities.schema.FieldMappingFactory;
@@ -74,18 +76,24 @@ public class DefaultAgencyIdFieldMappingFactory implements FieldMappingFactory {
       Class<?> objFieldType,
       boolean required) {
 
-    return new FieldMappingImpl(entityType, csvFieldName, objFieldName, String.class, required);
+    if (_agencyIdPath == null) {
+      if (required) {
+        return new RequiredFieldMappingImpl(entityType, csvFieldName, objFieldName);
+      }
+      return new OptionalFieldMappingImpl(entityType, csvFieldName, objFieldName);
+    }
+    if (required) {
+      return new RequiredPathFieldMappingImpl(
+          entityType, csvFieldName, objFieldName, _agencyIdPath);
+    }
+    return new OptionalPathFieldMappingImpl(entityType, csvFieldName, objFieldName, _agencyIdPath);
   }
 
-  private class FieldMappingImpl extends DefaultFieldMapping {
+  private abstract static class AbstractAgencyFieldMappingImpl extends AbstractFieldMapping {
 
-    public FieldMappingImpl(
-        Class<?> entityType,
-        String csvFieldName,
-        String objFieldName,
-        Class<?> objFieldType,
-        boolean required) {
-      super(entityType, csvFieldName, objFieldName, objFieldType, required);
+    public AbstractAgencyFieldMappingImpl(
+        Class<?> entityType, String csvFieldName, String objFieldName, boolean required) {
+      super(entityType, csvFieldName, objFieldName, required);
     }
 
     @Override
@@ -97,33 +105,116 @@ public class DefaultAgencyIdFieldMappingFactory implements FieldMappingFactory {
       AgencyAndId id = (AgencyAndId) object.getPropertyValue(_objFieldName);
       csvValues.put(_csvFieldName, id.getId());
     }
+  }
+
+  private static class OptionalPathFieldMappingImpl extends AbstractAgencyFieldMappingImpl {
+
+    private String[] _agencyIdPathProperties;
+
+    public OptionalPathFieldMappingImpl(
+        Class<?> entityType, String csvFieldName, String objFieldName, String path) {
+      super(entityType, csvFieldName, objFieldName, false);
+
+      _agencyIdPathProperties = path.split("\\.");
+    }
 
     @Override
     public void translateFromCSVToObject(
         CsvEntityContext context, Map<String, Object> csvValues, BeanWrapper object) {
 
-      if (isMissingAndOptional(csvValues)) return;
-
-      String agencyId = resolveAgencyId(context, object);
-
       String id = (String) csvValues.get(_csvFieldName);
-      AgencyAndId agencyAndId = new AgencyAndId(agencyId, id);
-      object.setPropertyValue(_objFieldName, agencyAndId);
-    }
-
-    private String resolveAgencyId(CsvEntityContext context, BeanWrapper object) {
-
-      if (_agencyIdPath == null) {
-        GtfsReaderContext ctx = (GtfsReaderContext) context.get(GtfsReader.KEY_CONTEXT);
-        return ctx.getDefaultAgencyId();
+      if (StringUtils.isBlank(id)) {
+        // optional and not present
+        return;
       }
 
-      for (String property : _agencyIdPath.split("\\.")) {
+      object.setPropertyValue(_objFieldName, new AgencyAndId(resolveAgencyId(object), id));
+    }
+
+    private String resolveAgencyId(BeanWrapper object) {
+      for (String property : _agencyIdPathProperties) {
         Object value = object.getPropertyValue(property);
         object = BeanWrapperFactory.wrap(value);
       }
 
       return object.getWrappedInstance(Object.class).toString();
+    }
+  }
+
+  private static class RequiredPathFieldMappingImpl extends AbstractAgencyFieldMappingImpl {
+
+    private String[] _agencyIdPathProperties;
+
+    public RequiredPathFieldMappingImpl(
+        Class<?> entityType, String csvFieldName, String objFieldName, String path) {
+      super(entityType, csvFieldName, objFieldName, true);
+
+      _agencyIdPathProperties = path.split("\\.");
+    }
+
+    @Override
+    public void translateFromCSVToObject(
+        CsvEntityContext context, Map<String, Object> csvValues, BeanWrapper object) {
+
+      String id = (String) csvValues.get(_csvFieldName);
+      if (StringUtils.isBlank(id)) {
+        // required and not present
+        throw new MissingRequiredFieldException(_entityType, _csvFieldName);
+      }
+
+      object.setPropertyValue(_objFieldName, new AgencyAndId(resolveAgencyId(object), id));
+    }
+
+    private String resolveAgencyId(BeanWrapper object) {
+      for (String property : _agencyIdPathProperties) {
+        Object value = object.getPropertyValue(property);
+        object = BeanWrapperFactory.wrap(value);
+      }
+
+      return object.getWrappedInstance(Object.class).toString();
+    }
+  }
+
+  private static class RequiredFieldMappingImpl extends AbstractAgencyFieldMappingImpl {
+
+    // simple, non-synchronized cache
+    public RequiredFieldMappingImpl(Class<?> entityType, String csvFieldName, String objFieldName) {
+      super(entityType, csvFieldName, objFieldName, true);
+    }
+
+    @Override
+    public void translateFromCSVToObject(
+        CsvEntityContext context, Map<String, Object> csvValues, BeanWrapper object) {
+
+      String id = (String) csvValues.get(_csvFieldName);
+      if (StringUtils.isBlank(id)) {
+        // required and not present
+        throw new MissingRequiredFieldException(_entityType, _csvFieldName);
+      }
+
+      GtfsReaderContext ctx = (GtfsReaderContext) context.get(GtfsReader.KEY_CONTEXT);
+      object.setPropertyValue(_objFieldName, new AgencyAndId(ctx.getDefaultAgencyId(), id));
+    }
+  }
+
+  private static class OptionalFieldMappingImpl extends AbstractAgencyFieldMappingImpl {
+
+    public OptionalFieldMappingImpl(Class<?> entityType, String csvFieldName, String objFieldName) {
+      super(entityType, csvFieldName, objFieldName, false);
+    }
+
+    @Override
+    public void translateFromCSVToObject(
+        CsvEntityContext context, Map<String, Object> csvValues, BeanWrapper object) {
+
+      String id = (String) csvValues.get(_csvFieldName);
+      if (StringUtils.isBlank(id)) {
+        // optional and not present
+        return;
+      }
+
+      GtfsReaderContext ctx = (GtfsReaderContext) context.get(GtfsReader.KEY_CONTEXT);
+      object.setPropertyValue(_objFieldName, new AgencyAndId(ctx.getDefaultAgencyId(), id));
     }
   }
 }

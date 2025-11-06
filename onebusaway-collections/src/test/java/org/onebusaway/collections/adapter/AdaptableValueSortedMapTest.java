@@ -23,12 +23,12 @@ import org.junit.jupiter.api.Test;
 public class AdaptableValueSortedMapTest {
 
   private SortedMap<Integer, String> _m2;
-  private TreeMap<Integer, TestBean> _m;
+  private SortedMap<Integer, TestBean> _m;
 
   @BeforeEach
   public void before() {
 
-    _m = new TreeMap<Integer, TestBean>();
+    _m = new TreeMap<>();
     _m.put(1, new TestBean("a"));
     _m.put(2, new TestBean("b"));
     _m.put(3, new TestBean("c"));

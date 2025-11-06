@@ -21,8 +21,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
 import java.util.zip.ZipFile;
 import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.csv_entities.exceptions.MissingRequiredEntityException;
@@ -44,13 +47,15 @@ public class CsvEntityReader {
 
   private TokenizerStrategy _tokenizerStrategy = new CsvTokenizerStrategy();
 
-  private List<EntityHandler> _handlers = new ArrayList<EntityHandler>();
+  private List<EntityHandler> _handlers = new ArrayList<>();
 
   private boolean _trimValues = false;
 
   private boolean _internStrings = false;
 
-  private Map<String, String> _stringTable = new HashMap<String, String>();
+  private Map<String, String> _stringTable = new HashMap<>();
+
+  private Predicate<Class> _internStringsDisabled = (p) -> false;
 
   /**
    * @return the {@link EntitySchemaFactory} that will be used for introspection of bean classes
@@ -96,6 +101,15 @@ public class CsvEntityReader {
     _internStrings = internStrings;
   }
 
+  public void disableInternStringsForEntities(Class<?>... entityClasses) {
+    Set<Class> set = new HashSet<>();
+    for (Class<?> entityClass : entityClasses) {
+      set.add(entityClass);
+    }
+
+    this._internStringsDisabled = set::contains;
+  }
+
   public void readEntities(Class<?> entityClass) throws IOException {
     readEntities(entityClass, _source);
   }
@@ -132,13 +146,15 @@ public class CsvEntityReader {
     String line = null;
     int lineNumber = 1;
 
+    boolean internStrings = _internStrings && !_internStringsDisabled.test(entityClass);
+
     try {
       while ((line = lineReader.readLine()) != null) {
         if (line.isEmpty()) continue;
         // TODO: This is a hack of sorts to deal with a malformed data file...
         if (line.length() == 1 && line.charAt(0) == 26) continue;
         List<String> values = _tokenizerStrategy.parse(line);
-        if (_internStrings) internStrings(values);
+        if (internStrings) internStrings(values);
         entityLoader.handleLine(values);
         lineNumber++;
       }

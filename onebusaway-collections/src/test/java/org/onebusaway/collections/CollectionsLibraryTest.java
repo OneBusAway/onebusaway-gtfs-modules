@@ -24,7 +24,7 @@ public class CollectionsLibraryTest {
   @Test
   public void testSet() {
 
-    Set<String> expected = new HashSet<String>();
+    Set<String> expected = new HashSet<>();
     expected.add("a");
     expected.add("b");
     expected.add("c");

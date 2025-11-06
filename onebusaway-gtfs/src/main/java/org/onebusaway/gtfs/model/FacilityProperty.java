@@ -23,8 +23,6 @@ public class FacilityProperty extends IdentityBean<Integer> {
 
   @Serial private static final long serialVersionUID = 2L;
 
-  private static final int MISSING_VALUE = -999;
-
   @CsvField(ignore = true)
   private int id;
 

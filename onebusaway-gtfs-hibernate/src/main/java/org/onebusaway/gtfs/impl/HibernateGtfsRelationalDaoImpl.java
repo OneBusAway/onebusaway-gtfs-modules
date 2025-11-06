@@ -27,12 +27,8 @@ import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs.services.HibernateOperation;
 import org.onebusaway.gtfs.services.HibernateOperations;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao {
-
-  private static final Logger log = LoggerFactory.getLogger(HibernateGtfsRelationalDaoImpl.class);
   protected HibernateOperations _ops;
 
   public HibernateGtfsRelationalDaoImpl() {}
@@ -423,10 +419,10 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   public List<AgencyAndId> getAllServiceIds() {
     List<AgencyAndId> calendarIds = _ops.findByNamedQuery("calendarServiceIds");
     List<AgencyAndId> calendarDateIds = _ops.findByNamedQuery("calendarDateServiceIds");
-    Set<AgencyAndId> allIds = new HashSet<AgencyAndId>();
+    Set<AgencyAndId> allIds = new HashSet<>();
     allIds.addAll(calendarIds);
     allIds.addAll(calendarDateIds);
-    return new ArrayList<AgencyAndId>(allIds);
+    return new ArrayList<>(allIds);
   }
 
   @Override

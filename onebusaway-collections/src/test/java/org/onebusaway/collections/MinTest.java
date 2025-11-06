@@ -24,7 +24,7 @@ public class MinTest {
   @Test
   public void test() {
 
-    Min<String> m = new Min<String>();
+    Min<String> m = new Min<>();
 
     assertTrue(m.isEmpty());
 

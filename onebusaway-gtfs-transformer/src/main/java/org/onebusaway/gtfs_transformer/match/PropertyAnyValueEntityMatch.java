@@ -32,7 +32,7 @@ public class PropertyAnyValueEntityMatch implements EntityMatch {
   }
 
   public boolean isApplicableToObject(Object object) {
-    List<PropertyInvocationResult> results = new ArrayList<PropertyInvocationResult>();
+    List<PropertyInvocationResult> results = new ArrayList<>();
     _expression.invokeReturningFullResult(object, results);
     for (PropertyInvocationResult result : results) {
       if (_matcher.matches(result.parent.getClass(), result.propertyName, result.value)) {

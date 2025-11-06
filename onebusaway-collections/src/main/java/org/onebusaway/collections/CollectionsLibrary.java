@@ -20,7 +20,7 @@ import java.util.Set;
 public class CollectionsLibrary {
 
   public static <T> Set<T> set(T... values) {
-    Set<T> set = new HashSet<T>();
+    Set<T> set = new HashSet<>();
     for (T value : values) set.add(value);
     return set;
   }

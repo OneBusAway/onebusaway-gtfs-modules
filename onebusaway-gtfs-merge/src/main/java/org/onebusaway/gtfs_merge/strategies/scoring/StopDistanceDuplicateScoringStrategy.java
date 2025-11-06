@@ -19,6 +19,7 @@ import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.toRadians;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
@@ -38,7 +39,7 @@ public class StopDistanceDuplicateScoringStrategy implements DuplicateScoringStr
     }
   }
 
-  private final double distance(double lat1, double lon1, double lat2, double lon2) {
+  private double distance(double lat1, double lon1, double lat2, double lon2) {
 
     // Radius of earth in meters
     double radius = 6371.01 * 1000.0;
@@ -60,7 +61,12 @@ public class StopDistanceDuplicateScoringStrategy implements DuplicateScoringStr
     return radius * atan2(y, x);
   }
 
-  private static final double p2(double a) {
+  private static double p2(double a) {
     return a * a;
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this).toString();
   }
 }

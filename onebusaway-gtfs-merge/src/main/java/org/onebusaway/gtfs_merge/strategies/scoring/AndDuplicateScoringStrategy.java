@@ -15,27 +15,27 @@ package org.onebusaway.gtfs_merge.strategies.scoring;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.onebusaway.csv_entities.schema.BeanWrapper;
 import org.onebusaway.csv_entities.schema.BeanWrapperFactory;
 import org.onebusaway.gtfs_merge.GtfsMergeContext;
 
 public class AndDuplicateScoringStrategy<T> implements DuplicateScoringStrategy<T> {
 
-  private List<DuplicateScoringStrategy<T>> _strategies =
-      new ArrayList<DuplicateScoringStrategy<T>>();
+  private final List<DuplicateScoringStrategy<T>> strategies = new ArrayList<>();
 
   public void addPropertyMatch(String property) {
     addStrategy(new PropertyMatchScoringStrategy<T>(property));
   }
 
   public void addStrategy(DuplicateScoringStrategy<T> strategy) {
-    _strategies.add(strategy);
+    strategies.add(strategy);
   }
 
   @Override
   public double score(GtfsMergeContext context, T source, T target) {
     double score = 1.0;
-    for (DuplicateScoringStrategy<T> strategy : _strategies) {
+    for (DuplicateScoringStrategy<T> strategy : strategies) {
       score *= strategy.score(context, source, target);
       if (score == 0) {
         break;
@@ -46,21 +46,31 @@ public class AndDuplicateScoringStrategy<T> implements DuplicateScoringStrategy<
 
   private static class PropertyMatchScoringStrategy<T> implements DuplicateScoringStrategy<T> {
 
-    private final String _property;
+    private final String property;
 
     public PropertyMatchScoringStrategy(String property) {
-      _property = property;
+      this.property = property;
     }
 
     @Override
     public double score(GtfsMergeContext context, T source, T target) {
       BeanWrapper wrappedA = BeanWrapperFactory.wrap(source);
       BeanWrapper wrappedB = BeanWrapperFactory.wrap(target);
-      Object valueA = wrappedA.getPropertyValue(_property);
-      Object valueB = wrappedB.getPropertyValue(_property);
+      Object valueA = wrappedA.getPropertyValue(property);
+      Object valueB = wrappedB.getPropertyValue(property);
       return (valueA == null && valueB == null) || (valueA != null && valueA.equals(valueB))
           ? 1.0
           : 0.0;
     }
+
+    @Override
+    public String toString() {
+      return new ToStringBuilder(this).append("property", property).toString();
+    }
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this).append("strategies", strategies).toString();
   }
 }

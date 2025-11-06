@@ -31,8 +31,7 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 
 public class RetainEntitiesTransformStrategy implements GtfsTransformStrategy {
 
-  private Map<Class<?>, List<EntityRetention>> _retentionMatchesByType =
-      new HashMap<Class<?>, List<EntityRetention>>();
+  private Map<Class<?>, List<EntityRetention>> _retentionMatchesByType = new HashMap<>();
 
   private boolean _retainBlocks = true;
 
@@ -43,7 +42,7 @@ public class RetainEntitiesTransformStrategy implements GtfsTransformStrategy {
   public void addRetention(TypedEntityMatch match, boolean retainUp) {
     List<EntityRetention> matches = _retentionMatchesByType.get(match.getType());
     if (matches == null) {
-      matches = new ArrayList<EntityRetention>();
+      matches = new ArrayList<>();
       _retentionMatchesByType.put(match.getType(), matches);
     }
     EntityRetention retention = new EntityRetention(match, retainUp);
@@ -77,7 +76,7 @@ public class RetainEntitiesTransformStrategy implements GtfsTransformStrategy {
         }
       } else {
 
-        Collection<Object> entities = new ArrayList<Object>(dao.getAllEntitiesForType(entityType));
+        Collection<Object> entities = new ArrayList<>(dao.getAllEntitiesForType(entityType));
 
         for (Object object : entities) {
           for (EntityRetention retention : retentions) {
@@ -89,7 +88,7 @@ public class RetainEntitiesTransformStrategy implements GtfsTransformStrategy {
     }
 
     for (Class<?> entityClass : GtfsEntitySchemaFactory.getEntityClasses()) {
-      List<Object> objectsToRemove = new ArrayList<Object>();
+      List<Object> objectsToRemove = new ArrayList<>();
       for (Object entity : dao.getAllEntitiesForType(entityClass)) {
         if (!graph.isRetained(entity)) objectsToRemove.add(entity);
       }

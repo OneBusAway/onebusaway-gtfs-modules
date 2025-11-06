@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Stop;
@@ -59,15 +60,14 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
     int matched = 0;
     int unmatched = 0;
     int duplicate = 0;
-    int inCntrlRefNotAtis = 0;
 
-    ArrayList<AgencyAndId> stopsToRemove = new ArrayList();
+    List<AgencyAndId> stopsToRemove = new ArrayList();
 
     // a map of the new id (from reference/control file) to the old id
     // so that stop times can be associated with new id
-    HashMap<AgencyAndId, AgencyAndId> stopsUpdated = new HashMap<>();
+    Map<AgencyAndId, AgencyAndId> stopsUpdated = new HashMap<>();
 
-    HashMap<String, Stop> referenceStops = new HashMap<>();
+    Map<String, Stop> referenceStops = new HashMap<>();
     for (Stop stop : reference.getAllStops()) {
       referenceStops.put(stop.getId().getId(), stop);
     }
@@ -168,20 +168,6 @@ public class UpdateStopIdFromControlStrategy implements GtfsTransformStrategy {
   @CsvField(ignore = true)
   private String _referenceAgencyId = null;
 
-  private String getReferenceAgencyId(GtfsMutableRelationalDao dao) {
-    if (_referenceAgencyId == null) {
-      _referenceAgencyId = dao.getAllAgencies().iterator().next().getId();
-    }
-    return _referenceAgencyId;
-  }
-
   @CsvField(ignore = true)
   private String _daoAgencyId = null;
-
-  private String getDaoAgencyId(GtfsMutableRelationalDao dao) {
-    if (_daoAgencyId == null) {
-      _daoAgencyId = dao.getAllAgencies().iterator().next().getId();
-    }
-    return _daoAgencyId;
-  }
 }

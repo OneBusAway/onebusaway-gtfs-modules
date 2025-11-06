@@ -103,7 +103,7 @@ public class DefaultPropertyMethodResolver implements PropertyMethodResolver {
     ScanResult scanResult =
         new ClassGraph().acceptPackages("org.onebusaway").enableClassInfo().scan();
 
-    List<Method> methods = new ArrayList<Method>();
+    List<Method> methods = new ArrayList<>();
     for (ClassInfo ci : scanResult.getClassesImplementing(targetType.getCanonicalName())) {
       try {
         if (matches(ci.getName(), targetType)) {

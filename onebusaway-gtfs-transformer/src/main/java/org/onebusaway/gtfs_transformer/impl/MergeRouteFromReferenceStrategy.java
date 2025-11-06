@@ -14,12 +14,11 @@
 package org.onebusaway.gtfs_transformer.impl;
 
 import java.util.HashMap;
+import java.util.Map;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /*
 Set fields in the route based on route in reference file.  Please note: this is only matching
@@ -27,8 +26,6 @@ on ids that are not more than 2 characters and will truncate longer ids
  */
 
 public class MergeRouteFromReferenceStrategy implements GtfsTransformStrategy {
-
-  private final Logger _log = LoggerFactory.getLogger(MergeRouteFromReferenceStrategy.class);
 
   @Override
   public String getName() {
@@ -40,7 +37,7 @@ public class MergeRouteFromReferenceStrategy implements GtfsTransformStrategy {
     GtfsMutableRelationalDao reference =
         (GtfsMutableRelationalDao) context.getReferenceReader().getEntityStore();
 
-    HashMap<String, Route> referenceRoutes = new HashMap<>();
+    Map<String, Route> referenceRoutes = new HashMap<>();
     for (Route route : reference.getAllRoutes()) {
       referenceRoutes.put(route.getId().getId(), route);
     }

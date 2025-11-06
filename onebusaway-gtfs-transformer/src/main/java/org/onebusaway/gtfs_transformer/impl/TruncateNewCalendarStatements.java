@@ -22,8 +22,6 @@ import org.onebusaway.gtfs.model.ServiceCalendarDate;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Some GTFS files go very far in the future causing memory issues with applications. Cut the GTFS
@@ -32,8 +30,6 @@ import org.slf4j.LoggerFactory;
  * @see RemoveOldCalendarStatements
  */
 public class TruncateNewCalendarStatements implements GtfsTransformStrategy {
-
-  private final Logger _log = LoggerFactory.getLogger(TruncateNewCalendarStatements.class);
 
   /*
    * add two arguments used in the truncated transformation strategy
@@ -70,7 +66,7 @@ public class TruncateNewCalendarStatements implements GtfsTransformStrategy {
     Calendar c = Calendar.getInstance();
     c.add(calendarField, calendarAmount);
     java.util.Date oneMonthFromNow = c.getTime();
-    Set<ServiceCalendar> serviceCalendarsToRemove = new HashSet<ServiceCalendar>();
+    Set<ServiceCalendar> serviceCalendarsToRemove = new HashSet<>();
     for (ServiceCalendar calendar : gtfsMutableRelationalDao.getAllCalendars()) {
       if (calendar.getStartDate().getAsDate().after(oneMonthFromNow)) {
         serviceCalendarsToRemove.add(calendar);
@@ -81,7 +77,7 @@ public class TruncateNewCalendarStatements implements GtfsTransformStrategy {
       removeEntityLibrary.removeCalendar(gtfsMutableRelationalDao, serviceCalendar.getServiceId());
     }
 
-    Set<ServiceCalendarDate> serviceCalendarDatesToRemove = new HashSet<ServiceCalendarDate>();
+    Set<ServiceCalendarDate> serviceCalendarDatesToRemove = new HashSet<>();
     for (ServiceCalendarDate calendarDate : gtfsMutableRelationalDao.getAllCalendarDates()) {
       if (calendarDate.getDate().getAsDate().after(oneMonthFromNow)) {
         serviceCalendarDatesToRemove.add(calendarDate);

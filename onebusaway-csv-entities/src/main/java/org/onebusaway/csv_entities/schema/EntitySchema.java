@@ -22,7 +22,7 @@ public class EntitySchema extends BaseEntitySchema {
 
   private final boolean _required;
 
-  private List<ExtensionEntitySchema> _extensions = new ArrayList<ExtensionEntitySchema>();
+  private List<ExtensionEntitySchema> _extensions = new ArrayList<>();
 
   public EntitySchema(Class<?> entityClass, String filename, boolean required) {
     super(entityClass);
@@ -34,7 +34,7 @@ public class EntitySchema extends BaseEntitySchema {
     super(schema);
     _filename = schema._filename;
     _required = schema._required;
-    _extensions = new ArrayList<ExtensionEntitySchema>(schema._extensions);
+    _extensions = new ArrayList<>(schema._extensions);
   }
 
   public String getFilename() {

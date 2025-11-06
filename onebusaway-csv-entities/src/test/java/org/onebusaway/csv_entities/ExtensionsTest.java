@@ -38,7 +38,7 @@ public class ExtensionsTest {
     DefaultEntitySchemaFactory factory = new DefaultEntitySchemaFactory();
     factory.addExtension(BaseBean.class, ExtensionBean.class);
 
-    ListEntityHandler<BaseBean> handler = new ListEntityHandler<BaseBean>();
+    ListEntityHandler<BaseBean> handler = new ListEntityHandler<>();
 
     CsvEntityReader reader = new CsvEntityReader();
     reader.setEntitySchemaFactory(factory);

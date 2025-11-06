@@ -50,7 +50,6 @@ public class VerifyBusService implements GtfsTransformStrategy {
     AgencyAndId refAgencyAndId = reference.getAllTrips().iterator().next().getId();
 
     int curSerRoute = 0;
-    int alarmingRoutes = 0;
     Date today = removeTime(new Date());
     // list of all routes in ATIS
     Set<String> ATISrouteIds = new HashSet<>();
@@ -87,8 +86,6 @@ public class VerifyBusService implements GtfsTransformStrategy {
             _log.info(
                 "Reference has service for this bus route today but ATIS does not: {}",
                 route.getId());
-            // This would be the site to add to a bulk metric, missingBus:
-            alarmingRoutes++;
           }
         }
       }

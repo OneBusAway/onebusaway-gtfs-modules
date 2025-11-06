@@ -39,7 +39,7 @@ public class ShiftNegativeStopTimesUpdateStrategy implements GtfsTransformStrate
 
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao) {
-    Set<ShiftedServiceCalendar> shiftedIds = new HashSet<ShiftedServiceCalendar>();
+    Set<ShiftedServiceCalendar> shiftedIds = new HashSet<>();
     for (Trip trip : dao.getAllTrips()) {
       List<StopTime> stopTimes = dao.getStopTimesForTrip(trip);
       int minTime = getMinStopTime(stopTimes);
@@ -63,7 +63,7 @@ public class ShiftNegativeStopTimesUpdateStrategy implements GtfsTransformStrate
       Set<ServiceDate> shiftedServiceDates =
           shiftServiceDates(allServiceDates, shifted.getDayOffset());
       ServiceCalendarSummary summary = library.getSummaryForServiceDates(shiftedServiceDates);
-      List<Object> newEntities = new ArrayList<Object>();
+      List<Object> newEntities = new ArrayList<>();
       library.computeSimplifiedCalendar(shifted.getShiftedServiceId(), summary, newEntities);
       for (Object newEntity : newEntities) {
         dao.saveEntity(newEntity);
@@ -102,7 +102,7 @@ public class ShiftNegativeStopTimesUpdateStrategy implements GtfsTransformStrate
   }
 
   private Set<ServiceDate> shiftServiceDates(Set<ServiceDate> allServiceDates, int dayOffset) {
-    Set<ServiceDate> shifted = new HashSet<ServiceDate>();
+    Set<ServiceDate> shifted = new HashSet<>();
     for (ServiceDate date : allServiceDates) {
       shifted.add(date.shift(dayOffset));
     }

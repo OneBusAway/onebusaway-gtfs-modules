@@ -21,12 +21,8 @@ import org.onebusaway.gtfs.model.Trip;
 import org.onebusaway.gtfs.services.GtfsMutableRelationalDao;
 import org.onebusaway.gtfs_transformer.services.GtfsTransformStrategy;
 import org.onebusaway.gtfs_transformer.services.TransformContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class RemoveUnusedRoutes implements GtfsTransformStrategy {
-
-  private final Logger _log = LoggerFactory.getLogger(RemoveUnusedRoutes.class);
 
   @Override
   public String getName() {
@@ -37,7 +33,7 @@ public class RemoveUnusedRoutes implements GtfsTransformStrategy {
   public void run(
       TransformContext transformContext, GtfsMutableRelationalDao gtfsMutableRelationalDao) {
     RemoveEntityLibrary removeEntityLibrary = new RemoveEntityLibrary();
-    Set<Route> routesToRemove = new HashSet<Route>();
+    Set<Route> routesToRemove = new HashSet<>();
     for (Route route : gtfsMutableRelationalDao.getAllRoutes()) {
       List<Trip> tripsInRoute = gtfsMutableRelationalDao.getTripsForRoute(route);
       if (tripsInRoute.size() < 1) {

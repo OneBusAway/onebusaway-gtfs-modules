@@ -42,7 +42,7 @@ public class MappingLibrary {
    */
   @SuppressWarnings("unchecked")
   public static <T1, T2> List<T2> map(Iterable<T1> values, String propertyPathExpression) {
-    List<T2> mappedValues = new ArrayList<T2>();
+    List<T2> mappedValues = new ArrayList<>();
     PropertyPathExpression query = new PropertyPathExpression(propertyPathExpression);
     for (T1 value : values) mappedValues.add((T2) query.invoke(value));
     return mappedValues;
@@ -71,7 +71,7 @@ public class MappingLibrary {
   @SuppressWarnings("unchecked")
   public static <K, V> Map<K, V> mapToValue(Iterable<V> values, String propertyPathExpression) {
 
-    Map<K, V> byKey = new HashMap<K, V>();
+    Map<K, V> byKey = new HashMap<>();
     PropertyPathExpression query = new PropertyPathExpression(propertyPathExpression);
 
     for (V value : values) {
@@ -150,7 +150,7 @@ public class MappingLibrary {
   public static <K, V, C extends Collection<V>, CIMPL extends C> Map<K, C> mapToValueCollection(
       Iterable<V> values, String property, Class<CIMPL> collectionType) {
 
-    Map<K, C> byKey = new HashMap<K, C>();
+    Map<K, C> byKey = new HashMap<>();
     PropertyPathExpression query = new PropertyPathExpression(property);
 
     for (V value : values) {

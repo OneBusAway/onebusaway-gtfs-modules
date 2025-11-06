@@ -49,10 +49,6 @@ public final class Area extends IdentityBean<AgencyAndId> {
     return id;
   }
 
-  private void setStops(Collection<Stop> stops) {
-    this.stops = List.copyOf(stops);
-  }
-
   public void addStop(Stop stop) {
     this.stops.add(stop);
   }

@@ -317,7 +317,7 @@ public class HibernateGtfsRelationalDaoImplCaltrainTest {
   }
 
   private static <T> List<T> grep(Iterable<T> elements, Filter<T> filter) {
-    List<T> hits = new ArrayList<T>();
+    List<T> hits = new ArrayList<>();
     for (T element : elements) {
       if (filter.isEnabled(element)) hits.add(element);
     }

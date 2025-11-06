@@ -86,15 +86,6 @@ public final class Stop extends IdentityBean<AgencyAndId> implements StopLocatio
   @CsvField(name = "level_id", optional = true, mapping = EntityFieldMappingFactory.class)
   private Level level;
 
-  // Custom extension for MTA
-  @CsvField(optional = true, name = "mta_stop_id")
-  private String mtaStopId;
-
-  // Custom extension representing (subway) stop accepts regional fare card.
-  // That is it has a fare card reader.
-  @CsvField(optional = true, name = "regional_fare_card", defaultValue = "0")
-  private int regionalFareCardAccepted;
-
   @CsvField(optional = true, name = "tts_stop_name")
   private String ttsStopName;
 
@@ -117,8 +108,6 @@ public final class Stop extends IdentityBean<AgencyAndId> implements StopLocatio
     this.vehicleType = obj.vehicleType;
     this.platformCode = obj.platformCode;
     this.level = obj.level;
-    this.mtaStopId = obj.mtaStopId;
-    this.regionalFareCardAccepted = obj.regionalFareCardAccepted;
     this.ttsStopName = obj.ttsStopName;
   }
 
@@ -277,22 +266,6 @@ public final class Stop extends IdentityBean<AgencyAndId> implements StopLocatio
 
   public void setLevel(Level level) {
     this.level = level;
-  }
-
-  public String getMtaStopId() {
-    return mtaStopId;
-  }
-
-  public void setMtaStopId(String mtaStopId) {
-    this.mtaStopId = mtaStopId;
-  }
-
-  public int getRegionalFareCardAccepted() {
-    return regionalFareCardAccepted;
-  }
-
-  public void setRegionalFareCardAccepted(int regionalFareCardAccepted) {
-    this.regionalFareCardAccepted = regionalFareCardAccepted;
   }
 
   public String getTtsStopName() {

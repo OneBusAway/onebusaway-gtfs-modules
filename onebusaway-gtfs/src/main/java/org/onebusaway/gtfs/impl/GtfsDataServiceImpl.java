@@ -398,16 +398,6 @@ public class GtfsDataServiceImpl implements GtfsDataService {
   }
 
   @Override
-  public boolean hasMetadata(String filename) {
-    return _dao.hasMetadata(filename);
-  }
-
-  @Override
-  public String getMetadata(String filename) {
-    return _dao.getMetadata(filename);
-  }
-
-  @Override
   public List<Ridership> getRidershipForTrip(AgencyAndId tripId) {
     return _dao.getRidershipForTrip(tripId);
   }

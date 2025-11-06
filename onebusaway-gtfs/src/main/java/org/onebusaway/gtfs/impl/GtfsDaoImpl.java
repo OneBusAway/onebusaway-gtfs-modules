@@ -30,8 +30,6 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
 
   private boolean packShapePoints = false;
 
-  private final Map<String, String> metadataByFilename = new HashMap<>();
-
   public boolean isPackStopTimes() {
     return packStopTimes;
   }
@@ -377,16 +375,6 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
       shapePoints.trimToSize();
     }
     super.close();
-  }
-
-  @Override
-  public boolean hasMetadata(String filename) {
-    return metadataByFilename.containsKey(filename);
-  }
-
-  @Override
-  public String getMetadata(String filename) {
-    return metadataByFilename.get(filename);
   }
 
   /****

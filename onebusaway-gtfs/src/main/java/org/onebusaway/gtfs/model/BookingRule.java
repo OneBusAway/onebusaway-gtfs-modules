@@ -22,6 +22,8 @@ import org.onebusaway.gtfs.serialization.mappings.StopTimeFieldMappingFactory;
 @CsvFields(filename = "booking_rules.txt", required = false)
 public final class BookingRule extends IdentityBean<AgencyAndId> {
 
+  public static final int NO_VALUE = -999;
+
   @Serial private static final long serialVersionUID = 1L;
 
   @CsvField(name = "booking_rule_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
@@ -31,22 +33,22 @@ public final class BookingRule extends IdentityBean<AgencyAndId> {
   private int type;
 
   @CsvField(optional = true)
-  private int priorNoticeDurationMin;
+  private int priorNoticeDurationMin = NO_VALUE;
 
   @CsvField(optional = true)
-  private int priorNoticeDurationMax;
+  private int priorNoticeDurationMax = NO_VALUE;
 
   @CsvField(optional = true)
-  private int priorNoticeLastDay;
+  private int priorNoticeLastDay = NO_VALUE;
 
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
-  private int priorNoticeLastTime;
+  private int priorNoticeLastTime = NO_VALUE;
 
   @CsvField(optional = true)
-  private int priorNoticeStartDay;
+  private int priorNoticeStartDay = NO_VALUE;
 
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
-  private int priorNoticeStartTime;
+  private int priorNoticeStartTime = NO_VALUE;
 
   @CsvField(optional = true, mapping = DefaultAgencyIdFieldMappingFactory.class)
   private AgencyAndId priorNoticeServiceId;

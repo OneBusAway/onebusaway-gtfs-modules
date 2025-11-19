@@ -332,6 +332,11 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
   }
 
   @Override
+  public Collection<Timeframe> getAllTimeframes() {
+    return _ops.find("FROM Timeframe");
+  }
+
+  @Override
   public Collection<Translation> getAllTranslations() {
     return _ops.find("FROM Translation");
   }

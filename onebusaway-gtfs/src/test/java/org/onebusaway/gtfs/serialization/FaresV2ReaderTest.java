@@ -37,7 +37,6 @@ import org.onebusaway.gtfs.model.RiderCategory;
 import org.onebusaway.gtfs.model.Route;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopAreaElement;
-import org.onebusaway.gtfs.serialization.mappings.LocalTimeFieldMappingFactory;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs.services.MockGtfs;
 
@@ -274,7 +273,7 @@ class FaresV2ReaderTest extends BaseGtfsTest {
     var first = timeframes.getFirst();
     assertEquals("1_REGULAR|1-WKDY|15:00|23:59", first.getId().getId());
     assertEquals("1-WKDY", first.getServiceId());
-    assertEquals(LocalTime.of(15,0), first.getStartTime());
-    assertEquals(LocalTime.of(23,59), first.getEndTime());
+    assertEquals(LocalTime.of(15, 0), first.getStartTime());
+    assertEquals(LocalTime.of(23, 59), first.getEndTime());
   }
 }

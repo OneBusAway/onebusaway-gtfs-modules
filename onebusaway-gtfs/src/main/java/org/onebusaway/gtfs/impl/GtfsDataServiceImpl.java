@@ -388,6 +388,11 @@ public class GtfsDataServiceImpl implements GtfsDataService {
   }
 
   @Override
+  public Collection<Timeframe> getAllTimeframes() {
+    return _dao.getAllTimeframes();
+  }
+
+  @Override
   public Collection<Translation> getAllTranslations() {
     return _dao.getAllTranslations();
   }

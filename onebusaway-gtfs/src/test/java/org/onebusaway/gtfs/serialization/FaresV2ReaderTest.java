@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -39,12 +40,12 @@ import org.onebusaway.gtfs.model.StopAreaElement;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs.services.MockGtfs;
 
-public class FaresV2ReaderTest extends BaseGtfsTest {
+class FaresV2ReaderTest extends BaseGtfsTest {
 
   private static final String AGENCY_ID = "1";
 
   @Test
-  public void turlockFaresV2() throws CsvEntityIOException, IOException {
+  void turlockFaresV2() throws CsvEntityIOException, IOException {
     String agencyId = "1642";
     GtfsRelationalDao dao = processFeed(GtfsTestData.getTurlockFaresV2(), agencyId, false);
 
@@ -104,7 +105,7 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
   }
 
   @Test
-  public void mdotMetroFaresV2() throws CsvEntityIOException, IOException {
+  void mdotMetroFaresV2() throws CsvEntityIOException, IOException {
     String agencyId = "1";
     GtfsRelationalDao dao = processFeed(GtfsTestData.getMdotMetroFaresV2(), agencyId, false);
 
@@ -196,7 +197,7 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
   }
 
   @Test
-  public void pierceTransitStopAreas() throws CsvEntityIOException, IOException {
+  void pierceTransitStopAreas() throws CsvEntityIOException, IOException {
     var dao = processFeed(GtfsTestData.getPierceTransitFlex(), AGENCY_ID, false);
 
     var areaElements = List.copyOf(dao.getAllStopAreaElements());
@@ -220,7 +221,7 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
   }
 
   @Test
-  public void testFaresV2Distance() throws IOException {
+  void testFaresV2Distance() throws IOException {
     MockGtfs gtfs = MockGtfs.create();
     gtfs.putMinimal();
     gtfs.putLines("fare_products.txt", "fare_product_id, amount, currency", "fare_1,5,EUR");
@@ -240,7 +241,7 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
   }
 
   @Test
-  public void routeNetworkAssignments() throws CsvEntityIOException, IOException {
+  void routeNetworkAssignments() throws CsvEntityIOException, IOException {
     var dao = processFeed(GtfsTestData.sandyFlexFaresV2(), AGENCY_ID, false);
 
     var assignments = List.copyOf(dao.getAllRouteNetworkAssignments());
@@ -254,12 +255,25 @@ public class FaresV2ReaderTest extends BaseGtfsTest {
   }
 
   @Test
-  public void rulePriority() throws CsvEntityIOException, IOException {
+  void rulePriority() throws CsvEntityIOException, IOException {
     var dao = processFeed(GtfsTestData.sandyFlexFaresV2(), AGENCY_ID, false);
     var rules = List.copyOf(dao.getAllFareLegRules());
     assertThat(rules).hasSize(4);
 
     assertThat(rules.getFirst().getRulePriorityOption()).isPresent();
     assertThat(rules.getLast().getRulePriorityOption()).isEmpty();
+  }
+
+  @Test
+  void timeframes() throws CsvEntityIOException, IOException {
+    var dao = processFeed(GtfsTestData.ctran(), AGENCY_ID, false);
+    var timeframes = List.copyOf(dao.getAllTimeframes());
+    assertThat(timeframes).hasSize(10);
+
+    var first = timeframes.getFirst();
+    assertEquals("1_REGULAR|1-WKDY|15:00|23:59", first.getId().getId());
+    assertEquals("1-WKDY", first.getServiceId());
+    assertEquals(LocalTime.of(15, 0), first.getStartTime());
+    assertEquals(LocalTime.of(23, 59), first.getEndTime());
   }
 }

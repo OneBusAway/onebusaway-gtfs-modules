@@ -1,0 +1,30 @@
+﻿route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color,network_id,route_sort_order
+050,C-TRAN,Vine-Green,The Vine on Fourth Plain (Green Line),,3,https://www.c-tran.com/routes/the-vine-on-fourth-plain,2d9a47,000000,LOCAL,1
+051,C-TRAN,Vine-Red,The Vine on Mill Plain (Red Line),,3,https://www.c-tran.com/routes/the-vine-on-mill-plain,d2232a,ffffff,LOCAL,2
+002,C-TRAN,2,Lincoln,,3,https://www.c-tran.com/routes/2-lincoln,3777bc,ffffff,LOCAL,3
+006,C-TRAN,6,Fruit Valley/Grand,,3,https://www.c-tran.com/routes/6-fruit-valley-grand,3777bc,ffffff,LOCAL,4
+007,C-TRAN,7,Battle Ground,,3,https://www.c-tran.com/routes/7-battle-ground,3777bc,ffffff,LOCAL,5
+009,C-TRAN,9,Felida,,3,https://www.c-tran.com/routes/9-felida,3777bc,ffffff,LOCAL,6
+012,C-TRAN,12,112th Avenue,,3,https://www.c-tran.com/routes/12-112th-avenue,3777bc,ffffff,LOCAL,7
+019,C-TRAN,19,Salmon Creek,,3,https://www.c-tran.com/routes/19-salmon-creek,3777bc,ffffff,LOCAL,8
+025,C-TRAN,25,Saint Johns,,3,https://www.c-tran.com/routes/25-st-johns,3777bc,ffffff,LOCAL,9
+030,C-TRAN,30,Burton,,3,https://www.c-tran.com/routes/30-burton,3777bc,ffffff,LOCAL,10
+031,C-TRAN,31,Hazel Dell,,3,https://www.c-tran.com/routes/31-hazel-dell,3777bc,ffffff,LOCAL,11
+032,C-TRAN,32,Evergreen/Andresen,,3,https://www.c-tran.com/routes/32-evergreen-andresen,3777bc,ffffff,LOCAL,12
+034,C-TRAN,34,192nd Ave/34th St,,3,https://www.c-tran.com/routes/34-192nd-avenue-34th-street,3777bc,ffffff,LOCAL,13
+041,C-TRAN,41,SR 14,,3,https://www.c-tran.com/routes/41-sr-14,3777bc,ffffff,LOCAL,14
+047,C-TRAN,47,Battle Ground/Yacolt,,3,https://www.c-tran.com/routes/47-battle-ground-yacolt,3777bc,ffffff,LOCAL,15
+048,C-TRAN,48,Ridgefield,,3,https://www.c-tran.com/routes/48-ridgefield,3777bc,ffffff,LOCAL,16
+060,C-TRAN,60,Delta Park Regional,,3,https://www.c-tran.com/routes/60-delta-park-regional,3777bc,ffffff,REGIONAL,17
+065,C-TRAN,65,Parkrose Regional,,3,https://www.c-tran.com/routes/65-parkrose-regional,3777bc,ffffff,REGIONAL,18
+067,C-TRAN,67,Airport Regional,,3,https://www.c-tran.com/routes/67-parkrose-regional,3777bc,ffffff,REGIONAL,19
+071,C-TRAN,71,Highway 99,,3,https://www.c-tran.com/routes/71-highway-99,3777bc,ffffff,LOCAL,20
+072,C-TRAN,72,Orchards,,3,https://www.c-tran.com/routes/72-orchards,3777bc,ffffff,LOCAL,21
+074,C-TRAN,74,East Fourth Plain/162nd Ave,,3,https://www.c-tran.com/routes/74-east-fourth-plain-162nd-avenue,3777bc,ffffff,LOCAL,22
+078,C-TRAN,78,78th Street,,3,https://www.c-tran.com/routes/78-78th-street,3777bc,ffffff,LOCAL,23
+080,C-TRAN,80,Van Mall/Fishers,,3,https://www.c-tran.com/routes/80-van-mall-fishers,3777bc,ffffff,LOCAL,24
+092,C-TRAN,92,Camas/Washougal,,3,https://www.c-tran.com/routes/92-camas-washougal,3777bc,ffffff,LOCAL,25
+105,C-TRAN,105,I-5 Express,,3,https://www.c-tran.com/routes/105-i-5-express,3777bc,ffffff,EXPRESS,26
+106,C-TRAN,105X,I-5X Express,,3,https://www.c-tran.com/routes/105-i-5-express,3777bc,ffffff,EXPRESS,27
+164,C-TRAN,164,Fishers Landing Express,,3,https://www.c-tran.com/routes/164-fisher-s-landing-express,3777bc,ffffff,EXPRESS,28
+190,C-TRAN,190,Marquam Hill Express,,3,https://www.c-tran.com/routes/190-marquam-hill-express,3777bc,ffffff,EXPRESS,29

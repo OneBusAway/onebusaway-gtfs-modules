@@ -82,6 +82,10 @@ public class GtfsTestData {
     return new File("src/test/resources", gtfsPath("auburn-transit-flex"));
   }
 
+  public static File ctran() {
+    return new File("src/test/resources", gtfsPath("ctran-fares-v2"));
+  }
+
   public static File getTestAgencyVehiclesExt() {
     return new File("src/test/resources", gtfsPath("testagency-vehicles-ext"));
   }

@@ -1,0 +1,6 @@
+﻿fare_media_id,fare_media_name,fare_media_type
+0,Cash,0
+1,Ticket,1
+2,HOP Fastpass,2
+3,Open Payment,3
+4,Virtual HOP Fastpass,4

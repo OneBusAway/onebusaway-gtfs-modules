@@ -1,0 +1,4 @@
+﻿rider_category_id,rider_category_name,is_default_fare_category,eligibility_url
+ADULT,Adult,1,
+HONORED_CITIZEN,Honored Citizen,0,https://c-tran.com/fares/fares-and-id-cards
+YOUTH,Youth,0,https://c-tran.com/fares/fares-and-id-cards

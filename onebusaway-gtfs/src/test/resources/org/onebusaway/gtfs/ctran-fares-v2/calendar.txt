@@ -1,0 +1,5 @@
+service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date
+1-WKDY,0,0,0,0,0,0,0,20250914,20260110
+2-SAT,0,0,0,0,0,0,0,20250914,20260110
+3-SUN,0,0,0,0,0,0,0,20250914,20260110
+4-NYE,0,0,0,0,0,0,0,20250914,20260110

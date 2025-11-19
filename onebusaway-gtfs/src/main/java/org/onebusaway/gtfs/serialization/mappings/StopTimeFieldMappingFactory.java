@@ -28,7 +28,7 @@ import org.onebusaway.csv_entities.schema.FieldMappingFactory;
 
 public class StopTimeFieldMappingFactory implements FieldMappingFactory {
 
-  private static DecimalFormat _format =
+  private static final DecimalFormat _format =
       new DecimalFormat("00", new DecimalFormatSymbols(Locale.ENGLISH));
 
   // lookup table for char digits 0-9, for lookup of seconds and minutes

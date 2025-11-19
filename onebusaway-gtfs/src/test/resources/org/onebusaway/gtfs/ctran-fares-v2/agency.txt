@@ -1,0 +1,2 @@
+﻿agency_name,agency_url,agency_timezone,agency_lang,agency_phone,agency_fare_url,agency_id
+C-TRAN,http://www.C-TRAN.com,America/Los_Angeles,en,360-695-0123,http://www.c-tran.com/fares/fares-and-id-cards,C-TRAN

@@ -193,7 +193,6 @@ public interface GtfsDao extends GenericDao {
 
   Collection<Area> getAllAreas();
 
-  @Deprecated
   Collection<LocationGroupElement> getAllLocationGroupElements();
 
   Collection<LocationGroup> getAllLocationGroups();
@@ -203,6 +202,8 @@ public interface GtfsDao extends GenericDao {
   Collection<Location> getAllLocations();
 
   Collection<BookingRule> getAllBookingRules();
+
+  Collection<Timeframe> getAllTimeframes();
 
   /****
    * {@link Translation} Methods

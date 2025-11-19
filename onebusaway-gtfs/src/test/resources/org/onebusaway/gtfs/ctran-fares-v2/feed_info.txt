@@ -1,0 +1,2 @@
+﻿feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version,feed_contact_email
+C-TRAN,https://www.c-tran.com/,en,20250914,20260110,20250914-20260110,gtfs@c-tran.org

@@ -296,6 +296,11 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getAllEntitiesForType(BookingRule.class);
   }
 
+  @Override
+  public Collection<Timeframe> getAllTimeframes() {
+    return getAllEntitiesForType(Timeframe.class);
+  }
+
   public Collection<Translation> getAllTranslations() {
     return getAllEntitiesForType(Translation.class);
   }

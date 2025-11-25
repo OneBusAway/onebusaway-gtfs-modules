@@ -16,6 +16,7 @@ package org.onebusaway.gtfs.serialization;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -277,6 +278,8 @@ class FaresV2ReaderTest extends BaseGtfsTest {
     assertEquals(LocalTime.of(23, 59), first.getEndTime());
 
     var rules = List.copyOf(dao.getAllFareLegRules());
-    System.out.println(rules);
+    var firstRule = rules.getFirst();
+    assertEquals("1_MIDDAY", firstRule.getFromTimeframeGroupId().toString());
+    assertNull(firstRule.getToTimeframeGroupId());
   }
 }

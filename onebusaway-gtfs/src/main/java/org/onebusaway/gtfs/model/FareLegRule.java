@@ -54,6 +54,18 @@ public final class FareLegRule extends IdentityBean<String> {
   @CsvField(name = "rule_priority", optional = true)
   private int rulePriority = NO_RULE_PRIORITY;
 
+  @CsvField(
+      name = "from_timeframe_group_id",
+      optional = true,
+      mapping = DefaultAgencyIdFieldMappingFactory.class)
+  private AgencyAndId fromTimeframeGroupId;
+
+  @CsvField(
+      name = "to_timeframe_group_id",
+      optional = true,
+      mapping = DefaultAgencyIdFieldMappingFactory.class)
+  private AgencyAndId toTimeframeGroupId;
+
   public AgencyAndId getLegGroupId() {
     return legGroupId;
   }
@@ -145,5 +157,21 @@ public final class FareLegRule extends IdentityBean<String> {
     } else {
       return OptionalInt.of(this.rulePriority);
     }
+  }
+
+  public AgencyAndId getFromTimeframeGroupId() {
+    return fromTimeframeGroupId;
+  }
+
+  public void setFromTimeframeGroupId(AgencyAndId fromTimeframeGroupId) {
+    this.fromTimeframeGroupId = fromTimeframeGroupId;
+  }
+
+  public AgencyAndId getToTimeframeGroupId() {
+    return toTimeframeGroupId;
+  }
+
+  public void setToTimeframeGroupId(AgencyAndId toTimeframeGroupId) {
+    this.toTimeframeGroupId = toTimeframeGroupId;
   }
 }

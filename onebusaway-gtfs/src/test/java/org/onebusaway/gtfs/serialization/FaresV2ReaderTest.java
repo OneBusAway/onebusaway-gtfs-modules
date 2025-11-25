@@ -275,5 +275,8 @@ class FaresV2ReaderTest extends BaseGtfsTest {
     assertEquals("1-WKDY", first.getServiceId());
     assertEquals(LocalTime.of(15, 0), first.getStartTime());
     assertEquals(LocalTime.of(23, 59), first.getEndTime());
+
+    var rules = List.copyOf(dao.getAllFareLegRules());
+    System.out.println(rules);
   }
 }

@@ -26,7 +26,7 @@ public final class Timeframe extends IdentityBean<AgencyAndId> {
   public static final int MISSING_VALUE = -999;
 
   @CsvField(name = "timeframe_group_id", mapping = DefaultAgencyIdFieldMappingFactory.class)
-  private AgencyAndId id;
+  private AgencyAndId timeframeGroupId;
 
   @CsvField(name = "service_id")
   private String serviceId;
@@ -39,14 +39,20 @@ public final class Timeframe extends IdentityBean<AgencyAndId> {
 
   @Override
   public AgencyAndId getId() {
-    var agencyID = id.getAgencyId();
-    var id = "%s|%s|%s|%s".formatted(this.id, serviceId, startTime, endTime);
+    var agencyID = timeframeGroupId.getAgencyId();
+    var id = "%s|%s|%s|%s".formatted(this.timeframeGroupId, serviceId, startTime, endTime);
     return new AgencyAndId(agencyID, id);
   }
 
   @Override
-  public void setId(AgencyAndId id) {
-    this.id = id;
+  public void setId(AgencyAndId id) {}
+
+  public void setTimeframeGroupId(AgencyAndId timeframeGroupId) {
+    this.timeframeGroupId = timeframeGroupId;
+  }
+
+  public AgencyAndId getTimeframeGroupId() {
+    return timeframeGroupId;
   }
 
   public LocalTime getStartTime() {

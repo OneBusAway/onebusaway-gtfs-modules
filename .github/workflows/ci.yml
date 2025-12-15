@@ -64,7 +64,7 @@ jobs:
         run: ./cli-tests/cli-tests.sh
 
       - name: Archive GTFS files
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: gtfs-files
           path: '*.gtfs.zip'

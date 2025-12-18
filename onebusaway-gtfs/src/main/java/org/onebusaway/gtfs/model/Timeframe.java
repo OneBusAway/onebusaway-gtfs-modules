@@ -32,10 +32,10 @@ public final class Timeframe extends IdentityBean<AgencyAndId> {
   private String serviceId;
 
   @CsvField(optional = true, mapping = LocalTimeFieldMappingFactory.class)
-  private LocalTime startTime = LocalTime.MIN;
+  private LocalTime startTime;
 
   @CsvField(optional = true, mapping = LocalTimeFieldMappingFactory.class)
-  private LocalTime endTime = LocalTime.MIDNIGHT;
+  private LocalTime endTime;
 
   @Override
   public AgencyAndId getId() {

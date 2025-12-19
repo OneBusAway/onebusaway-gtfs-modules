@@ -80,7 +80,7 @@ class FaresV2ReaderTest extends BaseGtfsTest {
     FareLegRule flr =
         fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
     assertEquals(
-        "groupId=Turlock|product=31-day_disabled|network=null|fromArea=null|toArea=null",
+        "groupId=Turlock|product=31-day_disabled|network=null|fromArea=null|toArea=null|fromTimeframe=null|toTimeframe=null",
         flr.getId());
     assertEquals("Turlock", flr.getLegGroupId().getId());
 
@@ -130,7 +130,7 @@ class FaresV2ReaderTest extends BaseGtfsTest {
     FareLegRule flr =
         fareLegRules.stream().sorted(Comparator.comparing(FareLegRule::getId)).findFirst().get();
     assertEquals(
-        "groupId=core_local_one_way_trip|product=core_local_1_day_fare|network=core|fromArea=null|toArea=null",
+        "groupId=core_local_one_way_trip|product=core_local_1_day_fare|network=core|fromArea=null|toArea=null|fromTimeframe=null|toTimeframe=null",
         flr.getId());
     assertEquals("core_local_one_way_trip", flr.getLegGroupId().getId());
 

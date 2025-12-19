@@ -15,6 +15,7 @@ package org.onebusaway.gtfs.model;
 
 import java.util.Optional;
 import java.util.OptionalInt;
+import org.jspecify.annotations.Nullable;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.mappings.DefaultAgencyIdFieldMappingFactory;
@@ -102,10 +103,18 @@ public final class FareLegRule extends IdentityBean<String> {
   public String getId() {
     String fromAreaId = Optional.ofNullable(fromArea).map(Area::getAreaId).orElse(null);
     String toAreaId = Optional.ofNullable(toArea).map(Area::getAreaId).orElse(null);
-    String baseLegGroupId = Optional.ofNullable(legGroupId).map(AgencyAndId::getId).orElse(null);
-    String baseProductId = Optional.ofNullable(fareProductId).map(AgencyAndId::getId).orElse(null);
-    return "groupId=%s|product=%s|network=%s|fromArea=%s|toArea=%s"
-        .formatted(baseLegGroupId, baseProductId, networkId, fromAreaId, toAreaId);
+    String fromTimeframeId = extractNullableId(fromTimeframeGroupId);
+    String toTimeframeId = extractNullableId(toTimeframeGroupId);
+    String legGroupId = extractNullableId(this.legGroupId);
+    String productId = extractNullableId(fareProductId);
+    return "groupId=%s|product=%s|network=%s|fromArea=%s|toArea=%s|fromTimeframe=%s|toTimeframe=%s"
+        .formatted(
+            legGroupId, productId, networkId, fromAreaId, toAreaId, fromTimeframeId, toTimeframeId);
+  }
+
+  @Nullable
+  private static String extractNullableId(AgencyAndId fromTimeframeGroupId1) {
+    return Optional.ofNullable(fromTimeframeGroupId1).map(AgencyAndId::getId).orElse(null);
   }
 
   @Override

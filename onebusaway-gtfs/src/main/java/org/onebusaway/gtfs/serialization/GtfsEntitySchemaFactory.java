@@ -59,7 +59,6 @@ public class GtfsEntitySchemaFactory {
     entityClasses.add(Pathway.class);
     entityClasses.add(Transfer.class);
     entityClasses.add(Ridership.class);
-    entityClasses.add(BookingRule.class);
     entityClasses.add(Vehicle.class);
     entityClasses.add(Facility.class);
     entityClasses.add(FacilityPropertyDefinition.class);

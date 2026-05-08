@@ -1,6 +1,6 @@
 package org.onebusaway.gtfs.serialization;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +16,8 @@ public class GtfsEntitySchemaFactoryTest {
     Set<Class<?>> seen = new HashSet<>();
     List<Class<?>> duplicates =
         classes.stream().filter(c -> !seen.add(c)).collect(Collectors.toList());
-    assertEquals(List.of(), duplicates, "getEntityClasses() must not contain duplicate entries");
+    assertTrue(
+        duplicates.isEmpty(),
+        "getEntityClasses() must not contain duplicate entries: " + duplicates);
   }
 }

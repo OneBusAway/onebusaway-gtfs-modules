@@ -270,6 +270,7 @@
         <artifactId>jib-maven-plugin</artifactId>
         <version>3.5.1</version>
         <configuration>
+          <image>eclipse-temurin:25-jre</image>
           <from>
             <platforms>
               <platform>

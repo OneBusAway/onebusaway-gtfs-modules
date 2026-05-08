@@ -47,7 +47,8 @@ public class RemoveEntityUpdateStrategy implements EntityTransformStrategy {
       case ServiceIdKey key -> _library.removeCalendar(dao, key.getId());
       case Transfer transfer -> _library.removeTransfer(dao, transfer);
       case FeedInfo info -> _library.removeFeedInfo(dao, info);
-      case null, default -> throw new NoSuchMethodError("attempt to remove entity of type " + obj.getClass());
+      case null, default ->
+          throw new NoSuchMethodError("attempt to remove entity of type " + obj.getClass());
     }
   }
 }

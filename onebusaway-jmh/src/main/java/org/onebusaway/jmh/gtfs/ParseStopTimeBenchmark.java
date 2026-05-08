@@ -90,7 +90,7 @@ public class ParseStopTimeBenchmark {
     return count;
   }
 
-  public static void main(String[] args) throws RunnerException {
+  void main() throws RunnerException {
     Options opt =
         new OptionsBuilder().include(ParseStopTimeBenchmark.class.getSimpleName()).build();
     new Runner(opt).run();

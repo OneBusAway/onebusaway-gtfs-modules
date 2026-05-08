@@ -234,7 +234,7 @@ public class GtfsTransformer {
       String strategyName = strategy.toString();
       try {
         strategyName = strategy.getName();
-      } catch (AbstractMethodError ame) {
+      } catch (AbstractMethodError _) {
         _log.info("(AbstractMethodError) strategy " + strategy + " does not support getName");
       }
       _log.info("Running strategy {} ....", strategyName);

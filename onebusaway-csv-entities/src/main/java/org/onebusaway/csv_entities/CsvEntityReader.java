@@ -55,7 +55,7 @@ public class CsvEntityReader {
 
   private Map<String, String> _stringTable = new HashMap<>();
 
-  private Predicate<Class> _internStringsDisabled = (p) -> false;
+  private Predicate<Class> _internStringsDisabled = _ -> false;
 
   /**
    * @return the {@link EntitySchemaFactory} that will be used for introspection of bean classes
@@ -148,7 +148,7 @@ public class CsvEntityReader {
 
     boolean internStrings = _internStrings && !_internStringsDisabled.test(entityClass);
 
-    try {
+    try (lineReader) {
       while ((line = lineReader.readLine()) != null) {
         if (line.isEmpty()) continue;
         // TODO: This is a hack of sorts to deal with a malformed data file...
@@ -160,12 +160,6 @@ public class CsvEntityReader {
       }
     } catch (Exception ex) {
       throw new CsvEntityIOException(entityClass, schema.getFilename(), lineNumber, ex);
-    } finally {
-      try {
-        lineReader.close();
-      } catch (IOException ex) {
-
-      }
     }
   }
 

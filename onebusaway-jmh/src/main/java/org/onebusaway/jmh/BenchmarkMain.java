@@ -13,7 +13,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 public class BenchmarkMain {
 
-  public static void main(String[] args) throws RunnerException {
+  void main() throws RunnerException {
     Options opt =
         new OptionsBuilder()
             .include(CsvParserBenchmark.class.getSimpleName())

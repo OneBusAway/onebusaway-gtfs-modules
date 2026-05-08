@@ -70,7 +70,7 @@ public class GtfsMergerMain implements Callable<Integer> {
   /** Mapping from GTFS file name to the entity type handled by that class. */
   private final Map<String, Class<?>> entityClassesByFilename = new HashMap<>();
 
-  public static void main(String[] args) {
+  void main(String[] args) {
     int exitCode = new CommandLine(new GtfsMergerMain()).execute(args);
     System.exit(exitCode);
   }
@@ -165,6 +165,6 @@ public class GtfsMergerMain implements Callable<Integer> {
       ci.next();
     }
     value *= Long.signum(bytes);
-    return String.format("%.1f %ciB", value / 1024.0, ci.current());
+    return "%.1f %ciB".formatted(value / 1024.0, ci.current());
   }
 }

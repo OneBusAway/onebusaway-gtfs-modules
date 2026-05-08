@@ -79,7 +79,7 @@ public class CsvParserBenchmark {
     return count;
   }
 
-  public static void main(String[] args) throws RunnerException {
+  void main() throws RunnerException {
     Options opt = new OptionsBuilder().include(CsvParserBenchmark.class.getSimpleName()).build();
     new Runner(opt).run();
   }

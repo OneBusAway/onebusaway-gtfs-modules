@@ -34,7 +34,7 @@ public class BeanWrapperFactory {
         BeanInfo beanInfo = java.beans.Introspector.getBeanInfo(c);
         classWrapper = new BeanClassWrapperImpl(beanInfo);
         _classWrappers.put(c, classWrapper);
-      } catch (Exception ex) {
+      } catch (Exception _) {
         throw new IntrospectionException(c);
       }
     }

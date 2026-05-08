@@ -176,7 +176,7 @@ public class GenericDaoImpl implements GenericMutableDao {
           if (type.equals(Integer.class) || type.equals(Integer.TYPE))
             return new GeneratedIdHandler();
         }
-      } catch (Exception ex) {
+      } catch (Exception _) {
 
       }
     }

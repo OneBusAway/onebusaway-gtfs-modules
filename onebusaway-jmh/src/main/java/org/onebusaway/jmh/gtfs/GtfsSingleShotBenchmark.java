@@ -68,7 +68,7 @@ public class GtfsSingleShotBenchmark {
     }
   }
 
-  public static void main(String[] args) throws RunnerException {
+  void main() throws RunnerException {
     Options opt =
         new OptionsBuilder().include(GtfsSingleShotBenchmark.class.getSimpleName()).build();
     new Runner(opt).run();

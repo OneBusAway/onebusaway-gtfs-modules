@@ -200,7 +200,7 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
     try {
       // give the executor a chance to run
       Thread.sleep(1 * 1000);
-    } catch (InterruptedException e1) {
+    } catch (InterruptedException _) {
       return false;
     }
 
@@ -217,7 +217,7 @@ public abstract class AbstractIdentifiableSingleEntityMergeStrategy<T extends Id
                   + _entityType
                   + ")");
           Thread.sleep(30 * 1000);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException _) {
           return false;
         }
       }

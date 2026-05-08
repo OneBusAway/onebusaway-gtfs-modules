@@ -21,7 +21,7 @@ public class CloudContextService {
     String feedName = "";
     try {
       feedName = dao.getAllFeedInfos().iterator().next().getId();
-    } catch (Exception any) {
+    } catch (Exception _) {
       feedName = dao.getAllAgencies().stream().map(Agency::getId).reduce("", (a, b) -> a + b);
     }
     return feedName;

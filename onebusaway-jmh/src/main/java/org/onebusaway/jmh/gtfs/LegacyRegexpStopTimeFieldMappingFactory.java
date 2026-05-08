@@ -17,7 +17,7 @@ public class LegacyRegexpStopTimeFieldMappingFactory {
       int seconds = Integer.parseInt(m.group(3));
 
       return seconds + 60 * (minutes + 60 * hours);
-    } catch (NumberFormatException ex) {
+    } catch (NumberFormatException _) {
       throw new InvalidStopTimeException(value);
     }
   }

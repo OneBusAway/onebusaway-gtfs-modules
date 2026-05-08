@@ -35,30 +35,19 @@ public class RemoveEntityUpdateStrategy implements EntityTransformStrategy {
   @Override
   public void run(TransformContext context, GtfsMutableRelationalDao dao, Object obj) {
 
-    if (obj instanceof Agency agency) {
-      _library.removeAgency(dao, agency);
-    } else if (obj instanceof Route route) {
-      _library.removeRoute(dao, route);
-    } else if (obj instanceof Stop stop) {
-      _library.removeStop(dao, stop);
-    } else if (obj instanceof Trip trip) {
-      _library.removeTrip(dao, trip);
-    } else if (obj instanceof StopTime time) {
-      _library.removeStopTime(dao, time);
-    } else if (obj instanceof Frequency frequency) {
-      _library.removeFrequency(dao, frequency);
-    } else if (obj instanceof ServiceCalendar calendar) {
-      _library.removeServiceCalendar(dao, calendar);
-    } else if (obj instanceof ServiceCalendarDate date) {
-      _library.removeServiceCalendarDate(dao, date);
-    } else if (obj instanceof ServiceIdKey key) {
-      _library.removeCalendar(dao, key.getId());
-    } else if (obj instanceof Transfer transfer) {
-      _library.removeTransfer(dao, transfer);
-    } else if (obj instanceof FeedInfo info) {
-      _library.removeFeedInfo(dao, info);
-    } else {
-      throw new NoSuchMethodError("attempt to remove entity of type " + obj.getClass());
+    switch (obj) {
+      case Agency agency -> _library.removeAgency(dao, agency);
+      case Route route -> _library.removeRoute(dao, route);
+      case Stop stop -> _library.removeStop(dao, stop);
+      case Trip trip -> _library.removeTrip(dao, trip);
+      case StopTime time -> _library.removeStopTime(dao, time);
+      case Frequency frequency -> _library.removeFrequency(dao, frequency);
+      case ServiceCalendar calendar -> _library.removeServiceCalendar(dao, calendar);
+      case ServiceCalendarDate date -> _library.removeServiceCalendarDate(dao, date);
+      case ServiceIdKey key -> _library.removeCalendar(dao, key.getId());
+      case Transfer transfer -> _library.removeTransfer(dao, transfer);
+      case FeedInfo info -> _library.removeFeedInfo(dao, info);
+      case null, default -> throw new NoSuchMethodError("attempt to remove entity of type " + obj.getClass());
     }
   }
 }

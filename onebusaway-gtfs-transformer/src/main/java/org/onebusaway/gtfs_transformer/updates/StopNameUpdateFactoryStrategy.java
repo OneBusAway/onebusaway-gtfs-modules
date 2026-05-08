@@ -66,7 +66,7 @@ public class StopNameUpdateFactoryStrategy {
       try {
         int stopId = Integer.parseInt(key);
         strategy.addName(stopId, value);
-      } catch (NumberFormatException ex) {
+      } catch (NumberFormatException _) {
         throw new IllegalArgumentException(
             "invalid stop number at line #" + lineNumber + ": " + key);
       }

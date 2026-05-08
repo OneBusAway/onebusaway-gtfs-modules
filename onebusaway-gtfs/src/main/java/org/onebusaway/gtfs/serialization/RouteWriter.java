@@ -53,7 +53,7 @@ public class RouteWriter {
           new BufferedWriter(new FileWriter(_outputLocation + "/" + ARG_ROUTES_OUTPUT_NAME));
       writer.write(output);
       writer.close();
-    } catch (IOException exception) {
+    } catch (IOException _) {
       _log.error("Issue writing " + ARG_ROUTES_OUTPUT_NAME);
     }
   }

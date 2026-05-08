@@ -53,7 +53,7 @@ public class PropertyPathExpressionTest {
     try {
       expr.invoke(obj);
       fail();
-    } catch (IllegalStateException ex) {
+    } catch (IllegalStateException _) {
 
     }
 
@@ -62,7 +62,7 @@ public class PropertyPathExpressionTest {
     try {
       expr.invoke(obj);
       fail();
-    } catch (IllegalStateException ex) {
+    } catch (IllegalStateException _) {
 
     }
 

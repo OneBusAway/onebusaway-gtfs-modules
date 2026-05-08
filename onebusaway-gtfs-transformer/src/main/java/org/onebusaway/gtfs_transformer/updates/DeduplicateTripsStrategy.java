@@ -69,7 +69,7 @@ public class DeduplicateTripsStrategy implements GtfsTransformStrategy {
 
       if (trips.size() == 1) continue;
       if (trips.size() != 2) {
-        System.out.println("weird: " + trips);
+        IO.println("weird: " + trips);
         weird++;
         continue;
       }
@@ -88,14 +88,14 @@ public class DeduplicateTripsStrategy implements GtfsTransformStrategy {
       StopSequencePattern patternB = StopSequencePattern.getPatternForStopTimes(stopTimesB);
 
       if (!patternA.equals(patternB)) {
-        System.out.println("  pattern: " + tripA.getId() + " " + tripB.getId());
+        IO.println("  pattern: " + tripA.getId() + " " + tripB.getId());
         patternMismatch++;
         continue;
       }
 
       String property = areTripsEquivalent(tripA, tripB);
       if (property != null) {
-        System.out.println("  property: " + tripA.getId() + " " + tripB.getId() + " " + property);
+        IO.println("  property: " + tripA.getId() + " " + tripB.getId() + " " + property);
         propertyMismatch++;
         continue;
       }

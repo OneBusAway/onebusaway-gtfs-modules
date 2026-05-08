@@ -25,7 +25,7 @@ import org.onebusaway.gtfs.serialization.GtfsReader;
 
 public class GtfsReaderExampleMain {
 
-  public static void main(String[] args) throws IOException {
+  void main(String[] args) throws IOException {
 
     if (args.length != 1) {
       System.err.println("usage: gtfsPath");
@@ -49,7 +49,7 @@ public class GtfsReaderExampleMain {
         store.getEntitiesByIdForEntityType(AgencyAndId.class, Route.class);
 
     for (Route route : routesById.values()) {
-      System.out.println("route: " + route.getShortName());
+      IO.println("route: " + route.getShortName());
     }
   }
 
@@ -57,7 +57,7 @@ public class GtfsReaderExampleMain {
 
     public void handleEntity(Object bean) {
       if (bean instanceof Stop stop) {
-        System.out.println("stop: " + stop.getName());
+        IO.println("stop: " + stop.getName());
       }
     }
   }

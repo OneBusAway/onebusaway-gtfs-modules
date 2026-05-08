@@ -93,7 +93,7 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
 
       try {
         ridership.setAverageLoad(Double.valueOf(avgLoad));
-      } catch (NumberFormatException e) {
+      } catch (NumberFormatException _) {
         _log.error("NFE on avgLoad {}", controlLine);
         continue;
       }
@@ -101,7 +101,7 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
       try {
         Double board = (Double.valueOf(boardings));
         ridership.setTotalBoardings(board.intValue());
-      } catch (NumberFormatException e) {
+      } catch (NumberFormatException _) {
         _log.error("NFE on boardings {}", controlLine);
         continue;
       }
@@ -109,7 +109,7 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
       try {
         Double alight = (Double.valueOf(alightings));
         ridership.setTotalAlightings(alight.intValue());
-      } catch (NumberFormatException e) {
+      } catch (NumberFormatException _) {
         _log.error("NFE on alightings {}", controlLine);
         continue;
       }
@@ -117,7 +117,7 @@ public class ExtrapolateRidershipData implements GtfsTransformStrategy {
       try {
         Double stopSequence1 = (Double.valueOf(stopSequence));
         ridership.setStopSequence(stopSequence1.intValue());
-      } catch (NumberFormatException e) {
+      } catch (NumberFormatException _) {
         _log.error("NFE on stop sequence {}", controlLine);
         continue;
       }

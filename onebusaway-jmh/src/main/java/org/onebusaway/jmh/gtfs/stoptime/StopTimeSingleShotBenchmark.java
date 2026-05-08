@@ -126,7 +126,7 @@ public class StopTimeSingleShotBenchmark {
     return reader;
   }
 
-  public static void main(String[] args) throws RunnerException {
+  void main() throws RunnerException {
     Options opt =
         new OptionsBuilder().include(StopTimeSingleShotBenchmark.class.getSimpleName()).build();
     new Runner(opt).run();

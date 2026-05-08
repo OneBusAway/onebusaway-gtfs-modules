@@ -36,7 +36,7 @@ public class TranslationServiceData implements Serializable {
   public void putTranslation(Class<?> type, String language, PropertyTranslation translation) {
     TypeAndLanguage key = new TypeAndLanguage(type, language);
     List<PropertyTranslation> translations =
-        _translationMap.computeIfAbsent(key, k -> new ArrayList<>());
+        _translationMap.computeIfAbsent(key, _ -> new ArrayList<>());
     translations.add(translation);
   }
 

@@ -109,7 +109,7 @@ public class DefaultPropertyMethodResolver implements PropertyMethodResolver {
         if (matches(ci.getName(), targetType)) {
           methods.add(Class.forName(ci.getName()).getMethod(methodName));
         }
-      } catch (Exception e) {
+      } catch (Exception _) {
         continue;
       }
     }

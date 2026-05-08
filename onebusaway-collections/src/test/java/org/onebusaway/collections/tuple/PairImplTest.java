@@ -76,14 +76,14 @@ public class PairImplTest {
     try {
       p1.getOpposite("c");
       fail();
-    } catch (NoSuchElementException ex) {
+    } catch (NoSuchElementException _) {
 
     }
 
     try {
       p1.getOpposite(null);
       fail();
-    } catch (NoSuchElementException ex) {
+    } catch (NoSuchElementException _) {
 
     }
 

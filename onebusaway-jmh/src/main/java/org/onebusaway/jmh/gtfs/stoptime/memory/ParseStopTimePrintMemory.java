@@ -5,10 +5,10 @@ import org.onebusaway.gtfs.model.StopTime;
 
 public class ParseStopTimePrintMemory extends AbstractParseStopTimePrintMemory {
 
-  public static void main(String[] args) throws Exception {
-    System.out.println(ParseStopTimePrintMemory.class.getName());
+  void main() throws Exception {
+    IO.println(ParseStopTimePrintMemory.class.getName());
     GtfsRelationalDaoImpl store = runPrint(false, StopTime.class);
 
-    System.out.println("Got " + store.getAllStopTimes().size());
+    IO.println("Got " + store.getAllStopTimes().size());
   }
 }

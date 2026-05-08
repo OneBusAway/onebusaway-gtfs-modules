@@ -88,7 +88,7 @@ public class GtfsTransformerMain {
 
   private final Options options = new Options();
 
-  public static void main(String[] args) throws IOException {
+  void main(String[] args) throws IOException {
     GtfsTransformerMain m = new GtfsTransformerMain();
     m.run(args);
   }

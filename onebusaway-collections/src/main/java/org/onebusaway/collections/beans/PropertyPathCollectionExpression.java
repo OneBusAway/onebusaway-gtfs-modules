@@ -102,16 +102,18 @@ public final class PropertyPathCollectionExpression {
           "error invoking property reader: obj=" + value + " property=" + _properties[methodIndex],
           ex);
     }
-    if (result instanceof Iterable<?> iterable) {
-      for (Object child : iterable) {
-        invoke(value, child, methodIndex + 1, collector);
+    switch (result) {
+      case Iterable<?> iterable -> {
+        for (Object child : iterable) {
+          invoke(value, child, methodIndex + 1, collector);
+        }
       }
-    } else if (result instanceof Object[] values) {
-      for (Object child : values) {
-        invoke(value, child, methodIndex + 1, collector);
+      case Object[] values -> {
+        for (Object child : values) {
+          invoke(value, child, methodIndex + 1, collector);
+        }
       }
-    } else {
-      invoke(value, result, methodIndex + 1, collector);
+      case null, default -> invoke(value, result, methodIndex + 1, collector);
     }
   }
 

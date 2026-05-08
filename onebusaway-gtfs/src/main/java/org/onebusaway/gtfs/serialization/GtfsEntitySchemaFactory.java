@@ -42,6 +42,7 @@ public class GtfsEntitySchemaFactory {
     entityClasses.add(Level.class);
     entityClasses.add(Stop.class);
     entityClasses.add(StopAreaElement.class);
+    entityClasses.add(Location.class);
     entityClasses.add(LocationGroup.class);
     entityClasses.add(LocationGroupElement.class);
     entityClasses.add(Trip.class);

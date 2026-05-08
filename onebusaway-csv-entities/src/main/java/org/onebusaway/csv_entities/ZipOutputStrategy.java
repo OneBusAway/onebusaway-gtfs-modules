@@ -91,6 +91,15 @@ class ZipOutputStrategy implements OutputStrategy {
   }
 
   @Override
+  public void writeRawEntry(String filename, String content) throws IOException {
+    closeCurrentEntityWriter();
+    _out.putNextEntry(new ZipEntry(filename));
+    _writer.write(content);
+    _writer.flush();
+    _out.closeEntry();
+  }
+
+  @Override
   public void flush() throws IOException {
     _out.flush();
   }

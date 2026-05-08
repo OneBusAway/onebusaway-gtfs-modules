@@ -15,6 +15,7 @@ package org.onebusaway.gtfs.serialization;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import org.onebusaway.csv_entities.CsvEntityWriter;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
+import org.onebusaway.gtfs.model.Location;
 import org.onebusaway.gtfs.services.GtfsDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,14 +68,27 @@ public class GtfsWriter extends CsvEntityWriter {
 
     for (Class<?> entityClass : classes) {
       _log.info("writing entities: " + entityClass.getName());
-      Collection<Object> entities =
-          sortEntities(entityClass, dao.getAllEntitiesForType(entityClass));
-      excludeOptionalAndMissingFields(entityClass, entities);
-      for (Object entity : entities) handleEntity(entity);
-      flush();
+      if (entityClass == Location.class) {
+        writeLocations(dao);
+      } else {
+        Collection<Object> entities =
+            sortEntities(entityClass, dao.getAllEntitiesForType(entityClass));
+        excludeOptionalAndMissingFields(entityClass, entities);
+        for (Object entity : entities) handleEntity(entity);
+        flush();
+      }
     }
 
     close();
+  }
+
+  private void writeLocations(GtfsDao dao) throws IOException {
+    Collection<Location> locations = dao.getAllEntitiesForType(Location.class);
+    if (locations.isEmpty()) return;
+
+    StringWriter sw = new StringWriter();
+    new LocationsGeoJSONWriter(sw).write(locations);
+    writeRawEntry("locations.geojson", sw.toString());
   }
 
   @SuppressWarnings("unchecked")

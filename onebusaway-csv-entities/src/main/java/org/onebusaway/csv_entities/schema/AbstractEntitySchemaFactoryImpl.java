@@ -392,7 +392,7 @@ public abstract class AbstractEntitySchemaFactoryImpl
                 || method.getReturnType() == Boolean.TYPE)) {
           fm.setIsSetMethod(method);
         }
-      } catch (Exception ex) {
+      } catch (Exception _) {
         // We ignore this
       }
     }

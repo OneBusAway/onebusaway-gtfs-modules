@@ -74,7 +74,7 @@ public class LegacyParseIntStopTimeFieldMappingFactory implements FieldMappingFa
 
         return seconds + 60 * (minutes + 60 * hours);
       }
-    } catch (Exception ex) {
+    } catch (Exception _) {
       // fall through
     }
     throw new InvalidStopTimeException(value);

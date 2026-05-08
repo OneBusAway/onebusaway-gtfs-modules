@@ -6,10 +6,10 @@ import org.onebusaway.gtfs.model.ShapePoint;
 /** BEFORE RUNNING: MANUALLY SET THE NEW/OLD TRIP AND SHAPEPOINT MAPPER(S) */
 public class ParseShapeStringInterningPrintMemory extends AbstractParseShapePrintMemory {
 
-  public static void main(String[] args) throws Exception {
-    System.out.println(ParseShapeStringInterningPrintMemory.class.getName());
+  void main() throws Exception {
+    IO.println(ParseShapeStringInterningPrintMemory.class.getName());
     GtfsRelationalDaoImpl store = runPrint(true, ShapePoint.class);
 
-    System.out.println("Got " + store.getAllShapeIds().size());
+    IO.println("Got " + store.getAllShapeIds().size());
   }
 }

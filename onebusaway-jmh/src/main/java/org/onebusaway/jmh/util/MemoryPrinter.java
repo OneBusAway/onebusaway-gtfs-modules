@@ -9,9 +9,9 @@ public class MemoryPrinter {
     long freeMemory = runtime.freeMemory(); // Free memory within the allocated JVM memory
     long usedMemory = totalMemory - freeMemory; // Used memory within the allocated JVM memory
 
-    System.out.println("  Total Memory: " + toMegabytes(totalMemory) + " MB");
-    System.out.println("  Free Memory: " + toMegabytes(freeMemory) + " MB");
-    System.out.println("  Used Memory: " + toMegabytes(usedMemory) + " MB");
+    IO.println("  Total Memory: " + toMegabytes(totalMemory) + " MB");
+    IO.println("  Free Memory: " + toMegabytes(freeMemory) + " MB");
+    IO.println("  Used Memory: " + toMegabytes(usedMemory) + " MB");
   }
 
   private static String toMegabytes(long l) {

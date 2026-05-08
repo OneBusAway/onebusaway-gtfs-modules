@@ -48,7 +48,7 @@ public class DeferredValueSupport {
     String agencyId = null;
     try {
       agencyId = context.getDefaultAgencyId();
-    } catch (NoDefaultAgencyIdException ndaie) {
+    } catch (NoDefaultAgencyIdException _) {
       agencyId = null;
     }
     AgencyAndId existingId = (AgencyAndId) bean.getPropertyValue(propertyName);

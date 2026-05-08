@@ -14,7 +14,7 @@ public class AbstractParseStopTimePrintMemory {
       throws Exception {
     GtfsRelationalDaoImpl run = run(internStrings, cls);
 
-    System.out.println("Memory parser after cleanup.");
+    IO.println("Memory parser after cleanup.");
 
     System.gc();
     MemoryPrinter.printMemoryUsage();
@@ -30,14 +30,14 @@ public class AbstractParseStopTimePrintMemory {
       entityStore.setPackShapePoints(true);
       entityStore.setPackStopTimes(true);
 
-      System.out.println("Read file " + cls.getSimpleName());
+      IO.println("Read file " + cls.getSimpleName());
 
       GtfsReader reader =
           StopTimeSingleShotBenchmark.processWithEntityStore(
               file, "abcd", internStrings, entityStore, cls, false);
 
-      System.out.println("Read file.");
-      System.out.println("Memory after parsing:");
+      IO.println("Read file.");
+      IO.println("Memory after parsing:");
 
       System.gc();
       MemoryPrinter.printMemoryUsage();
@@ -64,7 +64,7 @@ public class AbstractParseStopTimePrintMemory {
     builder.append(
         "| " + intern + " | " + toMegabytes(totalMemory) + " | " + toMegabytes(usedMemory) + " | ");
 
-    System.out.println(builder);
+    IO.println(builder);
   }
 
   private static String toMegabytes(long l) {

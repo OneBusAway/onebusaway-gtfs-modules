@@ -153,7 +153,7 @@ public class AnomalyCheckFutureTripCounts implements GtfsTransformStrategy {
                 .mapToDouble(a -> a)
                 .average()
                 .getAsDouble();
-      } catch (NoSuchElementException exception) {
+      } catch (NoSuchElementException _) {
         tripsUpcoming = dayAvgTripsMap.get(stringDay);
       }
 

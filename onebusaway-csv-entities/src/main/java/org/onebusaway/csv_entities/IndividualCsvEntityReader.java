@@ -91,7 +91,7 @@ public class IndividualCsvEntityReader implements CSVListener {
       readEntity(line);
     }
     _line++;
-    if (_verbose && _line % 1000 == 0) System.out.println("entities=" + _line);
+    if (_verbose && _line % 1000 == 0) IO.println("entities=" + _line);
   }
 
   private void readSchema(List<String> line) {

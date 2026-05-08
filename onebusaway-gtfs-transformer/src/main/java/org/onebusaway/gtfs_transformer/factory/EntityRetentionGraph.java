@@ -117,20 +117,23 @@ public class EntityRetentionGraph {
     Set<Object> retained = retainUp ? _retainedUp : _retainedDown;
     if (!retained.add(object)) return;
 
-    if (object instanceof Agency agency) retainAgency(agency, retainUp);
-    else if (object instanceof Route route) retainRoute(route, retainUp);
-    else if (object instanceof Trip trip) retainTrip(trip, retainUp);
-    else if (object instanceof StopTime time) retainStopTime(time, retainUp);
-    else if (object instanceof Stop stop) retainStop(stop, retainUp);
-    else if (object instanceof ServiceCalendar calendar) retainServiceCalendar(calendar, retainUp);
-    else if (object instanceof ServiceCalendarDate date) retainServiceCalendarDate(date, retainUp);
-    else if (object instanceof ServiceIdKey key3) retainServiceId(key3.getId(), retainUp);
-    else if (object instanceof ShapeIdKey key2) retainShapeId(key2.getId(), retainUp);
-    else if (object instanceof BlockIdKey key1) retainBlockId(key1.getId(), retainUp);
-    else if (object instanceof Frequency frequency) retainFrequency(frequency, retainUp);
-    else if (object instanceof ZoneIdKey key) retainZoneId(key, retainUp);
-    else if (object instanceof FareRule rule) retainFareRule(rule, retainUp);
-    else if (object instanceof FareAttribute attribute) retainFareAttribute(attribute, retainUp);
+    switch (object) {
+      case Agency agency -> retainAgency(agency, retainUp);
+      case Route route -> retainRoute(route, retainUp);
+      case Trip trip -> retainTrip(trip, retainUp);
+      case StopTime time -> retainStopTime(time, retainUp);
+      case Stop stop -> retainStop(stop, retainUp);
+      case ServiceCalendar calendar -> retainServiceCalendar(calendar, retainUp);
+      case ServiceCalendarDate date -> retainServiceCalendarDate(date, retainUp);
+      case ServiceIdKey key3 -> retainServiceId(key3.getId(), retainUp);
+      case ShapeIdKey key2 -> retainShapeId(key2.getId(), retainUp);
+      case BlockIdKey key1 -> retainBlockId(key1.getId(), retainUp);
+      case Frequency frequency -> retainFrequency(frequency, retainUp);
+      case ZoneIdKey key -> retainZoneId(key, retainUp);
+      case FareRule rule -> retainFareRule(rule, retainUp);
+      case FareAttribute attribute -> retainFareAttribute(attribute, retainUp);
+      case null, default -> {}
+    }
 
     if (retainUp) retainDown(object);
   }

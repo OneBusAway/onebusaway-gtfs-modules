@@ -13,6 +13,7 @@
  */
 package org.onebusaway.jmh.gtfs.shape;
 
+import java.io.Serial;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.model.AgencyAndId;
@@ -24,7 +25,7 @@ import org.onebusaway.gtfs.serialization.mappings.LatLonFieldMappingFactory;
 public final class LegacyShapePoint extends IdentityBean<Integer>
     implements Comparable<LegacyShapePoint> {
 
-  private static final long serialVersionUID = 1L;
+  @Serial private static final long serialVersionUID = 1L;
 
   public static final double MISSING_VALUE = -999;
 

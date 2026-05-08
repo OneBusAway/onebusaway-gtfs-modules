@@ -99,7 +99,7 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
         CsvEntityMappingBean mappingBean = getEntityMappingBeanForEntityClass(entityClass);
         registerBeanDefinition(mappingBean);
       }
-    } catch (ClassNotFoundException ex) {
+    } catch (ClassNotFoundException _) {
 
     }
   }
@@ -236,7 +236,7 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
       String jarFile = urlFile.substring(0, separatorIndex);
       try {
         return new URL(jarFile);
-      } catch (MalformedURLException ex) {
+      } catch (MalformedURLException _) {
         // Probably no protocol in original jar URL, like
         // "jar:C:/mypath/myjar.jar".
         // This usually indicates that the jar file resides in the file
@@ -260,7 +260,7 @@ public class AnnotationDrivenEntitySchemaFactory extends AbstractEntitySchemaFac
     }
     try {
       return new File(toURI(resourceUrl).getSchemeSpecificPart());
-    } catch (URISyntaxException ex) {
+    } catch (URISyntaxException _) {
       // Fallback for URLs that are not valid URIs (should hardly ever
       // happen).
       return new File(resourceUrl.getFile());

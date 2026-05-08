@@ -100,7 +100,7 @@ public class ExcludeOptionalAndMissingEntitySchemaFactory implements EntitySchem
       if (!field.isMissingAndOptional(wrapped)) {
         return true;
       }
-    } catch (MissingRequiredEntityException ex) {
+    } catch (MissingRequiredEntityException _) {
       return true;
     }
     return false;

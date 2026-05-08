@@ -235,7 +235,7 @@ public class CalendarServiceDataFactoryImplSyntheticTest {
     try {
       factory.createData();
       fail("should detect that TimeZone ID is not valid");
-    } catch (UnknownAgencyTimezoneException ex) {
+    } catch (UnknownAgencyTimezoneException _) {
 
     }
   }

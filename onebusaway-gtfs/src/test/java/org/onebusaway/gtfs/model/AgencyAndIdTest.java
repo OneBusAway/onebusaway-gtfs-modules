@@ -34,7 +34,7 @@ public class AgencyAndIdTest {
     try {
       AgencyAndId.convertFromString("ab");
       fail();
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException _) {
 
     }
   }

@@ -33,7 +33,7 @@ public class GtfsHibernateReaderExampleMain {
 
   private static final String KEY_FILE = "file:";
 
-  public static void main(String[] args) throws IOException {
+  void main(String[] args) throws IOException {
 
     if (!(args.length == 1 || args.length == 2)) {
       System.err.println("usage: gtfsPath [hibernate-config.xml]");
@@ -54,7 +54,7 @@ public class GtfsHibernateReaderExampleMain {
 
     Collection<Stop> stops = dao.getAllStops();
 
-    for (Stop stop : stops) System.out.println(stop.getName());
+    for (Stop stop : stops) IO.println(stop.getName());
 
     CalendarService calendarService = factory.getCalendarService();
     Set<AgencyAndId> serviceIds = calendarService.getServiceIds();
@@ -68,7 +68,7 @@ public class GtfsHibernateReaderExampleMain {
         to = max(to, date);
       }
 
-      System.out.println("serviceId=" + serviceId + " from=" + from + " to=" + to);
+      IO.println("serviceId=" + serviceId + " from=" + from + " to=" + to);
     }
   }
 

@@ -55,7 +55,7 @@ public class ServiceDateFieldMappingFactory implements FieldMappingFactory {
       try {
         ServiceDate date = ServiceDate.parseString(value.toString());
         object.setPropertyValue(_objFieldName, date);
-      } catch (ParseException ex) {
+      } catch (ParseException _) {
         throw new InvalidValueEntityException(_entityType, _csvFieldName, value.toString());
       }
     }
@@ -75,7 +75,7 @@ public class ServiceDateFieldMappingFactory implements FieldMappingFactory {
       if (type == ServiceDate.class) {
         try {
           return ServiceDate.parseString(value.toString());
-        } catch (ParseException ex) {
+        } catch (ParseException _) {
           throw new InvalidValueEntityException(_entityType, _csvFieldName, value.toString());
         }
       }

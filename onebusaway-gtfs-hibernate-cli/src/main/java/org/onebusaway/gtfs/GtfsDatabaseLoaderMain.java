@@ -44,7 +44,7 @@ public class GtfsDatabaseLoaderMain {
 
   private static final String ARG_PASSWORD = "password";
 
-  public static void main(String[] args) throws IOException {
+  void main(String[] args) throws IOException {
     GtfsDatabaseLoaderMain m = new GtfsDatabaseLoaderMain();
     m.run(args);
   }

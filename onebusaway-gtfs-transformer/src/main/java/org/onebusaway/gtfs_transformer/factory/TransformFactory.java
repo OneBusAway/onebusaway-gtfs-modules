@@ -565,7 +565,7 @@ public class TransformFactory {
   private Class<?> getClassForName(String className) {
     try {
       return Class.forName(className);
-    } catch (ClassNotFoundException e) {
+    } catch (ClassNotFoundException _) {
       return null;
     }
   }
@@ -730,7 +730,7 @@ public class TransformFactory {
   private Object instantiate(Class<?> entityClass) {
     try {
       return entityClass.getDeclaredConstructor().newInstance();
-    } catch (Exception ex) {
+    } catch (Exception _) {
       throw new IllegalStateException("error instantiating type: " + entityClass.getName());
     }
   }

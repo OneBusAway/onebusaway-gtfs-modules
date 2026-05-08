@@ -25,7 +25,7 @@ import org.onebusaway.csv_entities.EntityHandler;
 import org.onebusaway.gtfs.serialization.GtfsReader;
 
 public class EntityCounterMain {
-  public static void main(String[] args) throws IOException {
+  void main(String[] args) throws IOException {
 
     if (args.length != 1) {
       System.err.println("usage: path/to/gtfs_feed");
@@ -44,7 +44,7 @@ public class EntityCounterMain {
     List<Class<?>> types = new ArrayList<>(counts.keySet());
     Collections.sort(types, new ClassNameComparator());
 
-    for (Class<?> type : types) System.out.println(type.getName() + " " + counts.get(type));
+    for (Class<?> type : types) IO.println(type.getName() + " " + counts.get(type));
   }
 
   private static class EntityCounter implements EntityHandler {

@@ -15,7 +15,7 @@ public class AbstractParsePrintMemory {
   public static GtfsRelationalDaoImpl runPrint(boolean internStrings) throws Exception {
     GtfsRelationalDaoImpl run = run(internStrings);
 
-    System.out.println("Memory parser after cleanup.");
+    IO.println("Memory parser after cleanup.");
 
     System.gc();
     MemoryPrinter.printMemoryUsage();
@@ -36,7 +36,7 @@ public class AbstractParsePrintMemory {
       entityStore.setPackShapePoints(true);
       entityStore.setPackStopTimes(true);
 
-      System.out.println("Read files");
+      IO.println("Read files");
 
       GtfsReader reader =
           ShapeSingleShotBenchmark.processWithEntityStore(
@@ -47,7 +47,7 @@ public class AbstractParsePrintMemory {
               null,
               false);
 
-      System.out.println("Read done.");
+      IO.println("Read done.");
 
       entityStore.flush();
       reader.close();
@@ -82,7 +82,7 @@ public class AbstractParsePrintMemory {
             + toMegabytes(usedMemory)
             + " | ");
 
-    System.out.println(builder);
+    IO.println(builder);
   }
 
   private static String toMegabytes(long l) {

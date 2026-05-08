@@ -138,7 +138,7 @@ public class ServiceDateTest {
     try {
       ServiceDate.parseString("201002XX");
       fail();
-    } catch (ParseException ex) {
+    } catch (ParseException _) {
 
     }
   }

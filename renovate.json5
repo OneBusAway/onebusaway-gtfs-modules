@@ -10,6 +10,14 @@
   ],
   packageRules: [
     {
+      description: 'Automerge',
+      matchPackageNames: [
+        'commons-io:commons-io',
+        'com.fasterxml.jackson.core:jackson-databind'
+      ],
+      automerge: true
+    },
+    {
       description: 'Automerge test dependencies in a single PR',
       groupName: 'Test dependencies',
       matchPackageNames: [

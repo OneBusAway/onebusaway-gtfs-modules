@@ -69,4 +69,8 @@ public class CsvEntityWriter implements EntityHandler {
   public void close() throws IOException {
     _outputStrategy.close();
   }
+
+  protected void writeRawEntry(String filename, String content) throws IOException {
+    _outputStrategy.writeRawEntry(filename, content);
+  }
 }

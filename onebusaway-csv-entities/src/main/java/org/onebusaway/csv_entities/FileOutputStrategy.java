@@ -57,6 +57,15 @@ class FileOutputStrategy implements OutputStrategy {
   }
 
   @Override
+  public void writeRawEntry(String filename, String content) throws IOException {
+    if (!_outputDirectory.exists()) _outputDirectory.mkdirs();
+    File outputFile = new File(_outputDirectory, filename);
+    try (PrintWriter writer = new PrintWriter(outputFile, "UTF-8")) {
+      writer.write(content);
+    }
+  }
+
+  @Override
   public void flush() {
     for (IndividualCsvEntityWriter writer : _writersByType.values()) writer.flush();
   }

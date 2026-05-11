@@ -30,4 +30,6 @@ interface OutputStrategy {
   public void flush() throws IOException;
 
   public void close() throws IOException;
+
+  public void writeRawEntry(String filename, String content) throws IOException;
 }

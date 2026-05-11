@@ -13,7 +13,8 @@ import org.onebusaway.gtfs.model.Location;
 
 public class LocationsGeoJSONWriter {
 
-  private static final ObjectWriter OBJECT_WRITER = new ObjectMapper().writer();
+  private static final ObjectWriter OBJECT_WRITER =
+      new ObjectMapper().writerWithDefaultPrettyPrinter();
 
   private final Writer writer;
 

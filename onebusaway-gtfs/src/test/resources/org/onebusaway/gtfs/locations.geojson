@@ -7,7 +7,7 @@
       "id": "si_Wendenschlossstrasse",
       "properties": {
         "stop_name": "Wendenschlossstrasse",
-        "stop_description": "A nice description",
+        "stop_desc": "A nice description",
         "stop_url": "http://example.com",
         "zone_id": "fare-zone-A"
       },

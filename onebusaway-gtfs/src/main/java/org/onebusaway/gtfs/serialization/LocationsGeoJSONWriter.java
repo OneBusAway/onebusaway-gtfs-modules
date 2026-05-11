@@ -31,8 +31,7 @@ public class LocationsGeoJSONWriter {
 
       Map<String, Object> properties = new HashMap<>();
       if (location.getName() != null) properties.put("stop_name", location.getName());
-      if (location.getDescription() != null)
-        properties.put("stop_description", location.getDescription());
+      if (location.getDescription() != null) properties.put("stop_desc", location.getDescription());
       if (location.getUrl() != null) properties.put("stop_url", location.getUrl());
       if (location.getZoneId() != null) properties.put("zone_id", location.getZoneId());
       feature.setProperties(properties);

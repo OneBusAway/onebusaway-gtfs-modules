@@ -13,8 +13,6 @@
  */
 package org.onebusaway.gtfs.serialization;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -23,11 +21,13 @@ import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Location;
+import tools.jackson.databind.ObjectReader;
+import tools.jackson.databind.json.JsonMapper;
 
 public class LocationsGeoJSONReader {
 
   private static final ObjectReader FEATURE_COLLECTION_OBJECT_READER =
-      new ObjectMapper().readerFor(FeatureCollection.class);
+      new JsonMapper().readerFor(FeatureCollection.class);
 
   private final Reader reader;
   private final String defaultAgencyId;

@@ -1,7 +1,5 @@
 package org.onebusaway.gtfs.serialization;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
@@ -10,11 +8,13 @@ import java.util.Map;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.onebusaway.gtfs.model.Location;
+import tools.jackson.databind.ObjectWriter;
+import tools.jackson.databind.json.JsonMapper;
 
 public class LocationsGeoJSONWriter {
 
   private static final ObjectWriter OBJECT_WRITER =
-      new ObjectMapper().writerWithDefaultPrettyPrinter();
+      new JsonMapper().writerWithDefaultPrettyPrinter();
 
   private final Writer writer;
 

@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.onebusaway</groupId>
     <artifactId>onebusaway-gtfs-modules</artifactId>
-    <version>12.0.2-SNAPSHOT</version>
+    <version>13.0.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 

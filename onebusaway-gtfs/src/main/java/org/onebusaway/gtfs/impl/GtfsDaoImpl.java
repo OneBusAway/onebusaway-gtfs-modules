@@ -243,6 +243,18 @@ public class GtfsDaoImpl extends GenericDaoImpl implements GtfsMutableDao {
     return getAllEntitiesForType(Network.class);
   }
 
+  public Collection<Notice> getAllNotices() {
+    return getAllEntitiesForType(Notice.class);
+  }
+
+  public Notice getNoticeForId(AgencyAndId id) {
+    return getEntityForId(Notice.class, id);
+  }
+
+  public Collection<NoticeAssignment> getAllNoticeAssignments() {
+    return getAllEntitiesForType(NoticeAssignment.class);
+  }
+
   public Facility getFacilityForId(AgencyAndId id) {
     return getEntityForId(Facility.class, id);
   }

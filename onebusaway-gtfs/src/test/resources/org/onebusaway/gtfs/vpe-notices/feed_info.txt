@@ -1,0 +1,2 @@
+feed_publisher_name,feed_publisher_url,feed_contact_url,feed_contact_email,feed_lang,default_lang,feed_version,feed_start_date,feed_end_date,feed_id
+Verkehrsverbund Pforzheim-Enzkreis GmbH,https://vpe.de,https://opendata.vpe.de,info@vpe.de,de-DE,de-DE,20260605203125,20251214,20261212,VPE

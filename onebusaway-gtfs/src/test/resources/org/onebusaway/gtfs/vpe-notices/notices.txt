@@ -1,0 +1,38 @@
+notice_id,notice_group_id,display_text
+de:ntid:11,,Schnellbus
+de:ntid:10,,"Moonlightbus, fährt Fr/Sa & Sa/So & nachts vor Karfreitag, 1. Mai, Chr. Himmelfahrt, Fronleichnam, 3. Okt. & Allerheiligen"
+de:ntid:33,,Samstags und sonntags wird diese Linie nicht bedient.
+de:ntid:3,,nur Nächte Freitag auf Samstag.
+de:ntid:32,,Die Bedienung von Freudenstein erfolgt am Wochenende über die Linie 700.
+de:ntid:30,,"Fahrten mit der Fußnote ""nur an Schultagen"" dienen vorrangig der Schülerbeförderung und können aufgrund von Stundenplanänderungen und beweglichen Ferientagen kurzfristig ausfallen oder verlegt werden."
+de:ntid:26,,fährt bei Bedarf über Kapfenhardt
+de:ntid:34,,"Anmeldung mind. 30 Min. vor Fahrt, Tel. 07041 / 2400, es gilt ein spez. Tarif"
+de:ntid:0,,nur an Schultagen
+de:ntid:8,,nur an Ferientagen
+de:ntid:29,,Am 24. und 31.12. Verkehr wie samstags.
+de:ntid:1,,nur mittwochs und freitags an Schultagen
+de:ntid:2,,"nur montags, dienstags, donnerstags an Schultagen"
+de:ntid:9,,"nur montags, dienstags, donnerstags, freitags an Schultagen"
+de:ntid:21,,nur freitags an Schultagen
+de:ntid:20,,nur montags an Schultagen
+de:ntid:6,,"nur montags, dienstags, mittwochs, donnerstags an Schultagen"
+de:ntid:31,,Spätbusse ab 20.00 Uhr siehe Linie 700
+de:ntid:22,,"zur Weiterfahrt nach Mönsheim Schule Umsteig in Linie 703, Lindenhalle ab 7.47"
+de:ntid:13,,nur freitags
+de:ntid:14,,nur montags bis donnerstag
+de:ntid:23,,Umstieg zur Bergschule an Haltestelle Wilferdingen Rathaus
+de:ntid:25,,Einsatz eines Kleinbusses ausreichend
+de:ntid:27,,nicht 25.12. und 26.12.
+de:ntid:24,,Einsatz eines Gelenkbusses erforderlich
+de:ntid:15,,nur an Schultagen der Waldorfschule
+de:ntid:19,,nur dienstags und donnerstags an Schultagen
+de:ntid:28,,hält zum Ausstieg auch Dürrn Autohalle
+de:ntid:17,,nur Mo-Do über Schömberg Schule
+de:ntid:18,,Kleinbus
+de:ntid:16,,"nur montags, dienstags, mittwochs an Schultagen"
+de:ntid:7,,Im Zeitraum Mai bis September mit Fahrradanhänger
+de:ntid:12,,"Anruf-Sammeltaxi, Anmeldung bis 30 Min. vor Fahrtbeginn unter Tel. 07041/2400"
+de:ntid:4,,nicht 24.12.
+de:ntid:5,,nicht 24. und 31.12.
+de:ntid:35,,Gleis
+de:ntid:36,,IFOPT

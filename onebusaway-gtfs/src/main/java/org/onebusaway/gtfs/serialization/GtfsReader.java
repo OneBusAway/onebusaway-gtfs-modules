@@ -89,6 +89,8 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(FacilityProperty.class);
     _entityClasses.add(DirectionEntry.class);
     _entityClasses.add(Network.class);
+    _entityClasses.add(Notice.class);
+    _entityClasses.add(NoticeAssignment.class);
     _entityClasses.add(Timeframe.class);
 
     CsvTokenizerStrategy tokenizerStrategy = new CsvTokenizerStrategy();
@@ -245,7 +247,7 @@ public class GtfsReader extends CsvEntityReader {
         // add it or save it to the entity store
         if (_agencies.contains(agency)) return;
 
-        _agencies.add((Agency) entity);
+        _agencies.add(agency);
       } else if (entity instanceof final BookingRule bookingRule) {
         registerAgencyId(BookingRule.class, bookingRule.getId());
       } else if (entity instanceof final Pathway pathway) {

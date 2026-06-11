@@ -1,0 +1,2 @@
+agency_id,agency_name,agency_url,agency_timezone,agency_lang
+de:agid:1,Betrieb,https://gtfs.org,Europe/Berlin,de-DE

@@ -90,6 +90,10 @@ public class GtfsTestData {
     return new File("src/test/resources", gtfsPath("testagency-vehicles-ext"));
   }
 
+  public static File getVpeNotices() {
+    return new File("src/test/resources", gtfsPath("vpe-notices"));
+  }
+
   public static <T extends GenericMutableDao> void readGtfs(
       T entityStore, File resourcePath, String defaultAgencyId) throws IOException {
 

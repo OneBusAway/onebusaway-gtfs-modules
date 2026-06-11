@@ -403,6 +403,21 @@ public class GtfsDataServiceImpl implements GtfsDataService {
   }
 
   @Override
+  public Collection<Notice> getAllNotices() {
+    return _dao.getAllNotices();
+  }
+
+  @Override
+  public Notice getNoticeForId(AgencyAndId id) {
+    return _dao.getNoticeForId(id);
+  }
+
+  @Override
+  public Collection<NoticeAssignment> getAllNoticeAssignments() {
+    return _dao.getAllNoticeAssignments();
+  }
+
+  @Override
   public List<Ridership> getRidershipForTrip(AgencyAndId tripId) {
     return _dao.getRidershipForTrip(tripId);
   }

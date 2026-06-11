@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 
 /** This annotation indicates that a field is experimental and not part of a released spec (yet). */
 @Retention(value = RetentionPolicy.SOURCE)
-@Target(value = ElementType.FIELD)
+@Target(value = {ElementType.FIELD, ElementType.TYPE})
 @Documented
 public @interface Experimental {
   /** This indicates what document this field was proposed in. Ideally this should be a URL. */

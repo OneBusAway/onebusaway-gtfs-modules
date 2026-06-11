@@ -346,6 +346,21 @@ public class HibernateGtfsRelationalDaoImpl implements GtfsMutableRelationalDao 
     return _ops.find("FROM Network");
   }
 
+  @Override
+  public Collection<Notice> getAllNotices() {
+    return _ops.find("FROM Notice");
+  }
+
+  @Override
+  public Notice getNoticeForId(AgencyAndId id) {
+    return _ops.get(Notice.class, id);
+  }
+
+  @Override
+  public Collection<NoticeAssignment> getAllNoticeAssignments() {
+    return _ops.find("FROM NoticeAssignment");
+  }
+
   /****
    * {@link GtfsRelationalDao} Interface
    ****/

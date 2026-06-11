@@ -59,7 +59,6 @@ public class MTAEntrancesStrategy implements GtfsTransformStrategy {
 
   private static final int LOCATION_TYPE_STATION = 1;
   private static final int LOCATION_TYPE_ENTRANCE = 2;
-  private static final int LOCATION_TYPE_PAYGATE = 3;
   private static final int LOCATION_TYPE_GENERIC = 4;
 
   static final int WHEELCHAIR_ACCESSIBLE = 1;

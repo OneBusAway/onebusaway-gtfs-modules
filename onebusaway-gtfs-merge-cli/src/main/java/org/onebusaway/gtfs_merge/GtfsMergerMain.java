@@ -23,6 +23,7 @@ import org.onebusaway.csv_entities.schema.annotations.CsvFields;
 import org.onebusaway.gtfs.serialization.GtfsEntitySchemaFactory;
 import org.onebusaway.gtfs_merge.strategies.AbstractEntityMergeStrategy;
 import org.onebusaway.gtfs_merge.strategies.EDuplicateDetectionStrategy;
+import org.onebusaway.gtfs_merge.strategies.EDuplicateRenamingStrategy;
 import org.onebusaway.gtfs_merge.strategies.ELogDuplicatesStrategy;
 import org.onebusaway.gtfs_merge.strategies.EntityMergeStrategy;
 import picocli.CommandLine;
@@ -51,6 +52,11 @@ public class GtfsMergerMain implements Callable<Integer> {
       names = {"--duplicateDetection"},
       description = "Duplicate detection strategy")
   List<String> duplicateDetectionOptions;
+
+  @Option(
+      names = {"--duplicateRenaming"},
+      description = "Duplicate renaming strategy (context|agency)")
+  List<String> duplicateRenamingOptions;
 
   @Option(
       names = {"--logDroppedDuplicates"},
@@ -129,6 +135,13 @@ public class GtfsMergerMain implements Callable<Integer> {
         var duplicateDetectionStrategy =
             EDuplicateDetectionStrategy.valueOf(duplicateDetectionOptions.get(i).toUpperCase());
         mergeStrategy.setDuplicateDetectionStrategy(duplicateDetectionStrategy);
+      }
+
+      // Apply duplicate renaming if specified for this file index
+      if (duplicateRenamingOptions != null && i < duplicateRenamingOptions.size()) {
+        var duplicateRenamingStrategy =
+            EDuplicateRenamingStrategy.valueOf(duplicateRenamingOptions.get(i).toUpperCase());
+        mergeStrategy.setDuplicateRenamingStrategy(duplicateRenamingStrategy);
       }
 
       // Apply log dropped duplicates if specified

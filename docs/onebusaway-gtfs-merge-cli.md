@@ -2,8 +2,8 @@
 
 ## Introduction
 
-The `onebusaway-gtfs-merge-cli` command-line application is a simple command-line tool for merging
-[GTFS](https://developers.google.com/transit/gtfs) feeds. 
+The `onebusaway-gtfs-merge-cli` command-line application is a tool for merging two or more
+[GTFS](https://developers.google.com/transit/gtfs) feeds into a single feed.
 
 ## Getting the Application
 
@@ -11,102 +11,120 @@ You can download the application from Maven Central.
 
 Go to https://repo1.maven.org/maven2/org/onebusaway/onebusaway-gtfs-merge-cli/, select the version
 you want and get the URL for the largest jar file. An example would be
-https://repo1.maven.org/maven2/org/onebusaway/onebusaway-gtfs-merge-cli/3.2.2/onebusaway-gtfs-merge-cli-3.2.2.jar
+https://repo1.maven.org/maven2/org/onebusaway/onebusaway-gtfs-merge-cli/14.0.0/onebusaway-gtfs-merge-cli-14.0.0.jar
 
 ## Using the Application
 
-You'll need a Java 21 runtime installed to run the cli. 
+The current build targets **Java 25**, so you need a Java 25 (or newer) runtime to run a jar built
+from this source. (Older released jars were built against older Java versions.)
 
 To run the application:
 
 ```
-java -jar onebusaway-gtfs-merge-cli.jar [--args] input_gtfs_path_a input_gtfs_path_b ... output_gtfs_path
+java -jar onebusaway-gtfs-merge-cli.jar [options] input_gtfs_path_a input_gtfs_path_b ... output_gtfs_path
 ```
 
-**Note**: Merging large GTFS feeds is often processor and memory intensive. You'll likely need to increase the
-max amount of memory allocated to Java with an option like `-Xmx1G` (adjust the limit as needed).  I also recommend
-adding the `-server` argument if you are running the Oracle or OpenJDK, as it can really increase performance. 
+The **last** positional argument is the output path; every argument before it is an input feed. Each
+path may be a directory containing a GTFS feed or a `.zip` file. At least one input and one output are
+required (i.e. two positional arguments minimum).
 
-## Configuring the Application
+**Note**: Merging large GTFS feeds can be processor- and memory-intensive. You may need to raise the
+JVM heap limit with an option like `-Xmx1G` (adjust as needed).
 
-The merge application supports a number of options and arguments for configuring the application's behavior.  The
-general pattern is to specify options for each type of file in a GTFS feed using the `--file` option, specifying
-specific options for each file type after the `--file` option.  Here's a quick example:
+### How feeds are combined
+
+Input feeds are processed in **reverse command-line order** — entities from the *last* feed listed are
+added to the output first, and entities from earlier feeds are merged in afterward. When an entity
+from an earlier feed collides with one already in the output and is *not* treated as a duplicate (see
+below), its id is automatically renamed by prefixing it (e.g. `a-`, `b-`, …), and all references to it
+are rewritten. This automatic renaming replaces the old `--renameDuplicates` flag, which no longer
+exists.
+
+## Configuring per-file behavior
+
+Merge behavior is configured per GTFS file with the `--file` option, followed by options that apply to
+that file. Options are matched to files **by position**: the *N*-th `--file` is paired with the *N*-th
+`--duplicateDetection`. For example:
 
 ```
---file=routes.txt --duplicateDetection=identity --file=calendar.txt --logDroppedDuplicates ...
+--file=routes.txt --duplicateDetection=fuzzy --file=calendar.txt --duplicateDetection=none
 ```
 
-  The merge application supports merging the following files:
+`--file` takes a real GTFS file name; it is resolved to an entity type through the GTFS schema, and an
+unrecognized name causes the application to exit with an error. Recognized files include:
 
  - `agency.txt`
  - `stops.txt`
  - `routes.txt`
  - `trips.txt` and `stop_times.txt`
- - `calendar.txt` and `calendar_dates.txt` 
+ - `calendar.txt` and `calendar_dates.txt`
  - `shapes.txt`
- - `fare_attributes.txt`
- - `fare_rules.txt`
  - `frequencies.txt`
  - `transfers.txt`
-   
-You can specify merge options for each of these files using the `--file=gtfs_file.txt` option.  File types listed
-together (eg. `trips.txt` and `stop_times.txt`) are handled by the same merge strategy, so specifying options for
-either will have the same effect.  For details on options you might specify, read on.
+ - `fare_attributes.txt`
+ - `fare_rules.txt`
+ - `feed_info.txt`
+
+Files listed together (e.g. `trips.txt` and `stop_times.txt`) are handled by the same merge strategy,
+so naming either configures both.
 
 ## Handling Duplicates
 
-The main issue to consider when merging GTFS feeds is the handling of duplicate entries between the two feeds,
-including how to identify duplicates and what to do with duplicates when they are found.
+The main issue when merging GTFS feeds is handling duplicate entries between feeds: how to identify
+duplicates, and what to do when one is found.
 
 ### Identifying Duplicates
 
-We support a couple of methods for determining when entries from two different feeds are actually duplicates.  By default,
-the merge tool will attempt to automatically determine the best merge strategy to use.  You can also control the specific
-strategy used on a per-file basis using the `--duplicateDetection` argument.  You can specify any of the following
-strategies for duplicate detection.
-  
- - `--duplicateDetection=identity`: If two entries have the same id (eg. stop id, route id, trip id), then they are
-    considered the same. This is the more strict matching policy.
-  
- - `--duplicateDetection=fuzzy`: If two entries have common elements (eg. stop name or location, route short name,
-    trip stop sequence), then they are considered the same.  This is the more lenient matching policy, and is highly
-    dependent on the type of GTFS entry being matched.
-    
- - `--duplicateDetection=none`: Entries between two feeds are never considered to be duplicates, even if they have
-    the same id or similar properties.
+By default, each file's merge strategy automatically picks the duplicate-detection approach it
+considers best for that entity type. You can override this per file with `--duplicateDetection`:
+
+ - `--duplicateDetection=identity`: two entries are the same if they share an id (e.g. stop id, route
+   id, trip id). This is the stricter policy.
+
+ - `--duplicateDetection=fuzzy`: two entries are the same if they share defining properties (e.g. stop
+   name/location, route short name, trip stop sequence). This is the more lenient policy and is highly
+   dependent on the entity type.
+
+ - `--duplicateDetection=none`: entries are never considered duplicates, even with the same id or
+   similar properties. Colliding ids are renamed instead of dropped (see "How feeds are combined").
+
+Values are case-insensitive.
 
 ### Logging Duplicates
 
-Sometimes your feed might have unexpected duplicates.  You can tell the merge tool to log duplicates it finds or even
-immediately exit with the following arguments:
+You can ask the tool to report or reject duplicates it drops:
 
- - `--logDroppedDuplicates` - log a message when a duplicate is found
-  
- - `--errorOnDroppedDuplicates` - throw an exception when a duplicate is found, stopping the program
-     
-## Examples
+ - `--logDroppedDuplicates` — log a warning when a duplicate is dropped.
 
-### Handling a Service Change
+ - `--errorOnDroppedDuplicates` — throw an exception and stop when a duplicate is dropped.
 
-Agencies often schedule major changes to their system around a particular date, with one GTFS feed for before the
-service change and a different GTFS feed for after.  We'd like to be able to merge these disjoint feeds into one
-feed with continuous coverage.
+**Important:** these two flags are applied *inside* the per-`--file` configuration loop, so they only
+take effect for files you have also named with `--file`. Passing at least one `--file` is required for
+them to do anything (and, in the current code, for the merge to run without error).
 
-In our example, an agency produces two feeds where the entries in `agency.txt` and `stops.txt` are exactly
-the same, so the default policy of identifying and dropping duplicates will work fine there.  The `routes.txt` file
-is a bit trickier, since the route ids are different between the two feeds but the entries are largely the same.  We
-will use fuzzy duplicate detection to match the routes between the two feeds.
+### Other options
 
-The next issue is the `calendar.txt` file.  The agency uses the same `service_id` values in both feeds
-(eg. `WEEK`, `SAT`, `SUN`) with different start and end dates in the two feeds.  If the default policy of
-dropping duplicate entries was used, we'd lose the dates in one of the service periods.  Instead, we rename duplicates
-such that the service ids from the second feed will be renamed to `b-WEEK`, `b-SAT`, etc. and all
-`trips.txt` entries in the second feed will be updated appropriately.  The result is that trips from the first
-and second feed will both have the proper calendar entries in the merged feed.
+ - `--debug` — print the resolved merge strategies before the merge begins.
+ - `--help`, `--version` — standard help/version output.
 
-Putting it all together, here is what the command-line options for the application would look like:
+## Example: handling a service change
+
+Agencies often schedule major changes around a particular date, publishing one feed for before the
+change and another for after, and we want to merge them into a single feed with continuous coverage.
+
+Suppose `agency.txt` and `stops.txt` are identical across the two feeds, so the default duplicate
+handling drops the duplicates correctly. The `routes.txt` entries describe the same routes but use
+different route ids, so we use fuzzy detection to match them. The `calendar.txt` file reuses the same
+`service_id` values (e.g. `WEEK`, `SAT`, `SUN`) with different start/end dates in each feed — these are
+*not* duplicates, so we force `none` detection, which makes the merger rename the colliding service
+ids (e.g. to `a-WEEK`) and rewrite the affected `trips.txt` references. Both feeds' trips then keep
+their correct calendars in the merged output.
+
+Putting it together — with `earlier.zip` first and `later.zip` second so the later feed's ids win:
 
 ```
---file=routes.txt --fuzzyDuplicates --file=calendar.txt --renameDuplicates
-```     
+java -jar onebusaway-gtfs-merge-cli.jar \
+  --file=routes.txt --duplicateDetection=fuzzy \
+  --file=calendar.txt --duplicateDetection=none \
+  earlier.zip later.zip merged.zip
+```

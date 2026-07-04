@@ -1,10 +1,25 @@
-Usage: [args] gtfs_input_dir ... gtfs_output_dir
+Usage: [args] gtfs_input_path ... gtfs_output_path
 
-Args:
+Input/output paths may be GTFS directories or .zip files. The last path is the
+output; every path before it is an input. Options are applied in the order they
+appear on the command line.
+
+Core args:
  --agencyId ID                    override the default agency id for imported GTFS data
- --transform=SPEC                 apply general transform from the specified definition
- --overwriteDuplicates            specify that duplicate GTFS entities should overwrite each other
- 
-Transforms:
+ --transform=SPEC                 apply a transform; SPEC is an inline JSON snippet, a file
+                                  of newline-delimited JSON ops, or a URL
+ --modifications=SPEC             alias for --transform
+ --reference=PATH                 a reference GTFS feed that transforms can read from
+ --overwriteDuplicates            duplicate GTFS entities overwrite each other when read
 
-You can specify transforms in a number of ways.  See the online documentation for more extensive documentation.
+Built-in transform flags:
+ --localVsExpress                 add additional local vs express fields
+ --checkStopTimes                 verify stop times within each trip are in order
+ --removeRepeatedStopTimes        remove repeated stop times
+ --removeDuplicateTrips           remove duplicate trips
+
+File-parameter flags (record a file path for transforms to consume):
+ --stopMapping, --ignoreStops, --regexFile, --controlFile, --concurrencyFile,
+ --omnyRoutesFile, --omnyStopsFile, --verifyRoutesFile
+
+See the online documentation for the full transform syntax and examples.

@@ -42,7 +42,7 @@ The `onebusaway-gtfs-transformer-cli` command-line application is a simple comma
 
 ### Requirements
 
-  * Java 17 or greater
+Java 25 or greater to run a jar built from the current source (older released jars were built against older Java versions).
 
 ### Getting the Application
 
@@ -66,9 +66,31 @@ if you are running the Oracle or OpenJDK can also increase performance.
 
 ### Arguments
 
-  * `--transform=...` : specify a transformation to apply to the input GTFS feed (see syntax below)
-  * `--agencyId=id` : specify a default agency id for the input GTFS feed
-  * `--overwriteDuplicates` : specify that duplicate GTFS entities should overwrite each other when read
+The last positional argument is the output path; every argument before it is an input feed. Options
+are applied in the **order they appear on the command line**, so when you combine several transforms
+their order matters.
+
+Core arguments:
+
+  * `--transform=...` / `--modifications=...` : apply a transformation to the input feed. These two are
+    aliases for the same behavior (see syntax below). The value may be an inline JSON snippet, a path
+    to a file of newline-delimited JSON ops, or a URL.
+  * `--agencyId=id` : specify a default agency id for the input GTFS feed.
+  * `--reference=path` : a reference GTFS feed that other transforms can read from.
+  * `--overwriteDuplicates` : duplicate GTFS entities overwrite each other when read.
+
+Built-in transform flags (each adds a specific transform to the pipeline):
+
+  * `--localVsExpress` : add additional local vs. express fields.
+  * `--checkStopTimes` : verify that stop times within each trip are in increasing order.
+  * `--removeRepeatedStopTimes` : remove repeated stop times.
+  * `--removeDuplicateTrips` : remove duplicate trips.
+
+File-parameter flags (each records a file path for transforms to consume; they do not, on their own,
+add a transform): `--stopMapping`, `--ignoreStops`, `--regexFile`, `--controlFile`,
+`--concurrencyFile`, `--omnyRoutesFile`, `--omnyStopsFile`, `--verifyRoutesFile`.
+
+Help is available via `-h`, `--help`, or `-help`.
 
 
 ### Transform Syntax

@@ -91,6 +91,7 @@ public class GtfsReader extends CsvEntityReader {
     _entityClasses.add(Network.class);
     _entityClasses.add(Notice.class);
     _entityClasses.add(NoticeAssignment.class);
+    _entityClasses.add(TripSegment.class);
     _entityClasses.add(Timeframe.class);
 
     CsvTokenizerStrategy tokenizerStrategy = new CsvTokenizerStrategy();

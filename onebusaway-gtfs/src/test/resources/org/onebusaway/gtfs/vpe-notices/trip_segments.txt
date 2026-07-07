@@ -1,0 +1,2 @@
+trip_segment_id,trip_id,from_stop_sequence,to_stop_sequence
+segment1,de:vpe:de:vpe:04102_,2,4

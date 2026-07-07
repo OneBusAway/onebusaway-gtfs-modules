@@ -231,6 +231,14 @@ public interface GtfsDao extends GenericDao {
 
   Collection<NoticeAssignment> getAllNoticeAssignments();
 
+  /****
+   * {@link TripSegment} Methods
+   ****/
+
+  Collection<TripSegment> getAllTripSegments();
+
+  TripSegment getTripSegmentForId(AgencyAndId id);
+
   Collection<DirectionEntry> getAllDirectionEntries();
 
   default boolean hasFaresV1() {

@@ -45,3 +45,4 @@ de:ntid:5,,trips,de:vpe:de:vpe:04102_::2780
 de:ntid:5,,trips,de:vpe:de:vpe:04102_::2741
 de:ntid:5,,trips,de:vpe:de:vpe:04102_::2742
 de:ntid:5,,trips,de:vpe:de:vpe:04102_::2743
+de:ntid:5,,trip_segments,de:vpe:de:vpe:04102_::2743

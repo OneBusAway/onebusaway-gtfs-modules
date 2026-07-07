@@ -58,6 +58,7 @@ public final class NoticeAssignment extends IdentityBean<AgencyAndId> {
 
   public enum TableName {
     trips,
-    routes
+    routes,
+    trip_segments
   }
 }

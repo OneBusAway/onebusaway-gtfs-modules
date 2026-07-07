@@ -68,6 +68,7 @@ public class GtfsEntitySchemaFactory {
     entityClasses.add(Icon.class);
     entityClasses.add(Network.class);
     entityClasses.add(Timeframe.class);
+    entityClasses.add(TripSegment.class);
     return entityClasses;
   }
 

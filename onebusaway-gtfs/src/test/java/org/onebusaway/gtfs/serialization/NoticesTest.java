@@ -37,7 +37,7 @@ class NoticesTest {
     var dao = processFeed(GtfsTestData.getVpeNotices(), AGENCY_ID, false);
 
     var assignments = dao.getAllNoticeAssignments();
-    assertEquals(46, assignments.size());
+    assertEquals(47, assignments.size());
 
     var routeAssignment =
         assignments.stream()
@@ -61,6 +61,20 @@ class NoticesTest {
             .findFirst()
             .orElseThrow();
     assertEquals(TableName.trips, tripAssignment.getTableName());
+  }
+
+  @Test
+  void tripSegmentsTest() throws IOException {
+    var dao = processFeed(GtfsTestData.getVpeNotices(), AGENCY_ID, false);
+
+    var segments = dao.getAllTripSegments();
+    assertEquals(1, segments.size());
+
+    var segment = dao.getTripSegmentForId(id("segment1"));
+    assertNotNull(segment);
+    assertEquals(id("de:vpe:de:vpe:04102_"), segment.getTripId());
+    assertEquals(2, segment.getFromStopSequence());
+    assertEquals(4, segment.getToStopSequence());
   }
 
   private static AgencyAndId id(String id) {

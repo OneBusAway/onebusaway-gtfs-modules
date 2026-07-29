@@ -14,12 +14,18 @@
 package org.onebusaway.gtfs_transformer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.zip.ZipFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.StopTime;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
@@ -133,6 +139,21 @@ public class GtfsTransformerTest {
                 + "'update':{'continuous_pickup':'2'}}");
     StopTime next = dao.getAllStopTimes().iterator().next();
     assertEquals(2, next.getContinuousPickup());
+  }
+
+  @Test
+  public void testUppercaseZipOutput(@TempDir Path tempDir) throws Exception {
+    Path output = tempDir.resolve("output.ZIP");
+    _transformer.setGtfsInputDirectory(_gtfs.getPath());
+    _transformer.setOutputDirectory(output.toFile());
+
+    _transformer.run();
+
+    assertTrue(Files.isRegularFile(output));
+    assertFalse(Files.isDirectory(output));
+    try (ZipFile zipFile = new ZipFile(output.toFile())) {
+      assertNotNull(zipFile.getEntry("agency.txt"));
+    }
   }
 
   private GtfsRelationalDao transform(String transformSpec) throws Exception {

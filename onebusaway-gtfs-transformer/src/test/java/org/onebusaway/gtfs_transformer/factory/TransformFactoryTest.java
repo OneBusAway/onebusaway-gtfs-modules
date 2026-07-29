@@ -72,6 +72,32 @@ public class TransformFactoryTest {
   }
 
   @Test
+  public void testRemoveTripWithEmptyShapeIdMatch()
+      throws IOException, TransformSpecificationException {
+    _factory.addModificationsFromString(
+        "{'op':'remove', " + "'match':{'file':'trips.txt', 'shape_id':''}}");
+    GtfsTransformStrategy transform = _transformer.getLastTransform();
+    TransformContext context = new TransformContext();
+    GtfsMutableRelationalDao dao = new GtfsRelationalDaoImpl();
+
+    Trip tripWithoutShape = new Trip();
+    tripWithoutShape.setId(new AgencyAndId("1", "T_NO_SHAPE"));
+    tripWithoutShape.setShapeId(null);
+    dao.saveEntity(tripWithoutShape);
+
+    Trip tripWithShape = new Trip();
+    tripWithShape.setId(new AgencyAndId("1", "T_WITH_SHAPE"));
+    tripWithShape.setShapeId(new AgencyAndId("1", "S1"));
+    dao.saveEntity(tripWithShape);
+
+    transform.run(context, dao);
+
+    assertFalse(dao.getAllTrips().contains(tripWithoutShape));
+    assertTrue(dao.getAllTrips().contains(tripWithShape));
+    assertEquals(1, dao.getAllTrips().size());
+  }
+
+  @Test
   public void testPathInUpdate() throws IOException, TransformSpecificationException {
     _factory.addModificationsFromString(
         "{'op':'update', "

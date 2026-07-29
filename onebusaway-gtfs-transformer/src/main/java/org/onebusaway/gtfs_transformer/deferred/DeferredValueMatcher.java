@@ -36,7 +36,7 @@ public class DeferredValueMatcher implements ValueMatcher {
 
   public boolean matches(Class<?> parentEntityType, String propertyName, Object value) {
     if (value == null) {
-      return _value == null;
+      return _value == null || (_value instanceof String stringValue && stringValue.isEmpty());
     } else if (_value == null) {
       return false;
     }

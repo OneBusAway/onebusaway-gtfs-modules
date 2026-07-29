@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.gtfs.impl.GenericMutableDaoWrapper;
@@ -153,7 +154,8 @@ public class GtfsTransformer {
 
     if (_outputDirectory != null
         && !_outputDirectory.exists()
-        && !_outputDirectory.getName().endsWith(".zip")) _outputDirectory.mkdirs();
+        && !_outputDirectory.getName().toLowerCase(Locale.ROOT).endsWith(".zip"))
+      _outputDirectory.mkdirs();
 
     // copy over parameters
     for (String key : _parameters.keySet()) {

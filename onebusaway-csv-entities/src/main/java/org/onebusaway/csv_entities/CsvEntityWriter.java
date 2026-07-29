@@ -15,6 +15,7 @@ package org.onebusaway.csv_entities;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import org.onebusaway.csv_entities.schema.DefaultEntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.EntitySchemaFactory;
 import org.onebusaway.csv_entities.schema.ExcludeOptionalAndMissingEntitySchemaFactory;
@@ -38,7 +39,7 @@ public class CsvEntityWriter implements EntityHandler {
   }
 
   public void setOutputLocation(File path) {
-    if (path.getName().endsWith(".zip")) {
+    if (path.getName().toLowerCase(Locale.ROOT).endsWith(".zip")) {
       _outputStrategy = ZipOutputStrategy.create(path);
     } else {
       _outputStrategy = new FileOutputStrategy(path);

@@ -1,10 +1,21 @@
 
 {
   "type": "FeatureCollection",
+  "foreign_collection_member": {
+    "nested": {
+      "value": true
+    }
+  },
   "features": [
     {
       "type": "Feature",
       "id": "si_Wendenschlossstrasse",
+      "style": {
+        "color": "#ff0000",
+        "metadata": {
+          "source": "issue-188"
+        }
+      },
       "properties": {
         "stop_name": "Wendenschlossstrasse",
         "stop_desc": "A nice description",
@@ -13,6 +24,9 @@
       },
       "geometry": {
         "type": "Polygon",
+        "foreign_geometry_member": {
+          "nested": "ignored"
+        },
         "coordinates": [
           [
             [13.576526641845703,52.44413508398945],

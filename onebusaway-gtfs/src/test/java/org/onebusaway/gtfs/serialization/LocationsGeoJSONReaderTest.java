@@ -14,11 +14,18 @@
 package org.onebusaway.gtfs.serialization;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Collection;
 import org.geojson.LngLatAlt;
 import org.geojson.Polygon;
@@ -29,16 +36,25 @@ import org.onebusaway.gtfs.model.Location;
 public class LocationsGeoJSONReaderTest {
 
   @Test
+  public void featureCollectionReaderAllowsForeignMembers() {
+    assertFalse(
+        LocationsGeoJSONReader.createFeatureCollectionReader()
+            .isEnabled(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES));
+  }
+
+  @Test
   public void read() throws IOException {
     Collection<Location> locations =
         new LocationsGeoJSONReader(
-                new InputStreamReader(new FileInputStream(GtfsTestData.getLocationsGeojson())), "")
+                new InputStreamReader(new FileInputStream(GtfsTestData.getLocationsGeojson())),
+                "agency")
             .read();
 
-    assertEquals(locations.size(), 1);
+    assertEquals(1, locations.size());
 
     Location location = locations.iterator().next();
 
+    assertEquals("agency", location.getId().getAgencyId());
     assertEquals("si_Wendenschlossstrasse", location.getId().getId());
     assertEquals("Wendenschlossstrasse", location.getName());
     assertEquals("A nice description", location.getDescription());
@@ -57,5 +73,38 @@ public class LocationsGeoJSONReaderTest {
     assertEquals("fare-zone-A", location.getZoneId());
 
     assertEquals("http://example.com", location.getUrl());
+  }
+
+  @Test
+  public void foreignMembersAreDiscarded() throws IOException {
+    Collection<Location> locations =
+        new LocationsGeoJSONReader(
+                new InputStreamReader(new FileInputStream(GtfsTestData.getLocationsGeojson())),
+                "agency")
+            .read();
+    StringWriter output = new StringWriter();
+
+    new LocationsGeoJSONWriter(output).write(locations);
+
+    JsonNode writtenGeoJson = new ObjectMapper().readTree(output.toString());
+    assertFalse(writtenGeoJson.has("foreign_collection_member"));
+    JsonNode feature = writtenGeoJson.get("features").get(0);
+    assertFalse(feature.has("style"));
+    assertFalse(feature.get("geometry").has("foreign_geometry_member"));
+  }
+
+  @Test
+  public void invalidRecognizedStructureFails() {
+    String invalidGeoJson =
+        """
+        {
+          "type": "FeatureCollection",
+          "features": {}
+        }
+        """;
+
+    assertThrows(
+        IOException.class,
+        () -> new LocationsGeoJSONReader(new StringReader(invalidGeoJson), "").read());
   }
 }

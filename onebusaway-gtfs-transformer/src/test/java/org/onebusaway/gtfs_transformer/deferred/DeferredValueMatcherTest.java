@@ -85,6 +85,30 @@ public class DeferredValueMatcherTest {
     assertFalse(matcher.matches(Route.class, "id", new AgencyAndId("1", "R20")));
   }
 
+  @Test
+  public void testNullValue() {
+    DeferredValueMatcher matcher = matcher(null);
+    assertTrue(matcher.matches(Trip.class, "shapeId", null));
+  }
+
+  @Test
+  public void testEmptyStringMatchesNullValue() {
+    DeferredValueMatcher matcher = matcher("");
+    assertTrue(matcher.matches(Trip.class, "shapeId", null));
+  }
+
+  @Test
+  public void testStringDoesNotMatchNullValue() {
+    DeferredValueMatcher matcher = matcher("shape-1");
+    assertFalse(matcher.matches(Trip.class, "shapeId", null));
+  }
+
+  @Test
+  public void testStringMatchesAgencyAndIdValue() {
+    DeferredValueMatcher matcher = matcher("shape-1");
+    assertTrue(matcher.matches(Trip.class, "shapeId", new AgencyAndId("1", "shape-1")));
+  }
+
   private DeferredValueMatcher matcher(Object value) {
     return new DeferredValueMatcher(_reader, _schemaCache, value);
   }

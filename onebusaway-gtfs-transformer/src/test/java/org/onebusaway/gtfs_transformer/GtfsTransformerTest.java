@@ -20,14 +20,20 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.zip.ZipFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.onebusaway.gtfs.impl.GtfsRelationalDaoImpl;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.StopTime;
+import org.onebusaway.gtfs.model.Trip;
+import org.onebusaway.gtfs.serialization.GtfsReader;
 import org.onebusaway.gtfs.services.GtfsRelationalDao;
 import org.onebusaway.gtfs.services.MockGtfs;
 import org.onebusaway.gtfs_transformer.updates.UpdateLibrary;
@@ -142,6 +148,38 @@ public class GtfsTransformerTest {
   }
 
   @Test
+  public void testRemoveTripsWithEmptyShapeIdFromGtfsInput() throws Exception {
+    URL resource = getClass().getResource("/org/onebusaway/gtfs_transformer/testagency");
+    assertNotNull(resource);
+    Path inputDirectory = Path.of(resource.toURI());
+
+    GtfsRelationalDao inputDao = readDao(inputDirectory);
+    assertEquals(15, inputDao.getAllTrips().size());
+    assertEquals(11, inputDao.getAllTrips().stream().filter(t -> t.getShapeId() == null).count());
+    assertEquals(4, inputDao.getAllTrips().stream().filter(t -> t.getShapeId() != null).count());
+
+    GtfsTransformer transformer = new GtfsTransformer();
+    transformer
+        .getTransformFactory()
+        .addModificationsFromString("{'op':'remove','match':{'file':'trips.txt','shape_id':''}}");
+    transformer.setGtfsInputDirectory(inputDirectory.toFile());
+    transformer.run();
+
+    GtfsRelationalDao transformedDao = transformer.getDao();
+    UpdateLibrary.clearDaoCache(transformedDao);
+
+    assertEquals(4, transformedDao.getAllTrips().size());
+    Set<String> remainingTripIds =
+        transformedDao.getAllTrips().stream()
+            .map(trip -> trip.getId().getId())
+            .collect(Collectors.toSet());
+    assertEquals(Set.of("4.1", "4.2", "4.3", "5.1"), remainingTripIds);
+    for (Trip trip : transformedDao.getAllTrips()) {
+      assertNotNull(trip.getShapeId());
+    }
+  }
+
+  @Test
   public void testUppercaseZipOutput(@TempDir Path tempDir) throws Exception {
     Path output = tempDir.resolve("output.ZIP");
     _transformer.setGtfsInputDirectory(_gtfs.getPath());
@@ -162,6 +200,15 @@ public class GtfsTransformerTest {
     _transformer.run();
     GtfsRelationalDao dao = _transformer.getDao();
     UpdateLibrary.clearDaoCache(dao);
+    return dao;
+  }
+
+  private GtfsRelationalDao readDao(Path inputDirectory) throws IOException {
+    GtfsReader reader = new GtfsReader();
+    reader.setInputLocation(inputDirectory.toFile());
+    GtfsRelationalDaoImpl dao = new GtfsRelationalDaoImpl();
+    reader.setEntityStore(dao);
+    reader.run();
     return dao;
   }
 }

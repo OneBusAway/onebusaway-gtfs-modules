@@ -28,6 +28,17 @@ public class StopMergeStrategy extends AbstractIdentifiableSingleEntityMergeStra
     _duplicateScoringStrategy.addStrategy(new StopDistanceDuplicateScoringStrategy());
   }
 
+  /**
+   * A stop_time may only reference a stop with location_type=0, never a station or other location
+   * type. If two feeds share a stop_id but disagree on location_type, they are not the same GTFS
+   * entity and must not be merged into one.
+   */
+  @Override
+  protected boolean rejectDuplicateOverDifferences(
+      GtfsMergeContext context, Stop sourceEntity, Stop targetDuplicate) {
+    return sourceEntity.getLocationType() != targetDuplicate.getLocationType();
+  }
+
   @Override
   protected void replaceDuplicateEntry(GtfsMergeContext context, Stop oldStop, Stop newStop) {
     GtfsRelationalDao source = context.getSource();

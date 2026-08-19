@@ -15,21 +15,63 @@ package org.onebusaway.gtfs.serialization;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.geojson.LngLatAlt;
+import org.geojson.Polygon;
 import org.junit.jupiter.api.Test;
 import org.onebusaway.csv_entities.exceptions.CsvEntityIOException;
 import org.onebusaway.gtfs.GtfsTestData;
+import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Location;
 import org.onebusaway.gtfs.model.LocationGroup;
 import org.onebusaway.gtfs.model.Stop;
 import org.onebusaway.gtfs.model.StopTime;
+import org.onebusaway.gtfs.services.MockGtfs;
 
 public class FlexReaderTest extends BaseGtfsTest {
 
   private static final String AGENCY_ID = "1";
+
+  @Test
+  public void foreignGeoJsonMembersThroughCompleteGtfsIngestionPath() throws IOException {
+    MockGtfs gtfs = MockGtfs.create();
+    gtfs.putAgencies(1);
+    gtfs.putRoutes(1);
+    gtfs.putTrips(1, "r0", "service");
+    gtfs.putLines(
+        "stop_times.txt",
+        "trip_id,location_id,stop_sequence,arrival_time,departure_time",
+        "t0,si_Wendenschlossstrasse,1,09:00:00,09:00:00");
+    gtfs.putFile("locations.geojson", GtfsTestData.getLocationsGeojson());
+
+    var dao = gtfs.read();
+
+    AgencyAndId locationId = new AgencyAndId("a0", "si_Wendenschlossstrasse");
+    assertEquals(1, dao.getAllLocations().size());
+    Location location = dao.getEntityForId(Location.class, locationId);
+    assertNotNull(location);
+    assertEquals(locationId, location.getId());
+    assertEquals("Wendenschlossstrasse", location.getName());
+    assertEquals("A nice description", location.getDescription());
+    assertEquals("http://example.com", location.getUrl());
+    assertEquals("fare-zone-A", location.getZoneId());
+    assertEquals(
+        new Polygon(
+            new LngLatAlt(13.576526641845703, 52.44413508398945),
+            new LngLatAlt(13.575839996337889, 52.429169943434495),
+            new LngLatAlt(13.590774536132812, 52.4105872618342),
+            new LngLatAlt(13.60879898071289, 52.43225757383383),
+            new LngLatAlt(13.576526641845703, 52.44413508398945)),
+        location.getGeometry());
+
+    assertEquals(1, dao.getAllStopTimes().size());
+    StopTime stopTime = dao.getAllStopTimes().iterator().next();
+    assertSame(location, stopTime.getStopLocation());
+  }
 
   @Test
   public void locationIdAsASeparateColumn() throws CsvEntityIOException, IOException {

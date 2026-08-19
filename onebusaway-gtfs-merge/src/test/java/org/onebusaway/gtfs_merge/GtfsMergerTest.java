@@ -471,6 +471,163 @@ public class GtfsMergerTest {
     }
   }
 
+  /**
+   * Reproduction for issue #409: merging two feeds that share a stop_id but disagree on
+   * location_type (one is location_type=0 "stop", the other location_type=1 "station") should never
+   * leave a StopTime referencing the location_type=1 entity, since GTFS trips may only visit
+   * individual stops, not stations.
+   *
+   * <p>Input order: station feed listed first (_oldGtfs), platform feed listed second (_newGtfs).
+   * GtfsMerger processes the LAST listed feed first (see GtfsMerger#run), so the platform feed's
+   * stop (location_type=0) is registered as the target stop first. When the station feed's stop
+   * (location_type=1) is processed, StopMergeStrategy#rejectDuplicateOverDifferences rejects it as
+   * a duplicate due to the location_type mismatch, so it is kept as a separate, renamed Stop
+   * instead of being merged.
+   */
+  @Test
+  public void testLocationTypeMismatch_StationFeedFirstPlatformFeedSecond() throws IOException {
+    _oldGtfs.putLines(
+        "agency.txt",
+        "agency_id,agency_name,agency_url,agency_timezone",
+        "1,Metro,http://metro.gov/,America/Los_Angeles");
+    _oldGtfs.putLines(
+        "stops.txt",
+        "stop_id,stop_name,stop_lat,stop_lon,location_type",
+        "100,Stop 100,47.654403,-122.305211,1");
+    _oldGtfs.putLines("routes.txt", "route_id,route_short_name,route_long_name,route_type", "");
+    _oldGtfs.putLines(
+        "calendar.txt",
+        "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date",
+        "");
+    _oldGtfs.putLines("trips.txt", "route_id,service_id,trip_id", "");
+    _oldGtfs.putLines(
+        "stop_times.txt", "trip_id,stop_id,stop_sequence,arrival_time,departure_time", "");
+
+    _newGtfs.putLines(
+        "agency.txt",
+        "agency_id,agency_name,agency_url,agency_timezone",
+        "1,Metro,http://metro.gov/,America/Los_Angeles");
+    _newGtfs.putLines(
+        "stops.txt",
+        "stop_id,stop_name,stop_lat,stop_lon,location_type",
+        "100,Stop 100,47.654403,-122.305211,0");
+    _newGtfs.putLines(
+        "routes.txt", "route_id,route_short_name,route_long_name,route_type", "R1,1,Route One,3");
+    _newGtfs.putLines(
+        "calendar.txt",
+        "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date",
+        "sid0,1,1,1,1,1,0,0,20120101,20121231");
+    _newGtfs.putLines("trips.txt", "route_id,service_id,trip_id", "R1,sid0,T1");
+    _newGtfs.putLines(
+        "stop_times.txt",
+        "trip_id,stop_id,stop_sequence,arrival_time,departure_time",
+        "T1,100,0,08:00:00,08:00:00");
+
+    StopMergeStrategy stopStrategy = new StopMergeStrategy();
+    stopStrategy.setDuplicateDetectionStrategy(EDuplicateDetectionStrategy.IDENTITY);
+    _merger.setStopStrategy(stopStrategy);
+
+    GtfsRelationalDao dao = merge();
+
+    assertEquals(
+        2,
+        dao.getAllStops().size(),
+        "stops with incompatible location_type must not collapse into one Stop; the station stop"
+            + " should be kept as a separate, renamed entity");
+
+    boolean foundStopTime = false;
+    for (Trip trip : dao.getAllTrips()) {
+      for (StopTime st : dao.getStopTimesForTrip(trip)) {
+        foundStopTime = true;
+        Stop mergedStop = (Stop) st.getStop();
+        assertEquals(
+            0,
+            mergedStop.getLocationType(),
+            "GTFS spec: trips must reference location_type=0 stops, not stations (location_type="
+                + mergedStop.getLocationType()
+                + ")");
+      }
+    }
+    assertTrue(foundStopTime, "expected at least one merged stop_time");
+  }
+
+  /**
+   * Same reproduction as {@link #testLocationTypeMismatch_StationFeedFirstPlatformFeedSecond}, with
+   * input order reversed: platform feed listed first (_oldGtfs), station feed listed second
+   * (_newGtfs). GtfsMerger processes the LAST listed feed first, so the station feed's stop
+   * (location_type=1) is registered as the target stop first. When the platform feed's stop
+   * (location_type=0, which owns the StopTime) is processed,
+   * StopMergeStrategy#rejectDuplicateOverDifferences rejects it as a duplicate due to the
+   * location_type mismatch, so it is kept as a separate, renamed Stop and the StopTime keeps
+   * referencing it rather than being repointed onto the station.
+   */
+  @Test
+  public void testLocationTypeMismatch_PlatformFeedFirstStationFeedSecond() throws IOException {
+    _oldGtfs.putLines(
+        "agency.txt",
+        "agency_id,agency_name,agency_url,agency_timezone",
+        "1,Metro,http://metro.gov/,America/Los_Angeles");
+    _oldGtfs.putLines(
+        "stops.txt",
+        "stop_id,stop_name,stop_lat,stop_lon,location_type",
+        "100,Stop 100,47.654403,-122.305211,0");
+    _oldGtfs.putLines(
+        "routes.txt", "route_id,route_short_name,route_long_name,route_type", "R1,1,Route One,3");
+    _oldGtfs.putLines(
+        "calendar.txt",
+        "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date",
+        "sid0,1,1,1,1,1,0,0,20120101,20121231");
+    _oldGtfs.putLines("trips.txt", "route_id,service_id,trip_id", "R1,sid0,T1");
+    _oldGtfs.putLines(
+        "stop_times.txt",
+        "trip_id,stop_id,stop_sequence,arrival_time,departure_time",
+        "T1,100,0,08:00:00,08:00:00");
+
+    _newGtfs.putLines(
+        "agency.txt",
+        "agency_id,agency_name,agency_url,agency_timezone",
+        "1,Metro,http://metro.gov/,America/Los_Angeles");
+    _newGtfs.putLines(
+        "stops.txt",
+        "stop_id,stop_name,stop_lat,stop_lon,location_type",
+        "100,Stop 100,47.654403,-122.305211,1");
+    _newGtfs.putLines("routes.txt", "route_id,route_short_name,route_long_name,route_type", "");
+    _newGtfs.putLines(
+        "calendar.txt",
+        "service_id,monday,tuesday,wednesday,thursday,friday,saturday,sunday,start_date,end_date",
+        "");
+    _newGtfs.putLines("trips.txt", "route_id,service_id,trip_id", "");
+    _newGtfs.putLines(
+        "stop_times.txt", "trip_id,stop_id,stop_sequence,arrival_time,departure_time", "");
+
+    StopMergeStrategy stopStrategy = new StopMergeStrategy();
+    stopStrategy.setDuplicateDetectionStrategy(EDuplicateDetectionStrategy.IDENTITY);
+    _merger.setStopStrategy(stopStrategy);
+
+    GtfsRelationalDao dao = merge();
+
+    assertEquals(
+        2,
+        dao.getAllStops().size(),
+        "stops with incompatible location_type must not collapse into one Stop; the platform stop"
+            + " should be kept as a separate, renamed entity");
+
+    boolean foundStopTime = false;
+    for (Trip trip : dao.getAllTrips()) {
+      for (StopTime st : dao.getStopTimesForTrip(trip)) {
+        foundStopTime = true;
+        Stop mergedStop = (Stop) st.getStop();
+        assertEquals(
+            0,
+            mergedStop.getLocationType(),
+            "GTFS spec: trips must reference location_type=0 stops, not stations (location_type="
+                + mergedStop.getLocationType()
+                + ")");
+      }
+    }
+    assertTrue(foundStopTime, "expected at least one merged stop_time");
+  }
+
   private GtfsRelationalDao merge() throws IOException {
     List<File> paths = new ArrayList<>();
     paths.add(_oldGtfs.getPath());

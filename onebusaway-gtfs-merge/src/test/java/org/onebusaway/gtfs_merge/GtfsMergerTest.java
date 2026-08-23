@@ -14,13 +14,18 @@
 package org.onebusaway.gtfs_merge;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -626,6 +631,107 @@ public class GtfsMergerTest {
       }
     }
     assertTrue(foundStopTime, "expected at least one merged stop_time");
+  }
+
+  /**
+   * Reproduces issue 142: after a raw service_id collision forces a rename, the renamed id must not
+   * collide with an id that already exists in the merged output feed (or in another,
+   * not-yet-processed key from the same source feed). Round-trips the merged feed through a
+   * writer/reader cycle to make sure the on-disk result is unambiguous.
+   */
+  @Test
+  public void testServiceIdRenameAvoidsCollisionWithExistingRawId() throws IOException {
+    // "fresh" input (lowest priority, processed second): a single, previously-unmerged
+    // service calendar whose raw id "T0" collides with an id in the higher-priority input.
+    _oldGtfs.putAgencies(1);
+    _oldGtfs.putRoutes(1);
+    _oldGtfs.putStops(3);
+    _oldGtfs.putCalendars(1, "mask=1111100", "service_id=T0");
+    _oldGtfs.putCalendarDates("T0=20120704");
+    _oldGtfs.putTrips(1, "r0", "T0", "trip_id=fresh-trip");
+    _oldGtfs.putStopTimes("fresh-trip", "s0,s1,s2");
+
+    // "already merged" input (highest priority, processed first): already contains both the
+    // raw id "T0" and a previously-renamed raw id "a-T0" as two logically distinct calendars.
+    _newGtfs.putAgencies(1);
+    _newGtfs.putRoutes(1);
+    _newGtfs.putStops(3);
+    _newGtfs.putCalendars(2, "mask=0000011,1010101", "service_id=T0,a-T0");
+    _newGtfs.putCalendarDates("T0=20120705", "a-T0=20120706");
+    _newGtfs.putTrips(2, "r0,r0", "T0,a-T0", "trip_id=target-t0-trip,target-a-t0-trip");
+    _newGtfs.putStopTimes("target-t0-trip,target-a-t0-trip", "s0,s1,s2");
+
+    ServiceCalendarMergeStrategy strategy = new ServiceCalendarMergeStrategy();
+    strategy.setDuplicateDetectionStrategy(EDuplicateDetectionStrategy.NONE);
+    strategy.setDuplicateRenamingStrategy(EDuplicateRenamingStrategy.CONTEXT);
+    _merger.setServiceCalendarStrategy(strategy);
+
+    GtfsRelationalDao dao = merge();
+
+    Set<String> serviceIds = new HashSet<>();
+    Map<String, String> serviceIdByCalendarMask = new HashMap<>();
+    for (ServiceCalendar calendar : dao.getAllCalendars()) {
+      String serviceId = calendar.getServiceId().getId();
+      serviceIds.add(serviceId);
+      serviceIdByCalendarMask.put(getCalendarMask(calendar), serviceId);
+    }
+    assertEquals(3, dao.getAllCalendars().size(), "expected three logical calendars");
+    assertEquals(3, serviceIds.size(), "expected three distinct raw service ids");
+    assertEquals(3, serviceIdByCalendarMask.size(), "expected three distinct calendar masks");
+    assertEquals(
+        "T0",
+        serviceIdByCalendarMask.get("0000011"),
+        "higher-priority T0 calendar must remain unchanged");
+    assertEquals(
+        "a-T0",
+        serviceIdByCalendarMask.get("1010101"),
+        "higher-priority a-T0 calendar must remain unchanged");
+
+    String freshId = serviceIdByCalendarMask.get("1111100");
+    assertNotNull(freshId, "expected the fresh calendar to receive a third, unused id");
+    assertTrue(!freshId.equals("T0") && !freshId.equals("a-T0"));
+
+    Map<String, String> serviceIdByTripId = new HashMap<>();
+    for (Trip trip : dao.getAllTrips()) {
+      serviceIdByTripId.put(trip.getId().getId(), trip.getServiceId().getId());
+    }
+    assertEquals(3, dao.getAllTrips().size(), "expected one trip for each logical calendar");
+    assertEquals(freshId, serviceIdByTripId.get("fresh-trip"));
+    assertEquals("T0", serviceIdByTripId.get("target-t0-trip"));
+    assertEquals("a-T0", serviceIdByTripId.get("target-a-t0-trip"));
+
+    Map<String, String> serviceIdByExceptionDate = new HashMap<>();
+    for (ServiceCalendarDate date : dao.getAllCalendarDates()) {
+      serviceIdByExceptionDate.put(date.getDate().getAsString(), date.getServiceId().getId());
+    }
+    assertEquals(
+        3, dao.getAllCalendarDates().size(), "expected one date for each logical calendar");
+    assertEquals(3, serviceIdByExceptionDate.size(), "expected three distinct exception dates");
+    assertEquals(freshId, serviceIdByExceptionDate.get("20120704"));
+    assertEquals("T0", serviceIdByExceptionDate.get("20120705"));
+    assertEquals("a-T0", serviceIdByExceptionDate.get("20120706"));
+
+    // no ambiguity in the round-tripped output: exactly one calendar per raw service id
+    for (String id : serviceIds) {
+      int count = 0;
+      for (ServiceCalendar calendar : dao.getAllCalendars()) {
+        if (id.equals(calendar.getServiceId().getId())) {
+          count++;
+        }
+      }
+      assertEquals(1, count, "expected exactly one calendar for service id=" + id);
+    }
+  }
+
+  private String getCalendarMask(ServiceCalendar calendar) {
+    return ""
+        + calendar.getMonday()
+        + calendar.getTuesday()
+        + calendar.getWednesday()
+        + calendar.getThursday()
+        + calendar.getFriday()
+        + calendar.getSaturday()
+        + calendar.getSunday();
   }
 
   private GtfsRelationalDao merge() throws IOException {

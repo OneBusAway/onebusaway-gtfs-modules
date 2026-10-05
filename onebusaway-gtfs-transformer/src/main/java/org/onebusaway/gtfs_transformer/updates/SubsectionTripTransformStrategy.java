@@ -99,7 +99,7 @@ public class SubsectionTripTransformStrategy implements GtfsTransformStrategy {
           toIndex--;
         }
 
-        newTrip.setId(new AgencyAndId("1", id));
+        newTrip.setId(new AgencyAndId(trip.getId().getAgencyId(), id));
         tripsToAdd.add(newTrip);
 
         List<StopTime> newStopTimes = new ArrayList<>();
@@ -165,7 +165,7 @@ public class SubsectionTripTransformStrategy implements GtfsTransformStrategy {
     StopLocation firstStop = stopTimes.getFirst().getStop();
     StopLocation lastStop = stopTimes.getLast().getStop();
     String id = shapeId.getId() + "-" + firstStop.getId().getId() + "-" + lastStop.getId().getId();
-    AgencyAndId newShapeId = new AgencyAndId("1", id);
+    AgencyAndId newShapeId = new AgencyAndId(shapeId.getAgencyId(), id);
     trip.setShapeId(newShapeId);
 
     if (!newShapeIds.add(newShapeId)) {

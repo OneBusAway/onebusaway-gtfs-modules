@@ -12,6 +12,9 @@
     <version>14.2.4-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
+  <properties>
+    <argLine></argLine>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -87,6 +90,17 @@
               <goal>strip-jar</goal>
             </goals>
             <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>properties</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>

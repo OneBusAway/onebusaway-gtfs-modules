@@ -14,6 +14,9 @@
   <name>onebusaway-csv-entities</name>
   <description>A Java library for reading and writing Java objects from comma-separated-values files.</description>
   <url>https://github.com/OneBusAway/onebusaway-gtfs-modules/onebusaway-csv-entities/</url>
+  <properties>
+    <argLine></argLine>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -69,6 +72,17 @@
               <goal>strip-jar</goal>
             </goals>
             <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>properties</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>

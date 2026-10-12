@@ -18,9 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,6 +29,9 @@ import org.geojson.Polygon;
 import org.junit.jupiter.api.Test;
 import org.onebusaway.gtfs.GtfsTestData;
 import org.onebusaway.gtfs.model.Location;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 public class LocationsGeoJSONReaderTest {
 
@@ -86,7 +86,7 @@ public class LocationsGeoJSONReaderTest {
 
     new LocationsGeoJSONWriter(output).write(locations);
 
-    JsonNode writtenGeoJson = new ObjectMapper().readTree(output.toString());
+    JsonNode writtenGeoJson = new JsonMapper().readTree(output.toString());
     assertFalse(writtenGeoJson.has("foreign_collection_member"));
     JsonNode feature = writtenGeoJson.get("features").get(0);
     assertFalse(feature.has("style"));

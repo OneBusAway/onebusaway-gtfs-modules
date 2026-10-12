@@ -21,6 +21,7 @@ import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.onebusaway.gtfs.model.AgencyAndId;
 import org.onebusaway.gtfs.model.Location;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectReader;
 import tools.jackson.databind.json.JsonMapper;
@@ -45,7 +46,12 @@ public class LocationsGeoJSONReader {
   }
 
   public Collection<Location> read() throws IOException {
-    FeatureCollection featureCollection = FEATURE_COLLECTION_OBJECT_READER.readValue(reader);
+    FeatureCollection featureCollection;
+    try {
+      featureCollection = FEATURE_COLLECTION_OBJECT_READER.readValue(reader);
+    } catch (JacksonException e) {
+      throw new IOException("Unable to read GeoJSON locations", e);
+    }
 
     Collection<Location> locations = new ArrayList<>(featureCollection.getFeatures().size());
 

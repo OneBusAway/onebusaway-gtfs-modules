@@ -148,6 +148,7 @@
             <recipe>org.openrewrite.staticanalysis.UseCollectionInterfaces</recipe>
             <recipe>org.openrewrite.java.testing.junit6.JUnit5to6Migration</recipe>
             <recipe>org.openrewrite.java.migrate.UpgradeToJava25</recipe>
+            <recipe>org.openrewrite.java.jackson.UpgradeJackson_2_3</recipe>
           </activeRecipes>
         </configuration>
         <dependencies>
